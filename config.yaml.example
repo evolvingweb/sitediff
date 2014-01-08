@@ -1,0 +1,8 @@
+sites:
+  dev: 
+    url: http://mydevsite.com
+    auth_basic:
+      user: devuser
+      password: devpass
+  prod: 
+    url: http://myprodsite.com
