@@ -8,8 +8,8 @@ module SiteDiff
       puts SiteDiff::Page.new(url).diff()
     end
 
-    desc "pair URL", "Show corresponding pair URL (swaps between prod and dev)"
-    def pair(url)
+    desc "complement URL", "Show complementary of given URL (swaps between prod and dev)"
+    def complement(url)
       puts SiteDiff::Page.complement_url(url)
     end
   end
