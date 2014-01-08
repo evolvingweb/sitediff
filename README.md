@@ -42,3 +42,13 @@ sites:
   prod: 
     url: http://myprodsite.com
 ```
+
+## Web App
+
+To run the sinatra webapp:
+
+```
+bundle exec ruby webapp/app.rb -o 0.0.0.0 -p 4567
+```
+
+Now visit http://localhost:4567/diff?url=http://www.mcgill.ca/study/2013-2014/
