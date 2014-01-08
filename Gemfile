@@ -5,5 +5,3 @@ gem "thor"
 gem "rspec"
 gem "diff-lcs"
 gem "sinatra"
-
-gem "nokogiri"

@@ -1,5 +1,4 @@
 require 'open-uri'
-require 'nokogiri'
 require 'sitediff/util/diff'
 
 module SiteDiff

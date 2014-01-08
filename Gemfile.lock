@@ -2,9 +2,6 @@ GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.2.5)
-    mini_portile (0.5.2)
-    nokogiri (1.6.1)
-      mini_portile (~> 0.5.0)
     rack (1.5.2)
     rack-protection (1.5.1)
       rack
@@ -28,7 +25,6 @@ PLATFORMS
 
 DEPENDENCIES
   diff-lcs
-  nokogiri
   rspec
   sinatra
   thor
