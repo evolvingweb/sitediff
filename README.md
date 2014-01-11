@@ -13,10 +13,12 @@ bundle exec ruby bin/sitediff diff http://www.mcgill.ca/study/2013-2014/facultie
 
 ## Installation
 
+Clone the code:
+
 ```
-# clone the code
 git clone https://github.com/dergachev/sitediff.git
 cd sitediff
+```
 
 Before using the app, you need to create `config.yaml`, as follows:
 
@@ -25,8 +27,7 @@ cp config.yaml.example config.yaml
 vim config.yaml  # modify as necessary
 ```
 
-For now, it just specifies your dev and prod domains.
-Here's config.yaml.example:
+For now, it just specifies your dev and prod domains. Here's config.yaml.example:
 
 ```
 sites:
