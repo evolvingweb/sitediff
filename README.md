@@ -18,10 +18,6 @@ bundle exec ruby bin/sitediff diff http://www.mcgill.ca/study/2013-2014/facultie
 git clone https://github.com/dergachev/sitediff.git
 cd sitediff
 
-# install dependent gems (including nokogiri, so might take a minute or 3)
-bundle install --path vendor/bundle
-```
-
 Before using the app, you need to create `config.yaml`, as follows:
 
 ```
@@ -43,12 +39,22 @@ sites:
     url: http://myprodsite.com
 ```
 
-## Web App
-
-To run the sinatra webapp:
+To run the app locally, do the following:
 
 ```
+bundle install --path vendor/bundle
 bundle exec ruby webapp/app.rb -o 0.0.0.0 -p 4567
 ```
 
-Now visit http://localhost:4567/diff?url=http://www.mcgill.ca/study/2013-2014/
+To run it in a docker container, build and run it as follows:
+
+```
+docker build -t <yourusername>/sitediff .
+docker run -p 4567:4567 <yourusername>/sitediff
+```
+
+In either case, the following should now: http://localhost:4567/diff?url=http://www.mcgill.ca/study/2013-2014/
+
+## Bookmarklet
+
+TODO: create bookmarklet for sitediff. Along the lines of https://gist.github.com/dergachev/8291018

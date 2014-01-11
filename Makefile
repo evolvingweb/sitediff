@@ -15,6 +15,7 @@ latest:
 	docker run -t -i $$(docker images -q | head -n 1) /bin/bash
 
 ssh:
+	echo "Warning: ssh support not implemented in sitediff Dockerfile yet"
 	ssh root@localhost -p 9022
 
 go: build run
