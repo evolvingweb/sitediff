@@ -1,0 +1,8 @@
+sanitization:
+  -
+    title:
+      'strip_domains_from_absolute_urls'
+    pattern:
+      'http:\/\/[a-zA-Z0-9.:-]+'
+    substitute:
+      '__domain__'

@@ -1,8 +1,9 @@
+#NOTE currently not used
 require 'open-uri'
 require 'sitediff/util/diff'
 
 module SiteDiff
-        
+
   class Page
     attr_accessor :url
 
@@ -55,7 +56,7 @@ module SiteDiff
     def is_dev?()
       self.class.is_dev?(@url)
     end
-    
+
     # returns a tuple of [prod_page, dev_page]
     def prod_dev_pair()
       return is_prod? ? [self, complement] : [complement, self]
