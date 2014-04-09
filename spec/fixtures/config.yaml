@@ -1,0 +1,6 @@
+paths:
+  - fixture.html
+before:
+  sanitization:
+after:
+  sanitization:

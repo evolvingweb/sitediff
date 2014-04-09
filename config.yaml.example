@@ -1,8 +1,21 @@
-sites:
-  dev: 
-    url: http://mydevsite.com
-    auth_basic:
-      user: devuser
-      password: devpass
-  prod: 
-    url: http://myprodsite.com
+includes:
+  - config/sanitize_domains.yaml.example
+
+selector: 'body'
+
+dom_transform:
+- type: remove
+  selector:
+  - '#something'
+
+before:
+  sanitization:
+  - title: 'remove form build id'
+    pattern:    '<input type="hidden" name="form_build_id" value="form-[a-zA-Z0-9_-]+" *\/?>'
+    substitute: '<input type="hidden" name="form_build_id" value="__form_build_id__">'
+
+after:
+  sanitization:
+  - title: 'remove form build id'
+    pattern:    '<input type="hidden" name="form_build_id" value="form-[a-zA-Z0-9_-]+" *\/?>'
+    substitute: '<input type="hidden" name="form_build_id" value="__form_build_id__">'

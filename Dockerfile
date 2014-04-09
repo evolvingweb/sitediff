@@ -1,14 +1,14 @@
-# DOCKER-VERSION 0.5.3
-FROM ubuntu:12.10
+FROM ubuntu:12.04
 
 RUN apt-get update
 
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get install -y build-essential curl git vim
-RUN apt-get install -y libreadline6 libreadline6-dev autoconf libc6-dev ncurses-dev automake libtool bison pkg-config 
-RUN apt-get install -y libyaml-dev libxml2-dev libxslt-dev 
-RUN apt-get install -y ruby1.9.1
+RUN apt-get install -y libreadline6 libreadline6-dev autoconf libc6-dev ncurses-dev automake libtool bison pkg-config
+RUN apt-get install -y libyaml-dev libxml2-dev libxslt-dev
+RUN apt-get install -y ruby1.9.1 ruby1.9.1-dev
+
 RUN gem install bundler
 
 # workaround for https://github.com/dotcloud/docker/issues/2424
@@ -16,14 +16,14 @@ RUN gem install bundler
 RUN locale-gen en_US.UTF-8 && dpkg-reconfigure locales && update-locale LANG=en_US.UTF-8
 ENV LANG en_US.utf8
 
+# otherwise nokogori install is tooo slow... see https://groups.google.com/forum/#!topic/nokogiri-talk/9r4zjWMP1DA
+ENV NOKOGIRI_USE_SYSTEM_LIBRARIES 1
+
 # add these separately for docker caching
 ADD Gemfile /tmp/Gemfile
 ADD Gemfile.lock /tmp/Gemfile.lock
 RUN cd /tmp; bundle install
 
-ADD . /src
-WORKDIR /src
-
-# note that you still need to port forward the exposed port, via "docker run -p 4567:4567 ..."
-EXPOSE 4567
-CMD ["bundle", "exec", "ruby", "/src/webapp/app.rb", "-p", "4567", "-o", "0.0.0.0"]
+ADD . /var/sitediff
+WORKDIR /var/sitediff
+CMD [ "/bin/bash" , "start.sh" ]

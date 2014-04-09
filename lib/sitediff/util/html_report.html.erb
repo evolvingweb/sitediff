@@ -1,0 +1,49 @@
+<html> 
+  <head> 
+    <!-- important: otherwise chrome will choke on non-ascii characters -->
+    <meta charset="utf-8" />
+    <style>
+      table, th, td {
+        padding: 0.2em;
+      }
+      table, #content {
+        border:1px solid black;
+        padding: 1em;
+        font-family:monospace;
+        font-size:14px;
+        width:95%;
+        margin: auto;
+        background-color:#e3ded8;
+      }
+      tr.error>td.status, tr.error>td.path {
+        background-color: khaki;
+      }
+      tr.failure>td.status, tr.failure>td.path {
+        background-color: salmon;
+      }
+      <%= Diffy::CSS %>
+    </style> 
+  </head>
+  <body>
+    <div id='content'>
+      <p> before: <a href=<%=before%>><%=before%></a> | after:  <a href=<%=after%>><%=after%></a> </p>
+      <p> The following diff files contain differences between <i>before</i> and <i>after</i> </p>
+      <table>
+        <tr>
+          <th> Before </th>
+          <th> After </th>
+          <th> Path </th>
+          <th> Status </th>
+        </tr>
+        <% results.each do |result| %>
+          <tr class="<%= result[:status] %>">
+            <td class="before"><a href="<%= result[:before_url_report] %>">[before]</a></td>
+            <td class="after"><a href="<%= result[:after_url_report]  %>">[after]</a></td>
+            <td class="path"><%= result[:path] %></td>
+            <td class="status"><%= result[:link] %></a></td>
+          </tr>
+        <% end %>
+      </table> 
+    </div>
+  </body>
+</html>
