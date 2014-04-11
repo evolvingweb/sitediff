@@ -1,3 +1,6 @@
+paths:
+ - /
+ - /user
 
 selector: 'body'
 
@@ -11,9 +14,3 @@ before:
   - type: remove
     selector:
     - '#something'
-
-after:
-  sanitization:
-  - title: 'remove form build id'
-    pattern:    '<input type="hidden" name="form_build_id" value="form-[a-zA-Z0-9_-]+" *\/?>'
-    substitute: '<input type="hidden" name="form_build_id" value="__form_build_id__">'
