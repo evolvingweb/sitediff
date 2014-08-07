@@ -68,12 +68,7 @@ module SiteDiff
         end
         str = str.read
 
-        # Nokogiri::XML chokes on HTML encoded entities like &mdash;
-        # Nokogiri::HTML works, but can't do auto-indent.
-        # As a work-around, we use HTMLEntities gem to decode them into utf8.
-        decoder = HTMLEntities.new
-        str = decoder.decode(str)
-        document = Nokogiri::XML(str, &:noblanks)
+        document = Nokogiri::HTML(str, &:noblanks)
 
         # remove double spacing, but only inside text nodes (eg not attributes)
         document.xpath('//text()').each do |node|
@@ -89,7 +84,7 @@ module SiteDiff
           document = perform_dom_transforms(document, config["dom_transform"])
         end
 
-        str = document.to_xhtml(indent: 3)
+        str = document.to_html
 
         config["sanitization"].each do |rule|
           # default type is "regex"
