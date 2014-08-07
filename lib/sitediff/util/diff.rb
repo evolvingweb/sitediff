@@ -7,8 +7,9 @@ module SiteDiff
       module_function
 
       def html_diffy(before_html, after_html)
-        diff = Diffy::Diff.new(before_html, after_html).to_s(:html)
-        return diff if diff != '<div class="diff"/>'
+        diff = Diffy::Diff.new(before_html, after_html)
+        diff.first ?  # Is it non-empty?
+          diff.to_s(:html) : nil
       end
 
       def terminal_diffy(before_html, after_html)
