@@ -57,8 +57,10 @@ module SiteDiff
       end
 
       # default report URLs to actual URLs
-      options['before-url-report'] ||= before
-      options['after-url-report'] ||= after
+      before_url_report = options['before-url-report'].empty? ? before :
+        options['before-url-report']
+      after_url_report = options['after-url-report'].empty? ? after :
+        options['after-url-report']
 
       results = []
 
@@ -67,8 +69,8 @@ module SiteDiff
         result[:path] = path.chomp
         result[:before_url] = URI::encode(before + "/" + result[:path])
         result[:after_url] =  URI::encode(after + "/" + result[:path])
-        result[:before_url_report] = options['before-url-report'] + "/" + result[:path]
-        result[:after_url_report] =  options['after-url-report'] + "/" + result[:path]
+        result[:before_url_report] = before_url_report + "/" + result[:path]
+        result[:after_url_report] =  after_url_report + "/" + result[:path]
 
         begin
           result[:before_html] = open(result[:before_url])
@@ -109,7 +111,7 @@ module SiteDiff
         File.open(failures_path, 'w') { |f| f.write(failures) }
       end
 
-      report = SiteDiff::Util::Diff::generate_html_report(results, options['before-url-report'], options['after-url-report'])
+      report = SiteDiff::Util::Diff::generate_html_report(results, before_url_report, after_url_report)
       File.open(File.join(options['dump-dir'], "/report.html") , 'w') { |f| f.write(report) }
 
       SiteDiff::log_yellow "All diff files were dumped inside #{options['dump-dir']}"
