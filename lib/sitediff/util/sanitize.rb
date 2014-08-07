@@ -6,6 +6,23 @@ module SiteDiff
     module Sanitize
       module_function
 
+      # Returns a version of `node_or_ns' with element `elem' replaced by
+      # its contents, without the wrapper tag. Works regardless of whether
+      # `node_or_ns' is a Node or NodeSet.
+      def unwrap(node_or_ns, elem)
+        if node_or_ns.respond_to?(:include?) && node_or_ns.include?(elem)
+          # It's a top-level node in a NodeSet, splice the children in
+          idx = node_or_ns.index(elem)
+          node_or_ns = node_or_ns.slice(0, idx) + elem.children +
+            node_or_ns.slice(idx + 1, node_or_ns.size - idx - 1)
+        else
+          # We have a parent, so we can just put our children there
+          elem.add_next_sibling(elem.children)
+          elem.remove()
+        end
+        return node_or_ns
+      end
+
       # Performs dom transformations.
       #
       # Currently supported transforms:
@@ -32,8 +49,7 @@ module SiteDiff
           when "unwrap"
             [rule["selector"]].flatten.each do |selector|
               document.css(selector).each do |el|
-                el.add_next_sibling(el.children)
-                el.remove()
+                document = unwrap(document, el)
               end
             end
           when "remove_class"
