@@ -8,6 +8,7 @@ RUN apt-get install -y build-essential curl git vim
 RUN apt-get install -y libreadline6 libreadline6-dev autoconf libc6-dev ncurses-dev automake libtool bison pkg-config
 RUN apt-get install -y libyaml-dev libxml2-dev libxslt-dev
 RUN apt-get install -y ruby1.9.1 ruby1.9.1-dev
+RUN apt-get install -y python-beautifulsoup
 
 RUN gem install bundler
 

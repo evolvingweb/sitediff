@@ -1,10 +1,28 @@
 require 'nokogiri'
 require 'htmlentities'
+require 'open3'
 
 module SiteDiff
   module Util
     module Sanitize
       module_function
+
+      # Returns a version of `node_or_ns' with element `elem' replaced by
+      # its contents, without the wrapper tag. Works regardless of whether
+      # `node_or_ns' is a Node or NodeSet.
+      def unwrap(node_or_ns, elem)
+        if node_or_ns.respond_to?(:include?) && node_or_ns.include?(elem)
+          # It's a top-level node in a NodeSet, splice the children in
+          idx = node_or_ns.index(elem)
+          node_or_ns = node_or_ns.slice(0, idx) + elem.children +
+            node_or_ns.slice(idx + 1, node_or_ns.size - idx - 1)
+        else
+          # We have a parent, so we can just put our children there
+          elem.add_next_sibling(elem.children)
+          elem.remove()
+        end
+        return node_or_ns
+      end
 
       # Performs dom transformations.
       #
@@ -32,8 +50,7 @@ module SiteDiff
           when "unwrap"
             [rule["selector"]].flatten.each do |selector|
               document.css(selector).each do |el|
-                el.add_next_sibling(el.children)
-                el.remove()
+                document = unwrap(document, el)
               end
             end
           when "remove_class"
@@ -45,6 +62,12 @@ module SiteDiff
         return document
       end
 
+      # Pipe through our prettify script
+      def prettify(str)
+        out, status = Open3.capture2('scripts/prettify', :stdin_data => str)
+        return out.gsub(/^(\s+)/, '\1' * 2)
+      end
+
       def sanitize(str, config)
 
         if str.nil?
@@ -52,12 +75,7 @@ module SiteDiff
         end
         str = str.read
 
-        # Nokogiri::XML chokes on HTML encoded entities like &mdash;
-        # Nokogiri::HTML works, but can't do auto-indent.
-        # As a work-around, we use HTMLEntities gem to decode them into utf8.
-        decoder = HTMLEntities.new
-        str = decoder.decode(str)
-        document = Nokogiri::XML(str, &:noblanks)
+        document = Nokogiri::HTML(str, &:noblanks)
 
         # remove double spacing, but only inside text nodes (eg not attributes)
         document.xpath('//text()').each do |node|
@@ -73,12 +91,14 @@ module SiteDiff
           document = perform_dom_transforms(document, config["dom_transform"])
         end
 
-        str = document.to_xhtml(indent: 3)
+        str = document.to_html
 
         config["sanitization"].each do |rule|
           # default type is "regex"
           str.gsub!(/#{rule['pattern']}/, rule['substitute'] || '' )
         end
+
+        str = prettify(str)
 
         # return array of lines for diffing, removing empty (or blank) lines
         return str.split($/).select { |s| !s.match(/^\s*$/) }
