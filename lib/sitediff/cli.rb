@@ -104,7 +104,7 @@ module SiteDiff
       end
 
       # log failing paths to failures.txt
-      failures = results.collect { |r| r[:path] if !r[:status] }.compact().join("\n")
+      failures = results.collect { |r| r[:path] if r[:status] != "success" }.compact().join("\n")
       if failures
         failures_path = File.join(options['dump-dir'], "/failures.txt")
         SiteDiff::log "Writing failures to #{failures_path}"
