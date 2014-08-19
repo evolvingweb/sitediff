@@ -2,8 +2,33 @@ require 'thor'
 require 'sitediff/util/diff'
 require 'sitediff/util/sanitize'
 require 'open-uri'
+require 'uri'
 
 module SiteDiff
+  # @class UriWrapper is a workaround for open() rejecting URIs with credentials
+  # eg user:password@hostname.com
+  class UriWrapper
+    def initialize(uri)
+      @uri = URI.parse(uri)
+    end
+
+    def user
+      @uri.user
+    end
+
+    def password
+      @uri.password
+    end
+
+    def to_s
+      uri_no_credentials = @uri.clone
+      uri_no_credentials.user = nil
+      uri_no_credentials.password = nil
+      ret = uri_no_credentials.to_s
+      return ret
+    end
+  end
+
   class Cli < Thor
     # Thor, by default, exits with 0 no matter what!
     def self.exit_on_failure?
@@ -39,8 +64,9 @@ module SiteDiff
       :banner => "After URL to use for reporting purposes. Useful if port forwarding."
     desc "diff [OPTIONS] <BEFORE> <AFTER> [CONFIGFILES]", "Perform systematic diff on given URLs"
     def diff(*config_files)
-      before = options['before-url']
-      after = options['after-url']
+      before = SiteDiff::UriWrapper.new(options['before-url'])
+      after = SiteDiff::UriWrapper.new(options['after-url'])
+
       config = SiteDiff::Config.new(config_files)
 
       differences = Array.new
@@ -67,19 +93,20 @@ module SiteDiff
       paths.each do |path|
         result = {}
         result[:path] = path.chomp
-        result[:before_url] = URI::encode(before + "/" + result[:path])
-        result[:after_url] =  URI::encode(after + "/" + result[:path])
+        result[:before_url] = URI::encode(before.to_s + "/" + result[:path])
+        result[:after_url] =  URI::encode(after.to_s + "/" + result[:path])
         result[:before_url_report] = before_url_report + "/" + result[:path]
         result[:after_url_report] =  after_url_report + "/" + result[:path]
 
         begin
-          result[:before_html] = open(result[:before_url])
+          result[:before_html] = open(result[:before_url], :http_basic_authentication=>[before.user, before.password])
         rescue OpenURI::HTTPError => e
+          raise e.message
           result[:error] = "BEFORE: " + e.message
         end
 
         begin
-          result[:after_html] = open(result[:after_url])
+          result[:after_html] = open(result[:after_url], :http_basic_authentication=>[after.user, after.password])
         rescue OpenURI::HTTPError => e
           result[:error] = "AFTER: " + e.message
         end
