@@ -101,7 +101,6 @@ module SiteDiff
         begin
           result[:before_html] = open(result[:before_url], :http_basic_authentication=>[before.user, before.password])
         rescue OpenURI::HTTPError => e
-          raise e.message
           result[:error] = "BEFORE: " + e.message
         end
 
