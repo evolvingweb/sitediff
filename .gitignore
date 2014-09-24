@@ -2,3 +2,5 @@
 vendor/
 build/out.html
 output/*
+*.swp
+*.swo
