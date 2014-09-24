@@ -65,7 +65,7 @@ module SiteDiff
       # Pipe through our prettify script
       def prettify(str)
         out, status = Open3.capture2('scripts/prettify', :stdin_data => str)
-        return out.gsub(/^(\s+)/, '\1' * 2)
+        return out.force_encoding('UTF-8').gsub(/^(\s+)/, '\1' * 2)
       end
 
       def sanitize(str, config)
