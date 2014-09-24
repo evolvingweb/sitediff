@@ -95,8 +95,8 @@ module SiteDiff
         result[:path] = path.chomp
         result[:before_url] = URI::encode(before.to_s + "/" + result[:path])
         result[:after_url] =  URI::encode(after.to_s + "/" + result[:path])
-        result[:before_url_report] = before_url_report + "/" + result[:path]
-        result[:after_url_report] =  after_url_report + "/" + result[:path]
+        result[:before_url_report] = before_url_report.to_s + "/" + result[:path]
+        result[:after_url_report] =  after_url_report.to_s + "/" + result[:path]
 
         begin
           result[:before_html] = open(result[:before_url], :http_basic_authentication=>[before.user, before.password])
