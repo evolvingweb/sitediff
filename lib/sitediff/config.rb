@@ -63,14 +63,6 @@ module SiteDiff
       }
     end
 
-    def sanitization
-      @config["sanitization"]
-    end
-
-    def dom_transform
-      @config["dom_transform"]
-    end
-
     def paths
       @config["paths"]
     end

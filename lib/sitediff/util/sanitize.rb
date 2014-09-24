@@ -92,8 +92,9 @@ module SiteDiff
         end
 
         str = document.to_html
+        rules = config["sanitization"] || []
 
-        config["sanitization"].each do |rule|
+        rules.each do |rule|
           # default type is "regex"
           str.gsub!(/#{rule['pattern']}/, rule['substitute'] || '' )
         end
