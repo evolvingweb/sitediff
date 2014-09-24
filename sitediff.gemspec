@@ -6,7 +6,9 @@ Gem::Specification.new do |s|
   s.summary     = 'Compare two versions of a site with ease!'
   s.authors     = ['Alex Dergachev', 'Amir Kadivar', 'Dave Vasilevsky']
   s.email       = 'alex@evovlvingweb.ca'
-  s.files       = Dir.glob('lib/**/*.rb')
+  s.files       = Dir.glob('lib/**/*.rb') +
+                  Dir.glob('lib/**/*.erb') +
+                  ['scripts/prettify']
   s.bindir      = 'bin'
   s.executables = 'sitediff'
   # FIXME pin down minimum version requirements

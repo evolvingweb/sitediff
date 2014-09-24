@@ -33,4 +33,7 @@ module SiteDiff
     puts "\033[0;32m[sitediff] #{str}\033[00m"
   end
 
+  def self.gem_dir
+    return Gem::Specification.find_by_name('sitediff').gem_dir
+  end
 end

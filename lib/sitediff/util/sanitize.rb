@@ -64,7 +64,9 @@ module SiteDiff
 
       # Pipe through our prettify script
       def prettify(str)
-        out, status = Open3.capture2('scripts/prettify', :stdin_data => str)
+        # FIXME assumes python-beautifulsoup is installed and crashes otherwise.
+        prettifier = SiteDiff::gem_dir + '/scripts/prettify'
+        out, status = Open3.capture2(prettifier, :stdin_data => str)
         return out.force_encoding('UTF-8').gsub(/^(\s+)/, '\1' * 2)
       end
 
