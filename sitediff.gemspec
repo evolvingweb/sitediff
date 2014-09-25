@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   # s.required_ruby_version = ">= 1.8.7"
   s.summary     = 'Compare two versions of a site with ease!'
   s.authors     = ['Alex Dergachev', 'Amir Kadivar', 'Dave Vasilevsky']
-  s.email       = 'alex@evovlvingweb.ca'
+  s.email       = 'alex@evolvingweb.ca'
   s.files       = Dir.glob('lib/**/*.rb') +
                   Dir.glob('lib/**/*.erb') +
                   ['lib/sitediff/util/pretty_print.xsl']
