@@ -69,6 +69,7 @@ module SiteDiff
       end
 
       def sanitize(str, config)
+        return [] if str == ''
         document = Nokogiri::HTML(str, &:noblanks)
 
         # remove double spacing, but only inside text nodes (eg not attributes)

@@ -10,9 +10,6 @@ module SiteDiff
         else
           file = File.open(url, 'r:UTF-8')
         end
-        if file.nil?
-          return []
-        end
         str = file.read
         unless str.valid_encoding?
           str = str.encode('utf-8', 'binary', :invalid => :replace, :undef => :replace)
