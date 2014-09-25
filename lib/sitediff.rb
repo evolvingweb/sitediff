@@ -48,7 +48,8 @@ class SiteDiff
     before_html_sanitized = Util::Sanitize::sanitize(before_html, @config.before).join("\n")
     after_html_sanitized = Util::Sanitize::sanitize(after_html, @config.after).join("\n")
 
-    result = Result.new(path, before_html_sanitized, after_html_sanitized)
+    result = Result.new(path, before_html_sanitized, after_html_sanitized,
+      error)
     return result
   end
 
