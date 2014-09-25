@@ -61,6 +61,9 @@ class SiteDiff
     @after = Util::UriWrapper.new(url)
   end
 
+  def paths=(paths)
+    @paths = paths.map { |p| p.chomp }
+  end
   def paths
     defined?(@paths) ? @paths : @config.paths
   end
@@ -73,6 +76,7 @@ class SiteDiff
   def run
     @results = []
     paths.each do |p|
+      p.chomp!
       result = diff_path(p)
       result.log
       @results << result
