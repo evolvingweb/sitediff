@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
+# when run as gem, $0 is /usr/local/bin/sitediff not this file
 if $0 == __FILE__
-    $:.unshift File.expand_path('../../lib', __FILE__)
+  $:.unshift File.expand_path('../../lib', __FILE__)
 end
 
 require 'sitediff'

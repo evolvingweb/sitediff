@@ -24,13 +24,13 @@ module SiteDiff
                           when "failure" then "<a href='#{result[:filename]}'>DIFF</a>"
                           end
         end
-        erb_path = SiteDiff::gem_dir + '/lib/sitediff/util/html_report.html.erb'
+        erb_path = File.join([File.dirname(__FILE__), 'html_report.html.erb'])
         report_html = ERB.new(File.read(erb_path)).result(binding)
         return report_html
       end
 
       def generate_diff_output(result)
-        erb_path = SiteDiff::gem_dir + '/lib/sitediff/util/diff.html.erb'
+        erb_path = File.join([File.dirname(__FILE__), 'diff.html.erb'])
         return ERB.new(File.read(erb_path)).result(binding)
       end
     end
