@@ -53,7 +53,6 @@ class SiteDiff
       end
 
       sitediff.run
-      sitediff.log
 
       sitediff.dump(options['dump-dir'], options['before-url-report'],
         options['after-url-report'])

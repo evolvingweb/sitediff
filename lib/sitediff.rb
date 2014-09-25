@@ -77,14 +77,14 @@ class SiteDiff
     @config = Config.new(config_files)
   end
 
-  # Perform the comparise
+  # Perform the comparison
   def run
-    @results = paths.map { |p| diff_path(p) }
-  end
-
-  # Log results to terminal
-  def log
-    results.each { |r| r.log }
+    @results = []
+    paths.each do |p|
+      result = diff_path(p)
+      result.log
+      @results << result
+    end
   end
 
   # Dump results to disk
