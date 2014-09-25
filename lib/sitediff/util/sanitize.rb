@@ -64,7 +64,12 @@ class SiteDiff
       def prettify(str)
         stylesheet_path = File.join([File.dirname(__FILE__),'pretty_print.xsl'])
         stylesheet = Nokogiri::XSLT(File.read(stylesheet_path))
-        pretty = stylesheet.apply_to(Nokogiri(str)).to_s
+
+        # Parse as HTML, and output something that the XML parser will be ok
+        # with. This fixes, eg: HTML entity use.
+        html = Nokogiri::HTML(str).to_html
+
+        pretty = stylesheet.apply_to(Nokogiri(html)).to_s
         return pretty
       end
 
