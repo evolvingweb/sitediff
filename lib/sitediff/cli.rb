@@ -1,7 +1,6 @@
 require 'thor'
 require 'sitediff/util/diff'
 require 'sitediff/util/sanitize'
-require 'sitediff/util/io'
 require 'open-uri'
 require 'uri'
 

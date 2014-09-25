@@ -35,20 +35,12 @@ class SiteDiff
   end
 
   def diff_path(path)
-    path.chomp!
-    before_url = URI::encode(before.to_s + "/" + path)
-    after_url = URI::encode(after.to_s + "/" + path)
-    before_params = {
-      :http_basic_authentication => [before.user, before.password]
-    }
-    after_params = {
-      :http_basic_authentication => [after.user, after.password]
-    }
-
+    before_url = before + path
+    after_url = after + path
     error = nil
     begin
-      before_html = Util::IO::read(before_url, before_params)
-      after_html  = Util::IO::read(after_url, after_params)
+      before_html = before_url.read
+      after_html  = after_url.read
     rescue SiteDiffReadFailure => e
       error = e.message
     end
