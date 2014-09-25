@@ -1,6 +1,7 @@
 #!/bin/env ruby
 require 'sitediff/cli.rb'
 require 'sitediff/config.rb'
+require 'sitediff/result.rb'
 require 'sitediff/util/uriwrapper'
 
 class SiteDiff
@@ -69,7 +70,9 @@ class SiteDiff
       puts Util::Diff::terminal_diffy(result[:before_html_sanitized], result[:after_html_sanitized])
       File.open(result[:filepath], 'w') { |f| f.write(Util::Diff::generate_diff_output(result)) }
     end
-    return result
+#    return result
+    return Result.new(path, result[:before_html_sanitized],
+      result[:after_html_sanitized])
   end
 
   attr_accessor :before, :after, :before_url_report, :after_url_report,
@@ -108,7 +111,7 @@ class SiteDiff
     end
 
     # log failing paths to failures.txt
-    failures = results.collect { |r| r[:path] if r[:status] != "success" }.compact().join("\n")
+    failures = results.collect { |r| r.path if r.success? }.compact().join("\n")
     if failures
       failures_path = File.join(dump_dir, "/failures.txt")
       SiteDiff::log "Writing failures to #{failures_path}"

@@ -17,13 +17,6 @@ class SiteDiff
       end
 
       def generate_html_report(results, before, after)
-        results.each do |result|
-          result[:link] = case result[:status]
-                          when "error" then result[:error]
-                          when "success" then "success"
-                          when "failure" then "<a href='#{result[:filename]}'>DIFF</a>"
-                          end
-        end
         erb_path = File.join([File.dirname(__FILE__), 'html_report.html.erb'])
         report_html = ERB.new(File.read(erb_path)).result(binding)
         return report_html

@@ -1,5 +1,5 @@
-<html> 
-  <head> 
+<html>
+  <head>
     <!-- important: otherwise chrome will choke on non-ascii characters -->
     <meta charset="utf-8" />
     <style>
@@ -22,7 +22,7 @@
         background-color: salmon;
       }
       <%= Diffy::CSS %>
-    </style> 
+    </style>
   </head>
   <body>
     <div id='content'>
@@ -36,14 +36,14 @@
           <th> Status </th>
         </tr>
         <% results.each do |result| %>
-          <tr class="<%= result[:status] %>">
-            <td class="before"><a href="<%= result[:before_url_report] %>">[before]</a></td>
-            <td class="after"><a href="<%= result[:after_url_report]  %>">[after]</a></td>
-            <td class="path"><%= result[:path] %></td>
-            <td class="status"><%= result[:link] %></a></td>
+          <tr class="<%= result.status_text %>">
+            <td class="before"><a href="<%= result.url(before) %>">[before]</a></td>
+            <td class="after"><a href="<%= result.url(after) %>">[after]</a></td>
+            <td class="path"><%= result.path %></td>
+            <td class="status"><%= result.link %></a></td>
           </tr>
         <% end %>
-      </table> 
+      </table>
     </div>
   </body>
 </html>
