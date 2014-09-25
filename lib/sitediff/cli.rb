@@ -66,7 +66,8 @@ class SiteDiff
     #FIXME description is not correct
     desc "diff [OPTIONS] <BEFORE> <AFTER> [CONFIGFILES]", "Perform systematic diff on given URLs"
     def diff(*config_files)
-      SiteDiff.new(options, config_files)
+      sitediff = SiteDiff.new(options, config_files)
+      sitediff.run
     end
   end
 end
