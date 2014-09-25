@@ -3,6 +3,7 @@ require 'sitediff/cli.rb'
 require 'sitediff/config.rb'
 require 'sitediff/result.rb'
 require 'sitediff/util/uriwrapper'
+require 'typhoeus'
 
 class SiteDiff
   # see here for color codes: http://bluesock.org/~willkg/dev/ansi.html
@@ -34,17 +35,8 @@ class SiteDiff
     puts "\033[0;32m[sitediff] #{str}\033[00m"
   end
 
-  def diff_path(path)
+  def diff_path(path, before_html, after_html, error)
     before_url = before + path
-    after_url = after + path
-    error = nil
-    begin
-      before_html = before_url.read
-      after_html  = after_url.read
-    rescue SiteDiffReadFailure => e
-      error = e.message
-    end
-
     before_html_sanitized = Util::Sanitize::sanitize(before_html, @config.before).join("\n")
     after_html_sanitized = Util::Sanitize::sanitize(after_html, @config.after).join("\n")
 
@@ -73,15 +65,39 @@ class SiteDiff
     @config = Config.new(config_files)
   end
 
+  # Queue a path for reading
+  def queue(q, path)
+    reads = @read_results[path] = {}
+    [:before, :after].each do |pos| # Read both before and after urls
+      uri = send(pos) + path
+      uri.queue(q) do |read_result|
+        reads[pos] = read_result
+        try_complete(path, reads) # See if we can complete this path
+      end
+    end
+  end
+
+  # Attempt to finish processing this path
+  def try_complete(path, reads)
+    return unless reads.size == 2 # We need both before and after
+
+    error = reads[:before].error || reads[:after].error
+    result = diff_path(path, reads[:before].content, reads[:after].content,
+      error)
+    result.log
+    @results_by_path[path] = result
+  end
+
   # Perform the comparison
   def run
-    @results = []
-    paths.each do |p|
-      p.chomp!
-      result = diff_path(p)
-      result.log
-      @results << result
-    end
+    @results_by_path = {}
+    @read_results = {}
+    hydra = Typhoeus::Hydra.hydra
+    paths.each { |p| queue(hydra, p) }
+    hydra.run
+
+    # Order by original path order
+    @results = paths.map { |p| @results_by_path[p] }
   end
 
   # Dump results to disk

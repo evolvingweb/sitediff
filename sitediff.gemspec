@@ -15,4 +15,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'thor'
   s.add_dependency 'nokogiri'
   s.add_dependency 'diffy'
+  s.add_dependency 'typhoeus'
 end
