@@ -8,12 +8,11 @@ Gem::Specification.new do |s|
   s.email       = 'alex@evovlvingweb.ca'
   s.files       = Dir.glob('lib/**/*.rb') +
                   Dir.glob('lib/**/*.erb') +
-                  ['scripts/prettify']
+                  ['lib/sitediff/util/pretty_print.xsl']
   s.bindir      = 'bin'
   s.executables = 'sitediff'
   # FIXME pin down minimum version requirements
   s.add_dependency 'thor'
   s.add_dependency 'nokogiri'
   s.add_dependency 'diffy'
-  s.add_dependency 'htmlentities'
 end

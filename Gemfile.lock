@@ -3,7 +3,6 @@ GEM
   specs:
     diff-lcs (1.2.5)
     diffy (3.0.1)
-    htmlentities (4.3.1)
     mini_portile (0.5.2)
     nokogiri (1.6.1)
       mini_portile (~> 0.5.0)
@@ -22,7 +21,6 @@ PLATFORMS
 
 DEPENDENCIES
   diffy
-  htmlentities
   nokogiri
   rspec
   thor

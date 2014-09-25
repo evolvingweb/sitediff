@@ -1,6 +1,4 @@
 require 'nokogiri'
-require 'htmlentities'
-require 'open3'
 
 module SiteDiff
   module Util
@@ -64,10 +62,10 @@ module SiteDiff
 
       # Pipe through our prettify script
       def prettify(str)
-        # FIXME assumes python-beautifulsoup is installed and crashes otherwise.
-        prettifier = SiteDiff::gem_dir + '/scripts/prettify'
-        out, status = Open3.capture2(prettifier, :stdin_data => str)
-        return out.force_encoding('UTF-8').gsub(/^(\s+)/, '\1' * 2)
+        stylesheet_path = File.join([File.dirname(__FILE__),'pretty_print.xsl'])
+        stylesheet = Nokogiri::XSLT(File.read(stylesheet_path))
+        pretty = stylesheet.apply_to(Nokogiri(str)).to_s
+        return pretty
       end
 
       def sanitize(str, config)
