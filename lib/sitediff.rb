@@ -1,6 +1,7 @@
 #!/bin/env ruby
 require 'sitediff/cli.rb'
 require 'sitediff/config.rb'
+require 'sitediff/util/uriwrapper'
 
 class SiteDiff
   # see here for color codes: http://bluesock.org/~willkg/dev/ansi.html
@@ -72,8 +73,8 @@ class SiteDiff
   end
 
   def initialize(options, config_files)
-    @before = SiteDiff::UriWrapper.new(options['before-url'])
-    @after = SiteDiff::UriWrapper.new(options['after-url'])
+    @before = SiteDiff::Util::UriWrapper.new(options['before-url'])
+    @after = SiteDiff::Util::UriWrapper.new(options['after-url'])
 
     @config = SiteDiff::Config.new(config_files)
 
