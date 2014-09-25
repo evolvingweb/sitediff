@@ -1,6 +1,6 @@
 require 'nokogiri'
 
-module SiteDiff
+class SiteDiff
   module Util
     module Sanitize
       module_function

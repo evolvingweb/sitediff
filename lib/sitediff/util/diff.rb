@@ -1,7 +1,7 @@
 require 'diffy'
 require 'erb'
 
-module SiteDiff
+class SiteDiff
   module Util
     module Diff
       module_function

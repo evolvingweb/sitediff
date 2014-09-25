@@ -1,6 +1,6 @@
 require 'yaml'
 
-module SiteDiff
+class SiteDiff
   class Config
     def initialize(files)
       @config = {}

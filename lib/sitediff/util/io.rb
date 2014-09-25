@@ -1,4 +1,4 @@
-module SiteDiff
+class SiteDiff
   class SiteDiffReadFailure < Exception; end
   module Util
     module IO
