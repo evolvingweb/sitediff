@@ -17,12 +17,15 @@ class SiteDiff
         @uri.password
       end
 
-      def to_s
+      def no_credentials
         uri_no_credentials = @uri.clone
         uri_no_credentials.user = nil
         uri_no_credentials.password = nil
-        ret = uri_no_credentials.to_s
-        return ret
+        return uri_no_credentials
+      end
+
+      def to_s
+        return no_credentials.to_s
       end
 
       def +(path)
@@ -36,7 +39,11 @@ class SiteDiff
         if @uri.scheme == nil
           file = File.open(@uri.to_s, 'r:UTF-8')
         else
-          file = open(@uri)
+          params = {}
+          if @uri.user
+            params[:http_basic_authentication] = [ @uri.user, @uri.password ]
+          end
+          file = open(no_credentials, params)
         end
         str = file.read
         unless str.valid_encoding?
