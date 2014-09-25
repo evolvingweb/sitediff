@@ -92,7 +92,7 @@ class SiteDiff
   def run
     @results_by_path = {}
     @read_results = {}
-    hydra = Typhoeus::Hydra.hydra
+    hydra = Typhoeus::Hydra.new(max_concurrency: 3)
     paths.each { |p| queue(hydra, p) }
     hydra.run
 
