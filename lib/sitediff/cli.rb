@@ -1,6 +1,7 @@
 require 'thor'
 require 'sitediff/util/diff'
 require 'sitediff/util/sanitize'
+require 'sitediff/util/io'
 require 'open-uri'
 require 'uri'
 
@@ -62,6 +63,7 @@ module SiteDiff
       :type => :string,
       :default => "",
       :banner => "After URL to use for reporting purposes. Useful if port forwarding."
+    #FIXME description is not correct
     desc "diff [OPTIONS] <BEFORE> <AFTER> [CONFIGFILES]", "Perform systematic diff on given URLs"
     def diff(*config_files)
       before = SiteDiff::UriWrapper.new(options['before-url'])
@@ -97,17 +99,17 @@ module SiteDiff
         result[:after_url] =  URI::encode(after.to_s + "/" + result[:path])
         result[:before_url_report] = before_url_report.to_s + "/" + result[:path]
         result[:after_url_report] =  after_url_report.to_s + "/" + result[:path]
-
+        before_params = {
+          :http_basic_authentication => [before.user, before.password]
+        }
+        after_params = {
+          :http_basic_authentication => [after.user, after.password]
+        }
         begin
-          result[:before_html] = open(result[:before_url], :http_basic_authentication=>[before.user, before.password])
-        rescue OpenURI::HTTPError => e
-          result[:error] = "BEFORE: " + e.message
-        end
-
-        begin
-          result[:after_html] = open(result[:after_url], :http_basic_authentication=>[after.user, after.password])
-        rescue OpenURI::HTTPError => e
-          result[:error] = "AFTER: " + e.message
+          result[:before_html] = SiteDiff::Util::IO::read(result[:before_url], before_params)
+          result[:after_html]  = SiteDiff::Util::IO::read(result[:after_url], after_params)
+        rescue SiteDiffReadFailure => e
+          result[:error] = e.message
         end
 
         result[:before_html_sanitized] = SiteDiff::Util::Sanitize::sanitize(result[:before_html], config.before).join("\n")
