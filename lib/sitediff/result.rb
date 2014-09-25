@@ -4,7 +4,8 @@ class SiteDiff
     STATUS_FAILURE  = 1   # Different before and after
     STATUS_ERROR    = 2   # Couldn't fetch page
     STATUS_TEXT = %w[success failure error]
-    attr_reader :status
+
+    attr_reader :status, :diff
 
     def initialize(*args)
       super
@@ -44,8 +45,25 @@ class SiteDiff
       end
     end
 
+    # Log the result to the terminal
     def log
-      # TODO
+      case status
+      when STATUS_SUCCESS then
+        SiteDiff::log_green_background "SUCCESS: #{path}"
+      when STATUS_ERROR then
+        SiteDiff::log_yellow_background "ERROR (#{error}): #{path}"
+      when STATUS_FAILURE then
+        SiteDiff::log_red_background "FAILURE: #{path}"
+        puts Util::Diff::terminal_diffy(before, after)
+      end
+    end
+
+    # Dump the result to a file
+    def dump(dir)
+      dump_path = File.join(dir, filename)
+      File.open(dump_path, 'w') do |f|
+        f.write(Util::Diff::generate_diff_output(self))
+      end
     end
   end
 end
