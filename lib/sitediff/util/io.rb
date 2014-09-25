@@ -15,7 +15,7 @@ module SiteDiff
         end
         str = file.read
         unless str.valid_encoding?
-          str = str.encode(encoding, 'binary', :invalid => :replace, :undef => :replace)
+          str = str.encode('utf-8', 'binary', :invalid => :replace, :undef => :replace)
         end
         return str
       rescue OpenURI::HTTPError => e
