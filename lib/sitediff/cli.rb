@@ -42,7 +42,21 @@ class SiteDiff
     #FIXME description is not correct
     desc "diff [OPTIONS] <BEFORE> <AFTER> [CONFIGFILES]", "Perform systematic diff on given URLs"
     def diff(*config_files)
-      sitediff = SiteDiff.new(options, config_files)
+      sitediff = SiteDiff.new(config_files)
+      sitediff.before = options['before-url']
+      sitediff.after = options['after-url']
+      sitediff.dump_dir = options['dump-dir']
+
+      sitediff.before_url_report = options['before-url-report']
+      sitediff.after_url_report = options['after-url-report']
+
+      if options['paths-from-failures']
+        SiteDiff::log "Reading paths from failures.txt"
+        sitediff.paths = File.readlines("#{options['dump-dir']}/failures.txt")
+      elsif options['paths-from-file']
+        SiteDiff::log "Reading paths from file: #{options['paths-from-file']}"
+        sitediff.paths = File.readlines(options['paths-from-file'])
+      end
       sitediff.run
     end
   end

@@ -36,15 +36,15 @@ class SiteDiff
   def diff_path(path)
     result = {}
     result[:path] = path.chomp
-    result[:before_url] = URI::encode(@before.to_s + "/" + result[:path])
-    result[:after_url] =  URI::encode(@after.to_s + "/" + result[:path])
-    result[:before_url_report] = @before_url_report.to_s + "/" + result[:path]
-    result[:after_url_report] =  @after_url_report.to_s + "/" + result[:path]
+    result[:before_url] = URI::encode(before.to_s + "/" + result[:path])
+    result[:after_url] =  URI::encode(after.to_s + "/" + result[:path])
+    result[:before_url_report] = before_url_report.to_s + "/" + result[:path]
+    result[:after_url_report] =  after_url_report.to_s + "/" + result[:path]
     before_params = {
-      :http_basic_authentication => [@before.user, @before.password]
+      :http_basic_authentication => [before.user, before.password]
     }
     after_params = {
-      :http_basic_authentication => [@after.user, @after.password]
+      :http_basic_authentication => [after.user, after.password]
     }
     begin
       result[:before_html] = SiteDiff::Util::IO::read(result[:before_url], before_params)
@@ -57,7 +57,7 @@ class SiteDiff
     result[:after_html_sanitized] = SiteDiff::Util::Sanitize::sanitize(result[:after_html], @config.after).join("\n")
     result[:html_diff] = SiteDiff::Util::Diff::html_diffy(result[:before_html_sanitized], result[:after_html_sanitized])
     result[:filename] = "diff_" + result[:path].gsub('/', '_').gsub('#', '___') + ".html"
-    result[:filepath] = File.join(@dump_dir, result[:filename])
+    result[:filepath] = File.join(dump_dir, result[:filename])
     result[:status] = result[:error] ? "error" : result[:html_diff] ? "failure" : "success"
 
     if result[:status] == "success"
@@ -72,49 +72,50 @@ class SiteDiff
     return result
   end
 
-  def initialize(options, config_files)
-    @before = SiteDiff::Util::UriWrapper.new(options['before-url'])
-    @after = SiteDiff::Util::UriWrapper.new(options['after-url'])
+  attr_accessor :before, :after, :before_url_report, :after_url_report,
+    :paths, :dump_dir
 
+  def before=(url)
+    @before = SiteDiff::Util::UriWrapper.new(url)
+  end
+  def after=(url)
+    @after = SiteDiff::Util::UriWrapper.new(url)
+  end
+  def before_url_report
+    return @before_url_report if defined?(@before_url_report) &&
+      !@before_url_report.empty?
+    return before
+  end
+  def after_url_report
+    return @after_url_report if defined?(@after_url_report) &&
+      !@after_url_report.empty?
+    return after
+  end
+  def paths
+    defined?(@paths) ? @paths : @config.paths
+  end
+
+  def initialize(config_files)
     @config = SiteDiff::Config.new(config_files)
-
-    if options['paths-from-failures']
-      SiteDiff::log "Reading paths from failures.txt"
-      @paths = File.readlines("#{options['dump-dir']}/failures.txt")
-    elsif options['paths-from-file']
-      SiteDiff::log "Reading paths from file: #{options['paths-from-file']}"
-      @paths = File.readlines(options['paths-from-file'])
-    elsif @config.paths
-      SiteDiff::log "Reading paths from config"
-      @paths = @config.paths
-    end
-
-    # default report URLs to actual URLs
-    @before_url_report = options['before-url-report'].empty? ? @before :
-      options['before-url-report']
-    @after_url_report = options['after-url-report'].empty? ? @after :
-      options['after-url-report']
-
-    @dump_dir = options['dump-dir']
   end
 
   def run
     results = []
-    @paths.each do |path|
+    paths.each do |path|
       results << diff_path(path)
     end
 
     # log failing paths to failures.txt
     failures = results.collect { |r| r[:path] if r[:status] != "success" }.compact().join("\n")
     if failures
-      failures_path = File.join(@dump_dir, "/failures.txt")
+      failures_path = File.join(dump_dir, "/failures.txt")
       SiteDiff::log "Writing failures to #{failures_path}"
       File.open(failures_path, 'w') { |f| f.write(failures) }
     end
 
-    report = SiteDiff::Util::Diff::generate_html_report(results, @before_url_report, @after_url_report)
-    File.open(File.join(@dump_dir, "/report.html") , 'w') { |f| f.write(report) }
+    report = SiteDiff::Util::Diff::generate_html_report(results, before_url_report, after_url_report)
+    File.open(File.join(dump_dir, "/report.html") , 'w') { |f| f.write(report) }
 
-    SiteDiff::log_yellow "All diff files were dumped inside #@dump_dir}"
+    SiteDiff::log_yellow "All diff files were dumped inside #{dump_dir}"
   end
 end
