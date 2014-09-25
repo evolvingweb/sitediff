@@ -32,6 +32,45 @@ class SiteDiff
     puts "\033[0;32m[sitediff] #{str}\033[00m"
   end
 
+  def diff_path(config, path, dump_dir, before, after, before_url_report, after_url_report)
+    result = {}
+    result[:path] = path.chomp
+    result[:before_url] = URI::encode(before.to_s + "/" + result[:path])
+    result[:after_url] =  URI::encode(after.to_s + "/" + result[:path])
+    result[:before_url_report] = before_url_report.to_s + "/" + result[:path]
+    result[:after_url_report] =  after_url_report.to_s + "/" + result[:path]
+    before_params = {
+      :http_basic_authentication => [before.user, before.password]
+    }
+    after_params = {
+      :http_basic_authentication => [after.user, after.password]
+    }
+    begin
+      result[:before_html] = SiteDiff::Util::IO::read(result[:before_url], before_params)
+      result[:after_html]  = SiteDiff::Util::IO::read(result[:after_url], after_params)
+    rescue SiteDiffReadFailure => e
+      result[:error] = e.message
+    end
+
+    result[:before_html_sanitized] = SiteDiff::Util::Sanitize::sanitize(result[:before_html], config.before).join("\n")
+    result[:after_html_sanitized] = SiteDiff::Util::Sanitize::sanitize(result[:after_html], config.after).join("\n")
+    result[:html_diff] = SiteDiff::Util::Diff::html_diffy(result[:before_html_sanitized], result[:after_html_sanitized])
+    result[:filename] = "diff_" + result[:path].gsub('/', '_').gsub('#', '___') + ".html"
+    result[:filepath] = File.join(dump_dir, result[:filename])
+    result[:status] = result[:error] ? "error" : result[:html_diff] ? "failure" : "success"
+
+    if result[:status] == "success"
+      SiteDiff::log_green_background "SUCCESS: #{result[:path]}"
+    elsif result[:error]
+      SiteDiff::log_yellow_background "ERROR (#{result[:error]}): #{result[:path]}"
+    else
+      SiteDiff::log_red_background "FAILURE: #{result[:path]}"
+      puts SiteDiff::Util::Diff::terminal_diffy(result[:before_html_sanitized], result[:after_html_sanitized])
+      File.open(result[:filepath], 'w') { |f| f.write(SiteDiff::Util::Diff::generate_diff_output(result)) }
+    end
+    return result
+  end
+
   def initialize(options, config_files)
     before = SiteDiff::UriWrapper.new(options['before-url'])
     after = SiteDiff::UriWrapper.new(options['after-url'])
@@ -60,42 +99,7 @@ class SiteDiff
     results = []
 
     paths.each do |path|
-      result = {}
-      result[:path] = path.chomp
-      result[:before_url] = URI::encode(before.to_s + "/" + result[:path])
-      result[:after_url] =  URI::encode(after.to_s + "/" + result[:path])
-      result[:before_url_report] = before_url_report.to_s + "/" + result[:path]
-      result[:after_url_report] =  after_url_report.to_s + "/" + result[:path]
-      before_params = {
-        :http_basic_authentication => [before.user, before.password]
-      }
-      after_params = {
-        :http_basic_authentication => [after.user, after.password]
-      }
-      begin
-        result[:before_html] = SiteDiff::Util::IO::read(result[:before_url], before_params)
-        result[:after_html]  = SiteDiff::Util::IO::read(result[:after_url], after_params)
-      rescue SiteDiffReadFailure => e
-        result[:error] = e.message
-      end
-
-      result[:before_html_sanitized] = SiteDiff::Util::Sanitize::sanitize(result[:before_html], config.before).join("\n")
-      result[:after_html_sanitized] = SiteDiff::Util::Sanitize::sanitize(result[:after_html], config.after).join("\n")
-      result[:html_diff] = SiteDiff::Util::Diff::html_diffy(result[:before_html_sanitized], result[:after_html_sanitized])
-      result[:filename] = "diff_" + result[:path].gsub('/', '_').gsub('#', '___') + ".html"
-      result[:filepath] = File.join(options['dump-dir'], result[:filename])
-      result[:status] = result[:error] ? "error" : result[:html_diff] ? "failure" : "success"
-
-      if result[:status] == "success"
-        SiteDiff::log_green_background "SUCCESS: #{result[:path]}"
-      elsif result[:error]
-        SiteDiff::log_yellow_background "ERROR (#{result[:error]}): #{result[:path]}"
-      else
-        SiteDiff::log_red_background "FAILURE: #{result[:path]}"
-        puts SiteDiff::Util::Diff::terminal_diffy(result[:before_html_sanitized], result[:after_html_sanitized])
-        File.open(result[:filepath], 'w') { |f| f.write(SiteDiff::Util::Diff::generate_diff_output(result)) }
-      end
-      results << result
+      results << diff_path(config, path, options['dump-dir'], before, after, before_url_report, after_url_report)
     end
 
     # log failing paths to failures.txt
