@@ -47,15 +47,15 @@ class SiteDiff
       :http_basic_authentication => [after.user, after.password]
     }
     begin
-      result[:before_html] = SiteDiff::Util::IO::read(result[:before_url], before_params)
-      result[:after_html]  = SiteDiff::Util::IO::read(result[:after_url], after_params)
+      result[:before_html] = Util::IO::read(result[:before_url], before_params)
+      result[:after_html]  = Util::IO::read(result[:after_url], after_params)
     rescue SiteDiffReadFailure => e
       result[:error] = e.message
     end
 
-    result[:before_html_sanitized] = SiteDiff::Util::Sanitize::sanitize(result[:before_html], @config.before).join("\n")
-    result[:after_html_sanitized] = SiteDiff::Util::Sanitize::sanitize(result[:after_html], @config.after).join("\n")
-    result[:html_diff] = SiteDiff::Util::Diff::html_diffy(result[:before_html_sanitized], result[:after_html_sanitized])
+    result[:before_html_sanitized] = Util::Sanitize::sanitize(result[:before_html], @config.before).join("\n")
+    result[:after_html_sanitized] = Util::Sanitize::sanitize(result[:after_html], @config.after).join("\n")
+    result[:html_diff] = Util::Diff::html_diffy(result[:before_html_sanitized], result[:after_html_sanitized])
     result[:filename] = "diff_" + result[:path].gsub('/', '_').gsub('#', '___') + ".html"
     result[:filepath] = File.join(dump_dir, result[:filename])
     result[:status] = result[:error] ? "error" : result[:html_diff] ? "failure" : "success"
@@ -66,8 +66,8 @@ class SiteDiff
       SiteDiff::log_yellow_background "ERROR (#{result[:error]}): #{result[:path]}"
     else
       SiteDiff::log_red_background "FAILURE: #{result[:path]}"
-      puts SiteDiff::Util::Diff::terminal_diffy(result[:before_html_sanitized], result[:after_html_sanitized])
-      File.open(result[:filepath], 'w') { |f| f.write(SiteDiff::Util::Diff::generate_diff_output(result)) }
+      puts Util::Diff::terminal_diffy(result[:before_html_sanitized], result[:after_html_sanitized])
+      File.open(result[:filepath], 'w') { |f| f.write(Util::Diff::generate_diff_output(result)) }
     end
     return result
   end
@@ -76,11 +76,12 @@ class SiteDiff
     :paths, :dump_dir
 
   def before=(url)
-    @before = SiteDiff::Util::UriWrapper.new(url)
+    @before = Util::UriWrapper.new(url)
   end
   def after=(url)
-    @after = SiteDiff::Util::UriWrapper.new(url)
+    @after = Util::UriWrapper.new(url)
   end
+
   def before_url_report
     return @before_url_report if defined?(@before_url_report) &&
       !@before_url_report.empty?
@@ -91,12 +92,13 @@ class SiteDiff
       !@after_url_report.empty?
     return after
   end
+
   def paths
     defined?(@paths) ? @paths : @config.paths
   end
 
   def initialize(config_files)
-    @config = SiteDiff::Config.new(config_files)
+    @config = Config.new(config_files)
   end
 
   def run
@@ -113,7 +115,7 @@ class SiteDiff
       File.open(failures_path, 'w') { |f| f.write(failures) }
     end
 
-    report = SiteDiff::Util::Diff::generate_html_report(results, before_url_report, after_url_report)
+    report = Util::Diff::generate_html_report(results, before_url_report, after_url_report)
     File.open(File.join(dump_dir, "/report.html") , 'w') { |f| f.write(report) }
 
     SiteDiff::log_yellow "All diff files were dumped inside #{dump_dir}"
