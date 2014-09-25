@@ -33,11 +33,9 @@ class SiteDiff
       :banner => "URL used to fetch the after HTML. Acts as a prefix to specified paths."
     option 'before-url-report',
       :type => :string,
-      :default => "",
       :banner => "Before URL to use for reporting purposes. Useful if port forwarding."
     option 'after-url-report',
       :type => :string,
-      :default => "",
       :banner => "After URL to use for reporting purposes. Useful if port forwarding."
     #FIXME description is not correct
     desc "diff [OPTIONS] <BEFORE> <AFTER> [CONFIGFILES]", "Perform systematic diff on given URLs"
@@ -45,10 +43,6 @@ class SiteDiff
       sitediff = SiteDiff.new(config_files)
       sitediff.before = options['before-url']
       sitediff.after = options['after-url']
-      sitediff.dump_dir = options['dump-dir']
-
-      sitediff.before_url_report = options['before-url-report']
-      sitediff.after_url_report = options['after-url-report']
 
       if options['paths-from-failures']
         SiteDiff::log "Reading paths from failures.txt"
@@ -57,7 +51,12 @@ class SiteDiff
         SiteDiff::log "Reading paths from file: #{options['paths-from-file']}"
         sitediff.paths = File.readlines(options['paths-from-file'])
       end
+
       sitediff.run
+      sitediff.log
+
+      sitediff.dump(options['dump-dir'], options['before-url-report'],
+        options['after-url-report'])
     end
   end
 end
