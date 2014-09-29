@@ -37,12 +37,16 @@ class SiteDiff
     option 'after-url-report',
       :type => :string,
       :desc => "After URL to use for reporting purposes. Useful if port forwarding."
-    #FIXME description is not correct
+      option 'cache',
+        :type => :string,
+        :desc => "Filename to use for caching requests.",
+        :lazy_default => 'cache.db'
     desc "diff [OPTIONS] [CONFIGFILES]", "Perform systematic diff on given URLs"
     def diff(*config_files)
       sitediff = SiteDiff.new(config_files)
       sitediff.before = options['before-url']
       sitediff.after = options['after-url']
+      sitediff.cache = options['cache']
 
       if options['paths-from-failures']
         SiteDiff::log "Reading paths from failures.txt"

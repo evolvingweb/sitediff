@@ -3,6 +3,7 @@ require 'sitediff/cli.rb'
 require 'sitediff/config.rb'
 require 'sitediff/result.rb'
 require 'sitediff/util/uriwrapper'
+require 'sitediff/util/cache'
 require 'typhoeus'
 require 'rainbow'
 
@@ -36,6 +37,17 @@ class SiteDiff
   end
   def paths
     defined?(@paths) ? @paths : @config.paths
+  end
+
+  def cache=(file)
+    # FIXME: Non-global cache would be nice
+    return unless file
+    if Gem::Version.new(Typhoeus::VERSION) >= Gem::Version.new('0.6.4')
+      Typhoeus::Config.cache = SiteDiff::Util::Cache.new(file)
+    else
+      # Bug, see: https://github.com/typhoeus/typhoeus/pull/296
+      SiteDiff::log("Cache unsupported on Typhoeus version < 0.6.4", :red)
+    end
   end
 
   def initialize(config_files)
