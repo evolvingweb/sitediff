@@ -113,6 +113,8 @@ class SiteDiff
     before_report ||= before.to_s
     after_report ||= after.to_s
 
+    FileUtils.mkdir_p(dir)
+
     # dump output of each failure
     results.each { |r| r.dump(dir) if r.status == Result::STATUS_FAILURE }
 

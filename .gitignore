@@ -1,6 +1,9 @@
 .bundle/
 vendor/
-build/out.html
-output/*
+Gemfile.lock
+
+output
+*.gem
+
 *.swp
 *.swo
