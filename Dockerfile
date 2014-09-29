@@ -1,23 +1,19 @@
-FROM ubuntu:12.04
+FROM ubuntu:14.04
 
 RUN apt-get update
-
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get install -y build-essential curl git vim
-RUN apt-get install -y libreadline6 libreadline6-dev autoconf libc6-dev ncurses-dev automake libtool bison pkg-config
-RUN apt-get install -y libyaml-dev libxml2-dev libxslt-dev
-RUN apt-get install -y ruby1.9.1 ruby1.9.1-dev
+# Minimal dependencies
+RUN apt-get install -y ruby-dev make pkg-config libxml2-dev libxslt-dev bundler
 
-# workaround for https://github.com/dotcloud/docker/issues/2424
-#  and https://github.com/progrium/buildstep/pull/38
-RUN locale-gen en_US.UTF-8 && dpkg-reconfigure locales && update-locale LANG=en_US.UTF-8
-ENV LANG en_US.utf8
-
-# otherwise nokogori install is tooo slow... see https://groups.google.com/forum/#!topic/nokogiri-talk/9r4zjWMP1DA
+# Force nokogiri gem not to compile libxml2, it takes too long
 ENV NOKOGIRI_USE_SYSTEM_LIBRARIES 1
 
 ADD . /sitediff
 WORKDIR /sitediff
+
+# Build as a gem
 RUN gem build sitediff.gemspec && gem install sitediff --no-rdoc --no-ri
+
+# Build locally
 RUN bundle install
