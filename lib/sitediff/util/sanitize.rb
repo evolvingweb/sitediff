@@ -60,6 +60,10 @@ class SiteDiff
         return document
       end
 
+      def parse(str)
+        return Nokogiri::HTML(str, &:noblanks)
+      end
+
       # Pipe through our prettify script
       def prettify(str)
         stylesheet_path = File.join([File.dirname(__FILE__),'pretty_print.xsl'])
@@ -67,15 +71,13 @@ class SiteDiff
 
         # Parse as HTML, and output something that the XML parser will be ok
         # with. This fixes, eg: HTML entity use.
-        html = Nokogiri::HTML(str).to_html
-
-        pretty = stylesheet.apply_to(Nokogiri(html)).to_s
+        pretty = stylesheet.apply_to(parse(str)).to_s
         return pretty
       end
 
       def sanitize(str, config)
         return [] if str == ''
-        document = Nokogiri::HTML(str, &:noblanks)
+        document = parse(str)
 
         # remove double spacing, but only inside text nodes (eg not attributes)
         document.xpath('//text()').each do |node|
