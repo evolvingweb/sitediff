@@ -49,11 +49,11 @@ class SiteDiff
     def log
       case status
       when STATUS_SUCCESS then
-        SiteDiff::log_green_background "SUCCESS: #{path}"
+        SiteDiff::log "SUCCESS: #{path}", :green
       when STATUS_ERROR then
-        SiteDiff::log_yellow_background "ERROR (#{error}): #{path}"
+        SiteDiff::log "ERROR (#{error}): #{path}", :yellow
       when STATUS_FAILURE then
-        SiteDiff::log_red_background "FAILURE: #{path}"
+        SiteDiff::log "FAILURE: #{path}", :red
         puts Util::Diff::terminal_diffy(before, after)
       end
     end

@@ -1,5 +1,6 @@
 require 'diffy'
 require 'erb'
+require 'rainbow'
 
 class SiteDiff
   module Util
@@ -13,7 +14,10 @@ class SiteDiff
       end
 
       def terminal_diffy(before_html, after_html)
-        return Diffy::Diff.new(before_html, after_html, :context => 3).to_s(:color)
+        args = []
+        args << :color if Rainbow.enabled
+        return Diffy::Diff.new(before_html, after_html, :context => 3).
+          to_s(*args)
       end
 
       def generate_html_report(results, before, after)

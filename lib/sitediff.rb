@@ -4,35 +4,13 @@ require 'sitediff/config.rb'
 require 'sitediff/result.rb'
 require 'sitediff/util/uriwrapper'
 require 'typhoeus'
+require 'rainbow'
 
 class SiteDiff
-  # see here for color codes: http://bluesock.org/~willkg/dev/ansi.html
-  def self.log(str)
-    puts "[sitediff] #{str}"
-  end
-
-  def self.log_yellow(str)
-    puts "\033[0;33m[sitediff] #{str}\033[00m"
-  end
-
-  def self.log_red(str)
-    puts "\033[0;31m[sitediff] #{str}\033[00m"
-  end
-
-  def self.log_red_background(str)
-    puts "\033[0;41m[sitediff] #{str}\033[00m"
-  end
-
-  def self.log_green_background(str)
-    puts "\033[0;42;30m[sitediff] #{str}\033[00m"
-  end
-
-  def self.log_yellow_background(str)
-    puts "\033[0;43;30m[sitediff] #{str}\033[00m"
-  end
-
-  def self.log_green(str)
-    puts "\033[0;32m[sitediff] #{str}\033[00m"
+  def self.log(str, bg = nil)
+    str = "[sitediff] #{str}"
+    str = Rainbow(str).bg(bg) if bg
+    puts str
   end
 
   def diff_path(path, before_html, after_html, error)
@@ -133,6 +111,6 @@ class SiteDiff
       before_report, after_report)
     File.open(File.join(dir, "/report.html") , 'w') { |f| f.write(report) }
 
-    SiteDiff::log_yellow "All diff files were dumped inside #{dir}"
+    SiteDiff::log "All diff files were dumped inside #{dir}", :yellow
   end
 end
