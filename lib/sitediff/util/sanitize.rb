@@ -102,7 +102,8 @@ class SiteDiff
         str = prettify(str)
 
         # return array of lines for diffing, removing empty (or blank) lines
-        return str.split($/).select { |s| !s.match(/^\s*$/) }
+        # $/ is the input record separator
+        return str.split($/).select { |s| !s.match(/^\s*$/) }.join($/)
       end
 
     end

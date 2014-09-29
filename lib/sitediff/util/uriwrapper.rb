@@ -7,6 +7,7 @@ class SiteDiff
     # @class UriWrapper is a workaround for open() rejecting URIs with credentials
     # eg user:password@hostname.com
     class UriWrapper
+      # This lets us treat errors or content as one object
       class ReadResult < Struct.new(:content, :error)
         def fixup_read(str)
           if str && !str.valid_encoding?

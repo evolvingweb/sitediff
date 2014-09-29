@@ -37,8 +37,8 @@ class SiteDiff
 
   def diff_path(path, before_html, after_html, error)
     before_url = before + path
-    before_html_sanitized = Util::Sanitize::sanitize(before_html, @config.before).join("\n")
-    after_html_sanitized = Util::Sanitize::sanitize(after_html, @config.after).join("\n")
+    before_html_sanitized = Util::Sanitize::sanitize(before_html, @config.before)
+    after_html_sanitized = Util::Sanitize::sanitize(after_html, @config.after)
 
     result = Result.new(path, before_html_sanitized, after_html_sanitized,
       error)
@@ -67,12 +67,15 @@ class SiteDiff
 
   # Queue a path for reading
   def queue(q, path)
-    reads = @read_results[path] = {}
+    @read_results[path] = {}
     [:before, :after].each do |pos| # Read both before and after urls
-      uri = send(pos) + path
+      uri = send(pos) + path # eg: self.before + path
       uri.queue(q) do |read_result|
-        reads[pos] = read_result
-        try_complete(path, reads) # See if we can complete this path
+        # Handle once the read is done
+        @read_results[path][pos] = read_result
+
+        # See if we can complete processing this path
+        try_complete(path, @read_results[path])
       end
     end
   end
@@ -90,8 +93,13 @@ class SiteDiff
 
   # Perform the comparison
   def run
+    # Map of path -> Result object
     @results_by_path = {}
+
+    # Map of path -> map of (:before | :after) -> UriWrapper::ReadResult
     @read_results = {}
+
+    # Hydra is a URL fetcher
     hydra = Typhoeus::Hydra.new(max_concurrency: 3)
     paths.each { |p| queue(hydra, p) }
     hydra.run
