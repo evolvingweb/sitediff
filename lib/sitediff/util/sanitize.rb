@@ -3,6 +3,11 @@ require 'nokogiri'
 class SiteDiff
   module Util
     module Sanitize
+      TOOLS = {
+        :array => %w[dom_transform sanitization],
+        :scalar => %w[selector],
+      }
+
       module_function
 
       # Returns a version of `node_or_ns' with element `elem' replaced by

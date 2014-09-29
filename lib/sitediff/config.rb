@@ -18,8 +18,10 @@ class SiteDiff
         end
         config_merge(@config, conf, file)
       end
-    end
 
+      @spec = {}
+      %w[before after].each { |pos| @spec[pos] = specialize(pos) }
+    end
 
     # Perform one level deep merge on config hashes.
     #
@@ -39,28 +41,31 @@ class SiteDiff
       end
     end
 
-    def before
-      if !@config["before"]
-        return @config
-      end
-
-      return {
-        "dom_transform" => (@config["dom_transform"] || []) + (@config["before"]["dom_transform"] || []),
-        "sanitization" => (@config["sanitization"] || []) + (@config["before"]["sanitization"] || []),
-        "selector" => @config["before"]["selector"] || @config["selector"]
-      }
+    def [](name)
+      return @config[name]
     end
 
-    def after
-      if !@config["after"]
-        return @config
+    # Specialize a config for either "before" or "after"
+    def specialize(name)
+      target = {}
+      spec = @config[name]
+      tools = Util::Sanitize::TOOLS
+      tools[:array].each do |key|
+        target[key] = []
+        target[key] += @config[key] || []
+        target[key] += spec[key] || []
       end
+      tools[:scalar].each do |key|
+        target[key] = @config[key] || spec[key]
+      end
+      return target
+    end
 
-      return {
-        "dom_transform" => (@config["dom_transform"] || []) + (@config["after"]["dom_transform"] || []),
-        "sanitization" => (@config["sanitization"] || []) + (@config["after"]["sanitization"] || []),
-        "selector" => @config["after"]["selector"] || @config["selector"]
-      }
+    def before
+      @spec['before']
+    end
+    def after
+      @spec['after']
     end
 
     def paths
