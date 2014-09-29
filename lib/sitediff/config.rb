@@ -48,7 +48,7 @@ class SiteDiff
     # Specialize a config for either "before" or "after"
     def specialize(name)
       target = {}
-      spec = @config[name]
+      spec = @config[name] || {}
       tools = Util::Sanitize::TOOLS
       tools[:array].each do |key|
         target[key] = []
