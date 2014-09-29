@@ -24,12 +24,11 @@ class SiteDiff
   end
 
   attr_accessor :before, :after, :paths, :results
-
-  def before=(url)
-    @before = Util::UriWrapper.new(url)
+  def before
+    Util::UriWrapper.new(@before || @config['before_url'])
   end
-  def after=(url)
-    @after = Util::UriWrapper.new(url)
+  def after
+    Util::UriWrapper.new(@after || @config['after_url'])
   end
 
   def paths=(paths)
@@ -88,8 +87,8 @@ class SiteDiff
 
   # Dump results to disk
   def dump(dir, before_report, after_report)
-    before_report ||= before.to_s
-    after_report ||= after.to_s
+    before_report ||= @config['before_url_report'] || before.to_s
+    after_report ||= @config['after_url_report'] || after.to_s
 
     FileUtils.mkdir_p(dir)
 

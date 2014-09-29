@@ -17,19 +17,20 @@ class SiteDiff
       :desc => "Location to write the output to."
     option 'paths-from-file',
       :type => :string,
-      :desc => "File listing URL paths to run on against <before> and <after> sites."
+      :desc => "File listing URL paths to run on against <before> and <after> sites.",
+      :aliases => '--paths'
     option 'paths-from-failures',
       :type => :boolean,
       :default => FALSE,
       :desc => "Equivalent to --paths-from-file=<DUMPDIR>/failures.txt"
     option 'before-url',
-      :required => true,
       :type => :string,
-      :desc => "URL used to fetch the before HTML. Acts as a prefix to specified paths"
+      :desc => "URL used to fetch the before HTML. Acts as a prefix to specified paths",
+      :aliases => '--before'
     option 'after-url',
-      :required => true,
       :type => :string,
-      :desc => "URL used to fetch the after HTML. Acts as a prefix to specified paths."
+      :desc => "URL used to fetch the after HTML. Acts as a prefix to specified paths.",
+      :aliases => '--after'
     option 'before-url-report',
       :type => :string,
       :desc => "Before URL to use for reporting purposes. Useful if port forwarding."
