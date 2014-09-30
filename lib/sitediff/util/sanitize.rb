@@ -5,7 +5,7 @@ class SiteDiff
     module Sanitize
       TOOLS = {
         :array => %w[dom_transform sanitization],
-        :scalar => %w[selector],
+        :scalar => %w[selector remove_spacing],
       }
 
       module_function
@@ -80,14 +80,18 @@ class SiteDiff
         return pretty
       end
 
+      def remove_spacing(doc)
+        # remove double spacing, but only inside text nodes (eg not attributes)
+        doc.xpath('//text()').each do |node|
+          node.content = node.content.gsub(/  +/, ' ')
+        end
+      end
+
       def sanitize(str, config)
         return [] if str == ''
         document = parse(str)
 
-        # remove double spacing, but only inside text nodes (eg not attributes)
-        document.xpath('//text()').each do |node|
-          node.content = node.content.gsub(/  +/, ' ')
-        end
+        remove_spacing(doc) if config['remove_spacing']
 
         if config["selector"]
           # TODO: handle cases where selector doesn't match
