@@ -15,13 +15,13 @@ class SiteDiff
   end
 
   def diff_path(path, before_html, after_html, error)
+    error and return Result.new(path, nil, nil, error)
+
     before_url = before + path
     before_html_sanitized = Util::Sanitize::sanitize(before_html, @config.before)
     after_html_sanitized = Util::Sanitize::sanitize(after_html, @config.after)
 
-    result = Result.new(path, before_html_sanitized, after_html_sanitized,
-      error)
-    return result
+    return Result.new(path, before_html_sanitized, after_html_sanitized)
   end
 
   attr_accessor :before, :after, :paths, :results
