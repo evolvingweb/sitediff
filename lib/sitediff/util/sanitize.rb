@@ -27,31 +27,43 @@ class SiteDiff
       #  @return - transformed Nokogiri document node
       def perform_dom_transforms(node, config)
         config.each do |rule|
-          case rule['type']
-          when "remove"
-            [rule["selector"]].flatten.each do |selector|
-              node.css(selector).each do |el|
-                el.remove
-              end
+          type = rule['type'] or
+            raise InvalidSanitization, "DOM transform needs a type"
+          DOM_TRANSFORMS.include?(type) or
+            raise InvalidSanitization, "No DOM transform named #{type}"
+
+          meth = 'transform_' + type
+
+          if sels = rule['selector']
+            sels = [sels].flatten # Either array or scalar is fine
+            # Call method for each node the selectors find
+            sels.each do |sel|
+              node.css(sel).each { |e| send(meth, rule, e) }
             end
-          when "unwrap_root"
-            node.children.size == 1 or
-              raise InvalidSanitization, "Multiple root elements in unwrap_root"
-            node.children = node.children[0].children
-          when "unwrap"
-            [rule["selector"]].flatten.each do |selector|
-              node.css(selector).each do |el|
-                el.add_next_sibling(el.children)
-                el.remove
-              end
-            end
-          when "remove_class"
-            [ rule["class"] ].flatten.each do |class_name|
-              node.css(rule["selector"]).remove_class(class_name)
-            end
+          else
+            send(meth, rule, node)
           end
         end
-        return node
+      end
+
+      def transform_remove(rule, el)
+        el.remove
+      end
+      def transform_unwrap(rule, el)
+        el.add_next_sibling(el.children)
+        el.remove
+      end
+      def transform_remove_class(rule, el)
+        # Must call remove_class on a NodeSet!
+        ns = Nokogiri::XML::NodeSet.new(el.document, [el])
+        [rule['class']].flatten.each do |class_name|
+          ns.remove_class(class_name)
+        end
+      end
+      def transform_unwrap_root(rule, node)
+        node.children.size == 1 or
+          raise InvalidSanitization, "Multiple root elements in unwrap_root"
+        node.children = node.children[0].children
       end
 
       def parse(str, force_doc = false)
@@ -138,7 +150,7 @@ class SiteDiff
         end
 
         if transform = config["dom_transform"]
-          node = perform_dom_transforms(node, transform)
+          perform_dom_transforms(node, transform)
         end
 
         obj = perform_regexps(node, config['sanitization'])
