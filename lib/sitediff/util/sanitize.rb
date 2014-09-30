@@ -154,7 +154,7 @@ class SiteDiff
       end
 
       def select_root(node, sel)
-        return unless sel
+        return node unless sel
 
         # When we choose a new root, we always become a DocumentFragment,
         # and lose any DOCTYPE and such.
