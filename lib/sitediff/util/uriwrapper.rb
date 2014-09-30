@@ -68,6 +68,7 @@ class SiteDiff
         if @uri.user
           params[:userpwd] = @uri.user + ':' + @uri.password
         end
+        params[:followlocation] = true
 
         req = Typhoeus::Request.new(self.to_s, params)
         req.on_complete do |resp|
