@@ -138,17 +138,19 @@ class SiteDiff
         return str
       end
 
+      def select_root(node, sel)
+        return unless sel
+        root = node.respond_to?(:root) ? node.root : node
+        root.children = node.css(sel)
+      end
+
       def sanitize(str, config)
         return '' if str == ''
 
         node = parse(str)
 
         remove_spacing(node) if config['remove_spacing']
-
-        if sel = config["selector"]
-          node.children = node.css(sel)
-        end
-
+        select_root(node, config['selector'])
         if transform = config["dom_transform"]
           perform_dom_transforms(node, transform)
         end
