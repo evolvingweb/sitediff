@@ -1,11 +1,16 @@
-require 'gdbm'
-
 class SiteDiff
   module Util
     # A typhoeus cache, backed by DBM
     class Cache
       def initialize(file)
-        @dbm = GDBM.new(file)
+        # Default to GDBM, if we have it, we don't want pag/dir files
+        begin
+          require 'gdbm'
+          @dbm = GDBM.new(file)
+        rescue LoadError
+          require 'dbm'
+          @dbm = DBM.new(file)
+        end
       end
 
       # Older Typhoeus doesn't have cache_key
