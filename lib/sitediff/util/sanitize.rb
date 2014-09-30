@@ -84,7 +84,10 @@ class SiteDiff
 
         # Pull out the html element's children
         children = pretty.css('html').children
-        return children.map { |c| c.to_s }.join("\n")
+        str = children.map { |c| c.to_s }.join("\n")
+
+        # Remove blank lines. $/ is the input record separator
+        return str.split($/).reject { |s| s.match(/^\s*$/) }.join($/)
       end
 
       def remove_spacing(doc)
@@ -94,36 +97,54 @@ class SiteDiff
         end
       end
 
+      # Do one regexp transformation on a string
+      def substitute(str, rule)
+        str.gsub!(/#{rule['pattern']}/, rule['substitute'] || '' )
+        str
+      end
+
+      # Do all regexp sanitization rules
+      def perform_regexps(node, rules)
+        rules ||= []
+
+        # First do rules with a selector
+        rules.each do |rule|
+          if sel = rule['selector']
+            node.css(sel).each do |e|
+              e.replace(substitute(e.to_html, rule))
+            end
+          end
+        end
+
+        # If needed, do rules without a selector. We'd rather not convert to
+        # a string unless necessary.
+        global_rules = rules.reject { |r| r['selector'] }
+        return node if global_rules.empty?
+
+        str = node.to_html # Convert to string
+        global_rules.each { |r| substitute(str, r) }
+        return str
+      end
+
       def sanitize(str, config)
-        return [] if str == ''
+        return '' if str == ''
+
         node = parse(str)
 
         remove_spacing(node) if config['remove_spacing']
 
-        if config["selector"]
-          # TODO: handle cases where selector doesn't match
-          node.children = node.css(config["selector"])
+        if sel = config["selector"]
+          node.children = node.css(sel)
         end
 
-        if config["dom_transform"]
-          node = perform_dom_transforms(node, config["dom_transform"])
+        if transform = config["dom_transform"]
+          node = perform_dom_transforms(node, transform)
         end
 
-        str = node.to_html
-        rules = config["sanitization"] || []
+        obj = perform_regexps(node, config['sanitization'])
 
-        rules.each do |rule|
-          # default type is "regex"
-          str.gsub!(/#{rule['pattern']}/, rule['substitute'] || '' )
-        end
-
-        str = prettify(str)
-
-        # return array of lines for diffing, removing empty (or blank) lines
-        # $/ is the input record separator
-        return str.split($/).select { |s| !s.match(/^\s*$/) }.join($/)
+        return prettify(obj)
       end
-
     end
   end
 end
