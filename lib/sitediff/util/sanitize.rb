@@ -79,9 +79,12 @@ class SiteDiff
         if Nokogiri::XML::Document === obj
           return obj
         elsif Nokogiri::XML::Node === obj # or fragment
-          doc = Nokogiri::HTML('<html>')
-          doc.root.children = obj.children
-          return doc
+          return parse(obj.to_s, true)
+
+          # This out to work, but seems to segfault Nokogiri
+          # doc = Nokogiri::HTML('<html><body>')
+          # doc.at('body').children = obj.children
+          # return doc
         else
           return to_document(parse(obj))
         end
