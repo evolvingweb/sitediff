@@ -140,8 +140,15 @@ class SiteDiff
 
       def select_root(node, sel)
         return unless sel
-        root = node.respond_to?(:root) ? node.root : node
-        root.children = node.css(sel)
+
+        # When we choose a new root, we always become a DocumentFragment,
+        # and lose any DOCTYPE and such.
+        ns = node.css(sel)
+        unless node.fragment?
+          node = Nokogiri::HTML.fragment('')
+        end
+        node.children = ns
+        return node
       end
 
       def sanitize(str, config)
@@ -150,7 +157,7 @@ class SiteDiff
         node = parse(str)
 
         remove_spacing(node) if config['remove_spacing']
-        select_root(node, config['selector'])
+        node = select_root(node, config['selector'])
         if transform = config["dom_transform"]
           perform_dom_transforms(node, transform)
         end
