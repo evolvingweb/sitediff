@@ -1,9 +1,9 @@
 require 'bundler'
 require 'rspec/core/rake_task'
-require 'ruby-prof'
 
 LIB_DIR = File.join(File.dirname(__FILE__), 'lib')
 
+# TODO should we expose prof.html as an argument?
 task :profile do
   rp_opts = [
     "-E '$LOAD_PATH << \"#{LIB_DIR}\"'", # since $0 won't be bin/sitediff
@@ -25,6 +25,12 @@ task :profile do
   rm paths
 end
 
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.pattern = './spec/unit/**/*_spec.rb'
+end
+
+task :default => :spec
+
 #### FIXME UGLY ####
 
 # Serve a directory over HTTP with Ruby
@@ -45,17 +51,3 @@ end
 task :docker_build do |t|
   sh 'docker', 'build', '-t', DOCKER_IMAGE, '.'
 end
-
-
-
-#### FIXME OLD ####
-
-# Bundler::GemHelper.install_tasks
-
-RSpec::Core::RakeTask.new(:spec)
-
-desc "Run unit tests"
-RSpec::Core::RakeTask.new('spec:unit') { |t| t.pattern = "./spec/unit/**/*_spec.rb" }
-
-desc 'Default task which runs all specs'
-task :default => 'spec:unit'
