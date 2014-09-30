@@ -9,16 +9,8 @@ class SiteDiff
     class UriWrapper
       # This lets us treat errors or content as one object
       class ReadResult < Struct.new(:content, :error)
-        def fixup_read(str)
-          if str && !str.valid_encoding?
-            str = str.encode('utf-8', 'binary', :invalid => :replace,
-              :undef => :replace)
-          end
-          return str
-        end
-
         def initialize(cont, err = nil)
-          super(fixup_read(cont), err)
+          super(cont, err)
         end
         def self.error(err); new(nil, err); end
       end
@@ -60,6 +52,19 @@ class SiteDiff
         handler.(ReadResult.error(e.message))
       end
 
+      def get_body(resp)
+        body = resp.body
+
+        # Fix the charset
+        if content_type = resp.headers['Content-Type']
+          if md = /;\s*charset=([-\w]*)/.match(content_type)
+            body.force_encoding(md[1])
+          end
+        end
+
+        body
+      end
+
       def queue_request(q, &handler)
         # Don't hang on servers that don't exist
         params = { :connecttimeout => 3 }
@@ -73,7 +78,7 @@ class SiteDiff
         req = Typhoeus::Request.new(self.to_s, params)
         req.on_complete do |resp|
           if resp.success?
-            handler.(ReadResult.new(resp.body))
+            handler.(ReadResult.new(get_body(resp)))
           else
             handler.(ReadResult.error(resp.status_message))
           end
