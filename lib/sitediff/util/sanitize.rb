@@ -92,14 +92,24 @@ class SiteDiff
         stylesheet_path = File.join([File.dirname(__FILE__),'pretty_print.xsl'])
         stylesheet = Nokogiri::XSLT(File.read(stylesheet_path))
 
-        pretty = stylesheet.transform(to_document(obj))
-
         # Pull out the html element's children
-        children = pretty.css('html').children
-        str = children.map { |c| c.to_s }.join("\n")
+        # The obvious way to do this is to iterate over pretty.css('html'),
+        # but that tends to segfault Nokogiri
+        str = stylesheet.apply_to(to_document(obj))
 
-        # Remove blank lines. $/ is the input record separator
-        return str.split($/).reject { |s| s.match(/^\s*$/) }.join($/)
+        # Remove xml declaration and <html> tags
+        str.sub!(/\A<\?xml.*$\n/, '')
+        str.sub!(/\A^<html>$\n/, '')
+        str.sub!(%r[</html>\n\Z], '')
+
+        # Remove top-level indentation
+        indent = /\A(\s+)/.match(str)[1].size
+        str.gsub!(/^\s{,#{indent}}/, '')
+
+        # Remove blank lines
+        str.gsub!(/^\s*$\n/, '')
+
+        return str
       end
 
       def remove_spacing(doc)
