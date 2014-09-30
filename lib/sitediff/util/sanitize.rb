@@ -89,13 +89,15 @@ class SiteDiff
 
       # Pretty-print the HTML
       def prettify(obj)
-        stylesheet_path = File.join([File.dirname(__FILE__),'pretty_print.xsl'])
-        stylesheet = Nokogiri::XSLT(File.read(stylesheet_path))
+        @stylesheet ||= begin
+          stylesheet_path = File.join([File.dirname(__FILE__),'pretty_print.xsl'])
+          Nokogiri::XSLT(File.read(stylesheet_path))
+        end
 
         # Pull out the html element's children
         # The obvious way to do this is to iterate over pretty.css('html'),
         # but that tends to segfault Nokogiri
-        str = stylesheet.apply_to(to_document(obj))
+        str = @stylesheet.apply_to(to_document(obj))
 
         # Remove xml declaration and <html> tags
         str.sub!(/\A<\?xml.*$\n/, '')
