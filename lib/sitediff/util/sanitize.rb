@@ -1,31 +1,18 @@
 require 'nokogiri'
+require 'set'
 
 class SiteDiff
   module Util
     module Sanitize
+      class InvalidSanitization < Exception; end
+
       TOOLS = {
         :array => %w[dom_transform sanitization],
         :scalar => %w[selector remove_spacing],
       }
+      DOM_TRANSFORMS = Set.new(%w[remove unwrap_root unwrap remove_class])
 
       module_function
-
-      # Returns a version of `node_or_ns' with element `elem' replaced by
-      # its contents, without the wrapper tag. Works regardless of whether
-      # `node_or_ns' is a Node or NodeSet.
-      def unwrap(node_or_ns, elem)
-        if node_or_ns.respond_to?(:include?) && node_or_ns.include?(elem)
-          # It's a top-level node in a NodeSet, splice the children in
-          idx = node_or_ns.index(elem)
-          node_or_ns = node_or_ns.slice(0, idx) + elem.children +
-            node_or_ns.slice(idx + 1, node_or_ns.size - idx - 1)
-        else
-          # We have a parent, so we can just put our children there
-          elem.add_next_sibling(elem.children)
-          elem.remove()
-        end
-        return node_or_ns
-      end
 
       # Performs dom transformations.
       #
@@ -35,49 +22,69 @@ class SiteDiff
       #  * { :type => "unwrap", :selector => "div.field-item" }
       #  * { :type => "remove", :selector => "div.extra-stuff" }
       #
-      #  @arg document - Nokogiri document or Node
+      #  @arg node - Nokogiri document or Node
       #  @arg config - array of dom_transform rules
       #  @return - transformed Nokogiri document node
-
-      def perform_dom_transforms(document, config)
+      def perform_dom_transforms(node, config)
         config.each do |rule|
           case rule['type']
           when "remove"
             [rule["selector"]].flatten.each do |selector|
-              document.css(selector).each do |el|
-                el.remove()
+              node.css(selector).each do |el|
+                el.remove
               end
             end
           when "unwrap_root"
-            document = document.children
+            node.children.size == 1 or
+              raise InvalidSanitization, "Multiple root elements in unwrap_root"
+            node.children = node.children[0].children
           when "unwrap"
             [rule["selector"]].flatten.each do |selector|
-              document.css(selector).each do |el|
-                document = unwrap(document, el)
+              node.css(selector).each do |el|
+                el.add_next_sibling(el.children)
+                el.remove
               end
             end
           when "remove_class"
             [ rule["class"] ].flatten.each do |class_name|
-              document.css(rule["selector"]).remove_class(class_name)
+              node.css(rule["selector"]).remove_class(class_name)
             end
           end
         end
-        return document
+        return node
       end
 
-      def parse(str)
-        return Nokogiri::HTML(str, &:noblanks)
+      def parse(str, force_doc = false)
+        if force_doc || /<!DOCTYPE/.match(str[0, 512])
+          Nokogiri::HTML(str)
+        else
+          Nokogiri::HTML.fragment(str)
+        end
       end
 
-      # Pipe through our prettify script
-      def prettify(str)
+      # Force this object to be a document, so we can apply a stylesheet
+      def to_document(obj)
+        if Nokogiri::XML::Document === obj
+          return obj
+        elsif Nokogiri::XML::Node === obj # or fragment
+          doc = Nokogiri::HTML('<html>')
+          doc.root.children = obj.children
+          return doc
+        else
+          return to_document(parse(obj))
+        end
+      end
+
+      # Pretty-print the HTML
+      def prettify(obj)
         stylesheet_path = File.join([File.dirname(__FILE__),'pretty_print.xsl'])
         stylesheet = Nokogiri::XSLT(File.read(stylesheet_path))
 
-        # Parse as HTML, and output something that the XML parser will be ok
-        # with. This fixes, eg: HTML entity use.
-        pretty = stylesheet.apply_to(parse(str)).to_s
-        return pretty
+        pretty = stylesheet.transform(to_document(obj))
+
+        # Pull out the html element's children
+        children = pretty.css('html').children
+        return children.map { |c| c.to_s }.join("\n")
       end
 
       def remove_spacing(doc)
@@ -89,20 +96,20 @@ class SiteDiff
 
       def sanitize(str, config)
         return [] if str == ''
-        document = parse(str)
+        node = parse(str)
 
-        remove_spacing(doc) if config['remove_spacing']
+        remove_spacing(node) if config['remove_spacing']
 
         if config["selector"]
           # TODO: handle cases where selector doesn't match
-          document = document.css(config["selector"])
+          node.children = node.css(config["selector"])
         end
 
         if config["dom_transform"]
-          document = perform_dom_transforms(document, config["dom_transform"])
+          node = perform_dom_transforms(node, config["dom_transform"])
         end
 
-        str = document.to_html
+        str = node.to_html
         rules = config["sanitization"] || []
 
         rules.each do |rule|
