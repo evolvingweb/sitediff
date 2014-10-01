@@ -68,9 +68,17 @@ class SiteDiff
 
       def parse(str, force_doc = false)
         if force_doc || /<!DOCTYPE/.match(str[0, 512])
-          Nokogiri::HTML(str)
+          doc = Nokogiri::HTML(str)
+          doc.errors.each do |e|
+            SiteDiff::log "Error in parsing HTML document: #{e}", :yellow
+          end
+          doc
         else
-          Nokogiri::HTML.fragment(str)
+          frag = Nokogiri::HTML.fragment(str)
+          frag.errors.each do |e|
+            SiteDiff::log "Error in parsing HTML fragment: #{e}", :yellow
+          end
+          frag
         end
       end
 
