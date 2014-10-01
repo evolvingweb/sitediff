@@ -27,21 +27,17 @@ class SiteDiff
         @uri.password
       end
 
-      def no_credentials
-        uri_no_credentials = @uri.clone
-        uri_no_credentials.user = nil
-        uri_no_credentials.password = nil
-        return uri_no_credentials
-      end
-
       def to_s
-        return no_credentials.to_s
+        uri = @uri.dup
+        uri.user = nil
+        uri.password = nil
+        return uri.to_s
       end
 
       def +(path)
-        uri = @uri.dup
-        path != '' && uri.path += '/' + path
-        return self.class.new(uri)
+        # To SiteDiff, path is what to URI is path + query + fragment. Need to
+        # reparse on each manipulation operation.
+        self.class.new(@uri.to_s + path)
       end
 
       # Reads a file and yields to the completion handler, see .queue()
