@@ -15,16 +15,6 @@ class SiteDiff
     puts str
   end
 
-  def diff_path(path, before_html, after_html, error)
-    error and return Result.new(path, nil, nil, error)
-
-    before_url = before + path
-    before_html_sanitized = Util::Sanitize::sanitize(before_html, @config.before)
-    after_html_sanitized = Util::Sanitize::sanitize(after_html, @config.after)
-
-    return Result.new(path, before_html_sanitized, after_html_sanitized)
-  end
-
   attr_accessor :before, :after, :paths, :results
   def before
     Util::UriWrapper.new(@before || @config['before_url'])
@@ -59,27 +49,35 @@ class SiteDiff
     self.cache = cache
   end
 
+  # Sanitize an HTML string based on configuration for either before or after
+  def sanitize(html, pos)
+    Util::Sanitize::sanitize(html, @config.send(pos))
+  end
+
   # Queues fetching before and after URLs with a Typhoeus::Hydra instance
   #
-  # Upon completion of both before and after, prints and saves the diff
+  # Upon completion of both before and after, prints and saves the diff to
+  # @results.
   def queue_read(hydra, path)
     # ( :before | after ) => ReadResult object
-    read_results = {}
+    reads = {}
     [:before, :after].each do |pos|
       uri = send(pos) + path # eg: self.before + path
 
       uri.queue(hydra) do |res|
-        read_results[pos] = res
-        next unless read_results.size == 2
+        reads[pos] = res
+        next unless reads.size == 2
 
         # we have read both before and after; calculate diff
-        error = read_results[:before].error || read_results[:after].error
-        diff_result = diff_path(path, read_results[:before].content,
-                                read_results[:after].content, error)
-        diff_result.log
-        @results[path] = diff_result
+        if error = reads[:before].error || reads[:after].error
+          diff = Result.new(path, nil, nil, error)
+        else
+          diff = Result.new(path, sanitize(reads[:before].content, :before),
+                            sanitize(reads[:after].content,:after), nil)
+        end
+        diff.log
+        @results[path] = diff
       end
-
     end
   end
 
