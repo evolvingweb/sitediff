@@ -24,6 +24,7 @@ class SiteDiff
   end
 
   def paths=(paths)
+    paths ||= ['']
     @paths = paths.map { |p| p.chomp }
   end
   def paths
@@ -62,7 +63,7 @@ class SiteDiff
     # ( :before | after ) => ReadResult object
     reads = {}
     [:before, :after].each do |pos|
-      uri = send(pos) + path # eg: self.before + path
+      uri = send(pos) + path # new UriWrapper object with new URI string
 
       uri.queue(hydra) do |res|
         reads[pos] = res

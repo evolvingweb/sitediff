@@ -40,14 +40,14 @@ class SiteDiff
 
       def +(path)
         uri = @uri.dup
-        uri.path += '/' + path
+        path != '' && uri.path += '/' + path
         return self.class.new(uri)
       end
 
       # Reads a file and yields to the completion handler, see .queue()
       def read_file(&handler)
-          File.open(@uri.to_s, 'r:UTF-8') {|f| yield ReadResult.new(f.read) }
-      rescue Errno::ENOENT => e
+        File.open(@uri.to_s, 'r:UTF-8') { |f| yield ReadResult.new(f.read) }
+      rescue Errno::ENOENT, Errno::ENOTDIR, Errno::EACCES => e
         yield ReadResult.error(e.message)
       end
 
