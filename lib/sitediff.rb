@@ -8,9 +8,10 @@ require 'typhoeus'
 require 'rainbow'
 
 class SiteDiff
-  def self.log(str, bg = nil)
-    str = "[sitediff] #{str}"
-    str = Rainbow(str).bg(bg) if bg
+  def self.log(str, bg = nil, fg = nil)
+    str = Rainbow("[sitediff] #{str}")
+    str = str.bg(bg) if bg
+    str = str.send(fg) if fg
     puts str
   end
 
@@ -120,6 +121,6 @@ class SiteDiff
       before_report, after_report)
     File.open(File.join(dir, "/report.html") , 'w') { |f| f.write(report) }
 
-    SiteDiff::log "All diff files were dumped inside #{dir}", :yellow
+    SiteDiff::log "All diff files were dumped inside #{dir}", :yellow, :black
   end
 end

@@ -51,7 +51,7 @@ class SiteDiff
       when STATUS_SUCCESS then
         SiteDiff::log "SUCCESS: #{path}", :green
       when STATUS_ERROR then
-        SiteDiff::log "ERROR (#{error}): #{path}", :yellow
+        SiteDiff::log "ERROR (#{error}): #{path}", :yellow, :black
       when STATUS_FAILURE then
         SiteDiff::log "FAILURE: #{path}", :red
         puts Util::Diff::terminal_diffy(before, after)
