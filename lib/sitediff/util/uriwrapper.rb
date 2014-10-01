@@ -4,8 +4,6 @@ class SiteDiff
   class SiteDiffReadFailure < Exception; end
 
   module Util
-    # @class UriWrapper is a workaround for open() rejecting URIs with credentials
-    # eg user:password@hostname.com
     class UriWrapper
       # This lets us treat errors or content as one object
       class ReadResult < Struct.new(:content, :error)
@@ -43,7 +41,7 @@ class SiteDiff
       # Reads a file and yields to the completion handler, see .queue()
       def read_file(&handler)
         File.open(@uri.to_s, 'r:UTF-8') { |f| yield ReadResult.new(f.read) }
-      rescue Errno::ENOENT, Errno::ENOTDIR, Errno::EACCES => e
+      rescue Errno::ENOENT, Errno::ENOTDIR, Errno::EACCES, Errno::EISDIR => e
         yield ReadResult.error(e.message)
       end
 

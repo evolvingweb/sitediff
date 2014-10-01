@@ -1,3 +1,5 @@
+require 'fileutils'
+
 class SiteDiff
   class Result < Struct.new(:path, :before, :after, :error)
     STATUS_SUCCESS  = 0   # Identical before and after
@@ -31,9 +33,10 @@ class SiteDiff
       prefix.to_s + '/' + path
     end
 
-    # Filename to store the diff under
+    # Filename to store diff
     def filename
-      "diff_" + path.gsub('/', '_').gsub('#', '___') + ".html"
+      p = path
+      'diffs' + ( p == '' ? '/index' : p) + '.html'
     end
 
     # Text of the link in the HTML report
@@ -49,7 +52,7 @@ class SiteDiff
     def log
       case status
       when STATUS_SUCCESS then
-        SiteDiff::log "SUCCESS: #{path}", :green
+        SiteDiff::log "SUCCESS: #{path}", :green, :black
       when STATUS_ERROR then
         SiteDiff::log "ERROR (#{error}): #{path}", :yellow, :black
       when STATUS_FAILURE then
@@ -61,6 +64,9 @@ class SiteDiff
     # Dump the result to a file
     def dump(dir)
       dump_path = File.join(dir, filename)
+      base = File.dirname(dump_path)
+      FileUtils::mkdir_p(base) unless File.exists?(base)
+      p dump_path
       File.open(dump_path, 'w') do |f|
         f.write(Util::Diff::generate_diff_output(self))
       end
