@@ -116,7 +116,7 @@ class SiteDiff
         str.sub!(%r[</html>\n\Z], '')
 
         # Remove top-level indentation
-        indent = /\A(\s+)/.match(str)[1].size
+        indent = /\A(\s*)/.match(str)[1].size
         str.gsub!(/^\s{,#{indent}}/, '')
 
         # Remove blank lines
