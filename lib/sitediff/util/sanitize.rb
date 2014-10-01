@@ -66,20 +66,19 @@ class SiteDiff
         node.children = node.children[0].children
       end
 
-      def parse(str, force_doc = false)
+      def parse(str, force_doc = false, log_errors = false)
         if force_doc || /<!DOCTYPE/.match(str[0, 512])
           doc = Nokogiri::HTML(str)
+          doc
+        else
+          doc = Nokogiri::HTML.fragment(str)
+        end
+        if log_errors
           doc.errors.each do |e|
             SiteDiff::log "Error in parsing HTML document: #{e}", :yellow
           end
-          doc
-        else
-          frag = Nokogiri::HTML.fragment(str)
-          frag.errors.each do |e|
-            SiteDiff::log "Error in parsing HTML fragment: #{e}", :yellow
-          end
-          frag
         end
+        doc
       end
 
       # Force this object to be a document, so we can apply a stylesheet
