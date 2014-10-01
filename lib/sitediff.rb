@@ -50,8 +50,12 @@ class SiteDiff
     end
   end
 
-  def initialize(config_files)
+  def initialize(config_files, before, after, paths, cache)
     @config = Config.new(config_files)
+    self.before = before
+    self.after = after
+    self.paths = paths
+    self.cache = cache
   end
 
   # Queue a path for reading

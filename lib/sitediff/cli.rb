@@ -43,19 +43,16 @@ class SiteDiff
         :lazy_default => 'cache.db'
     desc "diff [OPTIONS] [CONFIGFILES]", "Perform systematic diff on given URLs"
     def diff(*config_files)
-      sitediff = SiteDiff.new(config_files)
-      sitediff.before = options['before-url']
-      sitediff.after = options['after-url']
-      sitediff.cache = options['cache']
-
       if options['paths-from-failures']
         SiteDiff::log "Reading paths from failures.txt"
-        sitediff.paths = File.readlines("#{options['dump-dir']}/failures.txt")
+        paths = File.readlines("#{options['dump-dir']}/failures.txt")
       elsif options['paths-from-file']
         SiteDiff::log "Reading paths from file: #{options['paths-from-file']}"
-        sitediff.paths = File.readlines(options['paths-from-file'])
+        paths = File.readlines(options['paths-from-file'])
       end
 
+      sitediff = SiteDiff.new(config_files, options['before-url'],
+                              options['after-url'], paths, options['cache'])
       sitediff.run
 
       sitediff.dump(options['dump-dir'], options['before-url-report'],
