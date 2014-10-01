@@ -51,45 +51,44 @@ class SiteDiff
         yield ReadResult.error(e.message)
       end
 
-      def get_body(resp)
-        body = resp.body
-
-        # Fix the charset
-        if content_type = resp.headers['Content-Type']
+      # Returns the encoding of an HTTP response from headers , nil if not
+      # specified.
+      def http_encoding(http_headers)
+        if content_type = http_headers['Content-Type']
           if md = /;\s*charset=([-\w]*)/.match(content_type)
-            body.force_encoding(md[1])
+            return md[1]
           end
         end
-
-        body
       end
 
       # Returns a Typhoeus::Request to fetch @uri
       #
-      # The 'on_complete' callback of the request wraps the given handler.
-      # handler is assumed to accept a single ReadResult argument.
+      # Completion callbacks of the request wrap the given handler which is
+      # assumed to accept a single ReadResult argument.
       def typhoeus_request(&handler)
-        # Don't hang on servers that don't exist
-        params = { :connecttimeout => 3 }
-
+        params = {
+          :connecttimeout => 3,   # Don't hang on servers that don't exist
+          :followlocation => true # Follow HTTP redirects (code 301 and 302)
+        }
         # Allow basic auth
-        if @uri.user
-          params[:userpwd] = @uri.user + ':' + @uri.password
-        end
-
-        # Follow HTTP redirects (code 301 and 302)
-        params[:followlocation] = true
+        params[:userpwd] = @uri.user + ':' + @uri.password if @uri.user
 
         req = Typhoeus::Request.new(self.to_s, params)
-        req.on_complete do |resp|
 
-          if resp.success?
-            yield ReadResult.new(get_body(resp))
-          else
-            yield ReadResult.error(resp.status_message)
+        req.on_success do |resp|
+          body = resp.body
+          # Typhoeus does not respect HTTP headers when setting the encoding
+          # resp.body; coerce if possible.
+          if encoding = http_encoding(resp.headers)
+            body.force_encoding(encoding)
           end
+          yield ReadResult.new(body)
         end
 
+        req.on_failure do |resp|
+          yield ReadResult.error(resp.status_message ||
+                                 "Unknown HTTP error in fetching #{@uri}")
+        end
 
         req
       end
