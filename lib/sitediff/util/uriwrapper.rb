@@ -44,12 +44,11 @@ class SiteDiff
         return self.class.new(uri)
       end
 
+      # Reads a file and yields to the completion handler, see .queue()
       def read_file(&handler)
-        File.open(@uri.to_s, 'r:UTF-8') do |f|
-          handler.(ReadResult.new(f.read))
-        end
+          File.open(@uri.to_s, 'r:UTF-8') {|f| yield ReadResult.new(f.read) }
       rescue Errno::ENOENT => e
-        handler.(ReadResult.error(e.message))
+        yield ReadResult.error(e.message)
       end
 
       def get_body(resp)
@@ -65,7 +64,11 @@ class SiteDiff
         body
       end
 
-      def queue_request(q, &handler)
+      # Returns a Typhoeus::Request to fetch @uri
+      #
+      # The 'on_complete' callback of the request wraps the given handler.
+      # handler is assumed to accept a single ReadResult argument.
+      def typhoeus_request(&handler)
         # Don't hang on servers that don't exist
         params = { :connecttimeout => 3 }
 
@@ -73,17 +76,22 @@ class SiteDiff
         if @uri.user
           params[:userpwd] = @uri.user + ':' + @uri.password
         end
+
+        # Follow HTTP redirects (code 301 and 302)
         params[:followlocation] = true
 
         req = Typhoeus::Request.new(self.to_s, params)
         req.on_complete do |resp|
+
           if resp.success?
-            handler.(ReadResult.new(get_body(resp)))
+            yield ReadResult.new(get_body(resp))
           else
-            handler.(ReadResult.error(resp.status_message))
+            yield ReadResult.error(resp.status_message)
           end
         end
-        q.queue(req)
+
+
+        req
       end
 
       # Queue reading this URL, with a completion handler to run after.
@@ -92,11 +100,11 @@ class SiteDiff
       #
       # This method may choose not to queue the request at all, but simply
       # execute right away.
-      def queue(q, &handler)
+      def queue(hydra, &handler)
         if @uri.scheme == nil
           read_file(&handler)
         else
-          queue_request(q, &handler)
+          hydra.queue(typhoeus_request(&handler))
         end
       end
     end

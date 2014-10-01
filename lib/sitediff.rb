@@ -58,47 +58,41 @@ class SiteDiff
     self.cache = cache
   end
 
-  # Queue a path for reading
-  def queue(q, path)
-    @read_results[path] = {}
-    [:before, :after].each do |pos| # Read both before and after urls
+  # Queues fetching before and after URLs with a Typhoeus::Hydra instance
+  #
+  # Upon completion of both before and after, prints and saves the diff
+  def queue_read(hydra, path)
+    # ( :before | after ) => ReadResult object
+    read_results = {}
+    [:before, :after].each do |pos|
       uri = send(pos) + path # eg: self.before + path
-      uri.queue(q) do |read_result|
-        # Handle once the read is done
-        @read_results[path][pos] = read_result
 
-        # See if we can complete processing this path
-        try_complete(path, @read_results[path])
+      uri.queue(hydra) do |res|
+        read_results[pos] = res
+        next unless read_results.size == 2
+
+        # we have read both before and after; calculate diff
+        error = read_results[:before].error || read_results[:after].error
+        diff_result = diff_path(path, read_results[:before].content,
+                                read_results[:after].content, error)
+        diff_result.log
+        @results[path] = diff_result
       end
+
     end
-  end
-
-  # Attempt to finish processing this path
-  def try_complete(path, reads)
-    return unless reads.size == 2 # We need both before and after
-
-    error = reads[:before].error || reads[:after].error
-    result = diff_path(path, reads[:before].content, reads[:after].content,
-      error)
-    result.log
-    @results_by_path[path] = result
   end
 
   # Perform the comparison
   def run
-    # Map of path -> Result object
-    @results_by_path = {}
+    # Map of path -> Result object, queue_read sets callbacks to populate this
+    @results = {}
 
-    # Map of path -> map of (:before | :after) -> UriWrapper::ReadResult
-    @read_results = {}
-
-    # Hydra is a URL fetcher
     hydra = Typhoeus::Hydra.new(max_concurrency: 3)
-    paths.each { |p| queue(hydra, p) }
+    paths.each { |path| queue_read(hydra, path) }
     hydra.run
 
     # Order by original path order
-    @results = paths.map { |p| @results_by_path[p] }
+    @results = @paths.map { |p| @results[p] }
   end
 
   # Dump results to disk
