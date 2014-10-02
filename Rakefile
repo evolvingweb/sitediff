@@ -59,11 +59,11 @@ namespace :docker do
   end
 
   task :run, [:task] do |t, args|
-    opts = []
+    opts = ['-v', "#{Dir.pwd}:/sitediff", '-t']
     if tsk = args[:task]
       cmd = ['rake', tsk]
     else
-      opts = ['-ti']
+      opts = ['-i']
       cmd = ['bash']
     end
     sh 'docker', 'run', *opts, IMAGE, *cmd
@@ -76,6 +76,7 @@ def webserver(port, dir)
   w = WEBrick::HTTPServer.new(
     :Port => port,
     :DocumentRoot => dir,
+    # Make it quiet!
     :Logger => WEBrick::Log.new(IO::NULL),
     :AccessLog => [],
   )
