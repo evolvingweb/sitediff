@@ -32,10 +32,19 @@ class SiteDiff
         return uri.to_s
       end
 
+      # Is this a local filesystem path?
+      def local?
+        @uri.scheme == nil
+      end
+
       def +(path)
         # To SiteDiff, path is what to URI is path + query + fragment. Need to
         # reparse on each manipulation operation.
-        self.class.new(@uri.to_s + path)
+        sep = ''
+        if local? || @uri.path.empty?
+          sep = '/'
+        end
+        self.class.new(@uri.to_s + sep + path)
       end
 
       # Reads a file and yields to the completion handler, see .queue()
@@ -94,7 +103,7 @@ class SiteDiff
       # This method may choose not to queue the request at all, but simply
       # execute right away.
       def queue(hydra, &handler)
-        if @uri.scheme == nil
+        if local?
           read_file(&handler)
         else
           hydra.queue(typhoeus_request(&handler))
