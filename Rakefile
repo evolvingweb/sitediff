@@ -3,6 +3,8 @@ require 'rspec/core/rake_task'
 
 LIB_DIR = File.join(File.dirname(__FILE__), 'lib')
 
+task :default => :spec
+
 # TODO should we expose prof.html as an argument?
 task :profile do
   rp_opts = [
@@ -29,9 +31,27 @@ RSpec::Core::RakeTask.new(:spec) do |t|
   t.pattern = './spec/unit/**/*_spec.rb'
 end
 
-task :default => :spec
+namespace :fixture do
+  PORT = 13080
+  CMD = ['./bin/sitediff', 'diff', 'spec/fixtures/config.yaml']
 
-namespace :docker do |ns|
+  task :local do
+    sh *CMD
+  end
+  task :served do
+    threads = []
+    urls = []
+    %w[before after].each_with_index do |dir, i|
+      port = PORT + i
+      threads << webserver(port, File.join('spec/fixtures', dir))
+      urls << "http://localhost:#{port}"
+    end
+    sh *CMD, '--before', urls.first, '--after', urls.last
+    threads.each { |t| t.kill }
+  end
+end
+
+namespace :docker do
   IMAGE = "evolvingweb/sitediff"
 
   task :build do
@@ -49,6 +69,19 @@ namespace :docker do |ns|
     sh 'docker', 'run', *opts, IMAGE, *cmd
   end
 end
+
+# Start a web server, return a thread
+def webserver(port, dir)
+  require 'webrick'
+  w = WEBrick::HTTPServer.new(
+    :Port => port,
+    :DocumentRoot => dir,
+    :Logger => WEBrick::Log.new(IO::NULL),
+    :AccessLog => [],
+  )
+  Thread.new { w.start }
+end
+
 
 #### FIXME UGLY ####
 
