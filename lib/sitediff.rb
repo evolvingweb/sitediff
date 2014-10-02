@@ -46,7 +46,7 @@ class SiteDiff
     @config = Config.new(config_files)
     self.before = before
     self.after = after
-    self.paths = paths
+    self.paths = paths if paths
     self.cache = cache
   end
 
@@ -92,7 +92,7 @@ class SiteDiff
     hydra.run
 
     # Order by original path order
-    @results = @paths.map { |p| @results[p] }
+    @results = paths.map { |p| @results[p] }
   end
 
   # Dump results to disk
