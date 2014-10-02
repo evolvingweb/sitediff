@@ -31,6 +31,25 @@ end
 
 task :default => :spec
 
+namespace :docker do |ns|
+  IMAGE = "evolvingweb/sitediff"
+
+  task :build do
+    sh 'docker', 'build', '-t', IMAGE, '.'
+  end
+
+  task :run, [:task] do |t, args|
+    opts = []
+    if tsk = args[:task]
+      cmd = ['rake', tsk]
+    else
+      opts = ['-ti']
+      cmd = ['bash']
+    end
+    sh 'docker', 'run', *opts, IMAGE, *cmd
+  end
+end
+
 #### FIXME UGLY ####
 
 # Serve a directory over HTTP with Ruby
