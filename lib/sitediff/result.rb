@@ -36,7 +36,9 @@ class SiteDiff
     # Filename to store diff
     def filename
       p = path
-      'diffs' + ( p == '' ? '/index' : p) + '.html'
+      p = File.join(p, '/index') if p.empty?
+      p += '.html'
+      return File.join('diffs', p)
     end
 
     # Text of the link in the HTML report
