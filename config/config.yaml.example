@@ -1,3 +1,6 @@
+before_url: http://localhost:8080
+after_url: http://localhost:8081
+
 paths:
  - /
  - /user
@@ -5,8 +8,7 @@ paths:
 selector: 'body'
 
 sanitization:
-- title: 'remove form build id'
-  pattern:    '<input type="hidden" name="form_build_id" value="form-[a-zA-Z0-9_-]+" *\/?>'
+- pattern:    '<input type="hidden" name="form_build_id" value="form-[a-zA-Z0-9_-]+" *\/?>'
   substitute: '<input type="hidden" name="form_build_id" value="__form_build_id__">'
 
 before:

@@ -10,29 +10,16 @@ site. It is useful tool for QAing re-deployments, site upgrades, etc.
 
 ## Demo
 
-To quickly see what sitediff can do, follow these steps to get sitediff to
-compare two sets of static HTMLs served by a simple HTTP server:
+To quickly see what sitediff can do:
 
-```bash
-cd spec/fixtures/before && python -m SimpleHTTPServer 8801
-# Serving HTTP on 0.0.0.0 port 8801 ...
-
-# in a separate session
-cd spec/fixtures/after && python -m SimpleHTTPServer 8802
-# Serving HTTP on 0.0.0.0 port 8802 ...
-
-# in a third session
-bundle exec bin/sitediff diff --before-url=http://localhost:8801 --after-url=http://localhost:8802 spec/fixtures/config.yaml
+```sh
+git clone https://github.com/evolvingweb/sitediff
+cd sitediff
+bundle install
+bundle exec rake fixture:serve
 ```
 
-Or if you have docker installed you can simply:
-
-```bash
-make build_sitediff # creates a docker image containing the sitediff executable
-make start_fixtures # starts two fixture containers serving the same HTML content as above
-make sitediff_fixtures # perform the diff, generate a report
-make sitediff_serve # serve the reports and diff files so we can browse them
-```
+Then visit http://localhost:13080/report.html to view the report.
 
 Here is an example SiteDiff report:
 ![](https://dl.dropboxusercontent.com/u/6215598/Screenshot%20from%202014-04-10%2014%3A41%3A46.png)
@@ -40,83 +27,168 @@ Here is an example SiteDiff report:
 And here is an example SiteDiff diff report of a specific path:
 ![](https://dl.dropboxusercontent.com/u/6215598/Screenshot%20from%202014-04-10%2013%3A54%3A26.png)
 
+## Installation
+
+```gem install sitediff```
+
 ## Usage
 
 SiteDiff relies on a YAML configuration file to pick up the paths and required
-sanitization rules. The following configuration blocks are recognized by
-SiteDiff:
+sanitization rules. Once you have created your _config.yml_, you can run SiteDiff like so:
 
-1. `sanitization`: a sanitization block contains a `title`, a `pattern` which is
-   a regular expression in string form, and an optional `substitute` defaulting
-   to empty string:
+```sh
+sitediff diff config.yml
+```
 
-        sanitization:
-        - title: 'remove form build id'
-          pattern:    '<input type="hidden" name="form_build_id" value="form-[a-zA-Z0-9_-]+" *\/?>'
-          substitute: '<input type="hidden" name="form_build_id" value="__form_build_id__">'
+The following config.yml configuration blocks are recognized by SiteDiff:
 
-   Sanitization blocks are typically useful to avoid false positives that are in
-   the form of individual strings (not hierarchical information, see
-   `dom_transform`).
+* **before_url** and **after_url**: The two base URLs to compare, for example:
 
-1. `selector`: defines the specific HTML elements we wish to compare. For
-   example if you want to only compare breadcrumbs between `before` and `after`,
-   you might specify:
+  ```yaml
+  before_url: http://example.com/subsite
+  after_url: http://localhost:8080/subsite
+  ```
 
-        selector: '#breadcrumb'
+  They can also be paths to directories on the local filesystem.
 
-   if that is how your HTML is structured.
-1. `dom_transform`: Allows you to edit the DOM tree before diff-ing. This is
-   again useful to allow for expected structural differences to pass through
-   without causing failed comparison tests. A `dom_transform` block requires a
-   `type` which specifies what kind of DOM transformation to perform, and a
-   `selector` which specifies the element on which the action will be
-   performed. Allowed `type` values are the following:
-   1. `remove`: removes the entire element specified by the `selector` from the HTML,
-   1. `unwrap`: replaces the element with its constituents. For example:
+  Both _before_url_ and _after_url_ MUST provided either at the command-line or in the config.yml.
 
-            dom_transform:
-              - type: 'unwrap'
-              - selector: '#123'
+* **paths**: The list of paths to check, rooted at the base URL. For example:
 
-      will transform the following:
+  ```yaml
+  paths:
+    - index.html
+    - page.html
+    - cgi-bin/test.cgi?param=value
+  ```
 
-          <div id="#123">
-            <p> Hello </p>
-            <p> World </p>
-          </div>
+  In the example above, SiteDiff would compare _`http://example.com/subsite/index.html`_ and _`http://localhost:8080/subsite/index.html`_, followed by _page.html_, and so on.
 
-      into:
+  The _paths_ MUST provided either at the command-line or in the config.yml.
 
-          <p> Hello </p>
-          <p> World </p>
+* **selector**: Chooses the sections of HTML we wish to compare, if you don't want to compare the entire page. For example if you want to only compare breadcrumbs between your two sites, you might specify:
 
-1. `before` and `after`: these two are the special blocks that can wrap any of
-   the blocks above to indicate that the normalization rules defined in the
-   block should only apply to either the `before` or the `after` version of the
-   site. If a configuration block is found in the top level, and not under
-   `before` or `after`, it will apply to both. For example, if you wanted to let
-   different date formatting not create diff failures, you might use the
-   following:
+  ```yaml
+  selector: '#breadcrumb'
+  ```
 
-        before:
-          sanitization:
-            - title: 'remove dates'
-              pattern: '[1-2][0-9]{3}/[0-1][0-9]/[0-9]{2}'
-              substitute: '__date__'
-        after:
-          sanitization:
-            - title: 'remove dates'
-              pattern:  '[A-Z][a-z]{2} [0-9]{1,2}(st|nd|rd|th) [1-2][0-9]{3}'
-              substitute: '__date__'
+* **before_url_report** and **after_url_report**: Changes how SiteDiff reports which URLs it is comparing, but don't change what it actually compares.
+
+  Suppose you are serving your 'after' website on a virtual machine with IP 192.1.2.3, and you are also running SiteDiff inside that VM. To make links in the report accessible from outside the VM, you might provide
+
+  ```yaml
+  after_url: http://localhost
+  after_url_report: http://192.1.2.3
+  ```
+
+* **sanitization**: A list of regular expression rules to normalize your HTML for comparison.
+
+  Each rule should have a **pattern** regex, which is used to search the HTML. Each found instance is replaced with the provided **substitute**, or deleted if no substitute is provided.  A rule may also have a **selector**, which constrains it to operate only on HTML fragments which match that CSS selector.
+
+  For example, forms on Drupal sites have a build_id which is randomly generated:
+
+  ```html
+  <input type="hidden" name="form_build_id" value="form-1cac6b5b6141a72b2382928249605fb1"/>
+  ```
+
+  We're not interested in comparing random content, so we could use the following rule to fix this:
+
+  ```yaml
+    sanitization:
+    # Remove form build IDs
+    - pattern: '<input type="hidden" name="form_build_id" value="form-[a-zA-Z0-9_-]+" *\/?>'
+      selector: 'input'
+      substitute: '<input type="hidden" name="form_build_id" value="__form_build_id__">'
+   ```
+
+* **dom_transform**: A list of transformations to apply to the HTML before comparing.
+
+  This is similar to _sanitization_, but it applies transformations to the structure of the HTML, instead of to the text. Each transformation has a **type**, and potentially other attributes. The following types are available:
+
+  * **remove**: Given a **selector**, removes all elements that match it.
+
+  * **unwrap**: Given a **selector**, replaces all elements that match it with their children. For example, your content on one side of the comparison might look like this:
+
+    ```html
+    <p>This is some text</p>
+    <img src="test.png"/>
+    ```
+
+	But on the other side, it might be wrapped in an article tag:
+    ```html
+    <article>
+      <p>This is some text</p>
+      <img src="test.png"/>
+    </article>
+    ```
+
+    You could fix it with the following configuration:
+
+    ```yaml
+    dom_transform:
+      - type: unwrap
+        selector: article
+    ```
+
+  * **remove_class**: Given a **selector** and a **class**, removes that class from each element that matches the selector. It can also take a list of classes, instead of just one.
+
+  * **unwrap_root**: Replaces the entire root element with its children.
+
+* **before** and **after**: Applies rules to just one side of the comparison.
+
+  These blocks can contain any of the following sections: _selector_, _sanitization_,  _dom_transform_. Such a section placed in _before_ will be applied just to the _before_ side of the comparison, and similarly for _after_.
+
+  For example, if you wanted to let different date formatting not create diff failures, you might use the following:
+
+  ```yaml
+  before:
+    sanitization:
+    - pattern: '[1-2][0-9]{3}/[0-1][0-9]/[0-9]{2}'
+      substitute: '__date__'
+  after:
+    sanitization:
+    - pattern:  '[A-Z][a-z]{2} [0-9]{1,2}(st|nd|rd|th) [1-2][0-9]{3}'
+      substitute: '__date__'
+  ```
+
+   which will replace dates of the form `2004/12/05` in _before_ and dates of
+   the form `May 12th 2004` in _after_ with `__date__`.
+
+* **include**: The names of other configuration YAML files to merge with this one.
+
+  ```yaml
+  includes:
+    - config/sanitize_domains.yaml
+    - config/strip_css_js.yaml
+  ```
+
+## Samples
+
+The config directory contains some example config.yml files. Eg: [config.yml.example](config/config.yml.example)
+
+## Options
+
+The following command-line options are available for sitediff:
+
+* **--before=URL**
+* **--after=URL**
+
+  The base URLs to compare. Overrides _before_url__ or _after_url_ in the config.yml.
 
 
-   which will replace dates of the form `2004/12/05` in `before` and dates of
-   the form `May 12th 2004` in `after` with `__date__`.
-1. `include`: A configuration file can reference other YAML files to pull in the
-   sanitization rules and/or dom transforms defined by the external file:
+* **--before-url-report=URL**
+* **--after-url-report=URL**
 
-        includes:
-          - config/sanitize_domains.yaml
-          - config/strip_css_js.yaml
+  Change how SiteDiff reports the before/after URLs. Overrides _before_url_report_ or _after_url_report_ in the config.yml.
 
+
+* **--paths=FILE**: A file which contains a list of paths to compare, separated by newlines. Overrides _path_ in the config.yml.
+
+
+* **--dump-dir=DIR**: Where to place the output report and associated files. Defaults to `output` in the working directory.
+
+
+* **--paths-from-failures**: Uses as _paths_ only the paths that failed in the last run of SiteDiff.
+
+
+* **--cache=FILE**: Caches HTTP requests and responses in the given file. This can help for sites that are slow, if you're performing multiple runs of SiteDiff.

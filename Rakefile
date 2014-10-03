@@ -40,10 +40,23 @@ RSpec::Core::RakeTask.new(:spec) do |t|
   t.pattern = './spec/unit/**/*_spec.rb'
 end
 
+
+def serve(port, dir)
+  port ||= PORT
+  puts "Serving at http://localhost:#{port}"
+  SiteDiff::Util::Webserver.serve(port, dir)
+end
+
+def http_fixtures
+  serv = SiteDiff::Util::FixtureServer.new
+  sh *CMD, '--before', serv.before, '--after', serv.after
+  return serv
+end
+
+
 desc 'Serve the output directory of sitediff'
 task :serve, [:port, :dir] do |t, args|
-  SiteDiff::Util::Webserver.serve(
-    args[:port] || PORT, args[:dir] || 'output').wait
+  serve(args[:port], args[:dir] || 'output').wait
 end
 
 namespace :fixture do
@@ -56,9 +69,13 @@ namespace :fixture do
 
   desc 'Run a sitediff test case, using web servers'
   task :served do
-    SiteDiff::Util::FixtureServer.new do |f|
-      sh *CMD, '--before', f.before, '--after', f.after
-    end
+    http_fixtures.kill
+  end
+
+  desc 'Serve the result of the fixture test'
+  task :serve do
+    http_fixtures
+    serve(PORT, 'output').wait
   end
 
   desc 'Check that the test case works'
