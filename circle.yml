@@ -1,0 +1,8 @@
+machine:
+  services:
+    - docker
+
+test:
+  post:
+    - rake docker:build
+    - rake docker:run[tests]
