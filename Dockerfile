@@ -7,7 +7,8 @@ ENV DEBIAN_FRONTEND noninteractive
 # Building ruby native extensions requires ruby-dev and make
 # Nokogiri requires libxml2, libxslt, pkg-config to build
 # Typhoeus requires libcurl3 to run
-RUN apt-get install -y ruby-dev make pkg-config libxml2-dev libxslt-dev libcurl3 bundler
+# We need rake for our build
+RUN apt-get install -y ruby-dev make rake pkg-config libxml2-dev libxslt-dev libcurl3 bundler
 
 # Force nokogiri gem not to compile libxml2, it takes too long
 ENV NOKOGIRI_USE_SYSTEM_LIBRARIES 1
