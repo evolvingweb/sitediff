@@ -4,21 +4,28 @@ class SiteDiff
   module Util
     # Simple webserver for testing purposes
     class Webserver
+      DEFAULT_PORT = 13080
+
       attr_accessor :ports
 
       # Serve a list of directories
       def initialize(start_port, dirs, params = {})
+        start_port ||= DEFAULT_PORT
+        @ports = (start_port...(start_port + dirs.size)).to_a
+
+        if params[:announce]
+          puts "Serving at #{uris.join(", ")}"
+        end
+
         opts = {}
         if params[:quiet]
           opts[:Logger] = WEBrick::Log.new(IO::NULL)
           opts[:AccessLog] = []
         end
 
-        @ports = []
         @threads = []
         dirs.each_with_index do |dir, idx|
-          opts[:Port] = start_port + idx
-          @ports << opts[:Port]
+          opts[:Port] = @ports[idx]
           opts[:DocumentRoot] = dir
           server = WEBrick::HTTPServer.new(opts)
           @threads << Thread.new { server.start }
@@ -50,7 +57,7 @@ class SiteDiff
     end
 
     class FixtureServer < Webserver
-      PORT = 13081
+      PORT = DEFAULT_PORT + 1
       BASE = 'spec/fixtures'
       NAMES = %w[before after]
 

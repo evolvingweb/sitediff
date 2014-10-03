@@ -1,6 +1,7 @@
 require 'thor'
 require 'sitediff/util/diff'
 require 'sitediff/util/sanitize'
+require 'sitediff/util/webserver'
 require 'open-uri'
 require 'uri'
 
@@ -57,6 +58,21 @@ class SiteDiff
 
       sitediff.dump(options['dump-dir'], options['before-url-report'],
         options['after-url-report'])
+    end
+
+    option :port,
+      :type => :numeric,
+      :default => SiteDiff::Util::Webserver::DEFAULT_PORT,
+      :desc => 'The port to serve on'
+    option :directory,
+      :type => :string,
+      :default => 'output',
+      :desc => 'The directory to serve',
+      :aliases => '--dump-dir'
+    desc "serve [OPTIONS]", "Serve the sitediff output directory over HTTP"
+    def serve
+      SiteDiff::Util::Webserver.serve(options[:port], options[:directory],
+        :announce => true).wait
     end
   end
 end

@@ -5,8 +5,6 @@ LIB_DIR = File.join(File.dirname(__FILE__), 'lib')
 $LOAD_PATH << LIB_DIR
 require 'sitediff/util/webserver'
 
-PORT = 13080
-
 task :default => :tests
 
 desc 'Run all tests'
@@ -41,22 +39,15 @@ RSpec::Core::RakeTask.new(:spec) do |t|
 end
 
 
-def serve(port, dir)
-  port ||= PORT
-  puts "Serving at http://localhost:#{port}"
-  SiteDiff::Util::Webserver.serve(port, dir)
+def serve(port, dir, announce = false)
+  port ||= SiteDiff::Util::Webserver::DEFAULT_PORT
+  SiteDiff::Util::Webserver.serve(port, dir, :announce => announce)
 end
 
 def http_fixtures
   serv = SiteDiff::Util::FixtureServer.new
   sh *CMD, '--before', serv.before, '--after', serv.after
   return serv
-end
-
-
-desc 'Serve the output directory of sitediff'
-task :serve, [:port, :dir] do |t, args|
-  serve(args[:port], args[:dir] || 'output').wait
 end
 
 namespace :fixture do
@@ -75,7 +66,8 @@ namespace :fixture do
   desc 'Serve the result of the fixture test'
   task :serve do
     http_fixtures
-    serve(PORT, 'output').wait
+    SiteDiff::Util::Webserver.serve(nil, 'output', :announce => true,
+      :quiet => true).wait
   end
 
   desc 'Check that the test case works'
