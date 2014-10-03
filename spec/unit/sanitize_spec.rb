@@ -9,4 +9,12 @@ describe SiteDiff::Util::Sanitize do
       expect(doc.to_s).to include '<html><body class="x  y"> z </body></html>'
     end
   end
+
+  describe '::sanitize' do
+    it "doesn't strip HTML entities" do
+      input = '<p>&mdash;</p>'
+      output = SiteDiff::Util::Sanitize.sanitize(input, {})
+      expect(output).to include "\u2014"
+    end
+  end
 end
