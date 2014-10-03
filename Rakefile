@@ -2,9 +2,15 @@ require 'bundler'
 require 'rspec/core/rake_task'
 
 LIB_DIR = File.join(File.dirname(__FILE__), 'lib')
+$LOAD_PATH << LIB_DIR
+require 'sitediff/util/webserver'
+
 PORT = 13080
 
-task :default => :spec
+task :default => :tests
+
+desc 'Run all tests'
+task :tests => [:spec, 'fixture:spec']
 
 # TODO should we expose prof.html as an argument?
 desc 'Profile sitediff'
@@ -36,7 +42,8 @@ end
 
 desc 'Serve the output directory of sitediff'
 task :serve, [:port, :dir] do |t, args|
-  webserver(args[:port] || PORT, args[:dir] || 'output').join
+  SiteDiff::Util::Webserver.serve(
+    args[:port] || PORT, args[:dir] || 'output').wait
 end
 
 namespace :fixture do
@@ -49,16 +56,14 @@ namespace :fixture do
 
   desc 'Run a sitediff test case, using web servers'
   task :served do
-    threads = []
-    urls = []
-    %w[before after].each_with_index do |dir, i|
-      port = PORT + i + 1
-      threads << webserver(port, File.join('spec/fixtures', dir),
-        :quiet => true)
-      urls << "http://localhost:#{port}"
+    SiteDiff::Util::FixtureServer.new do |f|
+      sh *CMD, '--before', f.before, '--after', f.after
     end
-    sh *CMD, '--before', urls.first, '--after', urls.last
-    threads.each { |t| t.kill }
+  end
+
+  desc 'Check that the test case works'
+  RSpec::Core::RakeTask.new(:spec) do |t|
+    t.pattern = './spec/fixtures/*_spec.rb'
   end
 end
 
@@ -82,21 +87,3 @@ namespace :docker do
     sh 'docker', 'run', *opts, IMAGE, *cmd
   end
 end
-
-# Start a web server, return a thread
-def webserver(port, dir, params = {})
-  require 'webrick'
-  opts = {
-    :Port => port,
-    :DocumentRoot => dir,
-  }
-  if params[:quiet]
-    opts.merge!({
-      :Logger => WEBrick::Log.new(IO::NULL),
-      :AccessLog => [],
-    })
-  end
-  w = WEBrick::HTTPServer.new(opts)
-  Thread.new { w.start }
-end
-
