@@ -79,7 +79,7 @@ namespace :docker do
   task :run, [:task] do |t, args|
     opts = ['-v', "#{Dir.pwd}:/sitediff", '-t']
     if tsk = args[:task]
-      cmd = ['rake', tsk]
+      cmd = ['bundle', 'exec', 'rake', tsk]
     else
       opts += ['-i']
       cmd = ['bash']
