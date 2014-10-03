@@ -81,7 +81,7 @@ namespace :docker do
     if tsk = args[:task]
       cmd = ['rake', tsk]
     else
-      opts = ['-i']
+      opts += ['-i']
       cmd = ['bash']
     end
     sh 'docker', 'run', *opts, IMAGE, *cmd
