@@ -7,7 +7,7 @@ rvm:
 
 before_install:
 - sudo apt-get update
-- sudo apt-get install -y ruby-dev make pkg-config libxml2-dev libxslt-dev libcurl3'
+- sudo apt-get install -y ruby-dev make pkg-config libxml2-dev libxslt-dev libcurl3
 
 install: NOKOGIRI_USE_SYSTEM_LIBRARIES=1 bundle install
 
