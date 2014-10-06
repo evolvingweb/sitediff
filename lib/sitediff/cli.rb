@@ -46,18 +46,16 @@ class SiteDiff
     def diff(*config_files)
       if options['paths-from-failures']
         SiteDiff::log "Reading paths from failures.txt"
-        paths = File.readlines("#{options['dump-dir']}/failures.txt")
+        run_opts['paths'] = File.readlines("#{options['dump-dir']}/failures.txt")
       elsif options['paths-from-file']
         SiteDiff::log "Reading paths from file: #{options['paths-from-file']}"
-        paths = File.readlines(options['paths-from-file'])
+        run_opts['paths'] = File.readlines(options['paths-from-file'])
       end
 
-      sitediff = SiteDiff.new(config_files, options['before-url'],
-                              options['after-url'], paths, options['cache'])
+      config = SiteDiff::Config.new(config_files, options)
+      sitediff = SiteDiff.new(config, options['cache'])
       sitediff.run
-
-      sitediff.dump(options['dump-dir'], options['before-url-report'],
-        options['after-url-report'])
+      sitediff.dump(options['dump-dir'])
     end
 
     option :port,

@@ -15,25 +15,12 @@ class SiteDiff
     puts str
   end
 
-  attr_accessor :before, :after, :paths, :results
+  attr_accessor :before, :after, :config, :results
   def before
-    @before || @config['before_url']
+    @config.before.url
   end
   def after
-    @after || @config['after_url']
-  end
-
-  # Sets the array of paths for comparison.
-  #
-  # Defaults to single path '/' if none specified and ensures all paths start
-  # with '/'.
-  def paths=(paths)
-    paths = ['/'] unless paths and !paths.empty?
-    paths ||= ['/']
-    @paths = paths.map do |p|
-      p = p.chomp
-      p[0] == '/' ? p : p.prepend('/')
-    end
+    @config.after.url
   end
 
   def cache=(file)
@@ -47,18 +34,14 @@ class SiteDiff
     end
   end
 
-  def initialize(config_files, before, after, paths, cache)
-    @config = Config.new(config_files)
-    paths = @config.paths unless paths
-    self.before = before
-    self.after = after
-    self.paths = paths
-    self.cache = cache
+  def initialize(config, cache)
+    @config = config
+    @cache = cache
   end
 
   # Sanitize an HTML string based on configuration for either before or after
   def sanitize(html, pos)
-    Util::Sanitize::sanitize(html, @config.send(pos))
+    Util::Sanitize::sanitize(html, @config.send(pos).spec)
   end
 
   # Queues fetching before and after URLs with a Typhoeus::Hydra instance
@@ -94,18 +77,15 @@ class SiteDiff
     @results = {}
 
     hydra = Typhoeus::Hydra.new(max_concurrency: 3)
-    paths.each { |path| queue_read(hydra, path) }
+    @config.paths.each { |path| queue_read(hydra, path) }
     hydra.run
 
     # Order by original path order
-    @results = paths.map { |p| @results[p] }
+    @results = @config.paths.map { |p| @results[p] }
   end
 
   # Dump results to disk
-  def dump(dir, before_report, after_report)
-    before_report ||= @config['before_url_report'] || before.to_s
-    after_report ||= @config['after_url_report'] || after.to_s
-
+  def dump(dir)
     FileUtils.mkdir_p(dir)
 
     # dump output of each failure
@@ -123,7 +103,8 @@ class SiteDiff
 
     # create report of results
     report = Util::Diff::generate_html_report(results,
-      before_report, after_report)
+                                              @config.before.url_report,
+                                              @config.before.url_report)
     File.open(File.join(dir, "/report.html") , 'w') { |f| f.write(report) }
 
     SiteDiff::log "All diff files were dumped inside #{dir}", :yellow, :black

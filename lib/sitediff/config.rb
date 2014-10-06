@@ -2,25 +2,91 @@ require 'yaml'
 
 class SiteDiff
   class Config
-    def initialize(files)
-      @config = {}
+    # Contains all configuration for any of before or after: url, url_report,
+    # and all the transformation rules defined in Util::Sanitize.
+    class Site < Struct.new(:url, :url_report)
+      attr_reader :spec
+      def initialize(url, url_report, spec)
+        super(url, url_report)
+        @spec = {}
+        tools = Util::Sanitize::TOOLS
+        tools[:array].each do |key|
+          @spec[key] = [] + spec[key.to_s]
+        end
+        tools[:scalar].each do |key|
+          @spec[key] = spec[key.to_s]
+        end
+      end
+
+    end
+
+    # Reads and merges provided configuration files, fetches dependencies
+    # defined via 'include' and overrides configuration, if necessary, by
+    # runtime options.
+    def initialize(files, run_opts)
+      raw = load_conf(files)
+      @sites = {}
+      self.paths = run_opts['paths'] || raw['paths']
+
+      %w[before after].each do |pos|
+        url = run_opts[pos + '-url'] || raw[pos + '-url']
+        url_report = run_opts[pos + '-url-report'] ||
+                     raw[pos + '-url-report'] ||
+                     url
+        @sites[pos] = Site.new(url, url_report, raw[pos])
+      end
+    end
+
+    def to_s
+      YAML.dump to_h
+    end
+
+    def to_h
+      h = {'paths' => @paths, 'before' => {}, 'after' => {}}
+      %w[before after].each do |pos|
+        h[pos]['url'] = @sites[pos].url
+        h[pos]['url_report'] = @sites[pos].url_report
+        h[pos]['spec'] = @sites[pos].spec
+      end
+      h
+    end
+
+    # Returns a configuration hash from an array of YAML configuration files.
+    #
+    # 1. Included files are merged into the final hash,
+    # 2. Global configuration is merged into 'before' and 'after' subhashes with
+    #    appropriate overriding rules
+    def load_conf(files)
+      conf = {}
       files.each do |file|
         SiteDiff::log "Reading config file: #{file}"
-        conf = YAML.load_file(file)
+        conf_item = YAML.load_file(file)
 
         # support 1 level of recursion via "includes:" key
         if deps = conf.delete("includes")
           deps.each do |dep_file|
             SiteDiff::log "Reading dependent config file: #{dep_file}"
             dep_conf = YAML.load_file(dep_file)
-            config_merge(@config, dep_conf)
+            config_merge(conf, dep_conf)
           end
         end
-        config_merge(@config, conf, file)
+        config_merge(conf, conf_item, file)
       end
 
-      @spec = {}
-      %w[before after].each { |pos| @spec[pos] = specialize(pos) }
+      # merge globals
+      tools = Util::Sanitize::TOOLS
+      %w[before after].each do |pos|
+        conf[pos] ||= {}
+        tools[:array].each do |key|
+          conf[pos][key] ||= []
+          conf[pos][key] += conf[key] || []
+        end
+        tools[:scalar].each do |key|
+          conf[pos][key] ||= conf[key] # global can be overriden
+        end
+      end
+
+      conf
     end
 
     # Perform one level deep merge on config hashes.
@@ -41,35 +107,26 @@ class SiteDiff
       end
     end
 
-    def [](name)
-      return @config[name]
-    end
-
-    # Specialize a config for either "before" or "after"
-    def specialize(name)
-      target = {}
-      spec = @config[name] || {}
-      tools = Util::Sanitize::TOOLS
-      tools[:array].each do |key|
-        target[key] = []
-        target[key] += @config[key] || []
-        target[key] += spec[key] || []
-      end
-      tools[:scalar].each do |key|
-        target[key] = @config[key] || spec[key]
-      end
-      return target
-    end
-
     def before
-      @spec['before']
+      @sites['before']
     end
     def after
-      @spec['after']
+      @sites['after']
     end
 
+    # Sets the array of paths for comparison.
+    #
+    # Defaults to single path '/' if none specified and ensures all paths start
+    # with '/'.
+    def paths=(paths)
+      paths = ['/'] unless paths and !paths.empty?
+      @paths = paths.map do |p|
+        p = p.chomp
+        p[0] == '/' ? p : p.prepend('/')
+      end
+    end
     def paths
-      @config["paths"]
+      @paths
     end
   end
 end

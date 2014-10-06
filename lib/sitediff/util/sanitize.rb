@@ -23,10 +23,10 @@ class SiteDiff
       #  * { :type => "remove", :selector => "div.extra-stuff" }
       #
       #  @arg node - Nokogiri document or Node
-      #  @arg config - array of dom_transform rules
+      #  @arg rules - array of dom_transform rules
       #  @return - transformed Nokogiri document node
-      def perform_dom_transforms(node, config)
-        config.each do |rule|
+      def perform_dom_transforms(node, rules)
+        rules.each do |rule|
           type = rule['type'] or
             raise InvalidSanitization, "DOM transform needs a type"
           DOM_TRANSFORMS.include?(type) or
@@ -181,7 +181,7 @@ class SiteDiff
 
         remove_spacing(node) if config['remove_spacing']
         node = select_root(node, config['selector'])
-        if transform = config["dom_transform"]
+        if transform = config['dom_transform']
           perform_dom_transforms(node, transform)
         end
 
