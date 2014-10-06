@@ -11,7 +11,7 @@ class SiteDiff
         @spec = {}
         tools = Util::Sanitize::TOOLS
         tools[:array].each do |key|
-          @spec[key] = [] + spec[key.to_s]
+          @spec[key] = spec[key.to_s] || []
         end
         tools[:scalar].each do |key|
           @spec[key] = spec[key.to_s]
@@ -24,21 +24,22 @@ class SiteDiff
     # defined via 'include' and overrides configuration, if necessary, by
     # runtime options.
     def initialize(files, run_opts)
-      raw = load_conf(files)
+      yaml_config = load_conf(files)
       @sites = {}
-      self.paths = run_opts['paths'] || raw['paths']
+      self.paths = run_opts['paths'] || yaml_config['paths']
 
       %w[before after].each do |pos|
-        url = run_opts[pos + '-url'] || raw[pos + '-url']
+        url = run_opts[pos + '-url'] || yaml_config[pos + '-url']
         url_report = run_opts[pos + '-url-report'] ||
-                     raw[pos + '-url-report'] ||
+                     yaml_config[pos + '-url-report'] ||
                      url
-        @sites[pos] = Site.new(url, url_report, raw[pos])
+        @sites[pos] = Site.new(url, url_report, yaml_config[pos])
       end
     end
 
     def to_s
-      YAML.dump to_h
+      # FIXME this creates YAML aliases for concision; hard to read sometimes.
+      to_h.to_yaml
     end
 
     def to_h
