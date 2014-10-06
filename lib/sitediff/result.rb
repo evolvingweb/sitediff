@@ -30,7 +30,7 @@ class SiteDiff
 
     # Printable URL
     def url(prefix)
-      prefix.to_s + '/' + path
+      prefix.to_s + path
     end
 
     # Filename to store diff

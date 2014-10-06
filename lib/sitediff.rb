@@ -17,18 +17,23 @@ class SiteDiff
 
   attr_accessor :before, :after, :paths, :results
   def before
-    Util::UriWrapper.new(@before || @config['before_url'])
+    @before || @config['before_url']
   end
   def after
-    Util::UriWrapper.new(@after || @config['after_url'])
+    @after || @config['after_url']
   end
 
+  # Sets the array of paths for comparison.
+  #
+  # Defaults to single path '/' if none specified and ensures all paths start
+  # with '/'.
   def paths=(paths)
-    paths ||= ['']
-    @paths = paths.map { |p| p.chomp }
-  end
-  def paths
-    defined?(@paths) ? @paths : @config.paths
+    paths = ['/'] unless paths and !paths.empty?
+    paths ||= ['/']
+    @paths = paths.map do |p|
+      p = p.chomp
+      p[0] == '/' ? p : p.prepend('/')
+    end
   end
 
   def cache=(file)
@@ -44,9 +49,10 @@ class SiteDiff
 
   def initialize(config_files, before, after, paths, cache)
     @config = Config.new(config_files)
+    paths = @config.paths unless paths
     self.before = before
     self.after = after
-    self.paths = paths if paths
+    self.paths = paths
     self.cache = cache
   end
 
@@ -63,7 +69,7 @@ class SiteDiff
     # ( :before | after ) => ReadResult object
     reads = {}
     [:before, :after].each do |pos|
-      uri = send(pos) + path # new UriWrapper object with new URI string
+      uri = Util::UriWrapper.new(send(pos) + path)
 
       uri.queue(hydra) do |res|
         reads[pos] = res

@@ -1,4 +1,4 @@
 before_url: spec/fixtures/before
 after_url: spec/fixtures/after
 paths:
-  - fixture.html
+  - /fixture.html

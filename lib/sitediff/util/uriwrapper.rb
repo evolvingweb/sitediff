@@ -15,6 +15,8 @@ class SiteDiff
 
       def initialize(uri)
         @uri = uri.respond_to?(:scheme) ? uri : URI.parse(uri)
+        # remove trailing '/'s from local URIs
+        @uri.path.gsub!(/\/*$/, '') if local?
       end
 
       def user
@@ -37,9 +39,9 @@ class SiteDiff
         @uri.scheme == nil
       end
 
+      # FIXME this is not used anymore
       def +(path)
-        # To SiteDiff, path is what to URI is path + query + fragment. Need to
-        # reparse on each manipulation operation.
+        # 'path' for SiteDiff includes (parts of) path, query, and fragment.
         sep = ''
         if local? || @uri.path.empty?
           sep = '/'
@@ -89,8 +91,8 @@ class SiteDiff
         end
 
         req.on_failure do |resp|
-          yield ReadResult.error(resp.status_message ||
-                                 "Unknown HTTP error in fetching #{@uri}")
+          yield ReadResult.error("HTTP error #{@uri}: " +
+                                 resp.status_message || "Unknown Error")
         end
 
         req

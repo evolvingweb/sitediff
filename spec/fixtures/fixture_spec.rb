@@ -25,7 +25,7 @@ describe SiteDiff::Cli do
         expect(status.success?).to be true
 
         # Should report that fixture.html doesn't match
-        expect(out).to include 'FAILURE: fixture.html'
+        expect(out).to include 'FAILURE: /fixture.html'
 
         # Should report that a matching line matches
         expect(out).to match /^\s+parturient/
@@ -37,7 +37,7 @@ describe SiteDiff::Cli do
         # There should be a failures file
         failures = File.join(dir, 'failures.txt')
         expect(File.file?(failures)).to be true
-        expect(File.read(failures).strip).to eq 'fixture.html'
+        expect(File.read(failures).strip).to eq '/fixture.html'
 
         # There should be a report file
         report = File.join(dir, 'report.html')
