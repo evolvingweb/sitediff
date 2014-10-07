@@ -36,7 +36,7 @@ class SiteDiff
 
   def initialize(config, cache)
     @config = config
-    @cache = cache
+    self.cache = cache
   end
 
   # Sanitize an HTML string based on configuration for either before or after
