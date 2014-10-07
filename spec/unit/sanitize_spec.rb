@@ -33,6 +33,27 @@ describe SiteDiff::Util::Sanitize do
       expect(SiteDiff::Util::Sanitize.sanitize(input, config)).to include(
         '<input type="hidden" name="form_build_id" value="__form_build_id__"/>')
     end
+    it "can perform regex replacements with captures" do
+      input = '<img src="/file.jpeg-1cac1a72b2fb1" class="box"/>'
+      config = { 'sanitization' => [ {
+        'pattern' => '(<img src="\/[a-zA-Z0-9.]+)-[1-9a-zA-Z_]*(".*>)',
+        'substitute' => '\1\2'
+      } ] }
+      expect(SiteDiff::Util::Sanitize.sanitize(input, config)).to include(
+        '<img src="/file.jpeg" class="box"/>')
+    end
+    # FIXME cleanup sanitize.rb such that the following (and similar tests for
+    # transformations are more reasonable.
+    it "can perform an unwrap" do
+      input = '<div class="parent"><p>X</p><p>Y</p></div>'
+      config = { 'dom_transform' => [ {
+        'type' => 'unwrap',
+        'selector' => '.parent'
+      } ] }
+      output = SiteDiff::Util::Sanitize.sanitize(input, config)
+      expect(output).not_to include('parent')
+      expect(output.gsub(/\s*/, '')).to include('<p>X</p><p>Y</p>')
+    end
   end
 
   # TODO:

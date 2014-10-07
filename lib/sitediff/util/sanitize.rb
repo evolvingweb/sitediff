@@ -134,6 +134,7 @@ class SiteDiff
 
       # Do one regexp transformation on a string
       def substitute(str, rule)
+        #FIXME escape forward slashes, right now we are escaping them in YAML!
         str.gsub!(/#{rule['pattern']}/, rule['substitute'] || '' )
         str
       end
