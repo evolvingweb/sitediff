@@ -30,6 +30,10 @@ class SiteDiff
         erb_path = File.join([File.dirname(__FILE__), 'diff.html.erb'])
         return ERB.new(File.read(erb_path)).result(binding)
       end
+
+      def css
+        File.read(File.join(File.dirname(__FILE__),'./sitediff.css'))
+      end
     end
   end
 end
