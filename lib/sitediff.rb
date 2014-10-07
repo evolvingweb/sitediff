@@ -104,7 +104,7 @@ class SiteDiff
     # create report of results
     report = Util::Diff::generate_html_report(results,
                                               @config.before.url_report,
-                                              @config.before.url_report)
+                                              @config.after.url_report)
     File.open(File.join(dir, "/report.html") , 'w') { |f| f.write(report) }
 
     SiteDiff::log "All diff files were dumped inside #{dir}", :yellow, :black
