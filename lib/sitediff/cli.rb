@@ -44,14 +44,16 @@ class SiteDiff
         :lazy_default => 'cache.db'
     desc "diff [OPTIONS] [CONFIGFILES]", "Perform systematic diff on given URLs"
     def diff(*config_files)
-      # FIXME should we avoid stumping over options?
-      run_opts = options.dup
-      if run_opts['paths-from-failures']
-        SiteDiff::log "Reading paths from failures.txt"
-        run_opts['paths'] = File.readlines("#{options['dump-dir']}/failures.txt")
-      elsif run_opts['paths-from-file']
-        SiteDiff::log "Reading paths from file: #{options['paths-from-file']}"
-        run_opts['paths'] = File.readlines(options['paths-from-file'])
+      # configuration parameters overriden by command line options.
+      run_opts = {}
+      %w[before-url before-url-report after-url after-url-report].each do |opt|
+        run_opts[opt.gsub('-', '_')] = options[opt] if options[opt]
+      end
+
+      if options['paths-from-failures']
+        run_opts['paths_file'] = "#{options['dump-dir']}/failures.txt"
+      elsif options['paths-from-file']
+        run_opts['paths_file'] = options['paths-from-file']
       end
 
       config = SiteDiff::Config.new(config_files, run_opts)

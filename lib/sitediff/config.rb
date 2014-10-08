@@ -24,16 +24,23 @@ class SiteDiff
     # defined via 'include' and overrides configuration, if necessary, by
     # runtime options.
     def initialize(files, run_opts)
-      yaml_config = load_conf(files)
-      @sites = {}
-      self.paths = run_opts['paths'] || yaml_config['paths']
+      conf = load_conf(files)
 
+      if run_opts['paths_file']
+        SiteDiff::log "Reading paths from: #{paths}"
+        self.paths = File.readlines(run_opts['paths_file'])
+      else
+        self.paths = conf['paths']
+      end
+
+      @sites = {}
       %w[before after].each do |pos|
-        url = run_opts[pos + '-url'] || yaml_config[pos + '-url']
-        url_report = run_opts[pos + '-url-report'] ||
-                     yaml_config[pos + '-url-report'] ||
-                     url
-        @sites[pos] = Site.new(url, url_report, yaml_config[pos])
+        key = pos + '_url'
+        url = run_opts[key] || conf[key]
+
+        key = pos + '_url_report'
+        url_report = run_opts[key] || conf[key] || url
+        @sites[pos] = Site.new(url, url_report, conf[pos])
       end
     end
 
