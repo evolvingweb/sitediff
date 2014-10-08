@@ -1,6 +1,7 @@
 # SiteDiff
 
 [![Build Status](https://travis-ci.org/evolvingweb/sitediff.svg?branch=master)](https://travis-ci.org/evolvingweb/sitediff)
+[![CircleCI Status](https://circleci.com/gh/evolvingweb/sitediff/tree/master.png?style=shield)](https://circleci.com/gh/evolvingweb/sitediff)
 
 SiteDiff makes it easy to see differences between two versions of a website. It
 accepts a set of paths to compare two versions of the site together with
