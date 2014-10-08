@@ -101,7 +101,7 @@ class SiteDiff
       # Pretty-print the HTML
       def prettify(obj)
         @stylesheet ||= begin
-          stylesheet_path = File.join([File.dirname(__FILE__),'pretty_print.xsl'])
+          stylesheet_path = File.join(SiteDiff::FILES_DIR, 'pretty_print.xsl')
           Nokogiri::XSLT(File.read(stylesheet_path))
         end
 

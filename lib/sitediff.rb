@@ -2,12 +2,13 @@
 require 'sitediff/cli.rb'
 require 'sitediff/config.rb'
 require 'sitediff/result.rb'
-require 'sitediff/util/uriwrapper'
+require 'sitediff/uriwrapper'
 require 'sitediff/util/cache'
 require 'typhoeus'
 require 'rainbow'
 
 class SiteDiff
+  FILES_DIR = File.join(File.dirname(__FILE__), 'sitediff', 'files')
   def self.log(str, bg = nil, fg = nil)
     str = Rainbow("[sitediff] #{str}")
     str = str.bg(bg) if bg

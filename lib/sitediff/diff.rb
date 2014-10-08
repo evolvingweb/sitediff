@@ -21,18 +21,18 @@ class SiteDiff
       end
 
       def generate_html_report(results, before, after)
-        erb_path = File.join([File.dirname(__FILE__), 'html_report.html.erb'])
+        erb_path = File.join(SiteDiff::FILES_DIR, 'html_report.html.erb')
         report_html = ERB.new(File.read(erb_path)).result(binding)
         return report_html
       end
 
       def generate_diff_output(result)
-        erb_path = File.join([File.dirname(__FILE__), 'diff.html.erb'])
+        erb_path = File.join(SiteDiff::FILES_DIR, 'diff.html.erb')
         return ERB.new(File.read(erb_path)).result(binding)
       end
 
       def css
-        File.read(File.join(File.dirname(__FILE__),'./sitediff.css'))
+        File.read(File.join(SiteDiff::FILES_DIR, 'sitediff.css'))
       end
     end
   end

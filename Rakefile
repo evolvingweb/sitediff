@@ -76,6 +76,7 @@ namespace :fixture do
   end
 end
 
+# FIXME add a test to run spec on the installed gem inside docker container
 namespace :docker do
   IMAGE = "evolvingweb/sitediff"
 
