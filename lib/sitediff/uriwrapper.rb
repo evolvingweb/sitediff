@@ -91,8 +91,9 @@ class SiteDiff
         end
 
         req.on_failure do |resp|
-          yield ReadResult.error("HTTP error #{@uri}: " +
-                                 resp.status_message || "Unknown Error")
+          msg = 'Unknown Error'
+          msg = resp.status_message if resp and resp.status_message
+          yield ReadResult.error("HTTP error #{@uri}: #{msg}")
         end
 
         req
