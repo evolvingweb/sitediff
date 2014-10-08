@@ -14,7 +14,7 @@ class SiteDiff
       if error
         @status = STATUS_ERROR
       else
-        @diff = Util::Diff::html_diffy(before, after)
+        @diff = Diff::html_diffy(before, after)
         @status = @diff ? STATUS_FAILURE : STATUS_SUCCESS
       end
     end
@@ -59,7 +59,7 @@ class SiteDiff
         SiteDiff::log path, :error, "ERROR (#{error})"
       when STATUS_FAILURE then
         SiteDiff::log path, :failure, "FAILURE"
-        puts Util::Diff::terminal_diffy(before, after)
+        puts Diff::terminal_diffy(before, after)
       end
     end
 
@@ -69,7 +69,7 @@ class SiteDiff
       base = File.dirname(dump_path)
       FileUtils::mkdir_p(base) unless File.exists?(base)
       File.open(dump_path, 'w') do |f|
-        f.write(Util::Diff::generate_diff_output(self))
+        f.write(Diff::generate_diff_output(self))
       end
     end
   end

@@ -3,13 +3,13 @@ require 'yaml'
 class SiteDiff
   class Config
     # Contains all configuration for any of before or after: url, url_report,
-    # and all the transformation rules defined in Util::Sanitize.
+    # and all the transformation rules defined in Sanitize.
     class Site < Struct.new(:url, :url_report)
       attr_reader :spec
       def initialize(url, url_report, spec)
         super(url, url_report)
         @spec = {}
-        tools = Util::Sanitize::TOOLS
+        tools = Sanitize::TOOLS
         tools[:array].each do |key|
           @spec[key] = spec[key.to_s] || []
         end
@@ -82,7 +82,7 @@ class SiteDiff
       end
 
       # merge globals
-      tools = Util::Sanitize::TOOLS
+      tools = Sanitize::TOOLS
       %w[before after].each do |pos|
         conf[pos] ||= {}
         tools[:array].each do |key|

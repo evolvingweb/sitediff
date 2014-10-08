@@ -1,11 +1,11 @@
 require "spec_helper"
 require 'nokogiri'
 
-describe SiteDiff::Util::Sanitize do
+describe SiteDiff::Sanitize do
   describe '::remove_spacing' do
     it 'normalizes space but only within text nodes' do
       doc = Nokogiri::HTML('<html><body  class="x  y">  z  </body></html>')
-      SiteDiff::Util::Sanitize::remove_spacing(doc)
+      SiteDiff::Sanitize::remove_spacing(doc)
       expect(doc.to_s).to include '<html><body class="x  y"> z </body></html>'
     end
   end
@@ -13,14 +13,14 @@ describe SiteDiff::Util::Sanitize do
   describe '::sanitize' do
     it "doesn't strip HTML entities" do
       input = '<p>&mdash;</p>'
-      output = SiteDiff::Util::Sanitize.sanitize(input, {})
+      output = SiteDiff::Sanitize.sanitize(input, {})
       expect(output).to include "\u2014"
     end
 
     it "can perform a simple regex rule" do
       input = '<p>test something</p>'
       config = { 'sanitization' => [ { 'pattern' => 'something' } ] }
-      expect(SiteDiff::Util::Sanitize.sanitize(input, config)).to include(
+      expect(SiteDiff::Sanitize.sanitize(input, config)).to include(
         '<p>test </p>')
     end
     it "can perform a more complex regex " do
@@ -30,7 +30,7 @@ describe SiteDiff::Util::Sanitize do
         'selector' => 'input',
         'substitute' => '<input type="hidden" name="form_build_id" value="__form_build_id__">'
       } ] }
-      expect(SiteDiff::Util::Sanitize.sanitize(input, config)).to include(
+      expect(SiteDiff::Sanitize.sanitize(input, config)).to include(
         '<input type="hidden" name="form_build_id" value="__form_build_id__"/>')
     end
     it "can perform regex replacements with captures" do
@@ -39,7 +39,7 @@ describe SiteDiff::Util::Sanitize do
         'pattern' => '(<img src="\/[a-zA-Z0-9.]+)-[1-9a-zA-Z_]*(".*>)',
         'substitute' => '\1\2'
       } ] }
-      expect(SiteDiff::Util::Sanitize.sanitize(input, config)).to include(
+      expect(SiteDiff::Sanitize.sanitize(input, config)).to include(
         '<img src="/file.jpeg" class="box"/>')
     end
     # FIXME cleanup sanitize.rb such that the following (and similar tests for
@@ -50,7 +50,7 @@ describe SiteDiff::Util::Sanitize do
         'type' => 'unwrap',
         'selector' => '.parent'
       } ] }
-      output = SiteDiff::Util::Sanitize.sanitize(input, config)
+      output = SiteDiff::Sanitize.sanitize(input, config)
       expect(output).not_to include('parent')
       expect(output.gsub(/\s*/, '')).to include('<p>X</p><p>Y</p>')
     end

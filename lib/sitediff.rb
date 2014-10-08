@@ -57,7 +57,7 @@ class SiteDiff
 
   # Sanitize an HTML string based on configuration for either before or after
   def sanitize(html, pos)
-    Util::Sanitize::sanitize(html, @config.send(pos).spec)
+    Sanitize::sanitize(html, @config.send(pos).spec)
   end
 
   # Queues fetching before and after URLs with a Typhoeus::Hydra instance
@@ -68,7 +68,7 @@ class SiteDiff
     # ( :before | after ) => ReadResult object
     reads = {}
     [:before, :after].each do |pos|
-      uri = Util::UriWrapper.new(send(pos) + path)
+      uri = UriWrapper.new(send(pos) + path)
 
       uri.queue(hydra) do |res|
         reads[pos] = res
@@ -118,9 +118,9 @@ class SiteDiff
     end
 
     # create report of results
-    report = Util::Diff::generate_html_report(results,
-                                              @config.before.url_report,
-                                              @config.after.url_report)
+    report = Diff::generate_html_report(results,
+                                        @config.before.url_report,
+                                        @config.after.url_report)
     File.open(File.join(dir, "/report.html") , 'w') { |f| f.write(report) }
 
     SiteDiff::log "All diff files were dumped inside #{dir}"
