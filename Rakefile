@@ -86,7 +86,7 @@ namespace :docker do
 
   desc 'Run a rake task (or a shell if empty) inside docker'
   task :run, [:task] do |t, args|
-    opts = ['-v', "#{Dir.pwd}:/sitediff", '-t']
+    opts = ['-v', "#{File.dirname(__FILE__)}:/sitediff", '-t']
     if tsk = args[:task]
       cmd = ['bundle', 'exec', 'rake', tsk]
     else
