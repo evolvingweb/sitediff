@@ -75,7 +75,7 @@ class SiteDiff
         end
         if log_errors
           doc.errors.each do |e|
-            SiteDiff::log "Error in parsing HTML document: #{e}", :yellow, :black
+            SiteDiff::log "Error in parsing HTML document: #{e}", :error
           end
         end
         doc

@@ -9,11 +9,26 @@ require 'rainbow'
 
 class SiteDiff
   FILES_DIR = File.join(File.dirname(__FILE__), 'sitediff', 'files')
-  def self.log(str, bg = nil, fg = nil)
-    str = Rainbow("[sitediff] #{str}")
-    str = str.bg(bg) if bg
-    str = str.send(fg) if fg
-    puts str
+
+  # label will be colorized and str will not be.
+  # type dictates the color: can be :success, :error, or :failure
+  def self.log(str, type=nil, label=nil)
+    label = label ? "[sitediff] #{label}" : '[sitediff]'
+    bg = fg = nil
+    case type
+    when :success
+      bg = :green
+      fg = :black
+    when :failure
+      bg = :red
+    when :error
+      bg = :yellow
+      fg = :black
+    end
+    label = Rainbow(label)
+    label = label.bg(bg) if bg
+    label = label.fg(fg) if fg
+    puts label + ' ' + str
   end
 
   attr_accessor :before, :after, :config, :results
@@ -31,7 +46,7 @@ class SiteDiff
       Typhoeus::Config.cache = SiteDiff::Util::Cache.new(file)
     else
       # Bug, see: https://github.com/typhoeus/typhoeus/pull/296
-      SiteDiff::log("Cache unsupported on Typhoeus version < 0.6.4", :red)
+      SiteDiff::log("Cache unsupported on Typhoeus version < 0.6.4", :failure)
     end
   end
 
@@ -108,6 +123,6 @@ class SiteDiff
                                               @config.after.url_report)
     File.open(File.join(dir, "/report.html") , 'w') { |f| f.write(report) }
 
-    SiteDiff::log "All diff files were dumped inside #{dir}", :yellow, :black
+    SiteDiff::log "All diff files were dumped inside #{dir}"
   end
 end
