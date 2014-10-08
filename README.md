@@ -167,7 +167,7 @@ The following config.yml configuration blocks are recognized by SiteDiff:
 
 ## Samples
 
-The config directory contains some example config.yml files. Eg: [config.yml.example](config/config.yml.example)
+The config directory contains some example config.yml files. Eg: [config.yaml.example](config/config.yaml.example)
 
 ## Options
 
