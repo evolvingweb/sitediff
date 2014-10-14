@@ -6,3 +6,7 @@ test:
   post:
     - rake docker:build
     - rake docker:run[tests]
+      # FIXME currently sitediff's exit code differs from what you expect from a
+      # 'diff' (non-zero status only when it crashes). When we fix that, the
+      # following should be guarded from non-zero exit codes.
+    - rake docker:run[fixture:local,use_gem]

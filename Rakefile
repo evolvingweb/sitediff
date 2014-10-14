@@ -44,28 +44,36 @@ def serve(port, dir, announce = false)
   SiteDiff::Util::Webserver.serve(port, dir, :announce => announce)
 end
 
-def http_fixtures
+def http_fixtures(cmd)
   serv = SiteDiff::Util::FixtureServer.new
-  sh *CMD, '--before', serv.before, '--after', serv.after
+  sh *cmd, '--before', serv.before, '--after', serv.after
   return serv
 end
 
+def executable(use_gem=false)
+  use_gem ? 'sitediff' : './bin/sitediff'
+end
+
+# FIXME adding ANY argument to any of the following tasks triggers use_gem
 namespace :fixture do
-  CMD = ['./bin/sitediff', 'diff', 'spec/fixtures/config.yaml']
+  partial_cmd = ['diff', 'spec/fixtures/config.yaml']
 
   desc 'Run a sitediff test case'
-  task :local do
-    sh *CMD
+  task :local, [:use_gem] do |t, args|
+    cmd = [executable(args[:use_gem])] + partial_cmd
+    sh *cmd
   end
 
   desc 'Run a sitediff test case, using web servers'
-  task :served do
-    http_fixtures.kill
+  task :served, [:use_gem] do |t, args|
+    cmd = [executable(args[:use_gem])] + partial_cmd
+    http_fixtures(cmd).kill
   end
 
   desc 'Serve the result of the fixture test'
-  task :serve do
-    http_fixtures
+  task :serve, [:use_gem] do |t, args|
+    cmd = [executable(args[:use_gem])] + partial_cmd
+    http_fixtures(cmd)
     SiteDiff::Util::Webserver.serve(nil, 'output', :announce => true,
       :quiet => true).wait
   end
@@ -76,7 +84,6 @@ namespace :fixture do
   end
 end
 
-# FIXME add a test to run spec on the installed gem inside docker container
 namespace :docker do
   IMAGE = "evolvingweb/sitediff"
 
@@ -86,10 +93,18 @@ namespace :docker do
   end
 
   desc 'Run a rake task (or a shell if empty) inside docker'
-  task :run, [:task] do |t, args|
+  task :run, [:task, :use_gem] do |t, args|
     opts = ['-v', "#{File.dirname(__FILE__)}:/sitediff", '-t']
     if tsk = args[:task]
-      cmd = ['bundle', 'exec', 'rake', tsk]
+      # FIXME This is ugly, but here's how it works:
+      # rake docker:run[X[Y]]         --> docker run ... bundle exec rake X[Y]
+      # rake docker:run[X[Y],use_gem] --> docker run ... rake X[Y][use_gem]
+      cmd = ['rake', tsk]
+      if args[:use_gem]
+        tsk = "#{tsk}[use_gem]"
+      else
+        cmd.unshift 'bundle', 'exec'
+      end
     else
       opts += ['-i']
       cmd = ['bash']
