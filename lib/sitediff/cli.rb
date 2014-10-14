@@ -55,11 +55,12 @@ class SiteDiff
       elsif options['paths-from-file']
         run_opts['paths_file'] = options['paths-from-file']
       end
-
       config = SiteDiff::Config.new(config_files, run_opts)
       sitediff = SiteDiff.new(config, options['cache'])
       sitediff.run
       sitediff.dump(options['dump-dir'])
+    rescue Config::InvalidConfig => e
+      STDERR.puts "Invalid configuration: #{e.message}\n\n"
     end
 
     option :port,

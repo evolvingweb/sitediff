@@ -2,6 +2,7 @@ require 'yaml'
 
 class SiteDiff
   class Config
+    class InvalidConfig < Exception; end
     # Contains all configuration for any of before or after: url, url_report,
     # and all the transformation rules defined in Sanitize.
     class Site < Struct.new(:url, :url_report)
@@ -40,6 +41,7 @@ class SiteDiff
 
         key = pos + '_url_report'
         url_report = run_opts[key] || conf[key] || url
+        raise InvalidConfig.new("Undefined base URL for '#{pos}'.") unless url
         @sites[pos] = Site.new(url, url_report, conf[pos])
       end
     end
