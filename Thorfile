@@ -87,10 +87,6 @@ class Fixture < Base
   end
 
   private
-  def serve(port, dir, announce = false)
-    port ||= SiteDiff::Util::Webserver::DEFAULT_PORT
-    SiteDiff::Util::Webserver.serve(port, dir, :announce => announce)
-  end
 
   def http_fixtures(cmd)
     serv = SiteDiff::Util::FixtureServer.new
