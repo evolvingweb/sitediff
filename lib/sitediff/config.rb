@@ -74,7 +74,8 @@ class SiteDiff
 
         # support 1 level of recursion via "includes:" key
         if deps = conf_item.delete("includes")
-          deps.each do |dep_file|
+          deps.each do |dep|
+            dep_file = File.join(File.dirname(file), dep)
             SiteDiff::log "Reading dependent config file: #{dep_file}"
             dep_conf = YAML.load_file(dep_file)
             config_merge(conf, dep_conf)
