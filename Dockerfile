@@ -13,8 +13,8 @@ RUN apt-get install -y ruby-dev make pkg-config libxml2-dev libxslt-dev libcurl3
 # Force nokogiri gem not to compile libxml2, it takes too long
 ENV NOKOGIRI_USE_SYSTEM_LIBRARIES 1
 
-# Install rake and rspec globally so we can test the gem without bundle exec
-RUN gem install rake rspec --no-rdoc --no-ri
+# Install thor and rspec globally so we can test the gem without bundle exec
+RUN gem install thor rspec --no-rdoc --no-ri
 
 ADD . /sitediff
 WORKDIR /sitediff
