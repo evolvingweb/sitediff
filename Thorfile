@@ -4,7 +4,7 @@ LIB_DIR = File.join(File.dirname(__FILE__), 'lib')
 $LOAD_PATH << LIB_DIR
 require 'sitediff/util/webserver'
 
-class Build < Thor
+class Base < Thor
   # gives us run()
   include Thor::Actions
 
@@ -23,7 +23,7 @@ class Build < Thor
   end
 end
 
-class Docker < Build
+class Docker < Base
   IMAGE = 'evolvingweb/sitediff'
 
   desc 'build', 'Build a docker image for sitediff'
@@ -50,7 +50,7 @@ class Docker < Build
   end
 end
 
-class Spec < Build
+class Spec < Base
   desc 'unit', 'RSpec tests'
   def unit
     run "rspec spec/unit"
@@ -58,7 +58,7 @@ class Spec < Build
   default_task :unit
 end
 
-class Fixture < Build
+class Fixture < Base
   option 'global',
     :type => :boolean,
     :default => false,
