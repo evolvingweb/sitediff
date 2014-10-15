@@ -54,11 +54,24 @@ class Docker < Base
 end
 
 class Spec < Base
-  desc 'unit', 'RSpec tests'
+  desc 'unit', 'run RSpec unit tests'
   def unit
     run "#{executable('rspec')} spec/unit"
   end
-  default_task :unit
+
+  desc 'fixture', 'run RSpec integration tests'
+  def fixture
+    run "#{executable('rspec')} spec/fixtures"
+  end
+
+  # hidden task to lump together multiple tasks
+  desc 'all', 'runs both unit and fixture tests', :hide => true
+  def all
+    unit
+    fixture
+  end
+  default_task :all
+
 end
 
 class Fixture < Base
@@ -79,11 +92,6 @@ class Fixture < Base
     http_fixtures(cmd)
     SiteDiff::Util::Webserver.serve(nil, 'output', :announce => true,
       :quiet => true).wait
-  end
-
-  desc 'spec', 'Check that the test case works'
-  def spec
-    run "#{executable('rspec')} spec/fixtures"
   end
 
   private
