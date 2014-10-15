@@ -11,4 +11,4 @@ before_install:
 
 install: NOKOGIRI_USE_SYSTEM_LIBRARIES=1 bundle install
 
-script: bundle exec rake
+script: 'bundle exec thor spec && bundle exec thor fixture:local'
