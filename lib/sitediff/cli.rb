@@ -19,16 +19,18 @@ class SiteDiff
 
     option 'dump-dir',
       :type => :string,
-      :default => "./output/",
+      :default => File.join('.', 'output'),
       :desc => "Location to write the output to."
-    option 'paths-from-file',
+    option 'failing-paths',
       :type => :string,
-      :desc => "File listing URL paths to run on against <before> and <after> sites.",
-      :aliases => '--paths'
-    option 'paths-from-failures',
-      :type => :boolean,
-      :default => FALSE,
-      :desc => "Equivalent to --paths-from-file=<DUMPDIR>/failures.txt"
+      :default => File.join('.', 'failures.txt'),
+      :desc => 'File in which failing paths are stored (one at a line): ' +
+               'useful for iterating over sanitization rules'
+    option 'paths',
+      :type => :string,
+      :desc => 'Paths are read (one at a line) from PATHS: ' +
+               'useful for iterating over sanitization rules',
+      :aliases => '--paths-from-file'
     option 'before',
       :type => :string,
       :desc => "URL used to fetch the before HTML. Acts as a prefix to specified paths",
@@ -53,17 +55,12 @@ class SiteDiff
     def diff(*config_files)
       config = SiteDiff::Config.new(config_files)
 
-      # special case:
-      # --paths-from-failures   ==  --paths-from-file=~/.sitediff/failures.txt
-      if options['paths-from-failures']
-        msg = 'conflictling options --paths-from-failures and --paths-from-file'
-        raise InvalidConfig.new(msg) if options['paths-from-file']
-        # FIXME options['paths-from-file'] = SiteDiff::FAILURES
-        options['paths-from-file'] = File.join(options['dump-dir'], 'failures.txt')
-      end
-
       # override config based on options
-      if paths_file = options['paths-from-file']
+      if paths_file = options['paths']
+        unless File.exists? paths_file
+          raise Config::InvalidConfig,
+            "Failing paths file '#{paths_file}' not found!"
+        end
         SiteDiff::log "Reading paths from: #{paths_file}"
         config.paths = File.readlines(paths_file)
       end
@@ -73,7 +70,7 @@ class SiteDiff
       sitediff = SiteDiff.new(config, options['cache'])
       sitediff.run
       sitediff.dump(options['dump-dir'], options['before-report'],
-        options['after-report'])
+        options['after-report'], options['failing-paths'])
     rescue Config::InvalidConfig => e
       SiteDiff.log "Invalid configuration: #{e.message}", :failure
     end

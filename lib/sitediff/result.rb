@@ -37,8 +37,7 @@ class SiteDiff
     def filename
       p = path
       p = File.join(p, '/index') if p.empty?
-      p += '.html'
-      return File.join('diffs', p)
+      File.join(SiteDiff::DIFFS_DIR, p + '.html')
     end
 
     # Text of the link in the HTML report
