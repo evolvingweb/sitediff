@@ -3,12 +3,12 @@ require 'yaml'
 class SiteDiff
   class Config
     class InvalidConfig < Exception; end
-    # Contains all configuration for any of before or after: url, url_report,
+    # Contains all configuration for any of before or after: url,
     # and all the transformation rules defined in Sanitize.
-    class Site < Struct.new(:url, :url_report)
+    class Site < Struct.new(:url)
       attr_reader :spec
-      def initialize(url, url_report, spec)
-        super(url, url_report)
+      def initialize(url, spec)
+        super(url)
         @spec = {}
         tools = Sanitize::TOOLS
         tools[:array].each do |key|
@@ -38,11 +38,8 @@ class SiteDiff
       %w[before after].each do |pos|
         key = pos + '_url'
         url = run_opts[key] || conf[key]
-
-        key = pos + '_url_report'
-        url_report = run_opts[key] || conf[key] || url
         raise InvalidConfig.new("Undefined base URL for '#{pos}'.") unless url
-        @sites[pos] = Site.new(url, url_report, conf[pos])
+        @sites[pos] = Site.new(url, conf[pos])
       end
     end
 
@@ -55,7 +52,6 @@ class SiteDiff
       h = {'paths' => @paths, 'before' => {}, 'after' => {}}
       %w[before after].each do |pos|
         h[pos]['url'] = @sites[pos].url
-        h[pos]['url_report'] = @sites[pos].url_report
         h[pos]['spec'] = @sites[pos].spec
       end
       h

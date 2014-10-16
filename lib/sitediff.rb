@@ -101,7 +101,9 @@ class SiteDiff
   end
 
   # Dump results to disk
-  def dump(dir)
+  def dump(dir, report_before, report_after)
+    report_before ||= before
+    report_after ||= after
     FileUtils.mkdir_p(dir)
 
     # dump output of each failure
@@ -118,9 +120,7 @@ class SiteDiff
     end
 
     # create report of results
-    report = Diff::generate_html_report(results,
-                                        @config.before.url_report,
-                                        @config.after.url_report)
+    report = Diff::generate_html_report(results, report_before, report_after)
     File.open(File.join(dir, "/report.html") , 'w') { |f| f.write(report) }
 
     SiteDiff::log "All diff files were dumped inside #{dir}"

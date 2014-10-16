@@ -46,7 +46,7 @@ class SiteDiff
     def diff(*config_files)
       # configuration parameters overriden by command line options.
       run_opts = {}
-      %w[before-url before-url-report after-url after-url-report].each do |opt|
+      %w[before after].each do |opt|
         run_opts[opt.gsub('-', '_')] = options[opt] if options[opt]
       end
 
@@ -58,7 +58,7 @@ class SiteDiff
       config = SiteDiff::Config.new(config_files, run_opts)
       sitediff = SiteDiff.new(config, options['cache'])
       sitediff.run
-      sitediff.dump(options['dump-dir'])
+      sitediff.dump(options['dump-dir'], options['before-url-report'], options['after-url-report'])
     rescue Config::InvalidConfig => e
       STDERR.puts "Invalid configuration: #{e.message}\n\n"
     end
