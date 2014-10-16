@@ -91,7 +91,7 @@ class SiteDiff
 
     # loads a single YAML configuration file, merges all its 'included' files
     # and returns a normalized Hash. Catches circular dependencies via
-    # @loaded_files.
+    # @visited_files.
     def load_conf(file)
       @visited_files ||= []
       if @visited_files.include? file
