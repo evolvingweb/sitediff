@@ -10,8 +10,22 @@ class SiteDiff
     class InvalidConfig < Exception; end
 
     # Takes a Hash and normalizes it to the following form by merging globals
-    # into before and after:
-    #   { 'before' => {...}, 'after' =>  {...}, 'paths' => [...] }
+    # into before and after. A normalized config Hash looks like this:
+    #
+    #     paths:
+    #     - /about
+    #
+    #     before:
+    #       url: http://before
+    #       selector: body
+    #       dom_transform:
+    #       - type: remove
+    #         selector: script
+    #
+    #     after:
+    #       url: http://after
+    #       selector: body
+    #
     def self.normalize(conf)
       tools = Sanitize::TOOLS
 
@@ -31,8 +45,21 @@ class SiteDiff
       conf.select {|k,v| %w[before after paths].include? k}
     end
 
-    # Merges two normalized Hashes with no conflict resolution.
-    def self.merge(first, second)
+    # Merges two normalized Hashes. Only "clean" merges are supported, otherwise
+    # an InvalidConfig is raised.
+    # Two Hashes merge cleanly iff for each site-specific subhash H (e.g.
+    # ['before']['dom_transform']) where the Hashes disagree on values, either:
+    #   - One of first[H] and second[H] is nil, or
+    #   - first[H] and second[H] are arrays
+    #
+    # For example, (1) does not merge cleanly with (2), but it does with (3):
+    #
+    # (1) before: {selector: 'body' , sanitization: [pattern: 'form-[0-9a-z]+']}
+    # (2) before: {selector: 'div#main'}
+    # (3) before: {sanitization: [pattern: 'view-[0-9a-z]+']}
+    #
+    def self.merge(first, second, context)
+      # paths always cleanly merge
       result = {
         'paths' => (first['paths'] || []) + (second['paths'] || []),
         'before' => {},
@@ -56,8 +83,6 @@ class SiteDiff
       end
       result
     end
-
-    attr_reader :paths
 
     def initialize(files)
       @config = {'paths' => [], 'before' => {}, 'after' => {} }
