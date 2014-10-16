@@ -9,6 +9,7 @@ class SiteDiff
                 %w[paths before after before_url after_url includes]
 
     class InvalidConfig < Exception; end
+    class MergeConflict < Exception; end
 
     # Takes a Hash and normalizes it to the following form by merging globals
     # into before and after. A normalized config Hash looks like this:
@@ -59,7 +60,7 @@ class SiteDiff
     # (2) before: {selector: 'div#main'}
     # (3) before: {sanitization: [pattern: 'view-[0-9a-z]+']}
     #
-    def self.merge(first, second, context)
+    def self.merge(first, second)
       # paths always cleanly merge
       result = {
         'paths' => (first['paths'] || []) + (second['paths'] || []),
@@ -77,8 +78,8 @@ class SiteDiff
           elsif !(a and b) # at least one is nil: clean merge
             result[pos][key] = a || b
           else
-            raise InvalidConfig,
-              "Merge conflict (#{context}['#{pos}']): '#{key}' cannot be cleanly merged."
+            raise MergeConflict,
+              "['#{pos}']['#{key}'] cannot be cleanly merged."
           end
         end
       end
@@ -87,7 +88,7 @@ class SiteDiff
 
     def initialize(files)
       @config = {'paths' => [], 'before' => {}, 'after' => {} }
-      files.each {|f| @config = Config::merge(@config, Config::load_conf(f), f)}
+      files.each {|f| @config = Config::merge(@config, Config::load_conf(f))}
     end
 
     def before
@@ -118,6 +119,17 @@ class SiteDiff
       return paths.map { |p| (p[0] == '/' ? p : "/#{p}").chomp }
     end
 
+    def self.load_raw_yaml(file)
+      SiteDiff::log "Reading config file: #{file}"
+      conf = YAML.load_file(file) || {}
+      conf.each do |k,v|
+        unless CONF_KEYS.include? k
+          raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'"
+        end
+      end
+      conf
+    end
+
     # loads a single YAML configuration file, merges all its 'included' files
     # and returns a normalized Hash.
     def self.load_conf(file, visited=[])
@@ -126,24 +138,21 @@ class SiteDiff
       if visited.include? file
         raise InvalidConfig, "Circular dependency: #{file}"
       end
-      SiteDiff::log "Reading config file: #{file}"
-      conf = YAML.load_file(file) || {}
-      conf.each do |k,v|
-        unless CONF_KEYS.include? k
-          raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'"
-        end
-      end
+
+      conf = load_raw_yaml(file) # not normalized yet
       visited << file
+
+      # normalize and merge includes
       includes = conf['includes'] || []
       conf = Config::normalize(conf)
       includes.each do |dep|
-        # paths are relative to the including file:
+        # include paths are relative to the including file.
         dep = File.join(File.dirname(file), dep)
-        # don't get fooled by a/../a
-        dep = Pathname.new(dep).cleanpath.to_s
-        dep_conf = Config::normalize(load_conf(dep, visited))
-        visited << dep
-        conf = Config::merge(conf, dep_conf, dep)
+        begin
+          conf = Config::merge(conf, load_conf(dep, visited))
+        rescue MergeConflict => e
+          raise InvalidConfig, "Merge conflict (#{file} includes #{dep}) #{e}"
+        end
       end
       conf
     end
