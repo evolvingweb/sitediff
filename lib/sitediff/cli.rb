@@ -12,6 +12,11 @@ class SiteDiff
       true
     end
 
+    # Thor, by default, does not raise an error for use of unknown options.
+    def self.check_unknown_options?(config)
+      true
+    end
+
     option 'dump-dir',
       :type => :string,
       :default => "./output/",
