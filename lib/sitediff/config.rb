@@ -1,4 +1,5 @@
 require 'yaml'
+require 'pathname'
 
 class SiteDiff
   class Config
@@ -86,7 +87,7 @@ class SiteDiff
 
     def initialize(files)
       @config = {'paths' => [], 'before' => {}, 'after' => {} }
-      files.each {|f| @config = Config::merge(@config, load_conf(f))}
+      files.each {|f| @config = Config::merge(@config, Config::load_conf(f), f)}
     end
 
     def before
@@ -118,28 +119,31 @@ class SiteDiff
     end
 
     # loads a single YAML configuration file, merges all its 'included' files
-    # and returns a normalized Hash. Catches circular dependencies via
-    # @visited_files.
-    def load_conf(file)
-      @visited_files ||= []
-      if @visited_files.include? file
+    # and returns a normalized Hash.
+    def self.load_conf(file, visited=[])
+      # don't get fooled by a/../a/
+      file = Pathname.new(file).cleanpath.to_s
+      if visited.include? file
         raise InvalidConfig, "Circular dependency: #{file}"
       end
       SiteDiff::log "Reading config file: #{file}"
-      conf = YAML.load_file(file)
+      conf = YAML.load_file(file) || {}
       conf.each do |k,v|
         unless CONF_KEYS.include? k
           raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'"
         end
       end
-      @visited_files << file
+      visited << file
       includes = conf['includes'] || []
       conf = Config::normalize(conf)
       includes.each do |dep|
-        dep_file = File.join(File.dirname(file), dep)
-        dep_conf = Config::normalize(load_conf(dep_file))
-        conf = Config::merge(conf, dep_conf)
-        @visited_files << dep_file
+        # paths are relative to the including file:
+        dep = File.join(File.dirname(file), dep)
+        # don't get fooled by a/../a
+        dep = Pathname.new(dep).cleanpath.to_s
+        dep_conf = Config::normalize(load_conf(dep, visited))
+        visited << dep
+        conf = Config::merge(conf, dep_conf, dep)
       end
       conf
     end
