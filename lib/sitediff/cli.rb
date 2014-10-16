@@ -24,24 +24,26 @@ class SiteDiff
       :type => :boolean,
       :default => FALSE,
       :desc => "Equivalent to --paths-from-file=<DUMPDIR>/failures.txt"
-    option 'before-url',
+    option 'before',
       :type => :string,
       :desc => "URL used to fetch the before HTML. Acts as a prefix to specified paths",
-      :aliases => '--before'
-    option 'after-url',
+      :aliases => '--before-url'
+    option 'after',
       :type => :string,
       :desc => "URL used to fetch the after HTML. Acts as a prefix to specified paths.",
-      :aliases => '--after'
-    option 'before-url-report',
+      :aliases => '--after-url'
+    option 'before-report',
       :type => :string,
-      :desc => "Before URL to use for reporting purposes. Useful if port forwarding."
-    option 'after-url-report',
+      :desc => "Before URL to use for reporting purposes. Useful if port forwarding.",
+      :aliases => '--before-url-report'
+    option 'after-report',
       :type => :string,
-      :desc => "After URL to use for reporting purposes. Useful if port forwarding."
-      option 'cache',
-        :type => :string,
-        :desc => "Filename to use for caching requests.",
-        :lazy_default => 'cache.db'
+      :desc => "After URL to use for reporting purposes. Useful if port forwarding.",
+      :aliases => '--after-url-report'
+    option 'cache',
+      :type => :string,
+      :desc => "Filename to use for caching requests.",
+      :lazy_default => 'cache.db'
     desc "diff [OPTIONS] [CONFIGFILES]", "Perform systematic diff on given URLs"
     def diff(*config_files)
       config = SiteDiff::Config.new(config_files)
@@ -60,12 +62,13 @@ class SiteDiff
         SiteDiff::log "Reading paths from: #{paths_file}"
         config.paths = File.readlines(paths_file)
       end
-      config.before.url = options['before-url'] if options['before-url']
-      config.after.url = options['after-url'] if options['after-url']
+      config.before.url = options['before'] if options['before']
+      config.after.url = options['after'] if options['after']
 
       sitediff = SiteDiff.new(config, options['cache'])
       sitediff.run
-      sitediff.dump(options['dump-dir'], options['before-url-report'], options['after-url-report'])
+      sitediff.dump(options['dump-dir'], options['before-report'],
+        options['after-report'])
     rescue Config::InvalidConfig => e
       SiteDiff.log "Invalid configuration: #{e.message}", :failure
     end
