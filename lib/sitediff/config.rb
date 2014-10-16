@@ -73,10 +73,10 @@ class SiteDiff
           next
         end
         result[pos] = first[pos].merge!(second[pos]) do |key, a, b|
-          if Sanitize::TOOLS[:array].include? key
-            result[pos][key] = a + b
-          elsif !(a and b) # at least one is nil: clean merge
+          if !(a and b) # at least one is nil: cleanly merges
             result[pos][key] = a || b
+          elsif Sanitize::TOOLS[:array].include? key # arrays cleanly merge
+            result[pos][key] = (a || []) + (b|| [])
           else
             raise MergeConflict,
               "['#{pos}']['#{key}'] cannot be cleanly merged."
@@ -88,7 +88,13 @@ class SiteDiff
 
     def initialize(files)
       @config = {'paths' => [], 'before' => {}, 'after' => {} }
-      files.each {|f| @config = Config::merge(@config, Config::load_conf(f))}
+      files.each do |file|
+        begin
+          @config = Config::merge(@config, Config::load_conf(file))
+        rescue MergeConflict => e
+          raise InvalidConfig, "Merge conflict (loading #{file}): #{e}"
+        end
+      end
     end
 
     def before
@@ -119,9 +125,13 @@ class SiteDiff
       return paths.map { |p| (p[0] == '/' ? p : "/#{p}").chomp }
     end
 
+    # reads a YAML file and raises an InvalidConfig if the file is not valid.
     def self.load_raw_yaml(file)
       SiteDiff::log "Reading config file: #{file}"
       conf = YAML.load_file(file) || {}
+      unless conf.is_a? Hash
+        raise InvalidConfig, "Invalid configuration file: '#{file}'"
+      end
       conf.each do |k,v|
         unless CONF_KEYS.include? k
           raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'"
@@ -151,7 +161,7 @@ class SiteDiff
         begin
           conf = Config::merge(conf, load_conf(dep, visited))
         rescue MergeConflict => e
-          raise InvalidConfig, "Merge conflict (#{file} includes #{dep}) #{e}"
+          raise InvalidConfig, "Merge conflict (#{file} includes #{dep}): #{e}"
         end
       end
       conf
