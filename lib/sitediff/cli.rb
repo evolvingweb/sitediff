@@ -64,8 +64,8 @@ class SiteDiff
         SiteDiff::log "Reading paths from: #{paths_file}"
         config.paths = File.readlines(paths_file)
       end
-      config.before.url = options['before'] if options['before']
-      config.after.url = options['after'] if options['after']
+      config.before['url'] = options['before'] if options['before']
+      config.after['url'] = options['after'] if options['after']
 
       sitediff = SiteDiff.new(config, options['cache'])
       sitediff.run

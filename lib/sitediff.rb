@@ -37,10 +37,10 @@ class SiteDiff
 
   attr_reader :config, :results
   def before
-    @config.before.url
+    @config.before['url']
   end
   def after
-    @config.after.url
+    @config.after['url']
   end
 
   def cache=(file)
@@ -62,7 +62,7 @@ class SiteDiff
 
   # Sanitize an HTML string based on configuration for either before or after
   def sanitize(html, pos)
-    Sanitize::sanitize(html, @config.send(pos).config)
+    Sanitize::sanitize(html, @config.send(pos))
   end
 
   # Queues fetching before and after URLs with a Typhoeus::Hydra instance

@@ -2,84 +2,68 @@ require 'yaml'
 
 class SiteDiff
   class Config
+
+    # keys allowed in configuration files
+    CONF_KEYS = Sanitize::TOOLS.values.flatten(1) +
+                %w[paths before after before_url after_url includes]
+
     class InvalidConfig < Exception; end
-    # Normalized definition of a "site" (either of before/after)
-    #
-    # config is a Hash is expected by Sanitize::sanitize()
-    class Site < Struct.new(:url, :config); end
 
-    attr_reader :before, :after, :paths
-
-    # Reads and merges provided configuration files and fetches dependencies
-    # defined via 'includes'.
-    def initialize(files)
-      conf = load_conf(files)
-      @before = Site.new(conf['before_url'], conf['before'])
-      @after = Site.new(conf['after_url'],  conf['after'])
-      self.paths = conf['paths']
-    end
-
-    def validate
-      raise InvalidConfig.new("Undefined 'before' base URL.") unless before.url
-      raise InvalidConfig.new("Undefined 'after' base URL.") unless after.url
-    end
-
-    # Returns a configuration hash from an array of YAML configuration files.
-    #
-    # 1. Included files are merged into the final hash,
-    # 2. Global configuration is merged into 'before' and 'after' subhashes with
-    #    appropriate overriding rules
-    def load_conf(files)
-      conf = {}
-      files.each do |file|
-        SiteDiff::log "Reading config file: #{file}"
-        conf_item = YAML.load_file(file)
-
-        # support 1 level of recursion via "includes:" key
-        if deps = conf_item.delete("includes")
-          deps.each do |dep|
-            dep_file = File.join(File.dirname(file), dep)
-            SiteDiff::log "Reading dependent config file: #{dep_file}"
-            dep_conf = YAML.load_file(dep_file)
-            config_merge(conf, dep_conf)
-          end
-        end
-        config_merge(conf, conf_item, file)
-      end
-
-      # merge globals
+    # Takes a Hash and normalizes it to the following form by merging globals
+    # into before and after:
+    #   { 'before' => {...}, 'after' =>  {...}, 'paths' => [...] }
+    def self.normalize(conf)
       tools = Sanitize::TOOLS
       %w[before after].each do |pos|
         conf[pos] ||= {}
-        tools[:array].each do |key|
-          conf[pos][key] ||= []
-          conf[pos][key] += conf[key] || []
-        end
-        tools[:scalar].each do |key|
-          conf[pos][key] ||= conf[key] # global can be overriden
-        end
+        tools[:array].each  {|key| conf[pos][key] ||= []}
+        tools[:array].each  {|key| conf[pos][key] += conf[key] || []}
+        tools[:scalar].each {|key| conf[pos][key] ||= conf[key]}
+        conf[pos]['url'] ||= conf[pos + '_url']
       end
 
-      conf
+      conf.select {|k,v| %w[before after paths].include? k}
     end
 
-    # Perform one level deep merge on config hashes.
-    #
-    # @param first [Hash] containing arrays or sub-hashes to be merged
-    # @param second [Hash] containing arrays or sub-hashes to be merged
-    # @param context_for_error [String] used for reporting merge errors
-    def config_merge(first, second, context_for_error = "")
-      # merge config files by recursing one level deep
-      first.merge!(second) do |key, a, b|
-        if Hash === a && Hash === b
-          merge(a, b)
-        elsif Array === a && Array === b
-          a + b
-        else
-          raise InvalidConfig,
-            "Error merging configs. Key: #{key}, Context: #{context_for_error}"
+    # Merges two normalized Hashes with no conflict resolution.
+    def self.merge(first, second)
+      result = {
+        'paths' => (first['paths'] || []) + (second['paths'] || []),
+        'before' => {},
+        'after' => {}
+      }
+      %w[before after].each do |pos|
+        unless first[pos]
+          result[pos] = second[pos] || {}
+          next
+        end
+        result[pos] = first[pos].merge!(second[pos]) do |key, a, b|
+          if Sanitize::TOOLS[:array].include? key
+            result[pos][key] = a + b
+          elsif !(a and b) # at least one is nil: clean merge
+            result[pos][key] = a || b
+          else
+            raise InvalidConfig,
+              "Merge conflict (#{context}['#{pos}']): '#{key}' cannot be cleanly merged."
+          end
         end
       end
+      result
+    end
+
+    attr_reader :paths
+
+    def initialize(files)
+      @config = {'paths' => [], 'before' => {}, 'after' => {} }
+      files.each {|f| @config = Config::merge(@config, load_conf(f))}
+      self.paths = @config['paths']
+    end
+
+    def before
+      @config['before']
+    end
+    def after
+      @config['after']
     end
 
     # Sets the array of paths for comparison.
@@ -96,5 +80,41 @@ class SiteDiff
     def paths
       @paths
     end
+
+    def validate
+      raise InvalidConfig, "Undefined 'before' base URL." unless before['url']
+      raise InvalidConfig, "Undefined 'after' base URL." unless after['url']
+      raise InvalidConfig, "Undefined 'paths'." unless (paths and !paths.empty?)
+    end
+
+    private
+
+    # loads a single YAML configuration file, merges all its 'included' files
+    # and returns a normalized Hash. Catches circular dependencies via
+    # @loaded_files.
+    def load_conf(file)
+      @visited_files ||= []
+      if @visited_files.include? file
+        raise InvalidConfig, "Circular dependency: #{file}"
+      end
+      SiteDiff::log "Reading config file: #{file}"
+      conf = YAML.load_file(file)
+      conf.each do |k,v|
+        unless CONF_KEYS.include? k
+          raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'"
+        end
+      end
+      @visited_files << file
+      includes = conf['includes'] || []
+      conf = Config::normalize(conf)
+      includes.each do |dep|
+        dep_file = File.join(File.dirname(file), dep)
+        dep_conf = Config::normalize(load_conf(dep_file))
+        conf = Config::merge(conf, dep_conf)
+        @visited_files << dep_file
+      end
+      conf
+    end
+
   end
 end
