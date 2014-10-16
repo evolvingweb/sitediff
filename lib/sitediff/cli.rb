@@ -44,23 +44,30 @@ class SiteDiff
         :lazy_default => 'cache.db'
     desc "diff [OPTIONS] [CONFIGFILES]", "Perform systematic diff on given URLs"
     def diff(*config_files)
-      # configuration parameters overriden by command line options.
-      run_opts = {}
-      %w[before after].each do |opt|
-        run_opts[opt.gsub('-', '_')] = options[opt] if options[opt]
+      config = SiteDiff::Config.new(config_files)
+
+      # special case:
+      # --paths-from-failures   ==  --paths-from-file=~/.sitediff/failures.txt
+      if options['paths-from-failures']
+        msg = 'conflictling options --paths-from-failures and --paths-from-file'
+        raise InvalidConfig.new(msg) if options['paths-from-file']
+        # FIXME options['paths-from-file'] = SiteDiff::FAILURES
+        options['paths-from-file'] = File.join(options['dump-dir'], 'failures.txt')
       end
 
-      if options['paths-from-failures']
-        run_opts['paths_file'] = "#{options['dump-dir']}/failures.txt"
-      elsif options['paths-from-file']
-        run_opts['paths_file'] = options['paths-from-file']
+      # override config based on options
+      if paths_file = options['paths-from-file']
+        SiteDiff::log "Reading paths from: #{paths_file}"
+        config.paths = File.readlines(paths_file)
       end
-      config = SiteDiff::Config.new(config_files, run_opts)
+      config.before.url = options['before-url'] if options['before-url']
+      config.after.url = options['after-url'] if options['after-url']
+
       sitediff = SiteDiff.new(config, options['cache'])
       sitediff.run
       sitediff.dump(options['dump-dir'], options['before-url-report'], options['after-url-report'])
     rescue Config::InvalidConfig => e
-      STDERR.puts "Invalid configuration: #{e.message}\n\n"
+      SiteDiff.log "Invalid configuration: #{e.message}", :failure
     end
 
     option :port,

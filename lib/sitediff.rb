@@ -51,6 +51,7 @@ class SiteDiff
   end
 
   def initialize(config, cache)
+    config.validate
     @config = config
     self.cache = cache
   end

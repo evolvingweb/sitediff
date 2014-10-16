@@ -21,31 +21,14 @@ class SiteDiff
 
     end
 
-    # Reads and merges provided configuration files, fetches dependencies
-    # defined via 'include' and overrides configuration, if necessary, by
-    # runtime options.
-    def initialize(files, run_opts)
+    # Reads and merges provided configuration files and fetches dependencies
+    # defined via 'includes'.
+    attr_reader :before, :after, :paths
+    def initialize(files)
       conf = load_conf(files)
-
-      if run_opts['paths_file']
-        SiteDiff::log "Reading paths from: #{paths}"
-        self.paths = File.readlines(run_opts['paths_file'])
-      else
-        self.paths = conf['paths']
-      end
-
-      @sites = {}
-      %w[before after].each do |pos|
-        key = pos + '_url'
-        url = run_opts[key] || conf[key]
-        raise InvalidConfig.new("Undefined base URL for '#{pos}'.") unless url
-        @sites[pos] = Site.new(url, conf[pos])
-      end
-    end
-
-    def to_s
-      # FIXME this creates YAML aliases for concision; hard to read sometimes.
-      to_h.to_yaml
+      @before = Site.new(conf['before_url'], conf['before'])
+      @after = Site.new(conf['after_url'],  conf['after'])
+      self.paths = conf['paths']
     end
 
     def to_h
@@ -55,6 +38,9 @@ class SiteDiff
         h[pos]['spec'] = @sites[pos].spec
       end
       h
+    def validate
+      raise InvalidConfig.new("Undefined 'before' base URL.") unless before.url
+      raise InvalidConfig.new("Undefined 'after' base URL.") unless after.url
     end
 
     # Returns a configuration hash from an array of YAML configuration files.
@@ -112,13 +98,6 @@ class SiteDiff
           raise "Error merging configs. Key: #{key}, Context: #{context_for_error}"
         end
       end
-    end
-
-    def before
-      @sites['before']
-    end
-    def after
-      @sites['after']
     end
 
     # Sets the array of paths for comparison.
