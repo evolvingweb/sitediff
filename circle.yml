@@ -4,11 +4,11 @@ machine:
 
 test:
   post:
-    - thor docker:build
-    - thor docker:run spec
-    - thor docker:run spec --no-local
-    - thor docker:run fixture:local
-    - thor docker:run fixture:local --no-local
+    - bundle exec thor docker:build
+    - bundle exec thor docker:run spec --local
+    - bundle exec thor docker:run spec --no-local
+    - bundle exec thor docker:run fixture:local --local
+    - bundle exec thor docker:run fixture:local --no-local
       # FIXME currently sitediff's exit code differs from what you expect from a
       # 'diff' (non-zero status only when it crashes). When we fix that, the
       # following should be guarded from non-zero exit codes.
