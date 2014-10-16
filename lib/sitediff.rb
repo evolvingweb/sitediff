@@ -35,7 +35,7 @@ class SiteDiff
     puts label + ' ' + str
   end
 
-  attr_accessor :before, :after, :config, :results
+  attr_reader :config, :results
   def before
     @config.before.url
   end
@@ -62,7 +62,7 @@ class SiteDiff
 
   # Sanitize an HTML string based on configuration for either before or after
   def sanitize(html, pos)
-    Sanitize::sanitize(html, @config.send(pos).spec)
+    Sanitize::sanitize(html, @config.send(pos).config)
   end
 
   # Queues fetching before and after URLs with a Typhoeus::Hydra instance

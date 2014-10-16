@@ -3,27 +3,15 @@ require 'yaml'
 class SiteDiff
   class Config
     class InvalidConfig < Exception; end
-    # Contains all configuration for any of before or after: url,
-    # and all the transformation rules defined in Sanitize.
-    class Site < Struct.new(:url)
-      attr_reader :spec
-      def initialize(url, spec)
-        super(url)
-        @spec = {}
-        tools = Sanitize::TOOLS
-        tools[:array].each do |key|
-          @spec[key] = spec[key.to_s] || []
-        end
-        tools[:scalar].each do |key|
-          @spec[key] = spec[key.to_s]
-        end
-      end
+    # Normalized definition of a "site" (either of before/after)
+    #
+    # config is a Hash is expected by Sanitize::sanitize()
+    class Site < Struct.new(:url, :config); end
 
-    end
+    attr_reader :before, :after, :paths
 
     # Reads and merges provided configuration files and fetches dependencies
     # defined via 'includes'.
-    attr_reader :before, :after, :paths
     def initialize(files)
       conf = load_conf(files)
       @before = Site.new(conf['before_url'], conf['before'])
@@ -88,7 +76,8 @@ class SiteDiff
         elsif Array === a && Array === b
           a + b
         else
-          raise "Error merging configs. Key: #{key}, Context: #{context_for_error}"
+          raise InvalidConfig,
+            "Error merging configs. Key: #{key}, Context: #{context_for_error}"
         end
       end
     end
