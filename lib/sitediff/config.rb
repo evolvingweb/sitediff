@@ -14,13 +14,19 @@ class SiteDiff
     #   { 'before' => {...}, 'after' =>  {...}, 'paths' => [...] }
     def self.normalize(conf)
       tools = Sanitize::TOOLS
+
+      # merge globals
       %w[before after].each do |pos|
         conf[pos] ||= {}
-        tools[:array].each  {|key| conf[pos][key] ||= []}
-        tools[:array].each  {|key| conf[pos][key] += conf[key] || []}
+        tools[:array].each do |key|
+          conf[pos][key] ||= []
+          conf[pos][key] += conf[key] if conf[key]
+        end
         tools[:scalar].each {|key| conf[pos][key] ||= conf[key]}
         conf[pos]['url'] ||= conf[pos + '_url']
       end
+      # normalize paths
+      conf['paths'] = Config::normalize_paths(conf['paths'])
 
       conf.select {|k,v| %w[before after paths].include? k}
     end
@@ -56,7 +62,6 @@ class SiteDiff
     def initialize(files)
       @config = {'paths' => [], 'before' => {}, 'after' => {} }
       files.each {|f| @config = Config::merge(@config, load_conf(f))}
-      self.paths = @config['paths']
     end
 
     def before
@@ -66,21 +71,14 @@ class SiteDiff
       @config['after']
     end
 
-    # Sets the array of paths for comparison.
-    #
-    # Defaults to single path '/' if none specified and ensures all paths start
-    # with '/'.
-    def paths=(paths)
-      paths ||= []
-      @paths = paths.map do |p|
-        p = p.chomp
-        p[0] == '/' ? p : p.prepend('/')
-      end
-    end
     def paths
-      @paths
+      @config['paths']
+    end
+    def paths=(paths)
+      @config['paths'] = Config::normalize_paths(paths)
     end
 
+    # Checks if the configuration is usable for diff-ing.
     def validate
       raise InvalidConfig, "Undefined 'before' base URL." unless before['url']
       raise InvalidConfig, "Undefined 'after' base URL." unless after['url']
@@ -88,6 +86,11 @@ class SiteDiff
     end
 
     private
+
+    def self.normalize_paths(paths)
+      paths ||= []
+      return paths.map { |p| (p[0] == '/' ? p : "/#{p}").chomp }
+    end
 
     # loads a single YAML configuration file, merges all its 'included' files
     # and returns a normalized Hash. Catches circular dependencies via
