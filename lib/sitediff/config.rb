@@ -31,13 +31,6 @@ class SiteDiff
       self.paths = conf['paths']
     end
 
-    def to_h
-      h = {'paths' => @paths, 'before' => {}, 'after' => {}}
-      %w[before after].each do |pos|
-        h[pos]['url'] = @sites[pos].url
-        h[pos]['spec'] = @sites[pos].spec
-      end
-      h
     def validate
       raise InvalidConfig.new("Undefined 'before' base URL.") unless before.url
       raise InvalidConfig.new("Undefined 'after' base URL.") unless after.url
