@@ -71,7 +71,7 @@ class SiteDiff
     # Defaults to single path '/' if none specified and ensures all paths start
     # with '/'.
     def paths=(paths)
-      paths = ['/'] unless paths and !paths.empty?
+      paths ||= []
       @paths = paths.map do |p|
         p = p.chomp
         p[0] == '/' ? p : p.prepend('/')
