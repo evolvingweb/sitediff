@@ -111,7 +111,9 @@ class SiteDiff
     report_after ||= after
     FileUtils.mkdir_p(dir)
 
-    # dump output of each failure
+    # store diffs of each failing case, first wipe out existing diffs
+    diff_dir = File.join(dir, DIFFS_DIR)
+    FileUtils.rm_rf(diff_dir)
     results.each { |r| r.dump(dir) if r.status == Result::STATUS_FAILURE }
     SiteDiff::log "All diff files were dumped inside #{dir}"
 
