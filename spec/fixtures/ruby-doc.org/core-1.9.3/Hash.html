@@ -1,0 +1,3862 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <!-- classpage -- >
+    <!-- RD version: 0.30.0  -->
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  <meta name='description' content='  Class : Hash  -   Ruby 1.9.3 ' />
+  <meta content="2014-10-18 09:01:53 -0700" http-equiv="change-date" />
+  <!-- rel_prefix  = ''  ENV['RDOC_FOR_WEBSITE']   = true-->
+    
+    
+    
+  <!-- rel_prefix = '.'   asset_rel_prefix = ''  --> 
+  <title>Class: Hash (Ruby 1.9.3) </title>
+  <!-- link rel="stylesheet" href=".css/obf.css"  -->
+  <link rel="stylesheet" href="/css/inuit.css" >
+  <link rel="stylesheet" href="/css/grid.inuit.css" >
+  <link rel="stylesheet" href="/css/2011.css" type="text/css" >
+  <link rel="stylesheet" href="/css/rdoc.css" type="text/css" >
+
+  <script src="/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/js/thickbox-compressed.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/js/quicksearch.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/js/rubydoc.js" type="text/javascript" charset="utf-8"></script> 
+
+ 
+<script src="/js/highlight.min.js"></script>
+<script> 
+  hljs.tabReplace = '  ';
+  hljs.initHighlightingOnLoad();
+  </script> 
+
+  <style type='text/css'>
+
+    #vulns-alert #vulns{
+      background-color: #c33 ! important;
+      width: 100%;
+      text-align: center;
+   }
+   
+   #vulns-alert #vulns a {
+    color: #F99 ! important;
+   }
+ </style>
+
+</head>
+
+<body id="top" class="class rdocstar">
+<div id='actionbar' >
+<div class='wrapper'>
+  <ul class='grids g0'>
+	<li class='grid-2' ><a href='/' target='_top' >Home</a></li>
+	<li class='grid-2' ><a href='/core-1.9.3' target='_top' >Core 1.9.3</a></li>
+	<li class='grid-2' ><a href='/stdlib-1.9.3' target='_top' >Std-lib 1.9.3</a></li>
+
+	 <li class='grid-2' ><a href='/gems' target='_top' >Gems</a></li>
+			<li class='grid-2' ><a href='/downloads' target='_top' >Downloads</a></li>
+			<li class='grid-5 right' id='rd-action-search'><form id="searchbox_011815814100681837392:wnccv6st5qk" action="http://ruby-doc.com/search.html"><input type="hidden" name="cx" value="011815814100681837392:wnccv6st5qk" ><input  id='rd-search-input' name="q" type="text" size="20" >&#160;&#160;<input type="submit" name="sa" value="Search" ><input type="hidden" name="cof" value="FORID:9" ></form>
+		 </li>
+		</ul>
+</div>
+<span id='vulns-alert'></span>
+<!-- VERSION HEADER for 1.9.3 NOT FOUND --></div> <!-- end action bar -->
+ <div class='wrapper'>
+  <div id="metadata">
+    <div id="home-metadata">
+      <div id="home-section" class="section">
+        <h3 class="section-header">
+          <a href="./index.html">Home</a>
+          <a href="./index.html#classes">Classes</a>
+          <a href="./index.html#methods">Methods</a>
+          
+          
+          <!-- br><a id='alternateFormatLink' class='rotate' href="#" onclick='matchingYardUrl()'>YARD version</a -->
+          
+        </h3>
+      </div>
+    </div>
+
+    <div id="file-metadata">
+      <div id="file-list-section" class="section">
+        <h3 class="section-header">In Files</h3>
+        <div class="section-body">
+          <ul id='file-metadata'>
+
+          
+          
+          
+          <li class='in-file'>hash.c</li>      
+            
+          </ul>
+        </div>
+      </div>
+
+      
+    </div>
+
+    <div id="class-metadata">
+      
+      <!-- Parent Class -->
+      <div id="parent-class-section" class="section">
+        <h3 class="section-header">Parent</h3>
+        
+        <p class="link"><a href="Object.html">Object</a></p>
+        
+      </div>
+      
+
+      
+
+      
+
+      
+      <!-- Method Quickref -->
+      <div id="method-list-section" class="section">
+        <h3 class="section-header">Methods</h3>
+        <ul class="link-list">
+          
+          <li><a href="#method-c-5B-5D">::[]</a></li>
+          
+          <li><a href="#method-c-new">::new</a></li>
+          
+          <li><a href="#method-c-try_convert">::try_convert</a></li>
+          
+          <li><a href="#method-i-3D-3D">#==</a></li>
+          
+          <li><a href="#method-i-5B-5D">#[]</a></li>
+          
+          <li><a href="#method-i-5B-5D-3D">#[]=</a></li>
+          
+          <li><a href="#method-i-assoc">#assoc</a></li>
+          
+          <li><a href="#method-i-clear">#clear</a></li>
+          
+          <li><a href="#method-i-compare_by_identity">#compare_by_identity</a></li>
+          
+          <li><a href="#method-i-compare_by_identity-3F">#compare_by_identity?</a></li>
+          
+          <li><a href="#method-i-default">#default</a></li>
+          
+          <li><a href="#method-i-default-3D">#default=</a></li>
+          
+          <li><a href="#method-i-default_proc">#default_proc</a></li>
+          
+          <li><a href="#method-i-default_proc-3D">#default_proc=</a></li>
+          
+          <li><a href="#method-i-delete">#delete</a></li>
+          
+          <li><a href="#method-i-delete_if">#delete_if</a></li>
+          
+          <li><a href="#method-i-each">#each</a></li>
+          
+          <li><a href="#method-i-each_key">#each_key</a></li>
+          
+          <li><a href="#method-i-each_pair">#each_pair</a></li>
+          
+          <li><a href="#method-i-each_value">#each_value</a></li>
+          
+          <li><a href="#method-i-empty-3F">#empty?</a></li>
+          
+          <li><a href="#method-i-eql-3F">#eql?</a></li>
+          
+          <li><a href="#method-i-fetch">#fetch</a></li>
+          
+          <li><a href="#method-i-flatten">#flatten</a></li>
+          
+          <li><a href="#method-i-has_key-3F">#has_key?</a></li>
+          
+          <li><a href="#method-i-has_value-3F">#has_value?</a></li>
+          
+          <li><a href="#method-i-hash">#hash</a></li>
+          
+          <li><a href="#method-i-include-3F">#include?</a></li>
+          
+          <li><a href="#method-i-initialize_copy">#initialize_copy</a></li>
+          
+          <li><a href="#method-i-inspect">#inspect</a></li>
+          
+          <li><a href="#method-i-invert">#invert</a></li>
+          
+          <li><a href="#method-i-keep_if">#keep_if</a></li>
+          
+          <li><a href="#method-i-key">#key</a></li>
+          
+          <li><a href="#method-i-key-3F">#key?</a></li>
+          
+          <li><a href="#method-i-keys">#keys</a></li>
+          
+          <li><a href="#method-i-length">#length</a></li>
+          
+          <li><a href="#method-i-member-3F">#member?</a></li>
+          
+          <li><a href="#method-i-merge">#merge</a></li>
+          
+          <li><a href="#method-i-merge-21">#merge!</a></li>
+          
+          <li><a href="#method-i-rassoc">#rassoc</a></li>
+          
+          <li><a href="#method-i-rehash">#rehash</a></li>
+          
+          <li><a href="#method-i-reject">#reject</a></li>
+          
+          <li><a href="#method-i-reject-21">#reject!</a></li>
+          
+          <li><a href="#method-i-replace">#replace</a></li>
+          
+          <li><a href="#method-i-select">#select</a></li>
+          
+          <li><a href="#method-i-select-21">#select!</a></li>
+          
+          <li><a href="#method-i-shift">#shift</a></li>
+          
+          <li><a href="#method-i-size">#size</a></li>
+          
+          <li><a href="#method-i-store">#store</a></li>
+          
+          <li><a href="#method-i-to_a">#to_a</a></li>
+          
+          <li><a href="#method-i-to_hash">#to_hash</a></li>
+          
+          <li><a href="#method-i-to_s">#to_s</a></li>
+          
+          <li><a href="#method-i-update">#update</a></li>
+          
+          <li><a href="#method-i-value-3F">#value?</a></li>
+          
+          <li><a href="#method-i-values">#values</a></li>
+          
+          <li><a href="#method-i-values_at">#values_at</a></li>
+          
+        </ul>
+      </div>
+      
+
+      
+      <!-- Included Modules -->
+      <div id="includes-section" class="section">
+        <h3 class="section-header">Included Modules</h3>
+        <ul class="link-list">
+        
+        
+          <li><a class="include" href="Enumerable.html">Enumerable</a></li>
+        
+        
+        </ul>
+      </div>
+      
+    </div>
+
+    <div id="project-metadata">
+      
+      
+      <div id="fileindex-section" class="section project-section">
+        <h3 class="section-header">Files</h3>
+        <ul id='files'>
+        
+          
+          <li class="file"><a href="./_lib/xmlrpc/README_rdoc.html">README.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./_test/rdoc/test_ja_large_rdoc.html">test.ja.large.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./_test/rdoc/test_ja_rdoc.html">test.ja.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./doc/rake/command_line_usage_rdoc.html">command_line_usage.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./doc/rake/glossary_rdoc.html">glossary.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./doc/rake/proto_rake_rdoc.html">proto_rake.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./doc/rake/rakefile_rdoc.html">rakefile.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./doc/rake/rational_rdoc.html">rational.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./doc/rake/release_notes/rake-0_8_7_rdoc.html">rake-0.8.7.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./doc/re_rdoc.html">re.rdoc</a></li>
+        
+        </ul>
+      </div>
+      
+
+      <div id="classindex-section" class="section project-section">
+        <h3 class="section-header">Class/Module Index
+          <span class="search-toggle"><img src="./images/find.png"
+            height="16" width="16" alt="[+]"
+            title="show/hide quicksearch" /></span></h3>
+        <form action="#" method="get" accept-charset="utf-8" class="initially-hidden">
+        <fieldset>
+          <legend>Quicksearch</legend>
+          <input type="text" name="quicksearch" value=""
+            class="quicksearch-field" />
+        </fieldset>
+        </form>
+
+        <ul class="link-list">
+          
+          
+          
+          <li><a href="./ARGF.html">ARGF</a></li>
+        
+          
+          
+          <li><a href="./ArgumentError.html">ArgumentError</a></li>
+        
+          
+          
+          <li><a href="./Array.html">Array</a></li>
+        
+          
+          
+          <li><a href="./BasicObject.html">BasicObject</a></li>
+        
+          
+          
+          <li><a href="./Bignum.html">Bignum</a></li>
+        
+          
+          
+          <li><a href="./Binding.html">Binding</a></li>
+        
+          
+          
+          <li><a href="./Class.html">Class</a></li>
+        
+          
+          
+          <li><a href="./Comparable.html">Comparable</a></li>
+        
+          
+          
+          <li><a href="./Complex.html">Complex</a></li>
+        
+          
+          
+          <li><a href="./Continuation.html">Continuation</a></li>
+        
+          
+          
+          <li><a href="./Data.html">Data</a></li>
+        
+          
+          
+          <li><a href="./Dir.html">Dir</a></li>
+        
+          
+          
+          <li><a href="./ENV.html">ENV</a></li>
+        
+          
+          
+          <li><a href="./EOFError.html">EOFError</a></li>
+        
+          
+          
+          <li><a href="./Encoding.html">Encoding</a></li>
+        
+          
+          
+          <li><a href="./Encoding/CompatibilityError.html">Encoding::CompatibilityError</a></li>
+        
+          
+          
+          <li><a href="./Encoding/Converter.html">Encoding::Converter</a></li>
+        
+          
+          
+          <li><a href="./Encoding/ConverterNotFoundError.html">Encoding::ConverterNotFoundError</a></li>
+        
+          
+          
+          <li><a href="./Encoding/InvalidByteSequenceError.html">Encoding::InvalidByteSequenceError</a></li>
+        
+          
+          
+          <li><a href="./Encoding/UndefinedConversionError.html">Encoding::UndefinedConversionError</a></li>
+        
+          
+          
+          <li><a href="./EncodingError.html">EncodingError</a></li>
+        
+          
+          
+          <li><a href="./Enumerable.html">Enumerable</a></li>
+        
+          
+          
+          <li><a href="./Enumerator.html">Enumerator</a></li>
+        
+          
+          
+          <li><a href="./Enumerator/Generator.html">Enumerator::Generator</a></li>
+        
+          
+          
+          <li><a href="./Enumerator/Yielder.html">Enumerator::Yielder</a></li>
+        
+          
+          
+          <li><a href="./Errno.html">Errno</a></li>
+        
+          
+          
+          <li><a href="./Exception.html">Exception</a></li>
+        
+          
+          
+          <li><a href="./FalseClass.html">FalseClass</a></li>
+        
+          
+          
+          <li><a href="./Fiber.html">Fiber</a></li>
+        
+          
+          
+          <li><a href="./FiberError.html">FiberError</a></li>
+        
+          
+          
+          <li><a href="./File.html">File</a></li>
+        
+          
+          
+          <li><a href="./File/Constants.html">File::Constants</a></li>
+        
+          
+          
+          <li><a href="./File/Stat.html">File::Stat</a></li>
+        
+          
+          
+          <li><a href="./FileTest.html">FileTest</a></li>
+        
+          
+          
+          <li><a href="./Fixnum.html">Fixnum</a></li>
+        
+          
+          
+          <li><a href="./Float.html">Float</a></li>
+        
+          
+          
+          <li><a href="./FloatDomainError.html">FloatDomainError</a></li>
+        
+          
+          
+          <li><a href="./GC.html">GC</a></li>
+        
+          
+          
+          <li><a href="./GC/Profiler.html">GC::Profiler</a></li>
+        
+          
+          
+          <li><a href="./Hash.html">Hash</a></li>
+        
+          
+          
+          <li><a href="./IO.html">IO</a></li>
+        
+          
+          
+          <li><a href="./IO/WaitReadable.html">IO::WaitReadable</a></li>
+        
+          
+          
+          <li><a href="./IO/WaitWritable.html">IO::WaitWritable</a></li>
+        
+          
+          
+          <li><a href="./IOError.html">IOError</a></li>
+        
+          
+          
+          <li><a href="./IndexError.html">IndexError</a></li>
+        
+          
+          
+          <li><a href="./Integer.html">Integer</a></li>
+        
+          
+          
+          <li><a href="./Interrupt.html">Interrupt</a></li>
+        
+          
+          
+          <li><a href="./Kernel.html">Kernel</a></li>
+        
+          
+          
+          <li><a href="./KeyError.html">KeyError</a></li>
+        
+          
+          
+          <li><a href="./LoadError.html">LoadError</a></li>
+        
+          
+          
+          <li><a href="./LocalJumpError.html">LocalJumpError</a></li>
+        
+          
+          
+          <li><a href="./Marshal.html">Marshal</a></li>
+        
+          
+          
+          <li><a href="./MatchData.html">MatchData</a></li>
+        
+          
+          
+          <li><a href="./Math.html">Math</a></li>
+        
+          
+          
+          <li><a href="./Math/DomainError.html">Math::DomainError</a></li>
+        
+          
+          
+          <li><a href="./Method.html">Method</a></li>
+        
+          
+          
+          <li><a href="./Module.html">Module</a></li>
+        
+          
+          
+          <li><a href="./Mutex.html">Mutex</a></li>
+        
+          
+          
+          <li><a href="./NameError.html">NameError</a></li>
+        
+          
+          
+          <li><a href="./NilClass.html">NilClass</a></li>
+        
+          
+          
+          <li><a href="./NoMemoryError.html">NoMemoryError</a></li>
+        
+          
+          
+          <li><a href="./NoMethodError.html">NoMethodError</a></li>
+        
+          
+          
+          <li><a href="./NotImplementedError.html">NotImplementedError</a></li>
+        
+          
+          
+          <li><a href="./Numeric.html">Numeric</a></li>
+        
+          
+          
+          <li><a href="./Object.html">Object</a></li>
+        
+          
+          
+          <li><a href="./ObjectSpace.html">ObjectSpace</a></li>
+        
+          
+          
+          <li><a href="./Proc.html">Proc</a></li>
+        
+          
+          
+          <li><a href="./Process.html">Process</a></li>
+        
+          
+          
+          <li><a href="./Process/GID.html">Process::GID</a></li>
+        
+          
+          
+          <li><a href="./Process/Status.html">Process::Status</a></li>
+        
+          
+          
+          <li><a href="./Process/Sys.html">Process::Sys</a></li>
+        
+          
+          
+          <li><a href="./Process/UID.html">Process::UID</a></li>
+        
+          
+          
+          <li><a href="./Random.html">Random</a></li>
+        
+          
+          
+          <li><a href="./Range.html">Range</a></li>
+        
+          
+          
+          <li><a href="./RangeError.html">RangeError</a></li>
+        
+          
+          
+          <li><a href="./Rational.html">Rational</a></li>
+        
+          
+          
+          <li><a href="./Regexp.html">Regexp</a></li>
+        
+          
+          
+          <li><a href="./RegexpError.html">RegexpError</a></li>
+        
+          
+          
+          <li><a href="./RubyVM.html">RubyVM</a></li>
+        
+          
+          
+          <li><a href="./RubyVM/Env.html">RubyVM::Env</a></li>
+        
+          
+          
+          <li><a href="./RubyVM/InstructionSequence.html">RubyVM::InstructionSequence</a></li>
+        
+          
+          
+          <li><a href="./RuntimeError.html">RuntimeError</a></li>
+        
+          
+          
+          <li><a href="./ScriptError.html">ScriptError</a></li>
+        
+          
+          
+          <li><a href="./SecurityError.html">SecurityError</a></li>
+        
+          
+          
+          <li><a href="./Signal.html">Signal</a></li>
+        
+          
+          
+          <li><a href="./SignalException.html">SignalException</a></li>
+        
+          
+          
+          <li><a href="./StandardError.html">StandardError</a></li>
+        
+          
+          
+          <li><a href="./StopIteration.html">StopIteration</a></li>
+        
+          
+          
+          <li><a href="./String.html">String</a></li>
+        
+          
+          
+          <li><a href="./Struct.html">Struct</a></li>
+        
+          
+          
+          <li><a href="./Symbol.html">Symbol</a></li>
+        
+          
+          
+          <li><a href="./SyntaxError.html">SyntaxError</a></li>
+        
+          
+          
+          <li><a href="./SystemCallError.html">SystemCallError</a></li>
+        
+          
+          
+          <li><a href="./SystemExit.html">SystemExit</a></li>
+        
+          
+          
+          <li><a href="./SystemStackError.html">SystemStackError</a></li>
+        
+          
+          
+          <li><a href="./Thread.html">Thread</a></li>
+        
+          
+          
+          <li><a href="./ThreadError.html">ThreadError</a></li>
+        
+          
+          
+          <li><a href="./ThreadGroup.html">ThreadGroup</a></li>
+        
+          
+          
+          <li><a href="./Time.html">Time</a></li>
+        
+          
+          
+          <li><a href="./TrueClass.html">TrueClass</a></li>
+        
+          
+          
+          <li><a href="./TypeError.html">TypeError</a></li>
+        
+          
+          
+          <li><a href="./UnboundMethod.html">UnboundMethod</a></li>
+        
+          
+          
+          <li><a href="./ZeroDivisionError.html">ZeroDivisionError</a></li>
+        
+          
+          
+          <li><a href="./fatal.html">fatal</a></li>
+        
+          
+          
+          <li><a href="./unknown.html">unknown</a></li>
+        
+        </ul>
+        <div id="no-class-search-results" style="display: none;">No matching classes.</div>
+      </div>
+
+      
+      <div id="debugging-toggle"><img src="./images/bug.png"
+        alt="toggle debugging" height="16" width="16" /></div>
+      
+    </div>
+  </div> <!-- metadata -->
+  <div class='adzbox'  id="azk83167">
+    
+   <div id="carbonads-container"><div class="carbonad"><div id="azcarbon"></div><script type="text/javascript">var z = document.createElement("script"); z.type = "text/javascript"; z.async = true; z.src = "http://engine.carbonads.com/z/19647/azcarbon_2_1_0_VERT"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(z, s);</script></div></div>
+
+   
+  </div> 
+  <div id="documentation">
+    <h1 class="class">Hash</h1>
+
+    <div id="description" class="description">
+      
+<p>A <code>Hash</code> is a collection of key-value pairs. It is similar to an
+<code>Array</code>, except that indexing is done via arbitrary keys of any
+object type, not an integer index. Hashes enumerate their values in the
+order that the corresponding keys were inserted.</p>
+
+<p>Hashes have a <em>default value</em> that is returned when accessing keys
+that do not exist in the hash. By default, that value is <code>nil</code>.</p>
+
+    </div><!-- description -->
+
+    
+    
+    
+    <div id="5Buntitled-5D" class="documentation-section">
+      
+
+      
+
+      
+
+      
+
+      <!-- Methods -->
+      
+      <div id="public-class-method-details" class="method-section section">
+        <h3 class="section-header">Public Class Methods</h3>
+
+      
+        <div id="5B-5D-method" class="method-detail ">
+          <a name="method-c-5B-5D"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">Hash[ key, value, ... ]         &rarr; new_hash</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">Hash[ [ [key, value], ... ] ]   &rarr; new_hash</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">Hash[ object ]                  &rarr; new_hash</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Creates a new hash populated with the given objects. Equivalent to the
+literal <code>{ <em>key</em> =&gt; <em>value</em>, ... }</code>. In the
+first form, keys and values occur in pairs, so there must be an even number
+of arguments. The second and third form take a single argument which is
+either an array of key-value pairs or an object convertible to a hash.</p>
+
+<pre class="ruby"><span class="ruby-constant">Hash</span>[<span class="ruby-string">&quot;a&quot;</span>, <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span>, <span class="ruby-value">200</span>]             <span class="ruby-comment">#=&gt; {&quot;a&quot;=&gt;100, &quot;b&quot;=&gt;200}</span>
+<span class="ruby-constant">Hash</span>[ [ [<span class="ruby-string">&quot;a&quot;</span>, <span class="ruby-value">100</span>], [<span class="ruby-string">&quot;b&quot;</span>, <span class="ruby-value">200</span>] ] ]   <span class="ruby-comment">#=&gt; {&quot;a&quot;=&gt;100, &quot;b&quot;=&gt;200}</span>
+<span class="ruby-constant">Hash</span>[<span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span>]         <span class="ruby-comment">#=&gt; {&quot;a&quot;=&gt;100, &quot;b&quot;=&gt;200}</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="5B-5D-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_s_create(int argc, VALUE *argv, VALUE klass)
+{
+    VALUE hash, tmp;
+    int i;
+
+    if (argc == 1) {
+        tmp = rb_hash_s_try_convert(Qnil, argv[0]);
+        if (!NIL_P(tmp)) {
+            hash = hash_alloc(klass);
+            if (RHASH(tmp)-&gt;ntbl) {
+                RHASH(hash)-&gt;ntbl = st_copy(RHASH(tmp)-&gt;ntbl);
+            }
+            return hash;
+        }
+
+        tmp = rb_check_array_type(argv[0]);
+        if (!NIL_P(tmp)) {
+            long i;
+
+            hash = hash_alloc(klass);
+            for (i = 0; i &lt; RARRAY_LEN(tmp); ++i) {
+                VALUE v = rb_check_array_type(RARRAY_PTR(tmp)[i]);
+                VALUE key, val = Qnil;
+
+                if (NIL_P(v)) continue;
+                switch (RARRAY_LEN(v)) {
+                  case 2:
+                    val = RARRAY_PTR(v)[1];
+                  case 1:
+                    key = RARRAY_PTR(v)[0];
+                    rb_hash_aset(hash, key, val);
+                }
+            }
+            return hash;
+        }
+    }
+    if (argc % 2 != 0) {
+        rb_raise(rb_eArgError, &quot;odd number of arguments for Hash&quot;);
+    }
+
+    hash = hash_alloc(klass);
+    for (i=0; i&lt;argc; i+=2) {
+        rb_hash_aset(hash, argv[i], argv[i + 1]);
+    }
+
+    return hash;
+}
+            </pre> 
+            </div><!-- 5B-5D-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- 5B-5D-method -->
+      
+        <div id="new-method" class="method-detail ">
+          <a name="method-c-new"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">new                          &rarr; new_hash</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">new(obj)                     &rarr; new_hash</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">new {|hash, key| block }     &rarr; new_hash</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns a new, empty hash. If this hash is subsequently accessed by a key
+that doesn’t correspond to a hash entry, the value returned depends on the
+style of <code>new</code> used to create the hash. In the first form, the
+access returns <code>nil</code>. If <em>obj</em> is specified, this single
+object will be used for all <em>default values</em>. If a block is
+specified, it will be called with the hash object and the key, and should
+return the default value. It is the block’s responsibility to store the
+value in the hash if required.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;Go Fish&quot;</span>)
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;a&quot;</span>] = <span class="ruby-value">100</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;b&quot;</span>] = <span class="ruby-value">200</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;a&quot;</span>]           <span class="ruby-comment">#=&gt; 100</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;c&quot;</span>]           <span class="ruby-comment">#=&gt; &quot;Go Fish&quot;</span>
+<span class="ruby-comment"># The following alters the single default object</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;c&quot;</span>].<span class="ruby-identifier">upcase!</span>   <span class="ruby-comment">#=&gt; &quot;GO FISH&quot;</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;d&quot;</span>]           <span class="ruby-comment">#=&gt; &quot;GO FISH&quot;</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">keys</span>           <span class="ruby-comment">#=&gt; [&quot;a&quot;, &quot;b&quot;]</span>
+
+<span class="ruby-comment"># While this creates a new default object each time</span>
+<span class="ruby-identifier">h</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">hash</span>, <span class="ruby-identifier">key</span><span class="ruby-operator">|</span> <span class="ruby-identifier">hash</span>[<span class="ruby-identifier">key</span>] = <span class="ruby-node">&quot;Go Fish: #{key}&quot;</span> }
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;c&quot;</span>]           <span class="ruby-comment">#=&gt; &quot;Go Fish: c&quot;</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;c&quot;</span>].<span class="ruby-identifier">upcase!</span>   <span class="ruby-comment">#=&gt; &quot;GO FISH: C&quot;</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;d&quot;</span>]           <span class="ruby-comment">#=&gt; &quot;Go Fish: d&quot;</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">keys</span>           <span class="ruby-comment">#=&gt; [&quot;c&quot;, &quot;d&quot;]</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="new-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_initialize(int argc, VALUE *argv, VALUE hash)
+{
+    VALUE ifnone;
+
+    rb_hash_modify(hash);
+    if (rb_block_given_p()) {
+        if (argc &gt; 0) {
+            rb_raise(rb_eArgError, &quot;wrong number of arguments&quot;);
+        }
+        ifnone = rb_block_proc();
+        default_proc_arity_check(ifnone);
+        RHASH_IFNONE(hash) = ifnone;
+        FL_SET(hash, HASH_PROC_DEFAULT);
+    }
+    else {
+        rb_scan_args(argc, argv, &quot;01&quot;, &amp;ifnone);
+        RHASH_IFNONE(hash) = ifnone;
+    }
+
+    return hash;
+}
+            </pre> 
+            </div><!-- new-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- new-method -->
+      
+        <div id="try_convert-method" class="method-detail ">
+          <a name="method-c-try_convert"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">try_convert(obj) &rarr; hash or nil</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Try to convert <em>obj</em> into a hash, using <a
+href="Hash.html#method-i-to_hash">#to_hash</a> method. Returns converted
+hash or nil if <em>obj</em> cannot be converted for any reason.</p>
+
+<pre class="ruby"><span class="ruby-constant">Hash</span>.<span class="ruby-identifier">try_convert</span>({<span class="ruby-value">1</span>=<span class="ruby-operator">&gt;</span><span class="ruby-value">2</span>})   <span class="ruby-comment"># =&gt; {1=&gt;2}</span>
+<span class="ruby-constant">Hash</span>.<span class="ruby-identifier">try_convert</span>(<span class="ruby-string">&quot;1=&gt;2&quot;</span>)   <span class="ruby-comment"># =&gt; nil</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="try_convert-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_s_try_convert(VALUE dummy, VALUE hash)
+{
+    return rb_check_hash_type(hash);
+}
+            </pre> 
+            </div><!-- try_convert-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- try_convert-method -->
+      
+      </div><!-- public-class-method-details -->
+    
+      <div id="public-instance-method-details" class="method-section section">
+        <h3 class="section-header">Public Instance Methods</h3>
+
+      
+        <div id="3D-3D-method" class="method-detail ">
+          <a name="method-i-3D-3D"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">hsh == other_hash    &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Equality—Two hashes are equal if they each contain the same number of keys
+and if each key-value pair is equal to (according to
+<code>Object#==</code>) the corresponding elements in the other hash.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h1</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">1</span>, <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">2</span> }
+<span class="ruby-identifier">h2</span> = { <span class="ruby-value">7</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">35</span>, <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">2</span>, <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">1</span> }
+<span class="ruby-identifier">h3</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">1</span>, <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">2</span>, <span class="ruby-value">7</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">35</span> }
+<span class="ruby-identifier">h4</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">1</span>, <span class="ruby-string">&quot;d&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">2</span>, <span class="ruby-string">&quot;f&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">35</span> }
+<span class="ruby-identifier">h1</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">h2</span>   <span class="ruby-comment">#=&gt; false</span>
+<span class="ruby-identifier">h2</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">h3</span>   <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">h3</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">h4</span>   <span class="ruby-comment">#=&gt; false</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="3D-3D-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_equal(VALUE hash1, VALUE hash2)
+{
+    return hash_equal(hash1, hash2, FALSE);
+}
+            </pre> 
+            </div><!-- 3D-3D-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- 3D-3D-method -->
+      
+        <div id="5B-5D-method" class="method-detail ">
+          <a name="method-i-5B-5D"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">hsh[key]    &rarr;  value</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Element Reference—Retrieves the <em>value</em> object corresponding to the
+<em>key</em> object. If not found, returns the default value (see
+<code>Hash::new</code> for details).</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;a&quot;</span>]   <span class="ruby-comment">#=&gt; 100</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;c&quot;</span>]   <span class="ruby-comment">#=&gt; nil</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="5B-5D-source">
+              <pre> <!-- method.markup_code 290 -->
+               VALUE
+rb_hash_aref(VALUE hash, VALUE key)
+{
+    st_data_t val;
+
+    if (!RHASH(hash)-&gt;ntbl || !st_lookup(RHASH(hash)-&gt;ntbl, key, &amp;val)) {
+        if (!FL_TEST(hash, HASH_PROC_DEFAULT) &amp;&amp;
+            rb_method_basic_definition_p(CLASS_OF(hash), id_default)) {
+            return RHASH_IFNONE(hash);
+        }
+        else {
+            return rb_funcall(hash, id_default, 1, key);
+        }
+    }
+    return (VALUE)val;
+}
+            </pre> 
+            </div><!-- 5B-5D-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- 5B-5D-method -->
+      
+        <div id="5B-5D-3D-method" class="method-detail ">
+          <a name="method-i-5B-5D-3D"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">hsh[key] = value        &rarr; value</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Element Assignment—Associates the value given by <em>value</em> with the
+key given by <em>key</em>. <em>key</em> should not have its value changed
+while it is in use as a key (a <code>String</code> passed as a key will be
+duplicated and frozen).</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;a&quot;</span>] = <span class="ruby-value">9</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;c&quot;</span>] = <span class="ruby-value">4</span>
+<span class="ruby-identifier">h</span>   <span class="ruby-comment">#=&gt; {&quot;a&quot;=&gt;9, &quot;b&quot;=&gt;200, &quot;c&quot;=&gt;4}</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="5B-5D-3D-source">
+              <pre> <!-- method.markup_code 290 -->
+               VALUE
+rb_hash_aset(VALUE hash, VALUE key, VALUE val)
+{
+    rb_hash_modify(hash);
+    hash_update(hash, key);
+    if (RHASH(hash)-&gt;ntbl-&gt;type == &amp;identhash || rb_obj_class(key) != rb_cString) {
+        st_insert(RHASH(hash)-&gt;ntbl, key, val);
+    }
+    else {
+        st_insert2(RHASH(hash)-&gt;ntbl, key, val, copy_str_key);
+    }
+    return val;
+}
+            </pre> 
+            </div><!-- 5B-5D-3D-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- 5B-5D-3D-method -->
+      
+        <div id="assoc-method" class="method-detail ">
+          <a name="method-i-assoc"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">assoc(obj)   &rarr;  an_array  or  nil</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Searches through the hash comparing <em>obj</em> with the key using
+<code>==</code>. Returns the key-value pair (two elements array) or
+<code>nil</code> if no match is found.  See <code>Array#assoc</code>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = {<span class="ruby-string">&quot;colors&quot;</span>  =<span class="ruby-operator">&gt;</span> [<span class="ruby-string">&quot;red&quot;</span>, <span class="ruby-string">&quot;blue&quot;</span>, <span class="ruby-string">&quot;green&quot;</span>],
+     <span class="ruby-string">&quot;letters&quot;</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-string">&quot;a&quot;</span>, <span class="ruby-string">&quot;b&quot;</span>, <span class="ruby-string">&quot;c&quot;</span> ]}
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">assoc</span>(<span class="ruby-string">&quot;letters&quot;</span>)  <span class="ruby-comment">#=&gt; [&quot;letters&quot;, [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]]</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">assoc</span>(<span class="ruby-string">&quot;foo&quot;</span>)      <span class="ruby-comment">#=&gt; nil</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="assoc-source">
+              <pre> <!-- method.markup_code 290 -->
+               VALUE
+rb_hash_assoc(VALUE hash, VALUE obj)
+{
+    VALUE args[2];
+
+    args[0] = obj;
+    args[1] = Qnil;
+    rb_hash_foreach(hash, assoc_i, (VALUE)args);
+    return args[1];
+}
+            </pre> 
+            </div><!-- assoc-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- assoc-method -->
+      
+        <div id="clear-method" class="method-detail ">
+          <a name="method-i-clear"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">clear &rarr; hsh</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Removes all key-value pairs from <em>hsh</em>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }   <span class="ruby-comment">#=&gt; {&quot;a&quot;=&gt;100, &quot;b&quot;=&gt;200}</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">clear</span>                          <span class="ruby-comment">#=&gt; {}</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="clear-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_clear(VALUE hash)
+{
+    rb_hash_modify_check(hash);
+    if (!RHASH(hash)-&gt;ntbl)
+        return hash;
+    if (RHASH(hash)-&gt;ntbl-&gt;num_entries &gt; 0) {
+        if (RHASH(hash)-&gt;iter_lev &gt; 0)
+            rb_hash_foreach(hash, clear_i, 0);
+        else
+            st_clear(RHASH(hash)-&gt;ntbl);
+    }
+
+    return hash;
+}
+            </pre> 
+            </div><!-- clear-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- clear-method -->
+      
+        <div id="compare_by_identity-method" class="method-detail ">
+          <a name="method-i-compare_by_identity"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">compare_by_identity &rarr; hsh</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Makes <em>hsh</em> compare its keys by their identity, i.e. it will
+consider exact same objects as same keys.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h1</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span>, :<span class="ruby-identifier">c</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;c&quot;</span> }
+<span class="ruby-identifier">h1</span>[<span class="ruby-string">&quot;a&quot;</span>]        <span class="ruby-comment">#=&gt; 100</span>
+<span class="ruby-identifier">h1</span>.<span class="ruby-identifier">compare_by_identity</span>
+<span class="ruby-identifier">h1</span>.<span class="ruby-identifier">compare_by_identity?</span> <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">h1</span>[<span class="ruby-string">&quot;a&quot;</span>]        <span class="ruby-comment">#=&gt; nil  # different objects.</span>
+<span class="ruby-identifier">h1</span>[:<span class="ruby-identifier">c</span>]         <span class="ruby-comment">#=&gt; &quot;c&quot;  # same symbols are all same.</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="compare_by_identity-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_compare_by_id(VALUE hash)
+{
+    rb_hash_modify(hash);
+    RHASH(hash)-&gt;ntbl-&gt;type = &amp;identhash;
+    rb_hash_rehash(hash);
+    return hash;
+}
+            </pre> 
+            </div><!-- compare_by_identity-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- compare_by_identity-method -->
+      
+        <div id="compare_by_identity-3F-method" class="method-detail ">
+          <a name="method-i-compare_by_identity-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">compare_by_identity? &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if <em>hsh</em> will compare its keys by their
+identity.  Also see <code>Hash#compare_by_identity</code>.</p>
+            
+
+            
+            <div class="method-source-code" id="compare_by_identity-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_compare_by_id_p(VALUE hash)
+{
+    if (!RHASH(hash)-&gt;ntbl)
+        return Qfalse;
+    if (RHASH(hash)-&gt;ntbl-&gt;type == &amp;identhash) {
+        return Qtrue;
+    }
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- compare_by_identity-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- compare_by_identity-3F-method -->
+      
+        <div id="default-method" class="method-detail ">
+          <a name="method-i-default"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">default(key=nil)   &rarr; obj</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the default value, the value that would be returned by <em><a
+href="key">hsh</a></em> if <em>key</em> did not exist in <em>hsh</em>. See
+also <code>Hash::new</code> and <code>Hash#default=</code>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>                            <span class="ruby-comment">#=&gt; {}</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">default</span>                               <span class="ruby-comment">#=&gt; nil</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">default</span>(<span class="ruby-value">2</span>)                            <span class="ruby-comment">#=&gt; nil</span>
+
+<span class="ruby-identifier">h</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;cat&quot;</span>)                     <span class="ruby-comment">#=&gt; {}</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">default</span>                               <span class="ruby-comment">#=&gt; &quot;cat&quot;</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">default</span>(<span class="ruby-value">2</span>)                            <span class="ruby-comment">#=&gt; &quot;cat&quot;</span>
+
+<span class="ruby-identifier">h</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">h</span>,<span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">h</span>[<span class="ruby-identifier">k</span>] = <span class="ruby-identifier">k</span>.<span class="ruby-identifier">to_i</span><span class="ruby-operator">*</span><span class="ruby-value">10</span>}   <span class="ruby-comment">#=&gt; {}</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">default</span>                               <span class="ruby-comment">#=&gt; nil</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">default</span>(<span class="ruby-value">2</span>)                            <span class="ruby-comment">#=&gt; 20</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="default-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_default(int argc, VALUE *argv, VALUE hash)
+{
+    VALUE key, ifnone;
+
+    rb_scan_args(argc, argv, &quot;01&quot;, &amp;key);
+    ifnone = RHASH_IFNONE(hash);
+    if (FL_TEST(hash, HASH_PROC_DEFAULT)) {
+        if (argc == 0) return Qnil;
+        return rb_funcall(ifnone, id_yield, 2, hash, key);
+    }
+    return ifnone;
+}
+            </pre> 
+            </div><!-- default-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- default-method -->
+      
+        <div id="default-3D-method" class="method-detail ">
+          <a name="method-i-default-3D"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">default = obj     &rarr; obj</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Sets the default value, the value returned for a key that does not exist in
+the hash. It is not possible to set the default to a <code>Proc</code> that
+will be executed on each key lookup.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">default</span> = <span class="ruby-string">&quot;Go fish&quot;</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;a&quot;</span>]     <span class="ruby-comment">#=&gt; 100</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;z&quot;</span>]     <span class="ruby-comment">#=&gt; &quot;Go fish&quot;</span>
+<span class="ruby-comment"># This doesn't do what you might hope...</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">default</span> = <span class="ruby-identifier">proc</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">hash</span>, <span class="ruby-identifier">key</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">hash</span>[<span class="ruby-identifier">key</span>] = <span class="ruby-identifier">key</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">key</span>
+<span class="ruby-keyword">end</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-value">2</span>]       <span class="ruby-comment">#=&gt; #&lt;Proc:0x401b3948@-:6&gt;</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;cat&quot;</span>]   <span class="ruby-comment">#=&gt; #&lt;Proc:0x401b3948@-:6&gt;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="default-3D-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_set_default(VALUE hash, VALUE ifnone)
+{
+    rb_hash_modify(hash);
+    RHASH_IFNONE(hash) = ifnone;
+    FL_UNSET(hash, HASH_PROC_DEFAULT);
+    return ifnone;
+}
+            </pre> 
+            </div><!-- default-3D-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- default-3D-method -->
+      
+        <div id="default_proc-method" class="method-detail ">
+          <a name="method-i-default_proc"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">default_proc &rarr; anObject</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>If <code>Hash::new</code> was invoked with a block, return that block,
+otherwise return <code>nil</code>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">h</span>,<span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">h</span>[<span class="ruby-identifier">k</span>] = <span class="ruby-identifier">k</span><span class="ruby-operator">*</span><span class="ruby-identifier">k</span> }   <span class="ruby-comment">#=&gt; {}</span>
+<span class="ruby-identifier">p</span> = <span class="ruby-identifier">h</span>.<span class="ruby-identifier">default_proc</span>                 <span class="ruby-comment">#=&gt; #&lt;Proc:0x401b3d08@-:1&gt;</span>
+<span class="ruby-identifier">a</span> = []                             <span class="ruby-comment">#=&gt; []</span>
+<span class="ruby-identifier">p</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">a</span>, <span class="ruby-value">2</span>)
+<span class="ruby-identifier">a</span>                                  <span class="ruby-comment">#=&gt; [nil, nil, 4]</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="default_proc-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_default_proc(VALUE hash)
+{
+    if (FL_TEST(hash, HASH_PROC_DEFAULT)) {
+        return RHASH_IFNONE(hash);
+    }
+    return Qnil;
+}
+            </pre> 
+            </div><!-- default_proc-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- default_proc-method -->
+      
+        <div id="default_proc-3D-method" class="method-detail ">
+          <a name="method-i-default_proc-3D"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">default_proc = proc_obj     &rarr; proc_obj</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Sets the default proc to be executed on each key lookup.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span>.<span class="ruby-identifier">default_proc</span> = <span class="ruby-identifier">proc</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">hash</span>, <span class="ruby-identifier">key</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">hash</span>[<span class="ruby-identifier">key</span>] = <span class="ruby-identifier">key</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">key</span>
+<span class="ruby-keyword">end</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-value">2</span>]       <span class="ruby-comment">#=&gt; 4</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;cat&quot;</span>]   <span class="ruby-comment">#=&gt; &quot;catcat&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="default_proc-3D-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_set_default_proc(VALUE hash, VALUE proc)
+{
+    VALUE b;
+
+    rb_hash_modify(hash);
+    b = rb_check_convert_type(proc, T_DATA, &quot;Proc&quot;, &quot;to_proc&quot;);
+    if (NIL_P(b) || !rb_obj_is_proc(b)) {
+        rb_raise(rb_eTypeError,
+                 &quot;wrong default_proc type %s (expected Proc)&quot;,
+                 rb_obj_classname(proc));
+    }
+    proc = b;
+    default_proc_arity_check(proc);
+    RHASH_IFNONE(hash) = proc;
+    FL_SET(hash, HASH_PROC_DEFAULT);
+    return proc;
+}
+            </pre> 
+            </div><!-- default_proc-3D-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- default_proc-3D-method -->
+      
+        <div id="delete-method" class="method-detail ">
+          <a name="method-i-delete"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">delete(key)                   &rarr; value</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">delete(key) {| key | block }  &rarr; value</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Deletes and returns a key-value pair from <em>hsh</em> whose key is equal
+to <em>key</em>. If the key is not found, returns the <em>default
+value</em>. If the optional code block is given and the key is not found,
+pass in the key and return the result of <em>block</em>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-string">&quot;a&quot;</span>)                              <span class="ruby-comment">#=&gt; 100</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-string">&quot;z&quot;</span>)                              <span class="ruby-comment">#=&gt; nil</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-string">&quot;z&quot;</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">el</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;#{el} not found&quot;</span> }   <span class="ruby-comment">#=&gt; &quot;z not found&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="delete-source">
+              <pre> <!-- method.markup_code 290 -->
+               VALUE
+rb_hash_delete(VALUE hash, VALUE key)
+{
+    VALUE val;
+
+    rb_hash_modify(hash);
+    val = rb_hash_delete_key(hash, key);
+    if (val != Qundef) return val;
+    if (rb_block_given_p()) {
+        return rb_yield(key);
+    }
+    return Qnil;
+}
+            </pre> 
+            </div><!-- delete-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- delete-method -->
+      
+        <div id="delete_if-method" class="method-detail ">
+          <a name="method-i-delete_if"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">delete_if {| key, value | block }  &rarr; hsh</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">delete_if                          &rarr; an_enumerator</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Deletes every key-value pair from <em>hsh</em> for which <em>block</em>
+evaluates to <code>true</code>.</p>
+
+<p>If no block is given, an enumerator is returned instead.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span>, <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">delete_if</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span> <span class="ruby-identifier">key</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-string">&quot;b&quot;</span> }   <span class="ruby-comment">#=&gt; {&quot;a&quot;=&gt;100}</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="delete_if-source">
+              <pre> <!-- method.markup_code 290 -->
+               VALUE
+rb_hash_delete_if(VALUE hash)
+{
+    RETURN_ENUMERATOR(hash, 0, 0);
+    rb_hash_modify(hash);
+    rb_hash_foreach(hash, delete_if_i, hash);
+    return hash;
+}
+            </pre> 
+            </div><!-- delete_if-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- delete_if-method -->
+      
+        <div id="each-method" class="method-detail ">
+          <a name="method-i-each"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">each      {| key, value | block } &rarr; hsh</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">each_pair {| key, value | block } &rarr; hsh</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">each                              &rarr; an_enumerator</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">each_pair                         &rarr; an_enumerator</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Calls <em>block</em> once for each key in <em>hsh</em>, passing the
+key-value pair as parameters.</p>
+
+<p>If no block is given, an enumerator is returned instead.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">each</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span> <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{key} is #{value}&quot;</span> }
+</pre>
+
+<p><em>produces:</em></p>
+
+<pre>a is 100
+b is 200</pre>
+            
+
+            
+            <div class="method-source-code" id="each-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_each_pair(VALUE hash)
+{
+    RETURN_ENUMERATOR(hash, 0, 0);
+    rb_hash_foreach(hash, each_pair_i, 0);
+    return hash;
+}
+            </pre> 
+            </div><!-- each-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- each-method -->
+      
+        <div id="each_key-method" class="method-detail ">
+          <a name="method-i-each_key"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">each_key {| key | block } &rarr; hsh</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">each_key                  &rarr; an_enumerator</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Calls <em>block</em> once for each key in <em>hsh</em>, passing the key as
+a parameter.</p>
+
+<p>If no block is given, an enumerator is returned instead.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">each_key</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">key</span><span class="ruby-operator">|</span> <span class="ruby-identifier">puts</span> <span class="ruby-identifier">key</span> }
+</pre>
+
+<p><em>produces:</em></p>
+
+<pre>a
+b</pre>
+            
+
+            
+            <div class="method-source-code" id="each_key-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_each_key(VALUE hash)
+{
+    RETURN_ENUMERATOR(hash, 0, 0);
+    rb_hash_foreach(hash, each_key_i, 0);
+    return hash;
+}
+            </pre> 
+            </div><!-- each_key-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- each_key-method -->
+      
+        <div id="each_pair-method" class="method-detail ">
+          <a name="method-i-each_pair"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">each_pair {| key, value | block } &rarr; hsh</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">each_pair                         &rarr; an_enumerator</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Calls <em>block</em> once for each key in <em>hsh</em>, passing the
+key-value pair as parameters.</p>
+
+<p>If no block is given, an enumerator is returned instead.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">each</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span> <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{key} is #{value}&quot;</span> }
+</pre>
+
+<p><em>produces:</em></p>
+
+<pre>a is 100
+b is 200</pre>
+            
+
+            
+            <div class="method-source-code" id="each_pair-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_each_pair(VALUE hash)
+{
+    RETURN_ENUMERATOR(hash, 0, 0);
+    rb_hash_foreach(hash, each_pair_i, 0);
+    return hash;
+}
+            </pre> 
+            </div><!-- each_pair-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- each_pair-method -->
+      
+        <div id="each_value-method" class="method-detail ">
+          <a name="method-i-each_value"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">each_value {| value | block } &rarr; hsh</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">each_value                    &rarr; an_enumerator</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Calls <em>block</em> once for each key in <em>hsh</em>, passing the value
+as a parameter.</p>
+
+<p>If no block is given, an enumerator is returned instead.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">each_value</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">value</span><span class="ruby-operator">|</span> <span class="ruby-identifier">puts</span> <span class="ruby-identifier">value</span> }
+</pre>
+
+<p><em>produces:</em></p>
+
+<pre>100
+200</pre>
+            
+
+            
+            <div class="method-source-code" id="each_value-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_each_value(VALUE hash)
+{
+    RETURN_ENUMERATOR(hash, 0, 0);
+    rb_hash_foreach(hash, each_value_i, 0);
+    return hash;
+}
+            </pre> 
+            </div><!-- each_value-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- each_value-method -->
+      
+        <div id="empty-3F-method" class="method-detail ">
+          <a name="method-i-empty-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">empty?    &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if <em>hsh</em> contains no key-value pairs.</p>
+
+<pre class="ruby">{}.<span class="ruby-identifier">empty?</span>   <span class="ruby-comment">#=&gt; true</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="empty-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_empty_p(VALUE hash)
+{
+    return RHASH_EMPTY_P(hash) ? Qtrue : Qfalse;
+}
+            </pre> 
+            </div><!-- empty-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- empty-3F-method -->
+      
+        <div id="eql-3F-method" class="method-detail ">
+          <a name="method-i-eql-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">eql?(other)  &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if <em>hash</em> and <em>other</em> are both
+hashes with the same content.</p>
+            
+
+            
+            <div class="method-source-code" id="eql-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_eql(VALUE hash1, VALUE hash2)
+{
+    return hash_equal(hash1, hash2, TRUE);
+}
+            </pre> 
+            </div><!-- eql-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- eql-3F-method -->
+      
+        <div id="fetch-method" class="method-detail ">
+          <a name="method-i-fetch"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">fetch(key [, default] )       &rarr; obj</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">fetch(key) {| key | block }   &rarr; obj</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns a value from the hash for the given key. If the key can’t be found,
+there are several options: With no other arguments, it will raise an
+<code>KeyError</code> exception; if <em>default</em> is given, then that
+will be returned; if the optional code block is specified, then that will
+be run and its result returned.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-string">&quot;a&quot;</span>)                            <span class="ruby-comment">#=&gt; 100</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-string">&quot;z&quot;</span>, <span class="ruby-string">&quot;go fish&quot;</span>)                 <span class="ruby-comment">#=&gt; &quot;go fish&quot;</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-string">&quot;z&quot;</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">el</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;go fish, #{el}&quot;</span>}   <span class="ruby-comment">#=&gt; &quot;go fish, z&quot;</span>
+</pre>
+
+<p>The following example shows that an exception is raised if the key is not
+found and a default value is not supplied.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-string">&quot;z&quot;</span>)
+</pre>
+
+<p><em>produces:</em></p>
+
+<pre>prog.rb:2:in `fetch': key not found (KeyError)
+ from prog.rb:2</pre>
+            
+
+            
+            <div class="method-source-code" id="fetch-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_fetch_m(int argc, VALUE *argv, VALUE hash)
+{
+    VALUE key, if_none;
+    st_data_t val;
+    long block_given;
+
+    rb_scan_args(argc, argv, &quot;11&quot;, &amp;key, &amp;if_none);
+
+    block_given = rb_block_given_p();
+    if (block_given &amp;&amp; argc == 2) {
+        rb_warn(&quot;block supersedes default value argument&quot;);
+    }
+    if (!RHASH(hash)-&gt;ntbl || !st_lookup(RHASH(hash)-&gt;ntbl, key, &amp;val)) {
+        if (block_given) return rb_yield(key);
+        if (argc == 1) {
+            volatile VALUE desc = rb_protect(rb_inspect, key, 0);
+            if (NIL_P(desc)) {
+                desc = rb_any_to_s(key);
+            }
+            desc = rb_str_ellipsize(desc, 65);
+            rb_raise(rb_eKeyError, &quot;key not found: %s&quot;, RSTRING_PTR(desc));
+        }
+        return if_none;
+    }
+    return (VALUE)val;
+}
+            </pre> 
+            </div><!-- fetch-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- fetch-method -->
+      
+        <div id="flatten-method" class="method-detail ">
+          <a name="method-i-flatten"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">flatten &rarr; an_array</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">flatten(level) &rarr; an_array</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns a new array that is a one-dimensional flattening of this hash. That
+is, for every key or value that is an array, extract its elements into the
+new array.  Unlike <a href="Array.html#method-i-flatten">Array#flatten</a>,
+this method does not flatten recursively by default.  The optional
+<em>level</em> argument determines the level of recursion to flatten.</p>
+
+<pre class="ruby"><span class="ruby-identifier">a</span> =  {<span class="ruby-value">1</span>=<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;one&quot;</span>, <span class="ruby-value">2</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-value">2</span>,<span class="ruby-string">&quot;two&quot;</span>], <span class="ruby-value">3</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;three&quot;</span>}
+<span class="ruby-identifier">a</span>.<span class="ruby-identifier">flatten</span>    <span class="ruby-comment"># =&gt; [1, &quot;one&quot;, 2, [2, &quot;two&quot;], 3, &quot;three&quot;]</span>
+<span class="ruby-identifier">a</span>.<span class="ruby-identifier">flatten</span>(<span class="ruby-value">2</span>) <span class="ruby-comment"># =&gt; [1, &quot;one&quot;, 2, 2, &quot;two&quot;, 3, &quot;three&quot;]</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="flatten-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_flatten(int argc, VALUE *argv, VALUE hash)
+{
+    VALUE ary, tmp;
+
+    ary = rb_hash_to_a(hash);
+    if (argc == 0) {
+        argc = 1;
+        tmp = INT2FIX(1);
+        argv = &amp;tmp;
+    }
+    rb_funcall2(ary, rb_intern(&quot;flatten!&quot;), argc, argv);
+    return ary;
+}
+            </pre> 
+            </div><!-- flatten-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- flatten-method -->
+      
+        <div id="has_key-3F-method" class="method-detail ">
+          <a name="method-i-has_key-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">has_key?(key)    &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the given key is present in <em>hsh</em>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-string">&quot;a&quot;</span>)   <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-string">&quot;z&quot;</span>)   <span class="ruby-comment">#=&gt; false</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="has_key-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_has_key(VALUE hash, VALUE key)
+{
+    if (!RHASH(hash)-&gt;ntbl)
+        return Qfalse;
+    if (st_lookup(RHASH(hash)-&gt;ntbl, key, 0)) {
+        return Qtrue;
+    }
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- has_key-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- has_key-3F-method -->
+      
+        <div id="has_value-3F-method" class="method-detail ">
+          <a name="method-i-has_value-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">has_value?(value)    &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the given value is present for some key in
+<em>hsh</em>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">has_value?</span>(<span class="ruby-value">100</span>)   <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">has_value?</span>(<span class="ruby-value">999</span>)   <span class="ruby-comment">#=&gt; false</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="has_value-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_has_value(VALUE hash, VALUE val)
+{
+    VALUE data[2];
+
+    data[0] = Qfalse;
+    data[1] = val;
+    rb_hash_foreach(hash, rb_hash_search_value, (VALUE)data);
+    return data[0];
+}
+            </pre> 
+            </div><!-- has_value-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- has_value-3F-method -->
+      
+        <div id="hash-method" class="method-detail ">
+          <a name="method-i-hash"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">hash   &rarr; fixnum</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Compute a hash-code for this hash. Two hashes with the same content will
+have the same hash code (and will compare using <code>eql?</code>).</p>
+            
+
+            
+            <div class="method-source-code" id="hash-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_hash(VALUE hash)
+{
+    return rb_exec_recursive_outer(recursive_hash, hash, 0);
+}
+            </pre> 
+            </div><!-- hash-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- hash-method -->
+      
+        <div id="include-3F-method" class="method-detail ">
+          <a name="method-i-include-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">include?(key)    &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the given key is present in <em>hsh</em>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-string">&quot;a&quot;</span>)   <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-string">&quot;z&quot;</span>)   <span class="ruby-comment">#=&gt; false</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="include-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_has_key(VALUE hash, VALUE key)
+{
+    if (!RHASH(hash)-&gt;ntbl)
+        return Qfalse;
+    if (st_lookup(RHASH(hash)-&gt;ntbl, key, 0)) {
+        return Qtrue;
+    }
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- include-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- include-3F-method -->
+      
+        <div id="initialize_copy-method" class="method-detail ">
+          <a name="method-i-initialize_copy"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">replace(other_hash) &rarr; hsh</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Replaces the contents of <em>hsh</em> with the contents of
+<em>other_hash</em>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">replace</span>({ <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span>, <span class="ruby-string">&quot;d&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">400</span> })   <span class="ruby-comment">#=&gt; {&quot;c&quot;=&gt;300, &quot;d&quot;=&gt;400}</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="initialize_copy-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_replace(VALUE hash, VALUE hash2)
+{
+    rb_hash_modify_check(hash);
+    hash2 = to_hash(hash2);
+    if (hash == hash2) return hash;
+    rb_hash_clear(hash);
+    if (RHASH(hash2)-&gt;ntbl) {
+        rb_hash_tbl(hash);
+        RHASH(hash)-&gt;ntbl-&gt;type = RHASH(hash2)-&gt;ntbl-&gt;type;
+    }
+    rb_hash_foreach(hash2, replace_i, hash);
+    RHASH_IFNONE(hash) = RHASH_IFNONE(hash2);
+    if (FL_TEST(hash2, HASH_PROC_DEFAULT)) {
+        FL_SET(hash, HASH_PROC_DEFAULT);
+    }
+    else {
+        FL_UNSET(hash, HASH_PROC_DEFAULT);
+    }
+
+    return hash;
+}
+            </pre> 
+            </div><!-- initialize_copy-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- initialize_copy-method -->
+      
+        <div id="inspect-method" class="method-detail ">
+          <a name="method-i-inspect"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">to_s     &rarr; string</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">inspect  &rarr; string</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Return the contents of this hash as a string.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span>, <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;d&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">400</span>, <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span>  }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">to_s</span>   <span class="ruby-comment">#=&gt; &quot;{\&quot;c\&quot;=&gt;300, \&quot;a\&quot;=&gt;100, \&quot;d\&quot;=&gt;400}&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="inspect-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_inspect(VALUE hash)
+{
+    if (RHASH_EMPTY_P(hash))
+        return rb_usascii_str_new2(&quot;{}&quot;);
+    return rb_exec_recursive(inspect_hash, hash, 0);
+}
+            </pre> 
+            </div><!-- inspect-source -->
+            
+          </div>
+
+          
+          <div class="aliases">
+            Also aliased as: <a href="Hash.html#method-i-to_s">to_s</a>
+          </div>
+          
+
+          
+        </div><!-- inspect-method -->
+      
+        <div id="invert-method" class="method-detail ">
+          <a name="method-i-invert"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">invert &rarr; new_hash</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns a new hash created by using <em>hsh</em>’s values as keys, and the
+keys as values.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;n&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;m&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;y&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span>, <span class="ruby-string">&quot;d&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span>, <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">invert</span>   <span class="ruby-comment">#=&gt; {0=&gt;&quot;a&quot;, 100=&gt;&quot;m&quot;, 200=&gt;&quot;d&quot;, 300=&gt;&quot;y&quot;}</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="invert-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_invert(VALUE hash)
+{
+    VALUE h = rb_hash_new();
+
+    rb_hash_foreach(hash, rb_hash_invert_i, h);
+    return h;
+}
+            </pre> 
+            </div><!-- invert-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- invert-method -->
+      
+        <div id="keep_if-method" class="method-detail ">
+          <a name="method-i-keep_if"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">keep_if {| key, value | block }  &rarr; hsh</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">keep_if                          &rarr; an_enumerator</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Deletes every key-value pair from <em>hsh</em> for which <em>block</em>
+evaluates to false.</p>
+
+<p>If no block is given, an enumerator is returned instead.</p>
+            
+
+            
+            <div class="method-source-code" id="keep_if-source">
+              <pre> <!-- method.markup_code 290 -->
+               VALUE
+rb_hash_keep_if(VALUE hash)
+{
+    RETURN_ENUMERATOR(hash, 0, 0);
+    rb_hash_modify(hash);
+    rb_hash_foreach(hash, keep_if_i, hash);
+    return hash;
+}
+            </pre> 
+            </div><!-- keep_if-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- keep_if-method -->
+      
+        <div id="key-method" class="method-detail ">
+          <a name="method-i-key"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">key(value)    &rarr; key</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the key of an occurrence of a given value. If the value is not
+found, returns <code>nil</code>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span>, <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span>, <span class="ruby-string">&quot;d&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">key</span>(<span class="ruby-value">200</span>)   <span class="ruby-comment">#=&gt; &quot;b&quot;</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">key</span>(<span class="ruby-value">300</span>)   <span class="ruby-comment">#=&gt; &quot;c&quot;</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">key</span>(<span class="ruby-value">999</span>)   <span class="ruby-comment">#=&gt; nil</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="key-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_key(VALUE hash, VALUE value)
+{
+    VALUE args[2];
+
+    args[0] = value;
+    args[1] = Qnil;
+
+    rb_hash_foreach(hash, key_i, (VALUE)args);
+
+    return args[1];
+}
+            </pre> 
+            </div><!-- key-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- key-method -->
+      
+        <div id="key-3F-method" class="method-detail ">
+          <a name="method-i-key-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">key?(key)        &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the given key is present in <em>hsh</em>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-string">&quot;a&quot;</span>)   <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-string">&quot;z&quot;</span>)   <span class="ruby-comment">#=&gt; false</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="key-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_has_key(VALUE hash, VALUE key)
+{
+    if (!RHASH(hash)-&gt;ntbl)
+        return Qfalse;
+    if (st_lookup(RHASH(hash)-&gt;ntbl, key, 0)) {
+        return Qtrue;
+    }
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- key-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- key-3F-method -->
+      
+        <div id="keys-method" class="method-detail ">
+          <a name="method-i-keys"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">keys    &rarr; array</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns a new array populated with the keys from this hash. See also
+<code>Hash#values</code>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span>, <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span>, <span class="ruby-string">&quot;d&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">400</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">keys</span>   <span class="ruby-comment">#=&gt; [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="keys-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_keys(VALUE hash)
+{
+    VALUE ary;
+
+    ary = rb_ary_new();
+    rb_hash_foreach(hash, keys_i, ary);
+
+    return ary;
+}
+            </pre> 
+            </div><!-- keys-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- keys-method -->
+      
+        <div id="length-method" class="method-detail ">
+          <a name="method-i-length"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">length    &rarr;  fixnum</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the number of key-value pairs in the hash.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;d&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span>, <span class="ruby-string">&quot;v&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span>, <span class="ruby-string">&quot;e&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">400</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">length</span>        <span class="ruby-comment">#=&gt; 4</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-string">&quot;a&quot;</span>)   <span class="ruby-comment">#=&gt; 200</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">length</span>        <span class="ruby-comment">#=&gt; 3</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="length-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_size(VALUE hash)
+{
+    if (!RHASH(hash)-&gt;ntbl)
+        return INT2FIX(0);
+    return INT2FIX(RHASH(hash)-&gt;ntbl-&gt;num_entries);
+}
+            </pre> 
+            </div><!-- length-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- length-method -->
+      
+        <div id="member-3F-method" class="method-detail ">
+          <a name="method-i-member-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">member?(key)     &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the given key is present in <em>hsh</em>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-string">&quot;a&quot;</span>)   <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-string">&quot;z&quot;</span>)   <span class="ruby-comment">#=&gt; false</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="member-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_has_key(VALUE hash, VALUE key)
+{
+    if (!RHASH(hash)-&gt;ntbl)
+        return Qfalse;
+    if (st_lookup(RHASH(hash)-&gt;ntbl, key, 0)) {
+        return Qtrue;
+    }
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- member-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- member-3F-method -->
+      
+        <div id="merge-method" class="method-detail ">
+          <a name="method-i-merge"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">merge(other_hash)                              &rarr; new_hash</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">merge(other_hash){|key, oldval, newval| block} &rarr; new_hash</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns a new hash containing the contents of <em>other_hash</em> and the
+contents of <em>hsh</em>. If no block is specified, the value for entries
+with duplicate keys will be that of <em>other_hash</em>. Otherwise the
+value for each duplicate key is determined by calling the block with the
+key, its value in <em>hsh</em> and its value in <em>other_hash</em>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h1</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h2</span> = { <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">254</span>, <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span> }
+<span class="ruby-identifier">h1</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">h2</span>)   <span class="ruby-comment">#=&gt; {&quot;a&quot;=&gt;100, &quot;b&quot;=&gt;254, &quot;c&quot;=&gt;300}</span>
+<span class="ruby-identifier">h1</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">h2</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">oldval</span>, <span class="ruby-identifier">newval</span><span class="ruby-operator">|</span> <span class="ruby-identifier">newval</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">oldval</span>}
+               <span class="ruby-comment">#=&gt; {&quot;a&quot;=&gt;100, &quot;b&quot;=&gt;54,  &quot;c&quot;=&gt;300}</span>
+<span class="ruby-identifier">h1</span>             <span class="ruby-comment">#=&gt; {&quot;a&quot;=&gt;100, &quot;b&quot;=&gt;200}</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="merge-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_merge(VALUE hash1, VALUE hash2)
+{
+    return rb_hash_update(rb_obj_dup(hash1), hash2);
+}
+            </pre> 
+            </div><!-- merge-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- merge-method -->
+      
+        <div id="merge-21-method" class="method-detail ">
+          <a name="method-i-merge-21"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">merge!(other_hash)                                 &rarr; hsh</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">merge!(other_hash){|key, oldval, newval| block}    &rarr; hsh</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Adds the contents of <em>other_hash</em> to <em>hsh</em>.  If no block is
+specified, entries with duplicate keys are overwritten with the values from
+<em>other_hash</em>, otherwise the value of each duplicate key is
+determined by calling the block with the key, its value in <em>hsh</em> and
+its value in <em>other_hash</em>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h1</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h2</span> = { <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">254</span>, <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span> }
+<span class="ruby-identifier">h1</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">h2</span>)   <span class="ruby-comment">#=&gt; {&quot;a&quot;=&gt;100, &quot;b&quot;=&gt;254, &quot;c&quot;=&gt;300}</span>
+
+<span class="ruby-identifier">h1</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h2</span> = { <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">254</span>, <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span> }
+<span class="ruby-identifier">h1</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">h2</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">v1</span>, <span class="ruby-identifier">v2</span><span class="ruby-operator">|</span> <span class="ruby-identifier">v1</span> }
+                <span class="ruby-comment">#=&gt; {&quot;a&quot;=&gt;100, &quot;b&quot;=&gt;200, &quot;c&quot;=&gt;300}</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="merge-21-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_update(VALUE hash1, VALUE hash2)
+{
+    rb_hash_modify(hash1);
+    hash2 = to_hash(hash2);
+    if (rb_block_given_p()) {
+        rb_hash_foreach(hash2, rb_hash_update_block_i, hash1);
+    }
+    else {
+        rb_hash_foreach(hash2, rb_hash_update_i, hash1);
+    }
+    return hash1;
+}
+            </pre> 
+            </div><!-- merge-21-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- merge-21-method -->
+      
+        <div id="rassoc-method" class="method-detail ">
+          <a name="method-i-rassoc"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">rassoc(obj) &rarr; an_array or nil</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Searches through the hash comparing <em>obj</em> with the value using
+<code>==</code>. Returns the first key-value pair (two-element array) that
+matches. See also <code>Array#rassoc</code>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">a</span> = {<span class="ruby-value">1</span>=<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;one&quot;</span>, <span class="ruby-value">2</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;two&quot;</span>, <span class="ruby-value">3</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;three&quot;</span>, <span class="ruby-string">&quot;ii&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;two&quot;</span>}
+<span class="ruby-identifier">a</span>.<span class="ruby-identifier">rassoc</span>(<span class="ruby-string">&quot;two&quot;</span>)    <span class="ruby-comment">#=&gt; [2, &quot;two&quot;]</span>
+<span class="ruby-identifier">a</span>.<span class="ruby-identifier">rassoc</span>(<span class="ruby-string">&quot;four&quot;</span>)   <span class="ruby-comment">#=&gt; nil</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="rassoc-source">
+              <pre> <!-- method.markup_code 290 -->
+               VALUE
+rb_hash_rassoc(VALUE hash, VALUE obj)
+{
+    VALUE args[2];
+
+    args[0] = obj;
+    args[1] = Qnil;
+    rb_hash_foreach(hash, rassoc_i, (VALUE)args);
+    return args[1];
+}
+            </pre> 
+            </div><!-- rassoc-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- rassoc-method -->
+      
+        <div id="rehash-method" class="method-detail ">
+          <a name="method-i-rehash"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">rehash &rarr; hsh</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Rebuilds the hash based on the current hash values for each key. If values
+of key objects have changed since they were inserted, this method will
+reindex <em>hsh</em>. If <code>Hash#rehash</code> is called while an
+iterator is traversing the hash, an <code>RuntimeError</code> will be
+raised in the iterator.</p>
+
+<pre class="ruby"><span class="ruby-identifier">a</span> = [ <span class="ruby-string">&quot;a&quot;</span>, <span class="ruby-string">&quot;b&quot;</span> ]
+<span class="ruby-identifier">c</span> = [ <span class="ruby-string">&quot;c&quot;</span>, <span class="ruby-string">&quot;d&quot;</span> ]
+<span class="ruby-identifier">h</span> = { <span class="ruby-identifier">a</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-identifier">c</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span> }
+<span class="ruby-identifier">h</span>[<span class="ruby-identifier">a</span>]       <span class="ruby-comment">#=&gt; 100</span>
+<span class="ruby-identifier">a</span>[<span class="ruby-value">0</span>] = <span class="ruby-string">&quot;z&quot;</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-identifier">a</span>]       <span class="ruby-comment">#=&gt; nil</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">rehash</span>   <span class="ruby-comment">#=&gt; {[&quot;z&quot;, &quot;b&quot;]=&gt;100, [&quot;c&quot;, &quot;d&quot;]=&gt;300}</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-identifier">a</span>]       <span class="ruby-comment">#=&gt; 100</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="rehash-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_rehash(VALUE hash)
+{
+    VALUE tmp;
+    st_table *tbl;
+
+    if (RHASH(hash)-&gt;iter_lev &gt; 0) {
+        rb_raise(rb_eRuntimeError, &quot;rehash during iteration&quot;);
+    }
+    rb_hash_modify_check(hash);
+    if (!RHASH(hash)-&gt;ntbl)
+        return hash;
+    tmp = hash_alloc(0);
+    tbl = st_init_table_with_size(RHASH(hash)-&gt;ntbl-&gt;type, RHASH(hash)-&gt;ntbl-&gt;num_entries);
+    RHASH(tmp)-&gt;ntbl = tbl;
+
+    rb_hash_foreach(hash, rb_hash_rehash_i, (VALUE)tbl);
+    st_free_table(RHASH(hash)-&gt;ntbl);
+    RHASH(hash)-&gt;ntbl = tbl;
+    RHASH(tmp)-&gt;ntbl = 0;
+
+    return hash;
+}
+            </pre> 
+            </div><!-- rehash-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- rehash-method -->
+      
+        <div id="reject-method" class="method-detail ">
+          <a name="method-i-reject"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">reject {| key, value | block }  &rarr; a_hash</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">reject                          &rarr; an_enumerator</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Same as <code>Hash#delete_if</code>, but works on (and returns) a copy of
+the <em>hsh</em>. Equivalent to <code><em>hsh</em>.dup.delete_if</code>.</p>
+            
+
+            
+            <div class="method-source-code" id="reject-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_reject(VALUE hash)
+{
+    return rb_hash_delete_if(rb_obj_dup(hash));
+}
+            </pre> 
+            </div><!-- reject-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- reject-method -->
+      
+        <div id="reject-21-method" class="method-detail ">
+          <a name="method-i-reject-21"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">reject! {| key, value | block }  &rarr; hsh or nil</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">reject!                          &rarr; an_enumerator</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Equivalent to <code>Hash#delete_if</code>, but returns <code>nil</code> if
+no changes were made.</p>
+            
+
+            
+            <div class="method-source-code" id="reject-21-source">
+              <pre> <!-- method.markup_code 290 -->
+               VALUE
+rb_hash_reject_bang(VALUE hash)
+{
+    st_index_t n;
+
+    RETURN_ENUMERATOR(hash, 0, 0);
+    rb_hash_modify(hash);
+    if (!RHASH(hash)-&gt;ntbl)
+        return Qnil;
+    n = RHASH(hash)-&gt;ntbl-&gt;num_entries;
+    rb_hash_foreach(hash, delete_if_i, hash);
+    if (n == RHASH(hash)-&gt;ntbl-&gt;num_entries) return Qnil;
+    return hash;
+}
+            </pre> 
+            </div><!-- reject-21-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- reject-21-method -->
+      
+        <div id="replace-method" class="method-detail ">
+          <a name="method-i-replace"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">replace(other_hash) &rarr; hsh</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Replaces the contents of <em>hsh</em> with the contents of
+<em>other_hash</em>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">replace</span>({ <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span>, <span class="ruby-string">&quot;d&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">400</span> })   <span class="ruby-comment">#=&gt; {&quot;c&quot;=&gt;300, &quot;d&quot;=&gt;400}</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="replace-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_replace(VALUE hash, VALUE hash2)
+{
+    rb_hash_modify_check(hash);
+    hash2 = to_hash(hash2);
+    if (hash == hash2) return hash;
+    rb_hash_clear(hash);
+    if (RHASH(hash2)-&gt;ntbl) {
+        rb_hash_tbl(hash);
+        RHASH(hash)-&gt;ntbl-&gt;type = RHASH(hash2)-&gt;ntbl-&gt;type;
+    }
+    rb_hash_foreach(hash2, replace_i, hash);
+    RHASH_IFNONE(hash) = RHASH_IFNONE(hash2);
+    if (FL_TEST(hash2, HASH_PROC_DEFAULT)) {
+        FL_SET(hash, HASH_PROC_DEFAULT);
+    }
+    else {
+        FL_UNSET(hash, HASH_PROC_DEFAULT);
+    }
+
+    return hash;
+}
+            </pre> 
+            </div><!-- replace-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- replace-method -->
+      
+        <div id="select-method" class="method-detail ">
+          <a name="method-i-select"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">select {|key, value| block}   &rarr; a_hash</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">select                        &rarr; an_enumerator</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns a new hash consisting of entries for which the block returns true.</p>
+
+<p>If no block is given, an enumerator is returned instead.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span>, <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">select</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">k</span>,<span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span> <span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;a&quot;</span>}  <span class="ruby-comment">#=&gt; {&quot;b&quot; =&gt; 200, &quot;c&quot; =&gt; 300}</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">select</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">k</span>,<span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">v</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">200</span>}  <span class="ruby-comment">#=&gt; {&quot;a&quot; =&gt; 100}</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="select-source">
+              <pre> <!-- method.markup_code 290 -->
+               VALUE
+rb_hash_select(VALUE hash)
+{
+    VALUE result;
+
+    RETURN_ENUMERATOR(hash, 0, 0);
+    result = rb_hash_new();
+    rb_hash_foreach(hash, select_i, result);
+    return result;
+}
+            </pre> 
+            </div><!-- select-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- select-method -->
+      
+        <div id="select-21-method" class="method-detail ">
+          <a name="method-i-select-21"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">select! {| key, value | block }  &rarr; hsh or nil</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">select!                          &rarr; an_enumerator</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Equivalent to <code>Hash#keep_if</code>, but returns <code>nil</code> if no
+changes were made.</p>
+            
+
+            
+            <div class="method-source-code" id="select-21-source">
+              <pre> <!-- method.markup_code 290 -->
+               VALUE
+rb_hash_select_bang(VALUE hash)
+{
+    st_index_t n;
+
+    RETURN_ENUMERATOR(hash, 0, 0);
+    rb_hash_modify(hash);
+    if (!RHASH(hash)-&gt;ntbl)
+        return Qnil;
+    n = RHASH(hash)-&gt;ntbl-&gt;num_entries;
+    rb_hash_foreach(hash, keep_if_i, hash);
+    if (n == RHASH(hash)-&gt;ntbl-&gt;num_entries) return Qnil;
+    return hash;
+}
+            </pre> 
+            </div><!-- select-21-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- select-21-method -->
+      
+        <div id="shift-method" class="method-detail ">
+          <a name="method-i-shift"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">shift &rarr; anArray or obj</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Removes a key-value pair from <em>hsh</em> and returns it as the two-item
+array <code>[</code> <em>key, value</em> <code>]</code>, or the hash’s
+default value if the hash is empty.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-value">1</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;a&quot;</span>, <span class="ruby-value">2</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;b&quot;</span>, <span class="ruby-value">3</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;c&quot;</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">shift</span>   <span class="ruby-comment">#=&gt; [1, &quot;a&quot;]</span>
+<span class="ruby-identifier">h</span>         <span class="ruby-comment">#=&gt; {2=&gt;&quot;b&quot;, 3=&gt;&quot;c&quot;}</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="shift-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_shift(VALUE hash)
+{
+    struct shift_var var;
+
+    rb_hash_modify(hash);
+    var.key = Qundef;
+    if (RHASH(hash)-&gt;iter_lev == 0) {
+        if (st_shift(RHASH(hash)-&gt;ntbl, &amp;var.key, &amp;var.val)) {
+            return rb_assoc_new(var.key, var.val);
+        }
+    }
+    else {
+        rb_hash_foreach(hash, shift_i_safe, (VALUE)&amp;var);
+
+        if (var.key != Qundef) {
+            rb_hash_delete_key(hash, var.key);
+            return rb_assoc_new(var.key, var.val);
+        }
+    }
+    if (FL_TEST(hash, HASH_PROC_DEFAULT)) {
+        return rb_funcall(RHASH_IFNONE(hash), id_yield, 2, hash, Qnil);
+    }
+    else {
+        return RHASH_IFNONE(hash);
+    }
+}
+            </pre> 
+            </div><!-- shift-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- shift-method -->
+      
+        <div id="size-method" class="method-detail ">
+          <a name="method-i-size"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">size      &rarr;  fixnum</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the number of key-value pairs in the hash.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;d&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span>, <span class="ruby-string">&quot;v&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span>, <span class="ruby-string">&quot;e&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">400</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">length</span>        <span class="ruby-comment">#=&gt; 4</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-string">&quot;a&quot;</span>)   <span class="ruby-comment">#=&gt; 200</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">length</span>        <span class="ruby-comment">#=&gt; 3</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="size-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_size(VALUE hash)
+{
+    if (!RHASH(hash)-&gt;ntbl)
+        return INT2FIX(0);
+    return INT2FIX(RHASH(hash)-&gt;ntbl-&gt;num_entries);
+}
+            </pre> 
+            </div><!-- size-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- size-method -->
+      
+        <div id="store-method" class="method-detail ">
+          <a name="method-i-store"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">store(key, value)   &rarr; value</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Element Assignment—Associates the value given by <em>value</em> with the
+key given by <em>key</em>. <em>key</em> should not have its value changed
+while it is in use as a key (a <code>String</code> passed as a key will be
+duplicated and frozen).</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;a&quot;</span>] = <span class="ruby-value">9</span>
+<span class="ruby-identifier">h</span>[<span class="ruby-string">&quot;c&quot;</span>] = <span class="ruby-value">4</span>
+<span class="ruby-identifier">h</span>   <span class="ruby-comment">#=&gt; {&quot;a&quot;=&gt;9, &quot;b&quot;=&gt;200, &quot;c&quot;=&gt;4}</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="store-source">
+              <pre> <!-- method.markup_code 290 -->
+               VALUE
+rb_hash_aset(VALUE hash, VALUE key, VALUE val)
+{
+    rb_hash_modify(hash);
+    hash_update(hash, key);
+    if (RHASH(hash)-&gt;ntbl-&gt;type == &amp;identhash || rb_obj_class(key) != rb_cString) {
+        st_insert(RHASH(hash)-&gt;ntbl, key, val);
+    }
+    else {
+        st_insert2(RHASH(hash)-&gt;ntbl, key, val, copy_str_key);
+    }
+    return val;
+}
+            </pre> 
+            </div><!-- store-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- store-method -->
+      
+        <div id="to_a-method" class="method-detail ">
+          <a name="method-i-to_a"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">to_a &rarr; array</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Converts <em>hsh</em> to a nested array of <code>[</code> <em>key,
+value</em> <code>]</code> arrays.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span>, <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;d&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">400</span>, <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span>  }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">to_a</span>   <span class="ruby-comment">#=&gt; [[&quot;c&quot;, 300], [&quot;a&quot;, 100], [&quot;d&quot;, 400]]</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="to_a-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_to_a(VALUE hash)
+{
+    VALUE ary;
+
+    ary = rb_ary_new();
+    rb_hash_foreach(hash, to_a_i, ary);
+    OBJ_INFECT(ary, hash);
+
+    return ary;
+}
+            </pre> 
+            </div><!-- to_a-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- to_a-method -->
+      
+        <div id="to_hash-method" class="method-detail ">
+          <a name="method-i-to_hash"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">to_hash   => hsh</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>self</code>.</p>
+            
+
+            
+            <div class="method-source-code" id="to_hash-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_to_hash(VALUE hash)
+{
+    return hash;
+}
+            </pre> 
+            </div><!-- to_hash-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- to_hash-method -->
+      
+        <div id="to_s-method" class="method-detail method-alias">
+          <a name="method-i-to_s"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">to_s</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+          <div>
+  
+            
+            
+            
+
+            
+          </div>
+
+          
+
+          
+          <div class="aliases">
+            Alias for: <a href="Hash.html#method-i-inspect">inspect</a>
+          </div>
+          
+        </div><!-- to_s-method -->
+      
+        <div id="update-method" class="method-detail ">
+          <a name="method-i-update"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">update(other_hash)                                 &rarr; hsh</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">update(other_hash){|key, oldval, newval| block}    &rarr; hsh</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Adds the contents of <em>other_hash</em> to <em>hsh</em>.  If no block is
+specified, entries with duplicate keys are overwritten with the values from
+<em>other_hash</em>, otherwise the value of each duplicate key is
+determined by calling the block with the key, its value in <em>hsh</em> and
+its value in <em>other_hash</em>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h1</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h2</span> = { <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">254</span>, <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span> }
+<span class="ruby-identifier">h1</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">h2</span>)   <span class="ruby-comment">#=&gt; {&quot;a&quot;=&gt;100, &quot;b&quot;=&gt;254, &quot;c&quot;=&gt;300}</span>
+
+<span class="ruby-identifier">h1</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h2</span> = { <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">254</span>, <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span> }
+<span class="ruby-identifier">h1</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">h2</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">v1</span>, <span class="ruby-identifier">v2</span><span class="ruby-operator">|</span> <span class="ruby-identifier">v1</span> }
+                <span class="ruby-comment">#=&gt; {&quot;a&quot;=&gt;100, &quot;b&quot;=&gt;200, &quot;c&quot;=&gt;300}</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="update-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_update(VALUE hash1, VALUE hash2)
+{
+    rb_hash_modify(hash1);
+    hash2 = to_hash(hash2);
+    if (rb_block_given_p()) {
+        rb_hash_foreach(hash2, rb_hash_update_block_i, hash1);
+    }
+    else {
+        rb_hash_foreach(hash2, rb_hash_update_i, hash1);
+    }
+    return hash1;
+}
+            </pre> 
+            </div><!-- update-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- update-method -->
+      
+        <div id="value-3F-method" class="method-detail ">
+          <a name="method-i-value-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">value?(value)        &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the given value is present for some key in
+<em>hsh</em>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">has_value?</span>(<span class="ruby-value">100</span>)   <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">has_value?</span>(<span class="ruby-value">999</span>)   <span class="ruby-comment">#=&gt; false</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="value-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_has_value(VALUE hash, VALUE val)
+{
+    VALUE data[2];
+
+    data[0] = Qfalse;
+    data[1] = val;
+    rb_hash_foreach(hash, rb_hash_search_value, (VALUE)data);
+    return data[0];
+}
+            </pre> 
+            </div><!-- value-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- value-3F-method -->
+      
+        <div id="values-method" class="method-detail ">
+          <a name="method-i-values"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">values    &rarr; array</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns a new array populated with the values from <em>hsh</em>. See also
+<code>Hash#keys</code>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;a&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">100</span>, <span class="ruby-string">&quot;b&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">200</span>, <span class="ruby-string">&quot;c&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">values</span>   <span class="ruby-comment">#=&gt; [100, 200, 300]</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="values-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_hash_values(VALUE hash)
+{
+    VALUE ary;
+
+    ary = rb_ary_new();
+    rb_hash_foreach(hash, values_i, ary);
+
+    return ary;
+}
+            </pre> 
+            </div><!-- values-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- values-method -->
+      
+        <div id="values_at-method" class="method-detail ">
+          <a name="method-i-values_at"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">values_at(key, ...)   &rarr; array</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Return an array containing the values associated with the given keys. Also
+see <code>Hash.select</code>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">h</span> = { <span class="ruby-string">&quot;cat&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;feline&quot;</span>, <span class="ruby-string">&quot;dog&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;canine&quot;</span>, <span class="ruby-string">&quot;cow&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;bovine&quot;</span> }
+<span class="ruby-identifier">h</span>.<span class="ruby-identifier">values_at</span>(<span class="ruby-string">&quot;cow&quot;</span>, <span class="ruby-string">&quot;cat&quot;</span>)  <span class="ruby-comment">#=&gt; [&quot;bovine&quot;, &quot;feline&quot;]</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="values_at-source">
+              <pre> <!-- method.markup_code 290 -->
+               VALUE
+rb_hash_values_at(int argc, VALUE *argv, VALUE hash)
+{
+    VALUE result = rb_ary_new2(argc);
+    long i;
+
+    for (i=0; i&lt;argc; i++) {
+        rb_ary_push(result, rb_hash_aref(hash, argv[i]));
+    }
+    return result;
+}
+            </pre> 
+            </div><!-- values_at-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- values_at-method -->
+      
+      </div><!-- public-instance-method-details -->
+    
+    </div><!-- 5Buntitled-5D -->
+  
+  <div id='tx_Hash_versioned' class='associated_wrapper'></div><script type='text/javascript'>$("#tx_Hash_versioned").load("/associated/1.9.3/Hash.html");</script> <div id='tx_Hash' class='associated_wrapper'></div><script type='text/javascript'>$("#tx_Hash").load("/associated/Hash.html");</script> 
+      
+  <!-- disqus ? -->
+   <div class='info'>
+  <p>Commenting is here to help enhance the documentation.  For example, code samples, or clarification of the documentation.</p>
+  <p>If you have questions about Ruby or the documentation, please post to one of the <a href='http://www.ruby-lang.org/en/community/mailing-lists/'>Ruby mailing lists</a>.  You will get better, faster, help that way.</p>
+  <p>If you wish to post a correction of the docs, please do so, but also <a href='http://bugs.ruby-lang.org' >file bug report</a> so that it can be corrected for the next release. Thank you.</p>
+  <p>If you want to help improve the Ruby documentation, please visit <a href='http://documenting-ruby.org/'>Documenting-ruby.org</a>.</p> 
+    </div>
+
+
+  
+  </div><!-- documentation -->
+  <div id='dynamic'>
+  </div>
+      
+        <div id="disqus_thread"></div>
+  <script type="text/javascript">
+     function setDisqusUrl(){
+      var _loc = window.location.href;
+      disqus_url = _loc.split("?")[0];
+    }
+
+     var disqus_url;
+     
+    
+     setDisqusUrl();
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    // var disqus_shortname = 'rubydocbeta'; // required 
+    var disqus_shortname = 'ruby-doc'; // required 
+
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+      
+<div class='grids wrapper' id="footer">
+  <p><small>This page was generated for Ruby 1.9.3</small></p> 
+  
+   <p><a href="http://www.ruby-doc.org">Ruby-doc.org</a> is provided by <a href="http://www.jamesbritt.com">James Britt</a> and <a href="http://www.neurogami.com">Neurogami</a>. <a href="http://www.neurogami.com">Hack your world.  Feed your head.  Live curious</a>.</p>
+ 
+    <p><small>Generated with Ruby-doc Rdoc Generator 0.30.0</small>.</p>
+  </div>
+</div>
+  
+  <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-335317-2']);
+  _gaq.push(['_setDomainName', 'ruby-doc.org']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+    
+ <script type='text/javascript'>
+$(document).ready(function() {
+      $.ajaxSetup({ cache: false });
+      $("#vulns-alert").load("/associated/vulns.html");
+    });
+
+    </script>
+
+
+ 
+		<script type='text/javascript'>
+
+	function loadPlus(plusdocs){
+		var img_h = $("img.carbonad-image").css('height');
+		//if(img_h != undefined) { //---
+			$(plusdocs).find("div[class='associated_wrapper']").each (function() {
+					$("#" + this.id).append($(plusdocs).find("#" + this.id ));
+					});
+		//} // ---
+	} // end loadPlusdocs
+
+
+$(document).ready(function() {
+		$.ajaxSetup({ cache: false });
+			$.get('/associated/1.9.3/plus_Hash.html', 
+			function(plusdocs) {
+			setTimeout(function() {
+				loadPlus(plusdocs);
+				}, 2000);
+			}
+			);
+		});
+</script>
+		
+</body>
+</html>
+
+

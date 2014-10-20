@@ -24,20 +24,19 @@ describe SiteDiff::Cli do
         # Should run successfully
         expect(status.success?).to be true
 
-        # Should report that fixture.html doesn't match
-        expect(out).to include 'FAILURE /fixture.html'
+        # Should report that Hash.html doesn't match
+        expect(out).to include 'FAILURE /Hash.html'
 
-        # Should report that a matching line matches
-        expect(out).to match /^\s+parturient/
+        # Should report that File.html matches
+        expect(out).to include 'SUCCESS /IO.html'
 
         # Should report a diff of a different line
-        expect(out).to match /^-.*dapibus/
-        expect(out).to match /^+.*dopibus/
+        expect(out).to match /^+.*<a href="#method-i-to_h"/
 
         # There should be a failures file
         failures = File.join(dir, 'failures.txt')
         expect(File.file?(failures)).to be true
-        expect(File.read(failures).strip).to eq '/fixture.html'
+        expect(File.read(failures).strip).to include '/Hash.html'
 
         # There should be a report file
         report = File.join(dir, 'report.html')
@@ -46,13 +45,13 @@ describe SiteDiff::Cli do
         # Link to a diff
         expect(doc.css('a').text).to include 'DIFF'
         # Link to before
-        before_link = File.join(srv.before, 'fixture.html')
+        before_link = File.join(srv.before, 'Hash.html')
         expect(doc.css('a').any? { |a| a['href'] == before_link }).to be true
 
         # There should be a diff file
-        diff = File.join(dir, 'diffs', 'fixture.html.html')
+        diff = File.join(dir, 'diffs', 'Hash.html.html')
         expect(File.file?(diff)).to be true
-        expect(File.read(diff)).to include 'pellentesque'
+        expect(File.read(diff)).to include '#method-i-to_h'
       end
     end
   end

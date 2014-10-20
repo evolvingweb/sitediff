@@ -1,4 +1,11 @@
-before_url: spec/fixtures/before
-after_url: spec/fixtures/after
+before_url: spec/fixtures/ruby-doc.org/core-1.9.3
+after_url: spec/fixtures/ruby-doc.org/core-2.0
+
 paths:
-  - /fixture.html
+  - /Hash.html
+  - /File.html
+  - /Kernel.html
+  - /IO.html
+  - /TracePoint.html
+
+selector: '#class-metadata'

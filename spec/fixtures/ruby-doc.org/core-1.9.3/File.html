@@ -1,0 +1,4756 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <!-- classpage -- >
+    <!-- RD version: 0.30.0  -->
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  <meta name='description' content='  Class : File  -   Ruby 1.9.3 ' />
+  <meta content="2014-10-18 09:01:51 -0700" http-equiv="change-date" />
+  <!-- rel_prefix  = ''  ENV['RDOC_FOR_WEBSITE']   = true-->
+    
+    
+    
+  <!-- rel_prefix = '.'   asset_rel_prefix = ''  --> 
+  <title>Class: File (Ruby 1.9.3) </title>
+  <!-- link rel="stylesheet" href=".css/obf.css"  -->
+  <link rel="stylesheet" href="/css/inuit.css" >
+  <link rel="stylesheet" href="/css/grid.inuit.css" >
+  <link rel="stylesheet" href="/css/2011.css" type="text/css" >
+  <link rel="stylesheet" href="/css/rdoc.css" type="text/css" >
+
+  <script src="/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/js/thickbox-compressed.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/js/quicksearch.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/js/rubydoc.js" type="text/javascript" charset="utf-8"></script> 
+
+ 
+<script src="/js/highlight.min.js"></script>
+<script> 
+  hljs.tabReplace = '  ';
+  hljs.initHighlightingOnLoad();
+  </script> 
+
+  <style type='text/css'>
+
+    #vulns-alert #vulns{
+      background-color: #c33 ! important;
+      width: 100%;
+      text-align: center;
+   }
+   
+   #vulns-alert #vulns a {
+    color: #F99 ! important;
+   }
+ </style>
+
+</head>
+
+<body id="top" class="class rdocstar">
+<div id='actionbar' >
+<div class='wrapper'>
+  <ul class='grids g0'>
+	<li class='grid-2' ><a href='/' target='_top' >Home</a></li>
+	<li class='grid-2' ><a href='/core-1.9.3' target='_top' >Core 1.9.3</a></li>
+	<li class='grid-2' ><a href='/stdlib-1.9.3' target='_top' >Std-lib 1.9.3</a></li>
+
+	 <li class='grid-2' ><a href='/gems' target='_top' >Gems</a></li>
+			<li class='grid-2' ><a href='/downloads' target='_top' >Downloads</a></li>
+			<li class='grid-5 right' id='rd-action-search'><form id="searchbox_011815814100681837392:wnccv6st5qk" action="http://ruby-doc.com/search.html"><input type="hidden" name="cx" value="011815814100681837392:wnccv6st5qk" ><input  id='rd-search-input' name="q" type="text" size="20" >&#160;&#160;<input type="submit" name="sa" value="Search" ><input type="hidden" name="cof" value="FORID:9" ></form>
+		 </li>
+		</ul>
+</div>
+<span id='vulns-alert'></span>
+<!-- VERSION HEADER for 1.9.3 NOT FOUND --></div> <!-- end action bar -->
+ <div class='wrapper'>
+  <div id="metadata">
+    <div id="home-metadata">
+      <div id="home-section" class="section">
+        <h3 class="section-header">
+          <a href="./index.html">Home</a>
+          <a href="./index.html#classes">Classes</a>
+          <a href="./index.html#methods">Methods</a>
+          
+          
+          <!-- br><a id='alternateFormatLink' class='rotate' href="#" onclick='matchingYardUrl()'>YARD version</a -->
+          
+        </h3>
+      </div>
+    </div>
+
+    <div id="file-metadata">
+      <div id="file-list-section" class="section">
+        <h3 class="section-header">In Files</h3>
+        <div class="section-body">
+          <ul id='file-metadata'>
+
+          
+          
+          
+          <li class='in-file'>dir.c</li>      
+            
+          
+          <li class='in-file'>file.c</li>      
+            
+          
+          <li class='in-file'>io.c</li>      
+            
+          </ul>
+        </div>
+      </div>
+
+      
+    </div>
+
+    <div id="class-metadata">
+      
+      <!-- Parent Class -->
+      <div id="parent-class-section" class="section">
+        <h3 class="section-header">Parent</h3>
+        
+        <p class="link"><a href="IO.html">IO</a></p>
+        
+      </div>
+      
+
+      
+
+      
+      <!-- Namespace Contents -->
+      <div id="namespace-list-section" class="section">
+        <h3 class="section-header">Namespace</h3>
+        <ul class="link-list">
+          
+          <li><span class="type">CLASS</span> <a href="File/Stat.html">File::Stat</a></li>
+          
+        </ul>
+      </div>
+      
+
+      
+      <!-- Method Quickref -->
+      <div id="method-list-section" class="section">
+        <h3 class="section-header">Methods</h3>
+        <ul class="link-list">
+          
+          <li><a href="#method-c-absolute_path">::absolute_path</a></li>
+          
+          <li><a href="#method-c-atime">::atime</a></li>
+          
+          <li><a href="#method-c-basename">::basename</a></li>
+          
+          <li><a href="#method-c-blockdev-3F">::blockdev?</a></li>
+          
+          <li><a href="#method-c-chardev-3F">::chardev?</a></li>
+          
+          <li><a href="#method-c-chmod">::chmod</a></li>
+          
+          <li><a href="#method-c-chown">::chown</a></li>
+          
+          <li><a href="#method-c-ctime">::ctime</a></li>
+          
+          <li><a href="#method-c-delete">::delete</a></li>
+          
+          <li><a href="#method-c-directory-3F">::directory?</a></li>
+          
+          <li><a href="#method-c-dirname">::dirname</a></li>
+          
+          <li><a href="#method-c-executable-3F">::executable?</a></li>
+          
+          <li><a href="#method-c-executable_real-3F">::executable_real?</a></li>
+          
+          <li><a href="#method-c-exist-3F">::exist?</a></li>
+          
+          <li><a href="#method-c-exists-3F">::exists?</a></li>
+          
+          <li><a href="#method-c-expand_path">::expand_path</a></li>
+          
+          <li><a href="#method-c-extname">::extname</a></li>
+          
+          <li><a href="#method-c-file-3F">::file?</a></li>
+          
+          <li><a href="#method-c-fnmatch">::fnmatch</a></li>
+          
+          <li><a href="#method-c-fnmatch-3F">::fnmatch?</a></li>
+          
+          <li><a href="#method-c-ftype">::ftype</a></li>
+          
+          <li><a href="#method-c-grpowned-3F">::grpowned?</a></li>
+          
+          <li><a href="#method-c-identical-3F">::identical?</a></li>
+          
+          <li><a href="#method-c-join">::join</a></li>
+          
+          <li><a href="#method-c-lchmod">::lchmod</a></li>
+          
+          <li><a href="#method-c-lchown">::lchown</a></li>
+          
+          <li><a href="#method-c-link">::link</a></li>
+          
+          <li><a href="#method-c-lstat">::lstat</a></li>
+          
+          <li><a href="#method-c-mtime">::mtime</a></li>
+          
+          <li><a href="#method-c-new">::new</a></li>
+          
+          <li><a href="#method-c-open">::open</a></li>
+          
+          <li><a href="#method-c-owned-3F">::owned?</a></li>
+          
+          <li><a href="#method-c-path">::path</a></li>
+          
+          <li><a href="#method-c-pipe-3F">::pipe?</a></li>
+          
+          <li><a href="#method-c-readable-3F">::readable?</a></li>
+          
+          <li><a href="#method-c-readable_real-3F">::readable_real?</a></li>
+          
+          <li><a href="#method-c-readlink">::readlink</a></li>
+          
+          <li><a href="#method-c-realdirpath">::realdirpath</a></li>
+          
+          <li><a href="#method-c-realpath">::realpath</a></li>
+          
+          <li><a href="#method-c-rename">::rename</a></li>
+          
+          <li><a href="#method-c-setgid-3F">::setgid?</a></li>
+          
+          <li><a href="#method-c-setuid-3F">::setuid?</a></li>
+          
+          <li><a href="#method-c-size">::size</a></li>
+          
+          <li><a href="#method-c-size-3F">::size?</a></li>
+          
+          <li><a href="#method-c-socket-3F">::socket?</a></li>
+          
+          <li><a href="#method-c-split">::split</a></li>
+          
+          <li><a href="#method-c-stat">::stat</a></li>
+          
+          <li><a href="#method-c-sticky-3F">::sticky?</a></li>
+          
+          <li><a href="#method-c-symlink">::symlink</a></li>
+          
+          <li><a href="#method-c-symlink-3F">::symlink?</a></li>
+          
+          <li><a href="#method-c-truncate">::truncate</a></li>
+          
+          <li><a href="#method-c-umask">::umask</a></li>
+          
+          <li><a href="#method-c-unlink">::unlink</a></li>
+          
+          <li><a href="#method-c-utime">::utime</a></li>
+          
+          <li><a href="#method-c-world_readable-3F">::world_readable?</a></li>
+          
+          <li><a href="#method-c-world_writable-3F">::world_writable?</a></li>
+          
+          <li><a href="#method-c-writable-3F">::writable?</a></li>
+          
+          <li><a href="#method-c-writable_real-3F">::writable_real?</a></li>
+          
+          <li><a href="#method-c-zero-3F">::zero?</a></li>
+          
+          <li><a href="#method-i-atime">#atime</a></li>
+          
+          <li><a href="#method-i-chmod">#chmod</a></li>
+          
+          <li><a href="#method-i-chown">#chown</a></li>
+          
+          <li><a href="#method-i-ctime">#ctime</a></li>
+          
+          <li><a href="#method-i-flock">#flock</a></li>
+          
+          <li><a href="#method-i-lstat">#lstat</a></li>
+          
+          <li><a href="#method-i-mtime">#mtime</a></li>
+          
+          <li><a href="#method-i-path">#path</a></li>
+          
+          <li><a href="#method-i-size">#size</a></li>
+          
+          <li><a href="#method-i-to_path">#to_path</a></li>
+          
+          <li><a href="#method-i-truncate">#truncate</a></li>
+          
+        </ul>
+      </div>
+      
+
+      
+    </div>
+
+    <div id="project-metadata">
+      
+      
+      <div id="fileindex-section" class="section project-section">
+        <h3 class="section-header">Files</h3>
+        <ul id='files'>
+        
+          
+          <li class="file"><a href="./_lib/xmlrpc/README_rdoc.html">README.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./_test/rdoc/test_ja_large_rdoc.html">test.ja.large.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./_test/rdoc/test_ja_rdoc.html">test.ja.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./doc/rake/command_line_usage_rdoc.html">command_line_usage.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./doc/rake/glossary_rdoc.html">glossary.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./doc/rake/proto_rake_rdoc.html">proto_rake.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./doc/rake/rakefile_rdoc.html">rakefile.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./doc/rake/rational_rdoc.html">rational.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./doc/rake/release_notes/rake-0_8_7_rdoc.html">rake-0.8.7.rdoc</a></li>
+        
+          
+          <li class="file"><a href="./doc/re_rdoc.html">re.rdoc</a></li>
+        
+        </ul>
+      </div>
+      
+
+      <div id="classindex-section" class="section project-section">
+        <h3 class="section-header">Class/Module Index
+          <span class="search-toggle"><img src="./images/find.png"
+            height="16" width="16" alt="[+]"
+            title="show/hide quicksearch" /></span></h3>
+        <form action="#" method="get" accept-charset="utf-8" class="initially-hidden">
+        <fieldset>
+          <legend>Quicksearch</legend>
+          <input type="text" name="quicksearch" value=""
+            class="quicksearch-field" />
+        </fieldset>
+        </form>
+
+        <ul class="link-list">
+          
+          
+          
+          <li><a href="./ARGF.html">ARGF</a></li>
+        
+          
+          
+          <li><a href="./ArgumentError.html">ArgumentError</a></li>
+        
+          
+          
+          <li><a href="./Array.html">Array</a></li>
+        
+          
+          
+          <li><a href="./BasicObject.html">BasicObject</a></li>
+        
+          
+          
+          <li><a href="./Bignum.html">Bignum</a></li>
+        
+          
+          
+          <li><a href="./Binding.html">Binding</a></li>
+        
+          
+          
+          <li><a href="./Class.html">Class</a></li>
+        
+          
+          
+          <li><a href="./Comparable.html">Comparable</a></li>
+        
+          
+          
+          <li><a href="./Complex.html">Complex</a></li>
+        
+          
+          
+          <li><a href="./Continuation.html">Continuation</a></li>
+        
+          
+          
+          <li><a href="./Data.html">Data</a></li>
+        
+          
+          
+          <li><a href="./Dir.html">Dir</a></li>
+        
+          
+          
+          <li><a href="./ENV.html">ENV</a></li>
+        
+          
+          
+          <li><a href="./EOFError.html">EOFError</a></li>
+        
+          
+          
+          <li><a href="./Encoding.html">Encoding</a></li>
+        
+          
+          
+          <li><a href="./Encoding/CompatibilityError.html">Encoding::CompatibilityError</a></li>
+        
+          
+          
+          <li><a href="./Encoding/Converter.html">Encoding::Converter</a></li>
+        
+          
+          
+          <li><a href="./Encoding/ConverterNotFoundError.html">Encoding::ConverterNotFoundError</a></li>
+        
+          
+          
+          <li><a href="./Encoding/InvalidByteSequenceError.html">Encoding::InvalidByteSequenceError</a></li>
+        
+          
+          
+          <li><a href="./Encoding/UndefinedConversionError.html">Encoding::UndefinedConversionError</a></li>
+        
+          
+          
+          <li><a href="./EncodingError.html">EncodingError</a></li>
+        
+          
+          
+          <li><a href="./Enumerable.html">Enumerable</a></li>
+        
+          
+          
+          <li><a href="./Enumerator.html">Enumerator</a></li>
+        
+          
+          
+          <li><a href="./Enumerator/Generator.html">Enumerator::Generator</a></li>
+        
+          
+          
+          <li><a href="./Enumerator/Yielder.html">Enumerator::Yielder</a></li>
+        
+          
+          
+          <li><a href="./Errno.html">Errno</a></li>
+        
+          
+          
+          <li><a href="./Exception.html">Exception</a></li>
+        
+          
+          
+          <li><a href="./FalseClass.html">FalseClass</a></li>
+        
+          
+          
+          <li><a href="./Fiber.html">Fiber</a></li>
+        
+          
+          
+          <li><a href="./FiberError.html">FiberError</a></li>
+        
+          
+          
+          <li><a href="./File.html">File</a></li>
+        
+          
+          
+          <li><a href="./File/Constants.html">File::Constants</a></li>
+        
+          
+          
+          <li><a href="./File/Stat.html">File::Stat</a></li>
+        
+          
+          
+          <li><a href="./FileTest.html">FileTest</a></li>
+        
+          
+          
+          <li><a href="./Fixnum.html">Fixnum</a></li>
+        
+          
+          
+          <li><a href="./Float.html">Float</a></li>
+        
+          
+          
+          <li><a href="./FloatDomainError.html">FloatDomainError</a></li>
+        
+          
+          
+          <li><a href="./GC.html">GC</a></li>
+        
+          
+          
+          <li><a href="./GC/Profiler.html">GC::Profiler</a></li>
+        
+          
+          
+          <li><a href="./Hash.html">Hash</a></li>
+        
+          
+          
+          <li><a href="./IO.html">IO</a></li>
+        
+          
+          
+          <li><a href="./IO/WaitReadable.html">IO::WaitReadable</a></li>
+        
+          
+          
+          <li><a href="./IO/WaitWritable.html">IO::WaitWritable</a></li>
+        
+          
+          
+          <li><a href="./IOError.html">IOError</a></li>
+        
+          
+          
+          <li><a href="./IndexError.html">IndexError</a></li>
+        
+          
+          
+          <li><a href="./Integer.html">Integer</a></li>
+        
+          
+          
+          <li><a href="./Interrupt.html">Interrupt</a></li>
+        
+          
+          
+          <li><a href="./Kernel.html">Kernel</a></li>
+        
+          
+          
+          <li><a href="./KeyError.html">KeyError</a></li>
+        
+          
+          
+          <li><a href="./LoadError.html">LoadError</a></li>
+        
+          
+          
+          <li><a href="./LocalJumpError.html">LocalJumpError</a></li>
+        
+          
+          
+          <li><a href="./Marshal.html">Marshal</a></li>
+        
+          
+          
+          <li><a href="./MatchData.html">MatchData</a></li>
+        
+          
+          
+          <li><a href="./Math.html">Math</a></li>
+        
+          
+          
+          <li><a href="./Math/DomainError.html">Math::DomainError</a></li>
+        
+          
+          
+          <li><a href="./Method.html">Method</a></li>
+        
+          
+          
+          <li><a href="./Module.html">Module</a></li>
+        
+          
+          
+          <li><a href="./Mutex.html">Mutex</a></li>
+        
+          
+          
+          <li><a href="./NameError.html">NameError</a></li>
+        
+          
+          
+          <li><a href="./NilClass.html">NilClass</a></li>
+        
+          
+          
+          <li><a href="./NoMemoryError.html">NoMemoryError</a></li>
+        
+          
+          
+          <li><a href="./NoMethodError.html">NoMethodError</a></li>
+        
+          
+          
+          <li><a href="./NotImplementedError.html">NotImplementedError</a></li>
+        
+          
+          
+          <li><a href="./Numeric.html">Numeric</a></li>
+        
+          
+          
+          <li><a href="./Object.html">Object</a></li>
+        
+          
+          
+          <li><a href="./ObjectSpace.html">ObjectSpace</a></li>
+        
+          
+          
+          <li><a href="./Proc.html">Proc</a></li>
+        
+          
+          
+          <li><a href="./Process.html">Process</a></li>
+        
+          
+          
+          <li><a href="./Process/GID.html">Process::GID</a></li>
+        
+          
+          
+          <li><a href="./Process/Status.html">Process::Status</a></li>
+        
+          
+          
+          <li><a href="./Process/Sys.html">Process::Sys</a></li>
+        
+          
+          
+          <li><a href="./Process/UID.html">Process::UID</a></li>
+        
+          
+          
+          <li><a href="./Random.html">Random</a></li>
+        
+          
+          
+          <li><a href="./Range.html">Range</a></li>
+        
+          
+          
+          <li><a href="./RangeError.html">RangeError</a></li>
+        
+          
+          
+          <li><a href="./Rational.html">Rational</a></li>
+        
+          
+          
+          <li><a href="./Regexp.html">Regexp</a></li>
+        
+          
+          
+          <li><a href="./RegexpError.html">RegexpError</a></li>
+        
+          
+          
+          <li><a href="./RubyVM.html">RubyVM</a></li>
+        
+          
+          
+          <li><a href="./RubyVM/Env.html">RubyVM::Env</a></li>
+        
+          
+          
+          <li><a href="./RubyVM/InstructionSequence.html">RubyVM::InstructionSequence</a></li>
+        
+          
+          
+          <li><a href="./RuntimeError.html">RuntimeError</a></li>
+        
+          
+          
+          <li><a href="./ScriptError.html">ScriptError</a></li>
+        
+          
+          
+          <li><a href="./SecurityError.html">SecurityError</a></li>
+        
+          
+          
+          <li><a href="./Signal.html">Signal</a></li>
+        
+          
+          
+          <li><a href="./SignalException.html">SignalException</a></li>
+        
+          
+          
+          <li><a href="./StandardError.html">StandardError</a></li>
+        
+          
+          
+          <li><a href="./StopIteration.html">StopIteration</a></li>
+        
+          
+          
+          <li><a href="./String.html">String</a></li>
+        
+          
+          
+          <li><a href="./Struct.html">Struct</a></li>
+        
+          
+          
+          <li><a href="./Symbol.html">Symbol</a></li>
+        
+          
+          
+          <li><a href="./SyntaxError.html">SyntaxError</a></li>
+        
+          
+          
+          <li><a href="./SystemCallError.html">SystemCallError</a></li>
+        
+          
+          
+          <li><a href="./SystemExit.html">SystemExit</a></li>
+        
+          
+          
+          <li><a href="./SystemStackError.html">SystemStackError</a></li>
+        
+          
+          
+          <li><a href="./Thread.html">Thread</a></li>
+        
+          
+          
+          <li><a href="./ThreadError.html">ThreadError</a></li>
+        
+          
+          
+          <li><a href="./ThreadGroup.html">ThreadGroup</a></li>
+        
+          
+          
+          <li><a href="./Time.html">Time</a></li>
+        
+          
+          
+          <li><a href="./TrueClass.html">TrueClass</a></li>
+        
+          
+          
+          <li><a href="./TypeError.html">TypeError</a></li>
+        
+          
+          
+          <li><a href="./UnboundMethod.html">UnboundMethod</a></li>
+        
+          
+          
+          <li><a href="./ZeroDivisionError.html">ZeroDivisionError</a></li>
+        
+          
+          
+          <li><a href="./fatal.html">fatal</a></li>
+        
+          
+          
+          <li><a href="./unknown.html">unknown</a></li>
+        
+        </ul>
+        <div id="no-class-search-results" style="display: none;">No matching classes.</div>
+      </div>
+
+      
+      <div id="debugging-toggle"><img src="./images/bug.png"
+        alt="toggle debugging" height="16" width="16" /></div>
+      
+    </div>
+  </div> <!-- metadata -->
+  <div class='adzbox'  id="azk83167">
+    
+   <div id="carbonads-container"><div class="carbonad"><div id="azcarbon"></div><script type="text/javascript">var z = document.createElement("script"); z.type = "text/javascript"; z.async = true; z.src = "http://engine.carbonads.com/z/19647/azcarbon_2_1_0_VERT"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(z, s);</script></div></div>
+
+   
+  </div> 
+  <div id="documentation">
+    <h1 class="class">File</h1>
+
+    <div id="description" class="description">
+      
+<p>A <code>File</code> is an abstraction of any file object accessible by the
+program and is closely associated with class <code>IO</code>
+<code>File</code> includes the methods of module <code>FileTest</code> as
+class methods, allowing you to write (for example)
+<code>File.exist?(&quot;foo&quot;)</code>.</p>
+
+<p>In the description of <a href="File.html">File</a> methods, <em>permission
+bits</em> are a platform-specific set of bits that indicate permissions of
+a file. On Unix-based systems, permissions are viewed as a set of three
+octets, for the owner, the group, and the rest of the world. For each of
+these entities, permissions may be set to read, write, or execute the file:</p>
+
+<p>The permission bits <code>0644</code> (in octal) would thus be interpreted
+as read/write for owner, and read-only for group and other. Higher-order
+bits may also be used to indicate the type of file (plain, directory, pipe,
+socket, and so on) and various other special features. If the permissions
+are for a directory, the meaning of the execute bit changes; when set the
+directory can be searched.</p>
+
+<p>On non-Posix operating systems, there may be only the ability to make a
+file read-only or read-write. In this case, the remaining permission bits
+will be synthesized to resemble typical values. For instance, on Windows NT
+the default permission bits are <code>0644</code>, which means read/write
+for owner, read-only for all others. The only change that can be made is to
+make the file read-only, which is reported as <code>0444</code>.</p>
+
+    </div><!-- description -->
+
+    
+    
+    
+    <div id="5Buntitled-5D" class="documentation-section">
+      
+
+      
+
+      
+      <!-- Constants -->
+      <div id="constants-list" class="section">
+        <h3 class="section-header">Constants</h3>
+        <dl>
+        
+          <dt><a name="ALT_SEPARATOR">ALT_SEPARATOR</a></dt>
+          
+          <dd class="description"></dd>
+          
+        
+          <dt><a name="PATH_SEPARATOR">PATH_SEPARATOR</a></dt>
+          
+          <dd class="description"></dd>
+          
+        
+          <dt><a name="SEPARATOR">SEPARATOR</a></dt>
+          
+          <dd class="description"></dd>
+          
+        
+          <dt><a name="Separator">Separator</a></dt>
+          
+          <dd class="description"></dd>
+          
+        
+        </dl>
+      </div>
+      
+
+      
+
+      <!-- Methods -->
+      
+      <div id="public-class-method-details" class="method-section section">
+        <h3 class="section-header">Public Class Methods</h3>
+
+      
+        <div id="absolute_path-method" class="method-detail ">
+          <a name="method-c-absolute_path"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">absolute_path(file_name [, dir_string] )  &rarr;  abs_file_name</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Converts a pathname to an absolute pathname. Relative paths are referenced
+from the current working directory of the process unless
+<em>dir_string</em> is given, in which case it will be used as the starting
+point. If the given pathname starts with a “<code>~</code>” it is NOT
+expanded, it is treated as a normal directory name.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">absolute_path</span>(<span class="ruby-string">&quot;~oracle/bin&quot;</span>)       <span class="ruby-comment">#=&gt; &quot;&lt;relative_path&gt;/~oracle/bin&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="absolute_path-source">
+              <pre> <!-- method.markup_code 290 -->
+               VALUE
+rb_file_s_absolute_path(int argc, VALUE *argv)
+{
+    VALUE fname, dname;
+
+    if (argc == 1) {
+        return rb_file_absolute_path(argv[0], Qnil);
+    }
+    rb_scan_args(argc, argv, &quot;11&quot;, &amp;fname, &amp;dname);
+
+    return rb_file_absolute_path(fname, dname);
+}
+            </pre> 
+            </div><!-- absolute_path-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- absolute_path-method -->
+      
+        <div id="atime-method" class="method-detail ">
+          <a name="method-c-atime"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">atime(file_name)  &rarr;  time</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the last access time for the named file as a <a
+href="Time.html">Time</a> object).</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">atime</span>(<span class="ruby-string">&quot;testfile&quot;</span>)   <span class="ruby-comment">#=&gt; Wed Apr 09 08:51:48 CDT 2003</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="atime-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_atime(VALUE klass, VALUE fname)
+{
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) {
+        FilePathValue(fname);
+        rb_sys_fail_path(fname);
+    }
+    return stat_atime(&amp;st);
+}
+            </pre> 
+            </div><!-- atime-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- atime-method -->
+      
+        <div id="basename-method" class="method-detail ">
+          <a name="method-c-basename"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">basename(file_name [, suffix] )  &rarr;  base_name</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the last component of the filename given in <em>file_name</em>,
+which must be formed using forward slashes (“<code>/</code>”) regardless of
+the separator used on the local file system. If <em>suffix</em> is given
+and present at the end of <em>file_name</em>, it is removed.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-string">&quot;/home/gumby/work/ruby.rb&quot;</span>)          <span class="ruby-comment">#=&gt; &quot;ruby.rb&quot;</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-string">&quot;/home/gumby/work/ruby.rb&quot;</span>, <span class="ruby-string">&quot;.rb&quot;</span>)   <span class="ruby-comment">#=&gt; &quot;ruby&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="basename-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_basename(int argc, VALUE *argv)
+{
+    VALUE fname, fext, basename;
+    const char *name, *p;
+    long f, n;
+    rb_encoding *enc;
+
+    if (rb_scan_args(argc, argv, &quot;11&quot;, &amp;fname, &amp;fext) == 2) {
+        rb_encoding *enc;
+        StringValue(fext);
+        if (!rb_enc_asciicompat(enc = rb_enc_get(fext))) {
+            rb_raise(rb_eEncCompatError, &quot;ascii incompatible character encodings: %s&quot;,
+                     rb_enc_name(enc));
+        }
+    }
+    FilePathStringValue(fname);
+    if (!NIL_P(fext)) enc = rb_enc_check(fname, fext);
+    else enc = rb_enc_get(fname);
+    if ((n = RSTRING_LEN(fname)) == 0 || !*(name = RSTRING_PTR(fname)))
+        return rb_str_new_shared(fname);
+
+    p = ruby_enc_find_basename(name, &amp;f, &amp;n, enc);
+    if (n &gt;= 0) {
+        if (NIL_P(fext)) {
+            f = n;
+        }
+        else {
+            rb_encoding *fenc = rb_enc_get(fext);
+            const char *fp;
+            if (enc != fenc &amp;&amp;
+                rb_enc_str_coderange(fext) != ENC_CODERANGE_7BIT) {
+                fext = rb_str_conv_enc(fext, fenc, enc);
+            }
+            fp = StringValueCStr(fext);
+            if (!(f = rmext(p, f, n, fp, RSTRING_LEN(fext), enc))) {
+                f = n;
+            }
+            RB_GC_GUARD(fext);
+        }
+        if (f == RSTRING_LEN(fname)) return rb_str_new_shared(fname);
+    }
+
+    basename = rb_str_new(p, f);
+    rb_enc_copy(basename, fname);
+    OBJ_INFECT(basename, fname);
+    return basename;
+}
+            </pre> 
+            </div><!-- basename-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- basename-method -->
+      
+        <div id="blockdev-3F-method" class="method-detail ">
+          <a name="method-c-blockdev-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">blockdev?(file_name)   &rarr;  true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file is a block device.</p>
+            
+
+            
+            <div class="method-source-code" id="blockdev-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_blockdev_p(VALUE obj, VALUE fname)
+{
+#ifndef S_ISBLK
+#   ifdef S_IFBLK
+#       define S_ISBLK(m) (((m) &amp; S_IFMT) == S_IFBLK)
+#   else
+#       define S_ISBLK(m) (0)  /* anytime false */
+#   endif
+#endif
+
+#ifdef S_ISBLK
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) return Qfalse;
+    if (S_ISBLK(st.st_mode)) return Qtrue;
+
+#endif
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- blockdev-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- blockdev-3F-method -->
+      
+        <div id="chardev-3F-method" class="method-detail ">
+          <a name="method-c-chardev-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">chardev?(file_name)   &rarr;  true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file is a character device.</p>
+            
+
+            
+            <div class="method-source-code" id="chardev-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_chardev_p(VALUE obj, VALUE fname)
+{
+#ifndef S_ISCHR
+#   define S_ISCHR(m) (((m) &amp; S_IFMT) == S_IFCHR)
+#endif
+
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) return Qfalse;
+    if (S_ISCHR(st.st_mode)) return Qtrue;
+
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- chardev-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- chardev-3F-method -->
+      
+        <div id="chmod-method" class="method-detail ">
+          <a name="method-c-chmod"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">chmod(mode_int, file_name, ... )  &rarr;  integer</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Changes permission bits on the named file(s) to the bit pattern represented
+by <em>mode_int</em>. Actual effects are operating system dependent (see
+the beginning of this section). On Unix systems, see <code>chmod(2)</code>
+for details. Returns the number of files processed.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">chmod</span>(<span class="ruby-value">0644</span>, <span class="ruby-string">&quot;testfile&quot;</span>, <span class="ruby-string">&quot;out&quot;</span>)   <span class="ruby-comment">#=&gt; 2</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="chmod-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_chmod(int argc, VALUE *argv)
+{
+    VALUE vmode;
+    VALUE rest;
+    int mode;
+    long n;
+
+    rb_secure(2);
+    rb_scan_args(argc, argv, &quot;1*&quot;, &amp;vmode, &amp;rest);
+    mode = NUM2INT(vmode);
+
+    n = apply2files(chmod_internal, rest, &amp;mode);
+    return LONG2FIX(n);
+}
+            </pre> 
+            </div><!-- chmod-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- chmod-method -->
+      
+        <div id="chown-method" class="method-detail ">
+          <a name="method-c-chown"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">chown(owner_int, group_int, file_name,... )  &rarr;  integer</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Changes the owner and group of the named file(s) to the given numeric owner
+and group id’s. Only a process with superuser privileges may change the
+owner of a file. The current owner of a file may change the file’s group to
+any group to which the owner belongs. A <code>nil</code> or -1 owner or
+group id is ignored. Returns the number of files processed.</p>
+
+<pre>File.chown(nil, 100, &quot;testfile&quot;)</pre>
+            
+
+            
+            <div class="method-source-code" id="chown-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_chown(int argc, VALUE *argv)
+{
+    VALUE o, g, rest;
+    struct chown_args arg;
+    long n;
+
+    rb_secure(2);
+    rb_scan_args(argc, argv, &quot;2*&quot;, &amp;o, &amp;g, &amp;rest);
+    if (NIL_P(o)) {
+        arg.owner = -1;
+    }
+    else {
+        arg.owner = NUM2UIDT(o);
+    }
+    if (NIL_P(g)) {
+        arg.group = -1;
+    }
+    else {
+        arg.group = NUM2GIDT(g);
+    }
+
+    n = apply2files(chown_internal, rest, &amp;arg);
+    return LONG2FIX(n);
+}
+            </pre> 
+            </div><!-- chown-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- chown-method -->
+      
+        <div id="ctime-method" class="method-detail ">
+          <a name="method-c-ctime"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">ctime(file_name)  &rarr; time</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the change time for the named file (the time at which directory
+information about the file was changed, not the file itself).</p>
+
+<p>Note that on Windows (NTFS), returns creation time (birth time).</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">ctime</span>(<span class="ruby-string">&quot;testfile&quot;</span>)   <span class="ruby-comment">#=&gt; Wed Apr 09 08:53:13 CDT 2003</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="ctime-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_ctime(VALUE klass, VALUE fname)
+{
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) {
+        FilePathValue(fname);
+        rb_sys_fail_path(fname);
+    }
+    return stat_ctime(&amp;st);
+}
+            </pre> 
+            </div><!-- ctime-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- ctime-method -->
+      
+        <div id="delete-method" class="method-detail ">
+          <a name="method-c-delete"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">delete(file_name, ...)  &rarr; integer</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Deletes the named files, returning the number of names passed as arguments.
+Raises an exception on any error. See also <code>Dir::rmdir</code>.</p>
+            
+
+            
+            <div class="method-source-code" id="delete-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_unlink(VALUE klass, VALUE args)
+{
+    long n;
+
+    rb_secure(2);
+    n = apply2files(unlink_internal, args, 0);
+    return LONG2FIX(n);
+}
+            </pre> 
+            </div><!-- delete-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- delete-method -->
+      
+        <div id="directory-3F-method" class="method-detail ">
+          <a name="method-c-directory-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">directory?(file_name)   &rarr;  true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file is a directory, or a symlink
+that points at a directory, and <code>false</code> otherwise.</p>
+
+<pre>File.directory?(&quot;.&quot;)</pre>
+            
+
+            
+            <div class="method-source-code" id="directory-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               VALUE
+rb_file_directory_p(VALUE obj, VALUE fname)
+{
+#ifndef S_ISDIR
+#   define S_ISDIR(m) (((m) &amp; S_IFMT) == S_IFDIR)
+#endif
+
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) return Qfalse;
+    if (S_ISDIR(st.st_mode)) return Qtrue;
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- directory-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- directory-3F-method -->
+      
+        <div id="dirname-method" class="method-detail ">
+          <a name="method-c-dirname"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">dirname(file_name )  &rarr;  dir_name</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns all components of the filename given in <em>file_name</em> except
+the last one. The filename must be formed using forward slashes
+(“<code>/</code>”) regardless of the separator used on the local file
+system.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-string">&quot;/home/gumby/work/ruby.rb&quot;</span>)   <span class="ruby-comment">#=&gt; &quot;/home/gumby/work&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="dirname-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_dirname(VALUE klass, VALUE fname)
+{
+    return rb_file_dirname(fname);
+}
+            </pre> 
+            </div><!-- dirname-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- dirname-method -->
+      
+        <div id="executable-3F-method" class="method-detail ">
+          <a name="method-c-executable-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">executable?(file_name)   &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file is executable by the effective
+user id of this process.</p>
+            
+
+            
+            <div class="method-source-code" id="executable-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_executable_p(VALUE obj, VALUE fname)
+{
+    rb_secure(2);
+    FilePathValue(fname);
+    fname = rb_str_encode_ospath(fname);
+    if (eaccess(StringValueCStr(fname), X_OK) &lt; 0) return Qfalse;
+    return Qtrue;
+}
+            </pre> 
+            </div><!-- executable-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- executable-3F-method -->
+      
+        <div id="executable_real-3F-method" class="method-detail ">
+          <a name="method-c-executable_real-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">executable_real?(file_name)   &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file is executable by the real user
+id of this process.</p>
+            
+
+            
+            <div class="method-source-code" id="executable_real-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_executable_real_p(VALUE obj, VALUE fname)
+{
+    rb_secure(2);
+    FilePathValue(fname);
+    fname = rb_str_encode_ospath(fname);
+    if (access_internal(StringValueCStr(fname), X_OK) &lt; 0) return Qfalse;
+    return Qtrue;
+}
+            </pre> 
+            </div><!-- executable_real-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- executable_real-3F-method -->
+      
+        <div id="exist-3F-method" class="method-detail ">
+          <a name="method-c-exist-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">exist?(file_name)   &rarr;  true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file is a directory,
+<code>false</code> otherwise.</p>
+            
+
+            
+            <div class="method-source-code" id="exist-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_exist_p(VALUE obj, VALUE fname)
+{
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) return Qfalse;
+    return Qtrue;
+}
+            </pre> 
+            </div><!-- exist-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- exist-3F-method -->
+      
+        <div id="exists-3F-method" class="method-detail ">
+          <a name="method-c-exists-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">exists?(file_name)   &rarr;  true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Return <code>true</code> if the named file exists.</p>
+            
+
+            
+            <div class="method-source-code" id="exists-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_exist_p(VALUE obj, VALUE fname)
+{
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) return Qfalse;
+    return Qtrue;
+}
+            </pre> 
+            </div><!-- exists-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- exists-3F-method -->
+      
+        <div id="expand_path-method" class="method-detail ">
+          <a name="method-c-expand_path"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">expand_path(file_name [, dir_string] )  &rarr;  abs_file_name</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Converts a pathname to an absolute pathname. Relative paths are referenced
+from the current working directory of the process unless
+<em>dir_string</em> is given, in which case it will be used as the starting
+point. The given pathname may start with a “<code>~</code>”, which expands
+to the process owner’s home directory (the environment variable
+<code>HOME</code> must be set correctly). “<code>~</code><em>user</em>”
+expands to the named user’s home directory.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-string">&quot;~oracle/bin&quot;</span>)           <span class="ruby-comment">#=&gt; &quot;/home/oracle/bin&quot;</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-string">&quot;../../bin&quot;</span>, <span class="ruby-string">&quot;/tmp/x&quot;</span>)   <span class="ruby-comment">#=&gt; &quot;/bin&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="expand_path-source">
+              <pre> <!-- method.markup_code 290 -->
+               VALUE
+rb_file_s_expand_path(int argc, VALUE *argv)
+{
+    VALUE fname, dname;
+
+    if (argc == 1) {
+        return rb_file_expand_path(argv[0], Qnil);
+    }
+    rb_scan_args(argc, argv, &quot;11&quot;, &amp;fname, &amp;dname);
+
+    return rb_file_expand_path(fname, dname);
+}
+            </pre> 
+            </div><!-- expand_path-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- expand_path-method -->
+      
+        <div id="extname-method" class="method-detail ">
+          <a name="method-c-extname"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">extname(path)  &rarr;  string</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the extension (the portion of file name in <em>path</em> after the
+period).</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">extname</span>(<span class="ruby-string">&quot;test.rb&quot;</span>)         <span class="ruby-comment">#=&gt; &quot;.rb&quot;</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">extname</span>(<span class="ruby-string">&quot;a/b/d/test.rb&quot;</span>)   <span class="ruby-comment">#=&gt; &quot;.rb&quot;</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">extname</span>(<span class="ruby-string">&quot;test&quot;</span>)            <span class="ruby-comment">#=&gt; &quot;&quot;</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">extname</span>(<span class="ruby-string">&quot;.profile&quot;</span>)        <span class="ruby-comment">#=&gt; &quot;&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="extname-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_extname(VALUE klass, VALUE fname)
+{
+    const char *name, *e;
+    long len;
+    VALUE extname;
+
+    FilePathStringValue(fname);
+    name = StringValueCStr(fname);
+    len = RSTRING_LEN(fname);
+    e = ruby_enc_find_extname(name, &amp;len, rb_enc_get(fname));
+    if (len &lt;= 1)
+        return rb_str_new(0, 0);
+    extname = rb_str_subseq(fname, e - name, len); /* keep the dot, too! */
+    OBJ_INFECT(extname, fname);
+    return extname;
+}
+            </pre> 
+            </div><!-- extname-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- extname-method -->
+      
+        <div id="file-3F-method" class="method-detail ">
+          <a name="method-c-file-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">file?(file_name)   &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file exists and is a regular file.</p>
+            
+
+            
+            <div class="method-source-code" id="file-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_file_p(VALUE obj, VALUE fname)
+{
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) return Qfalse;
+    if (S_ISREG(st.st_mode)) return Qtrue;
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- file-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- file-3F-method -->
+      
+        <div id="fnmatch-method" class="method-detail ">
+          <a name="method-c-fnmatch"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">fnmatch( pattern, path, [flags] ) &rarr; (true or false)</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">fnmatch?( pattern, path, [flags] ) &rarr; (true or false)</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns true if <em>path</em> matches against <em>pattern</em> The pattern
+is not a regular expression; instead it follows rules similar to shell
+filename globbing. It may contain the following metacharacters:</p>
+<dl class="rdoc-list note-list"><dt><code>*</code>
+<dd>
+<p>Matches any file. Can be restricted by other values in the glob.
+<code>*</code> will match all files; <code>c*</code> will match all files
+beginning with <code>c</code>; <code>*c</code> will match all files ending
+with <code>c</code>; and <code>*c*</code> will match all files that have
+<code>c</code> in them (including at the beginning or end). Equivalent to
+<code>/ .* /x</code> in regexp.</p>
+</dd><dt><code>**</code>
+<dd>
+<p>Matches directories recursively or files expansively.</p>
+</dd><dt><code>?</code>
+<dd>
+<p>Matches any one character. Equivalent to <code>/.{1}/</code> in regexp.</p>
+</dd><dt><code>[set]</code>
+<dd>
+<p>Matches any one character in <code>set</code>. Behaves exactly like
+character sets in <a href="Regexp.html">Regexp</a>, including set negation
+(<code>[^a-z]</code>).</p>
+</dd><dt>&lt;code&gt;&lt;/code&gt;
+<dd>
+<p>Escapes the next metacharacter.</p>
+</dd></dl>
+
+<p><em>flags</em> is a bitwise OR of the <code>FNM_xxx</code> parameters. The
+same glob pattern and flags are used by <code>Dir::glob</code>.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'cat'</span>,       <span class="ruby-string">'cat'</span>)        <span class="ruby-comment">#=&gt; true  # match entire string</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'cat'</span>,       <span class="ruby-string">'category'</span>)   <span class="ruby-comment">#=&gt; false # only match partial string</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'c{at,ub}s'</span>, <span class="ruby-string">'cats'</span>)       <span class="ruby-comment">#=&gt; false # { } isn't supported</span>
+
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'c?t'</span>,     <span class="ruby-string">'cat'</span>)          <span class="ruby-comment">#=&gt; true  # '?' match only 1 character</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'c??t'</span>,    <span class="ruby-string">'cat'</span>)          <span class="ruby-comment">#=&gt; false # ditto</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'c*'</span>,      <span class="ruby-string">'cats'</span>)         <span class="ruby-comment">#=&gt; true  # '*' match 0 or more characters</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'c*t'</span>,     <span class="ruby-string">'c/a/b/t'</span>)      <span class="ruby-comment">#=&gt; true  # ditto</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'ca[a-z]'</span>, <span class="ruby-string">'cat'</span>)          <span class="ruby-comment">#=&gt; true  # inclusive bracket expression</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'ca[^t]'</span>,  <span class="ruby-string">'cat'</span>)          <span class="ruby-comment">#=&gt; false # exclusive bracket expression ('^' or '!')</span>
+
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'cat'</span>, <span class="ruby-string">'CAT'</span>)                     <span class="ruby-comment">#=&gt; false # case sensitive</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'cat'</span>, <span class="ruby-string">'CAT'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_CASEFOLD</span>) <span class="ruby-comment">#=&gt; true  # case insensitive</span>
+
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'?'</span>,   <span class="ruby-string">'/'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)  <span class="ruby-comment">#=&gt; false # wildcard doesn't match '/' on FNM_PATHNAME</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'*'</span>,   <span class="ruby-string">'/'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)  <span class="ruby-comment">#=&gt; false # ditto</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'[/]'</span>, <span class="ruby-string">'/'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)  <span class="ruby-comment">#=&gt; false # ditto</span>
+
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'\?'</span>,   <span class="ruby-string">'?'</span>)                       <span class="ruby-comment">#=&gt; true  # escaped wildcard becomes ordinary</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'\a'</span>,   <span class="ruby-string">'a'</span>)                       <span class="ruby-comment">#=&gt; true  # escaped ordinary remains ordinary</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'\a'</span>,   <span class="ruby-string">'\a'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_NOESCAPE</span>)  <span class="ruby-comment">#=&gt; true  # FNM_NOESACPE makes '\' ordinary</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'[\?]'</span>, <span class="ruby-string">'?'</span>)                       <span class="ruby-comment">#=&gt; true  # can escape inside bracket expression</span>
+
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'*'</span>,   <span class="ruby-string">'.profile'</span>)                      <span class="ruby-comment">#=&gt; false # wildcard doesn't match leading</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'*'</span>,   <span class="ruby-string">'.profile'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_DOTMATCH</span>)  <span class="ruby-comment">#=&gt; true  # period by default.</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'.*'</span>,  <span class="ruby-string">'.profile'</span>)                      <span class="ruby-comment">#=&gt; true</span>
+
+<span class="ruby-identifier">rbfiles</span> = <span class="ruby-string">'**'</span> <span class="ruby-string">'/'</span> <span class="ruby-string">'*.rb'</span> <span class="ruby-comment"># you don't have to do like this. just write in single string.</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">rbfiles</span>, <span class="ruby-string">'main.rb'</span>)                    <span class="ruby-comment">#=&gt; false</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">rbfiles</span>, <span class="ruby-string">'./main.rb'</span>)                  <span class="ruby-comment">#=&gt; false</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">rbfiles</span>, <span class="ruby-string">'lib/song.rb'</span>)                <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'**.rb'</span>, <span class="ruby-string">'main.rb'</span>)                    <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'**.rb'</span>, <span class="ruby-string">'./main.rb'</span>)                  <span class="ruby-comment">#=&gt; false</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'**.rb'</span>, <span class="ruby-string">'lib/song.rb'</span>)                <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'*'</span>,           <span class="ruby-string">'dave/.profile'</span>)                      <span class="ruby-comment">#=&gt; true</span>
+
+<span class="ruby-identifier">pattern</span> = <span class="ruby-string">'*'</span> <span class="ruby-string">'/'</span> <span class="ruby-string">'*'</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">pattern</span>, <span class="ruby-string">'dave/.profile'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)  <span class="ruby-comment">#=&gt; false</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">pattern</span>, <span class="ruby-string">'dave/.profile'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span> <span class="ruby-operator">|</span> <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_DOTMATCH</span>) <span class="ruby-comment">#=&gt; true</span>
+
+<span class="ruby-identifier">pattern</span> = <span class="ruby-string">'**'</span> <span class="ruby-string">'/'</span> <span class="ruby-string">'foo'</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">pattern</span>, <span class="ruby-string">'a/b/c/foo'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)     <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">pattern</span>, <span class="ruby-string">'/a/b/c/foo'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)    <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">pattern</span>, <span class="ruby-string">'c:/a/b/c/foo'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)  <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">pattern</span>, <span class="ruby-string">'a/.b/c/foo'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)    <span class="ruby-comment">#=&gt; false</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">pattern</span>, <span class="ruby-string">'a/.b/c/foo'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span> <span class="ruby-operator">|</span> <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_DOTMATCH</span>) <span class="ruby-comment">#=&gt; true</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="fnmatch-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+file_s_fnmatch(int argc, VALUE *argv, VALUE obj)
+{
+    VALUE pattern, path;
+    VALUE rflags;
+    int flags;
+
+    if (rb_scan_args(argc, argv, &quot;21&quot;, &amp;pattern, &amp;path, &amp;rflags) == 3)
+        flags = NUM2INT(rflags);
+    else
+        flags = 0;
+
+    StringValue(pattern);
+    FilePathStringValue(path);
+
+    if (fnmatch(RSTRING_PTR(pattern), rb_enc_get(pattern), RSTRING_PTR(path),
+                flags) == 0)
+        return Qtrue;
+
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- fnmatch-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- fnmatch-method -->
+      
+        <div id="fnmatch-3F-method" class="method-detail ">
+          <a name="method-c-fnmatch-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">fnmatch?( pattern, path, [flags] ) &rarr; (true or false)</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns true if <em>path</em> matches against <em>pattern</em> The pattern
+is not a regular expression; instead it follows rules similar to shell
+filename globbing. It may contain the following metacharacters:</p>
+<dl class="rdoc-list note-list"><dt><code>*</code>
+<dd>
+<p>Matches any file. Can be restricted by other values in the glob.
+<code>*</code> will match all files; <code>c*</code> will match all files
+beginning with <code>c</code>; <code>*c</code> will match all files ending
+with <code>c</code>; and <code>*c*</code> will match all files that have
+<code>c</code> in them (including at the beginning or end). Equivalent to
+<code>/ .* /x</code> in regexp.</p>
+</dd><dt><code>**</code>
+<dd>
+<p>Matches directories recursively or files expansively.</p>
+</dd><dt><code>?</code>
+<dd>
+<p>Matches any one character. Equivalent to <code>/.{1}/</code> in regexp.</p>
+</dd><dt><code>[set]</code>
+<dd>
+<p>Matches any one character in <code>set</code>. Behaves exactly like
+character sets in <a href="Regexp.html">Regexp</a>, including set negation
+(<code>[^a-z]</code>).</p>
+</dd><dt>&lt;code&gt;&lt;/code&gt;
+<dd>
+<p>Escapes the next metacharacter.</p>
+</dd></dl>
+
+<p><em>flags</em> is a bitwise OR of the <code>FNM_xxx</code> parameters. The
+same glob pattern and flags are used by <code>Dir::glob</code>.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'cat'</span>,       <span class="ruby-string">'cat'</span>)        <span class="ruby-comment">#=&gt; true  # match entire string</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'cat'</span>,       <span class="ruby-string">'category'</span>)   <span class="ruby-comment">#=&gt; false # only match partial string</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'c{at,ub}s'</span>, <span class="ruby-string">'cats'</span>)       <span class="ruby-comment">#=&gt; false # { } isn't supported</span>
+
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'c?t'</span>,     <span class="ruby-string">'cat'</span>)          <span class="ruby-comment">#=&gt; true  # '?' match only 1 character</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'c??t'</span>,    <span class="ruby-string">'cat'</span>)          <span class="ruby-comment">#=&gt; false # ditto</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'c*'</span>,      <span class="ruby-string">'cats'</span>)         <span class="ruby-comment">#=&gt; true  # '*' match 0 or more characters</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'c*t'</span>,     <span class="ruby-string">'c/a/b/t'</span>)      <span class="ruby-comment">#=&gt; true  # ditto</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'ca[a-z]'</span>, <span class="ruby-string">'cat'</span>)          <span class="ruby-comment">#=&gt; true  # inclusive bracket expression</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'ca[^t]'</span>,  <span class="ruby-string">'cat'</span>)          <span class="ruby-comment">#=&gt; false # exclusive bracket expression ('^' or '!')</span>
+
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'cat'</span>, <span class="ruby-string">'CAT'</span>)                     <span class="ruby-comment">#=&gt; false # case sensitive</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'cat'</span>, <span class="ruby-string">'CAT'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_CASEFOLD</span>) <span class="ruby-comment">#=&gt; true  # case insensitive</span>
+
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'?'</span>,   <span class="ruby-string">'/'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)  <span class="ruby-comment">#=&gt; false # wildcard doesn't match '/' on FNM_PATHNAME</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'*'</span>,   <span class="ruby-string">'/'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)  <span class="ruby-comment">#=&gt; false # ditto</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'[/]'</span>, <span class="ruby-string">'/'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)  <span class="ruby-comment">#=&gt; false # ditto</span>
+
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'\?'</span>,   <span class="ruby-string">'?'</span>)                       <span class="ruby-comment">#=&gt; true  # escaped wildcard becomes ordinary</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'\a'</span>,   <span class="ruby-string">'a'</span>)                       <span class="ruby-comment">#=&gt; true  # escaped ordinary remains ordinary</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'\a'</span>,   <span class="ruby-string">'\a'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_NOESCAPE</span>)  <span class="ruby-comment">#=&gt; true  # FNM_NOESACPE makes '\' ordinary</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'[\?]'</span>, <span class="ruby-string">'?'</span>)                       <span class="ruby-comment">#=&gt; true  # can escape inside bracket expression</span>
+
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'*'</span>,   <span class="ruby-string">'.profile'</span>)                      <span class="ruby-comment">#=&gt; false # wildcard doesn't match leading</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'*'</span>,   <span class="ruby-string">'.profile'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_DOTMATCH</span>)  <span class="ruby-comment">#=&gt; true  # period by default.</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'.*'</span>,  <span class="ruby-string">'.profile'</span>)                      <span class="ruby-comment">#=&gt; true</span>
+
+<span class="ruby-identifier">rbfiles</span> = <span class="ruby-string">'**'</span> <span class="ruby-string">'/'</span> <span class="ruby-string">'*.rb'</span> <span class="ruby-comment"># you don't have to do like this. just write in single string.</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">rbfiles</span>, <span class="ruby-string">'main.rb'</span>)                    <span class="ruby-comment">#=&gt; false</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">rbfiles</span>, <span class="ruby-string">'./main.rb'</span>)                  <span class="ruby-comment">#=&gt; false</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">rbfiles</span>, <span class="ruby-string">'lib/song.rb'</span>)                <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'**.rb'</span>, <span class="ruby-string">'main.rb'</span>)                    <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'**.rb'</span>, <span class="ruby-string">'./main.rb'</span>)                  <span class="ruby-comment">#=&gt; false</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'**.rb'</span>, <span class="ruby-string">'lib/song.rb'</span>)                <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-string">'*'</span>,           <span class="ruby-string">'dave/.profile'</span>)                      <span class="ruby-comment">#=&gt; true</span>
+
+<span class="ruby-identifier">pattern</span> = <span class="ruby-string">'*'</span> <span class="ruby-string">'/'</span> <span class="ruby-string">'*'</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">pattern</span>, <span class="ruby-string">'dave/.profile'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)  <span class="ruby-comment">#=&gt; false</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">pattern</span>, <span class="ruby-string">'dave/.profile'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span> <span class="ruby-operator">|</span> <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_DOTMATCH</span>) <span class="ruby-comment">#=&gt; true</span>
+
+<span class="ruby-identifier">pattern</span> = <span class="ruby-string">'**'</span> <span class="ruby-string">'/'</span> <span class="ruby-string">'foo'</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">pattern</span>, <span class="ruby-string">'a/b/c/foo'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)     <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">pattern</span>, <span class="ruby-string">'/a/b/c/foo'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)    <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">pattern</span>, <span class="ruby-string">'c:/a/b/c/foo'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)  <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">pattern</span>, <span class="ruby-string">'a/.b/c/foo'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span>)    <span class="ruby-comment">#=&gt; false</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">fnmatch</span>(<span class="ruby-identifier">pattern</span>, <span class="ruby-string">'a/.b/c/foo'</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_PATHNAME</span> <span class="ruby-operator">|</span> <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">FNM_DOTMATCH</span>) <span class="ruby-comment">#=&gt; true</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="fnmatch-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+file_s_fnmatch(int argc, VALUE *argv, VALUE obj)
+{
+    VALUE pattern, path;
+    VALUE rflags;
+    int flags;
+
+    if (rb_scan_args(argc, argv, &quot;21&quot;, &amp;pattern, &amp;path, &amp;rflags) == 3)
+        flags = NUM2INT(rflags);
+    else
+        flags = 0;
+
+    StringValue(pattern);
+    FilePathStringValue(path);
+
+    if (fnmatch(RSTRING_PTR(pattern), rb_enc_get(pattern), RSTRING_PTR(path),
+                flags) == 0)
+        return Qtrue;
+
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- fnmatch-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- fnmatch-3F-method -->
+      
+        <div id="ftype-method" class="method-detail ">
+          <a name="method-c-ftype"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">ftype(file_name)   &rarr; string</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Identifies the type of the named file; the return string is one of
+“<code>file</code>”, “<code>directory</code>”,
+“<code>characterSpecial</code>”, “<code>blockSpecial</code>”,
+“<code>fifo</code>”, “<code>link</code>”, “<code>socket</code>”, or
+“<code>unknown</code>”.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">ftype</span>(<span class="ruby-string">&quot;testfile&quot;</span>)            <span class="ruby-comment">#=&gt; &quot;file&quot;</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">ftype</span>(<span class="ruby-string">&quot;/dev/tty&quot;</span>)            <span class="ruby-comment">#=&gt; &quot;characterSpecial&quot;</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">ftype</span>(<span class="ruby-string">&quot;/tmp/.X11-unix/X0&quot;</span>)   <span class="ruby-comment">#=&gt; &quot;socket&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="ftype-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_ftype(VALUE klass, VALUE fname)
+{
+    struct stat st;
+
+    rb_secure(2);
+    FilePathValue(fname);
+    fname = rb_str_encode_ospath(fname);
+    if (lstat(StringValueCStr(fname), &amp;st) == -1) {
+        rb_sys_fail_path(fname);
+    }
+
+    return rb_file_ftype(&amp;st);
+}
+            </pre> 
+            </div><!-- ftype-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- ftype-method -->
+      
+        <div id="grpowned-3F-method" class="method-detail ">
+          <a name="method-c-grpowned-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">grpowned?(file_name)   &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file exists and the effective group
+id of the calling process is the owner of the file. Returns
+<code>false</code> on Windows.</p>
+            
+
+            
+            <div class="method-source-code" id="grpowned-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_grpowned_p(VALUE obj, VALUE fname)
+{
+#ifndef _WIN32
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) return Qfalse;
+    if (rb_group_member(st.st_gid)) return Qtrue;
+#endif
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- grpowned-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- grpowned-3F-method -->
+      
+        <div id="identical-3F-method" class="method-detail ">
+          <a name="method-c-identical-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">identical?(file_1, file_2)   &rarr;  true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named files are identical.</p>
+
+<pre class="ruby"><span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;a&quot;</span>, <span class="ruby-string">&quot;w&quot;</span>) {}
+<span class="ruby-identifier">p</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">identical?</span>(<span class="ruby-string">&quot;a&quot;</span>, <span class="ruby-string">&quot;a&quot;</span>)      <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">p</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">identical?</span>(<span class="ruby-string">&quot;a&quot;</span>, <span class="ruby-string">&quot;./a&quot;</span>)    <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">link</span>(<span class="ruby-string">&quot;a&quot;</span>, <span class="ruby-string">&quot;b&quot;</span>)
+<span class="ruby-identifier">p</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">identical?</span>(<span class="ruby-string">&quot;a&quot;</span>, <span class="ruby-string">&quot;b&quot;</span>)      <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">symlink</span>(<span class="ruby-string">&quot;a&quot;</span>, <span class="ruby-string">&quot;c&quot;</span>)
+<span class="ruby-identifier">p</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">identical?</span>(<span class="ruby-string">&quot;a&quot;</span>, <span class="ruby-string">&quot;c&quot;</span>)      <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;d&quot;</span>, <span class="ruby-string">&quot;w&quot;</span>) {}
+<span class="ruby-identifier">p</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">identical?</span>(<span class="ruby-string">&quot;a&quot;</span>, <span class="ruby-string">&quot;d&quot;</span>)      <span class="ruby-comment">#=&gt; false</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="identical-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_identical_p(VALUE obj, VALUE fname1, VALUE fname2)
+{
+#ifndef DOSISH
+    struct stat st1, st2;
+
+    if (rb_stat(fname1, &amp;st1) &lt; 0) return Qfalse;
+    if (rb_stat(fname2, &amp;st2) &lt; 0) return Qfalse;
+    if (st1.st_dev != st2.st_dev) return Qfalse;
+    if (st1.st_ino != st2.st_ino) return Qfalse;
+#else
+# ifdef _WIN32
+    BY_HANDLE_FILE_INFORMATION st1, st2;
+    HANDLE f1 = 0, f2 = 0;
+# endif
+
+    rb_secure(2);
+# ifdef _WIN32
+    f1 = w32_io_info(&amp;fname1, &amp;st1);
+    if (f1 == INVALID_HANDLE_VALUE) return Qfalse;
+    f2 = w32_io_info(&amp;fname2, &amp;st2);
+    if (f1) CloseHandle(f1);
+    if (f2 == INVALID_HANDLE_VALUE) return Qfalse;
+    if (f2) CloseHandle(f2);
+
+    if (st1.dwVolumeSerialNumber == st2.dwVolumeSerialNumber &amp;&amp;
+        st1.nFileIndexHigh == st2.nFileIndexHigh &amp;&amp;
+        st1.nFileIndexLow == st2.nFileIndexLow)
+        return Qtrue;
+    if (!f1 || !f2) return Qfalse;
+    if (rb_w32_iswin95()) return Qfalse;
+# else
+    FilePathValue(fname1);
+    fname1 = rb_str_new4(fname1);
+    fname1 = rb_str_encode_ospath(fname1);
+    FilePathValue(fname2);
+    fname2 = rb_str_encode_ospath(fname2);
+    if (access(RSTRING_PTR(fname1), 0)) return Qfalse;
+    if (access(RSTRING_PTR(fname2), 0)) return Qfalse;
+# endif
+    fname1 = rb_file_expand_path(fname1, Qnil);
+    fname2 = rb_file_expand_path(fname2, Qnil);
+    if (RSTRING_LEN(fname1) != RSTRING_LEN(fname2)) return Qfalse;
+    if (rb_memcicmp(RSTRING_PTR(fname1), RSTRING_PTR(fname2), RSTRING_LEN(fname1)))
+        return Qfalse;
+#endif
+    return Qtrue;
+}
+            </pre> 
+            </div><!-- identical-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- identical-3F-method -->
+      
+        <div id="join-method" class="method-detail ">
+          <a name="method-c-join"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">join(string, ...)  &rarr;  path</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns a new string formed by joining the strings using
+<code>File::SEPARATOR</code>.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;usr&quot;</span>, <span class="ruby-string">&quot;mail&quot;</span>, <span class="ruby-string">&quot;gumby&quot;</span>)   <span class="ruby-comment">#=&gt; &quot;usr/mail/gumby&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="join-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_join(VALUE klass, VALUE args)
+{
+    return rb_file_join(args, separator);
+}
+            </pre> 
+            </div><!-- join-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- join-method -->
+      
+        <div id="lchmod-method" class="method-detail ">
+          <a name="method-c-lchmod"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">lchmod(mode_int, file_name, ...)  &rarr; integer</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Equivalent to <code>File::chmod</code>, but does not follow symbolic links
+(so it will change the permissions associated with the link, not the file
+referenced by the link). Often not available.</p>
+            
+
+            
+            <div class="method-source-code" id="lchmod-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_lchmod(int argc, VALUE *argv)
+{
+    VALUE vmode;
+    VALUE rest;
+    long mode, n;
+
+    rb_secure(2);
+    rb_scan_args(argc, argv, &quot;1*&quot;, &amp;vmode, &amp;rest);
+    mode = NUM2INT(vmode);
+
+    n = apply2files(lchmod_internal, rest, (void *)(long)mode);
+    return LONG2FIX(n);
+}
+            </pre> 
+            </div><!-- lchmod-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- lchmod-method -->
+      
+        <div id="lchown-method" class="method-detail ">
+          <a name="method-c-lchown"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">lchown(owner_int, group_int, file_name,..) &rarr; integer</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Equivalent to <code>File::chown</code>, but does not follow symbolic links
+(so it will change the owner associated with the link, not the file
+referenced by the link). Often not available. Returns number of files in
+the argument list.</p>
+            
+
+            
+            <div class="method-source-code" id="lchown-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_lchown(int argc, VALUE *argv)
+{
+    VALUE o, g, rest;
+    struct chown_args arg;
+    long n;
+
+    rb_secure(2);
+    rb_scan_args(argc, argv, &quot;2*&quot;, &amp;o, &amp;g, &amp;rest);
+    if (NIL_P(o)) {
+        arg.owner = -1;
+    }
+    else {
+        arg.owner = NUM2UIDT(o);
+    }
+    if (NIL_P(g)) {
+        arg.group = -1;
+    }
+    else {
+        arg.group = NUM2GIDT(g);
+    }
+
+    n = apply2files(lchown_internal, rest, &amp;arg);
+    return LONG2FIX(n);
+}
+            </pre> 
+            </div><!-- lchown-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- lchown-method -->
+      
+        <div id="link-method" class="method-detail ">
+          <a name="method-c-link"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">link(old_name, new_name)    &rarr; 0</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Creates a new name for an existing file using a hard link. Will not
+overwrite <em>new_name</em> if it already exists (raising a subclass of
+<code>SystemCallError</code>). Not available on all platforms.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">link</span>(<span class="ruby-string">&quot;testfile&quot;</span>, <span class="ruby-string">&quot;.testfile&quot;</span>)   <span class="ruby-comment">#=&gt; 0</span>
+<span class="ruby-constant">IO</span>.<span class="ruby-identifier">readlines</span>(<span class="ruby-string">&quot;.testfile&quot;</span>)[<span class="ruby-value">0</span>]         <span class="ruby-comment">#=&gt; &quot;This is line one\n&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="link-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_link(VALUE klass, VALUE from, VALUE to)
+{
+    rb_secure(2);
+    FilePathValue(from);
+    FilePathValue(to);
+    from = rb_str_encode_ospath(from);
+    to = rb_str_encode_ospath(to);
+
+    if (link(StringValueCStr(from), StringValueCStr(to)) &lt; 0) {
+        sys_fail2(from, to);
+    }
+    return INT2FIX(0);
+}
+            </pre> 
+            </div><!-- link-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- link-method -->
+      
+        <div id="lstat-method" class="method-detail ">
+          <a name="method-c-lstat"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">lstat(file_name)   &rarr; stat</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Same as <code>File::stat</code>, but does not follow the last symbolic
+link. Instead, reports on the link itself.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">symlink</span>(<span class="ruby-string">&quot;testfile&quot;</span>, <span class="ruby-string">&quot;link2test&quot;</span>)   <span class="ruby-comment">#=&gt; 0</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">stat</span>(<span class="ruby-string">&quot;testfile&quot;</span>).<span class="ruby-identifier">size</span>              <span class="ruby-comment">#=&gt; 66</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">lstat</span>(<span class="ruby-string">&quot;link2test&quot;</span>).<span class="ruby-identifier">size</span>            <span class="ruby-comment">#=&gt; 8</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">stat</span>(<span class="ruby-string">&quot;link2test&quot;</span>).<span class="ruby-identifier">size</span>             <span class="ruby-comment">#=&gt; 66</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="lstat-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_lstat(VALUE klass, VALUE fname)
+{
+#ifdef HAVE_LSTAT
+    struct stat st;
+
+    rb_secure(2);
+    FilePathValue(fname);
+    fname = rb_str_encode_ospath(fname);
+    if (lstat(StringValueCStr(fname), &amp;st) == -1) {
+        rb_sys_fail_path(fname);
+    }
+    return stat_new(&amp;st);
+#else
+    return rb_file_s_stat(klass, fname);
+#endif
+}
+            </pre> 
+            </div><!-- lstat-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- lstat-method -->
+      
+        <div id="mtime-method" class="method-detail ">
+          <a name="method-c-mtime"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">mtime(file_name)  &rarr;  time</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the modification time for the named file as a <a
+href="Time.html">Time</a> object.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">mtime</span>(<span class="ruby-string">&quot;testfile&quot;</span>)   <span class="ruby-comment">#=&gt; Tue Apr 08 12:58:04 CDT 2003</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="mtime-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_mtime(VALUE klass, VALUE fname)
+{
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) {
+        FilePathValue(fname);
+        rb_sys_fail_path(fname);
+    }
+    return stat_mtime(&amp;st);
+}
+            </pre> 
+            </div><!-- mtime-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- mtime-method -->
+      
+        <div id="new-method" class="method-detail ">
+          <a name="method-c-new"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">new(filename, mode="r" [, opt])            &rarr; file</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">new(filename [, mode [, perm]] [, opt])    &rarr; file</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Opens the file named by <code>filename</code> according to
+<code>mode</code> (default is “r”) and returns a new <code>File</code>
+object.</p>
+
+<h3 id="method-c-new-label-Parameters">Parameters<span><a href="#method-c-new-label-Parameters">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+
+<p>See the description of class <a href="IO.html">IO</a> for a description of
+<code>mode</code>.  The file mode may optionally be specified as a <a
+href="Fixnum.html">Fixnum</a> by <code>or</code>-ing together the flags
+(O_RDONLY etc, again described under <code>IO</code>).</p>
+
+<p>Optional permission bits may be given in <code>perm</code>.  These mode and
+permission bits are platform dependent; on Unix systems, see
+<code>open(2)</code> for details.</p>
+
+<p>Optional <code>opt</code> parameter is same as in <a
+href="IO.html#method-c-open">IO.open</a>.</p>
+
+<h3 id="method-c-new-label-Examples">Examples<span><a href="#method-c-new-label-Examples">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+
+<pre>f = File.new(&quot;testfile&quot;, &quot;r&quot;)
+f = File.new(&quot;newfile&quot;,  &quot;w+&quot;)
+f = File.new(&quot;newfile&quot;, File::CREAT|File::TRUNC|File::RDWR, 0644)</pre>
+            
+
+            
+            <div class="method-source-code" id="new-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_initialize(int argc, VALUE *argv, VALUE io)
+{
+    if (RFILE(io)-&gt;fptr) {
+        rb_raise(rb_eRuntimeError, &quot;reinitializing File&quot;);
+    }
+    if (0 &lt; argc &amp;&amp; argc &lt; 3) {
+        VALUE fd = rb_check_convert_type(argv[0], T_FIXNUM, &quot;Fixnum&quot;, &quot;to_int&quot;);
+
+        if (!NIL_P(fd)) {
+            argv[0] = fd;
+            return rb_io_initialize(argc, argv, io);
+        }
+    }
+    rb_open_file(argc, argv, io);
+
+    return io;
+}
+            </pre> 
+            </div><!-- new-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- new-method -->
+      
+        <div id="open-method" class="method-detail ">
+          <a name="method-c-open"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">open(filename, mode="r" [, opt])                 &rarr; file</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">open(filename [, mode [, perm]] [, opt])         &rarr; file</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">open(filename, mode="r" [, opt]) {|file| block } &rarr; obj</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">open(filename [, mode [, perm]] [, opt]) {|file| block } &rarr; obj</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>With no associated block, <code>File.open</code> is a synonym for <a
+href="File.html#method-c-new">::new</a>. If the optional code block is
+given, it will be passed the opened <code>file</code> as an argument, and
+the <a href="File.html">File</a> object will automatically be closed when
+the block terminates.  In this instance, <code>File.open</code> returns the
+value of the block.</p>
+
+<p>See <a href="IO.html#method-c-new">IO.new</a> for a list of values for the
+<code>opt</code> parameter.</p>
+            
+
+            
+            <div class="method-source-code" id="open-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_io_s_open(int argc, VALUE *argv, VALUE klass)
+{
+    VALUE io = rb_class_new_instance(argc, argv, klass);
+
+    if (rb_block_given_p()) {
+        return rb_ensure(rb_yield, io, io_close, io);
+    }
+
+    return io;
+}
+            </pre> 
+            </div><!-- open-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- open-method -->
+      
+        <div id="owned-3F-method" class="method-detail ">
+          <a name="method-c-owned-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">owned?(file_name)   &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file exists and the effective used
+id of the calling process is the owner of the file.</p>
+            
+
+            
+            <div class="method-source-code" id="owned-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_owned_p(VALUE obj, VALUE fname)
+{
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) return Qfalse;
+    if (st.st_uid == geteuid()) return Qtrue;
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- owned-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- owned-3F-method -->
+      
+        <div id="path-method" class="method-detail ">
+          <a name="method-c-path"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">path(path)  &rarr;  string</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the string representation of the path</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">path</span>(<span class="ruby-string">&quot;/dev/null&quot;</span>)          <span class="ruby-comment">#=&gt; &quot;/dev/null&quot;</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">path</span>(<span class="ruby-constant">Pathname</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;/tmp&quot;</span>)) <span class="ruby-comment">#=&gt; &quot;/tmp&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="path-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_path(VALUE klass, VALUE fname)
+{
+    return rb_get_path(fname);
+}
+            </pre> 
+            </div><!-- path-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- path-method -->
+      
+        <div id="pipe-3F-method" class="method-detail ">
+          <a name="method-c-pipe-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">pipe?(file_name)   &rarr;  true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file is a pipe.</p>
+            
+
+            
+            <div class="method-source-code" id="pipe-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_pipe_p(VALUE obj, VALUE fname)
+{
+#ifdef S_IFIFO
+#  ifndef S_ISFIFO
+#    define S_ISFIFO(m) (((m) &amp; S_IFMT) == S_IFIFO)
+#  endif
+
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) return Qfalse;
+    if (S_ISFIFO(st.st_mode)) return Qtrue;
+
+#endif
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- pipe-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- pipe-3F-method -->
+      
+        <div id="readable-3F-method" class="method-detail ">
+          <a name="method-c-readable-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">readable?(file_name)   &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file is readable by the effective
+user id of this process.</p>
+            
+
+            
+            <div class="method-source-code" id="readable-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_readable_p(VALUE obj, VALUE fname)
+{
+    rb_secure(2);
+    FilePathValue(fname);
+    fname = rb_str_encode_ospath(fname);
+    if (eaccess(StringValueCStr(fname), R_OK) &lt; 0) return Qfalse;
+    return Qtrue;
+}
+            </pre> 
+            </div><!-- readable-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- readable-3F-method -->
+      
+        <div id="readable_real-3F-method" class="method-detail ">
+          <a name="method-c-readable_real-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">readable_real?(file_name)   &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file is readable by the real user id
+of this process.</p>
+            
+
+            
+            <div class="method-source-code" id="readable_real-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_readable_real_p(VALUE obj, VALUE fname)
+{
+    rb_secure(2);
+    FilePathValue(fname);
+    fname = rb_str_encode_ospath(fname);
+    if (access_internal(StringValueCStr(fname), R_OK) &lt; 0) return Qfalse;
+    return Qtrue;
+}
+            </pre> 
+            </div><!-- readable_real-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- readable_real-3F-method -->
+      
+        <div id="readlink-method" class="method-detail ">
+          <a name="method-c-readlink"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">readlink(link_name)  &rarr;  file_name</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the name of the file referenced by the given link. Not available on
+all platforms.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">symlink</span>(<span class="ruby-string">&quot;testfile&quot;</span>, <span class="ruby-string">&quot;link2test&quot;</span>)   <span class="ruby-comment">#=&gt; 0</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">readlink</span>(<span class="ruby-string">&quot;link2test&quot;</span>)              <span class="ruby-comment">#=&gt; &quot;testfile&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="readlink-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_readlink(VALUE klass, VALUE path)
+{
+    return rb_readlink(path);
+}
+            </pre> 
+            </div><!-- readlink-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- readlink-method -->
+      
+        <div id="realdirpath-method" class="method-detail ">
+          <a name="method-c-realdirpath"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">realdirpath(pathname [, dir_string])  &rarr;  real_pathname</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the real (absolute) pathname of <em>pathname</em> in the actual
+filesystem. The real pathname doesn’t contain symlinks or useless dots.</p>
+
+<p>If <em>dir_string</em> is given, it is used as a base directory for
+interpreting relative pathname instead of the current directory.</p>
+
+<p>The last component of the real pathname can be nonexistent.</p>
+            
+
+            
+            <div class="method-source-code" id="realdirpath-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_realdirpath(int argc, VALUE *argv, VALUE klass)
+{
+    VALUE path, basedir;
+    rb_scan_args(argc, argv, &quot;11&quot;, &amp;path, &amp;basedir);
+    return rb_realpath_internal(basedir, path, 0);
+}
+            </pre> 
+            </div><!-- realdirpath-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- realdirpath-method -->
+      
+        <div id="realpath-method" class="method-detail ">
+          <a name="method-c-realpath"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">realpath(pathname [, dir_string])  &rarr;  real_pathname</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the real (absolute) pathname of <em>pathname</em> in the actual
+filesystem not containing symlinks or useless dots.</p>
+
+<p>If <em>dir_string</em> is given, it is used as a base directory for
+interpreting relative pathname instead of the current directory.</p>
+
+<p>All components of the pathname must exist when this method is called.</p>
+            
+
+            
+            <div class="method-source-code" id="realpath-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_realpath(int argc, VALUE *argv, VALUE klass)
+{
+    VALUE path, basedir;
+    rb_scan_args(argc, argv, &quot;11&quot;, &amp;path, &amp;basedir);
+    return rb_realpath_internal(basedir, path, 1);
+}
+            </pre> 
+            </div><!-- realpath-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- realpath-method -->
+      
+        <div id="rename-method" class="method-detail ">
+          <a name="method-c-rename"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">rename(old_name, new_name)   &rarr; 0</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Renames the given file to the new name. Raises a
+<code>SystemCallError</code> if the file cannot be renamed.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">rename</span>(<span class="ruby-string">&quot;afile&quot;</span>, <span class="ruby-string">&quot;afile.bak&quot;</span>)   <span class="ruby-comment">#=&gt; 0</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="rename-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_rename(VALUE klass, VALUE from, VALUE to)
+{
+    const char *src, *dst;
+    VALUE f, t;
+
+    rb_secure(2);
+    FilePathValue(from);
+    FilePathValue(to);
+    f = rb_str_encode_ospath(from);
+    t = rb_str_encode_ospath(to);
+    src = StringValueCStr(f);
+    dst = StringValueCStr(t);
+#if defined __CYGWIN__
+    errno = 0;
+#endif
+    if (rename(src, dst) &lt; 0) {
+#if defined DOSISH
+        switch (errno) {
+          case EEXIST:
+#if defined (__EMX__)
+          case EACCES:
+#endif
+            if (chmod(dst, 0666) == 0 &amp;&amp;
+                unlink(dst) == 0 &amp;&amp;
+                rename(src, dst) == 0)
+                return INT2FIX(0);
+        }
+#endif
+        sys_fail2(from, to);
+    }
+
+    return INT2FIX(0);
+}
+            </pre> 
+            </div><!-- rename-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- rename-method -->
+      
+        <div id="setgid-3F-method" class="method-detail ">
+          <a name="method-c-setgid-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">setgid?(file_name)   &rarr;  true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file has the setgid bit set.</p>
+            
+
+            
+            <div class="method-source-code" id="setgid-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_sgid_p(VALUE obj, VALUE fname)
+{
+#ifdef S_ISGID
+    return check3rdbyte(fname, S_ISGID);
+#else
+    return Qfalse;
+#endif
+}
+            </pre> 
+            </div><!-- setgid-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- setgid-3F-method -->
+      
+        <div id="setuid-3F-method" class="method-detail ">
+          <a name="method-c-setuid-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">setuid?(file_name)   &rarr;  true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file has the setuid bit set.</p>
+            
+
+            
+            <div class="method-source-code" id="setuid-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_suid_p(VALUE obj, VALUE fname)
+{
+#ifdef S_ISUID
+    return check3rdbyte(fname, S_ISUID);
+#else
+    return Qfalse;
+#endif
+}
+            </pre> 
+            </div><!-- setuid-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- setuid-3F-method -->
+      
+        <div id="size-method" class="method-detail ">
+          <a name="method-c-size"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">size(file_name)   &rarr; integer</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the size of <code>file_name</code>.</p>
+            
+
+            
+            <div class="method-source-code" id="size-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_size(VALUE klass, VALUE fname)
+{
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) {
+        FilePathValue(fname);
+        rb_sys_fail_path(fname);
+    }
+    return OFFT2NUM(st.st_size);
+}
+            </pre> 
+            </div><!-- size-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- size-method -->
+      
+        <div id="size-3F-method" class="method-detail ">
+          <a name="method-c-size-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">size?(file_name)   &rarr; Integer or nil</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>nil</code> if <code>file_name</code> doesn’t exist or has
+zero size, the size of the file otherwise.</p>
+            
+
+            
+            <div class="method-source-code" id="size-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_size_p(VALUE obj, VALUE fname)
+{
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) return Qnil;
+    if (st.st_size == 0) return Qnil;
+    return OFFT2NUM(st.st_size);
+}
+            </pre> 
+            </div><!-- size-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- size-3F-method -->
+      
+        <div id="socket-3F-method" class="method-detail ">
+          <a name="method-c-socket-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">socket?(file_name)   &rarr;  true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file is a socket.</p>
+            
+
+            
+            <div class="method-source-code" id="socket-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_socket_p(VALUE obj, VALUE fname)
+{
+#ifndef S_ISSOCK
+#  ifdef _S_ISSOCK
+#    define S_ISSOCK(m) _S_ISSOCK(m)
+#  else
+#    ifdef _S_IFSOCK
+#      define S_ISSOCK(m) (((m) &amp; S_IFMT) == _S_IFSOCK)
+#    else
+#      ifdef S_IFSOCK
+#        define S_ISSOCK(m) (((m) &amp; S_IFMT) == S_IFSOCK)
+#      endif
+#    endif
+#  endif
+#endif
+
+#ifdef S_ISSOCK
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) return Qfalse;
+    if (S_ISSOCK(st.st_mode)) return Qtrue;
+
+#endif
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- socket-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- socket-3F-method -->
+      
+        <div id="split-method" class="method-detail ">
+          <a name="method-c-split"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">split(file_name)   &rarr; array</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Splits the given string into a directory and a file component and returns
+them in a two-element array. See also <code>File::dirname</code> and
+<code>File::basename</code>.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;/home/gumby/.profile&quot;</span>)   <span class="ruby-comment">#=&gt; [&quot;/home/gumby&quot;, &quot;.profile&quot;]</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="split-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_split(VALUE klass, VALUE path)
+{
+    FilePathStringValue(path);          /* get rid of converting twice */
+    return rb_assoc_new(rb_file_s_dirname(Qnil, path), rb_file_s_basename(1,&amp;path));
+}
+            </pre> 
+            </div><!-- split-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- split-method -->
+      
+        <div id="stat-method" class="method-detail ">
+          <a name="method-c-stat"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">stat(file_name)   &rarr;  stat</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns a <code>File::Stat</code> object for the named file (see
+<code>File::Stat</code>).</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">stat</span>(<span class="ruby-string">&quot;testfile&quot;</span>).<span class="ruby-identifier">mtime</span>   <span class="ruby-comment">#=&gt; Tue Apr 08 12:58:04 CDT 2003</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="stat-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_stat(VALUE klass, VALUE fname)
+{
+    struct stat st;
+
+    rb_secure(4);
+    FilePathValue(fname);
+    if (rb_stat(fname, &amp;st) &lt; 0) {
+        rb_sys_fail_path(fname);
+    }
+    return stat_new(&amp;st);
+}
+            </pre> 
+            </div><!-- stat-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- stat-method -->
+      
+        <div id="sticky-3F-method" class="method-detail ">
+          <a name="method-c-sticky-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">sticky?(file_name)   &rarr;  true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file has the sticky bit set.</p>
+            
+
+            
+            <div class="method-source-code" id="sticky-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_sticky_p(VALUE obj, VALUE fname)
+{
+#ifdef S_ISVTX
+    return check3rdbyte(fname, S_ISVTX);
+#else
+    return Qnil;
+#endif
+}
+            </pre> 
+            </div><!-- sticky-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- sticky-3F-method -->
+      
+        <div id="symlink-method" class="method-detail ">
+          <a name="method-c-symlink"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">symlink(old_name, new_name)   &rarr; 0</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Creates a symbolic link called <em>new_name</em> for the existing file
+<em>old_name</em>. Raises a <code>NotImplemented</code> exception on
+platforms that do not support symbolic links.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">symlink</span>(<span class="ruby-string">&quot;testfile&quot;</span>, <span class="ruby-string">&quot;link2test&quot;</span>)   <span class="ruby-comment">#=&gt; 0</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="symlink-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_symlink(VALUE klass, VALUE from, VALUE to)
+{
+    rb_secure(2);
+    FilePathValue(from);
+    FilePathValue(to);
+    from = rb_str_encode_ospath(from);
+    to = rb_str_encode_ospath(to);
+
+    if (symlink(StringValueCStr(from), StringValueCStr(to)) &lt; 0) {
+        sys_fail2(from, to);
+    }
+    return INT2FIX(0);
+}
+            </pre> 
+            </div><!-- symlink-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- symlink-method -->
+      
+        <div id="symlink-3F-method" class="method-detail ">
+          <a name="method-c-symlink-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">symlink?(file_name)   &rarr;  true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file is a symbolic link.</p>
+            
+
+            
+            <div class="method-source-code" id="symlink-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_symlink_p(VALUE obj, VALUE fname)
+{
+#ifndef S_ISLNK
+#  ifdef _S_ISLNK
+#    define S_ISLNK(m) _S_ISLNK(m)
+#  else
+#    ifdef _S_IFLNK
+#      define S_ISLNK(m) (((m) &amp; S_IFMT) == _S_IFLNK)
+#    else
+#      ifdef S_IFLNK
+#        define S_ISLNK(m) (((m) &amp; S_IFMT) == S_IFLNK)
+#      endif
+#    endif
+#  endif
+#endif
+
+#ifdef S_ISLNK
+    struct stat st;
+
+    rb_secure(2);
+    FilePathValue(fname);
+    fname = rb_str_encode_ospath(fname);
+    if (lstat(StringValueCStr(fname), &amp;st) &lt; 0) return Qfalse;
+    if (S_ISLNK(st.st_mode)) return Qtrue;
+#endif
+
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- symlink-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- symlink-3F-method -->
+      
+        <div id="truncate-method" class="method-detail ">
+          <a name="method-c-truncate"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">truncate(file_name, integer)  &rarr; 0</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Truncates the file <em>file_name</em> to be at most <em>integer</em> bytes
+long. Not available on all platforms.</p>
+
+<pre class="ruby"><span class="ruby-identifier">f</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;out&quot;</span>, <span class="ruby-string">&quot;w&quot;</span>)
+<span class="ruby-identifier">f</span>.<span class="ruby-identifier">write</span>(<span class="ruby-string">&quot;1234567890&quot;</span>)     <span class="ruby-comment">#=&gt; 10</span>
+<span class="ruby-identifier">f</span>.<span class="ruby-identifier">close</span>                   <span class="ruby-comment">#=&gt; nil</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">truncate</span>(<span class="ruby-string">&quot;out&quot;</span>, <span class="ruby-value">5</span>)   <span class="ruby-comment">#=&gt; 0</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">size</span>(<span class="ruby-string">&quot;out&quot;</span>)          <span class="ruby-comment">#=&gt; 5</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="truncate-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_truncate(VALUE klass, VALUE path, VALUE len)
+{
+    off_t pos;
+
+    rb_secure(2);
+    pos = NUM2OFFT(len);
+    FilePathValue(path);
+    path = rb_str_encode_ospath(path);
+#ifdef HAVE_TRUNCATE
+    if (truncate(StringValueCStr(path), pos) &lt; 0)
+        rb_sys_fail_path(path);
+#else /* defined(HAVE_CHSIZE) */
+    {
+        int tmpfd;
+
+        if ((tmpfd = open(StringValueCStr(path), 0)) &lt; 0) {
+            rb_sys_fail_path(path);
+        }
+        rb_update_max_fd(tmpfd);
+        if (chsize(tmpfd, pos) &lt; 0) {
+            close(tmpfd);
+            rb_sys_fail_path(path);
+        }
+        close(tmpfd);
+    }
+#endif
+    return INT2FIX(0);
+}
+            </pre> 
+            </div><!-- truncate-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- truncate-method -->
+      
+        <div id="umask-method" class="method-detail ">
+          <a name="method-c-umask"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">umask()          &rarr; integer</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          <div class="method-heading">
+            <span class="method-callseq">umask(integer)   &rarr; integer</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the current umask value for this process. If the optional argument
+is given, set the umask to that value and return the previous value. Umask
+values are <em>subtracted</em> from the default permissions, so a umask of
+<code>0222</code> would make a file read-only for everyone.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">umask</span>(<span class="ruby-value">0006</span>)   <span class="ruby-comment">#=&gt; 18</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">umask</span>         <span class="ruby-comment">#=&gt; 6</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="umask-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_umask(int argc, VALUE *argv)
+{
+    int omask = 0;
+
+    rb_secure(2);
+    if (argc == 0) {
+        omask = umask(0);
+        umask(omask);
+    }
+    else if (argc == 1) {
+        omask = umask(NUM2INT(argv[0]));
+    }
+    else {
+        rb_raise(rb_eArgError, &quot;wrong number of arguments (%d for 0..1)&quot;, argc);
+    }
+    return INT2FIX(omask);
+}
+            </pre> 
+            </div><!-- umask-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- umask-method -->
+      
+        <div id="unlink-method" class="method-detail ">
+          <a name="method-c-unlink"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">unlink(file_name, ...)  &rarr; integer</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Deletes the named files, returning the number of names passed as arguments.
+Raises an exception on any error. See also <code>Dir::rmdir</code>.</p>
+            
+
+            
+            <div class="method-source-code" id="unlink-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_unlink(VALUE klass, VALUE args)
+{
+    long n;
+
+    rb_secure(2);
+    n = apply2files(unlink_internal, args, 0);
+    return LONG2FIX(n);
+}
+            </pre> 
+            </div><!-- unlink-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- unlink-method -->
+      
+        <div id="utime-method" class="method-detail ">
+          <a name="method-c-utime"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">utime(atime, mtime, file_name,...)   &rarr;  integer</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Sets the access and modification times of each named file to the first two
+arguments. Returns the number of file names in the argument list.</p>
+            
+
+            
+            <div class="method-source-code" id="utime-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_s_utime(int argc, VALUE *argv)
+{
+    VALUE rest;
+    struct utime_args args;
+    struct timespec tss[2], *tsp = NULL;
+    long n;
+
+    rb_secure(2);
+    rb_scan_args(argc, argv, &quot;2*&quot;, &amp;args.atime, &amp;args.mtime, &amp;rest);
+
+    if (!NIL_P(args.atime) || !NIL_P(args.mtime)) {
+        tsp = tss;
+        tsp[0] = rb_time_timespec(args.atime);
+        tsp[1] = rb_time_timespec(args.mtime);
+    }
+    args.tsp = tsp;
+
+    n = apply2files(utime_internal, rest, &amp;args);
+    return LONG2FIX(n);
+}
+            </pre> 
+            </div><!-- utime-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- utime-method -->
+      
+        <div id="world_readable-3F-method" class="method-detail ">
+          <a name="method-c-world_readable-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">world_readable?(file_name)   &rarr; fixnum or nil</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>If <em>file_name</em> is readable by others, returns an integer
+representing the file permission bits of <em>file_name</em>. Returns
+<code>nil</code> otherwise. The meaning of the bits is platform dependent;
+on Unix systems, see <code>stat(2)</code>.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">world_readable?</span>(<span class="ruby-string">&quot;/etc/passwd&quot;</span>)           <span class="ruby-comment">#=&gt; 420</span>
+<span class="ruby-identifier">m</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">world_readable?</span>(<span class="ruby-string">&quot;/etc/passwd&quot;</span>)
+<span class="ruby-identifier">sprintf</span>(<span class="ruby-string">&quot;%o&quot;</span>, <span class="ruby-identifier">m</span>)                              <span class="ruby-comment">#=&gt; &quot;644&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="world_readable-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_world_readable_p(VALUE obj, VALUE fname)
+{
+#ifdef S_IROTH
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) return Qnil;
+    if ((st.st_mode &amp; (S_IROTH)) == S_IROTH) {
+        return UINT2NUM(st.st_mode &amp; (S_IRUGO|S_IWUGO|S_IXUGO));
+    }
+#endif
+    return Qnil;
+}
+            </pre> 
+            </div><!-- world_readable-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- world_readable-3F-method -->
+      
+        <div id="world_writable-3F-method" class="method-detail ">
+          <a name="method-c-world_writable-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">world_writable?(file_name)   &rarr; fixnum or nil</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>If <em>file_name</em> is writable by others, returns an integer
+representing the file permission bits of <em>file_name</em>. Returns
+<code>nil</code> otherwise. The meaning of the bits is platform dependent;
+on Unix systems, see <code>stat(2)</code>.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">world_writable?</span>(<span class="ruby-string">&quot;/tmp&quot;</span>)                  <span class="ruby-comment">#=&gt; 511</span>
+<span class="ruby-identifier">m</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">world_writable?</span>(<span class="ruby-string">&quot;/tmp&quot;</span>)
+<span class="ruby-identifier">sprintf</span>(<span class="ruby-string">&quot;%o&quot;</span>, <span class="ruby-identifier">m</span>)                              <span class="ruby-comment">#=&gt; &quot;777&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="world_writable-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_world_writable_p(VALUE obj, VALUE fname)
+{
+#ifdef S_IWOTH
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) return Qnil;
+    if ((st.st_mode &amp; (S_IWOTH)) == S_IWOTH) {
+        return UINT2NUM(st.st_mode &amp; (S_IRUGO|S_IWUGO|S_IXUGO));
+    }
+#endif
+    return Qnil;
+}
+            </pre> 
+            </div><!-- world_writable-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- world_writable-3F-method -->
+      
+        <div id="writable-3F-method" class="method-detail ">
+          <a name="method-c-writable-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">writable?(file_name)   &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file is writable by the effective
+user id of this process.</p>
+            
+
+            
+            <div class="method-source-code" id="writable-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_writable_p(VALUE obj, VALUE fname)
+{
+    rb_secure(2);
+    FilePathValue(fname);
+    fname = rb_str_encode_ospath(fname);
+    if (eaccess(StringValueCStr(fname), W_OK) &lt; 0) return Qfalse;
+    return Qtrue;
+}
+            </pre> 
+            </div><!-- writable-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- writable-3F-method -->
+      
+        <div id="writable_real-3F-method" class="method-detail ">
+          <a name="method-c-writable_real-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">writable_real?(file_name)   &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file is writable by the real user id
+of this process.</p>
+            
+
+            
+            <div class="method-source-code" id="writable_real-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_writable_real_p(VALUE obj, VALUE fname)
+{
+    rb_secure(2);
+    FilePathValue(fname);
+    fname = rb_str_encode_ospath(fname);
+    if (access_internal(StringValueCStr(fname), W_OK) &lt; 0) return Qfalse;
+    return Qtrue;
+}
+            </pre> 
+            </div><!-- writable_real-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- writable_real-3F-method -->
+      
+        <div id="zero-3F-method" class="method-detail ">
+          <a name="method-c-zero-3F"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">zero?(file_name)   &rarr; true or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns <code>true</code> if the named file exists and has a zero size.</p>
+            
+
+            
+            <div class="method-source-code" id="zero-3F-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_zero_p(VALUE obj, VALUE fname)
+{
+    struct stat st;
+
+    if (rb_stat(fname, &amp;st) &lt; 0) return Qfalse;
+    if (st.st_size == 0) return Qtrue;
+    return Qfalse;
+}
+            </pre> 
+            </div><!-- zero-3F-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- zero-3F-method -->
+      
+      </div><!-- public-class-method-details -->
+    
+      <div id="public-instance-method-details" class="method-section section">
+        <h3 class="section-header">Public Instance Methods</h3>
+
+      
+        <div id="atime-method" class="method-detail ">
+          <a name="method-i-atime"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">atime    &rarr; time</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the last access time (a <code>Time</code> object)</p>
+
+<pre class="ruby"><span class="ruby-identifier">for</span> <span class="ruby-operator">&lt;</span><span class="ruby-identifier">i</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">file</span><span class="ruby-operator">&lt;</span><span class="ruby-regexp">/i&gt;, or epoch if &lt;i&gt;file&lt;/i</span><span class="ruby-operator">&gt;</span> <span class="ruby-identifier">has</span> <span class="ruby-keyword">not</span> <span class="ruby-identifier">been</span> <span class="ruby-identifier">accessed</span>.
+
+  <span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;testfile&quot;</span>).<span class="ruby-identifier">atime</span>   <span class="ruby-comment">#=&gt; Wed Dec 31 18:00:00 CST 1969</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="atime-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_atime(VALUE obj)
+{
+    rb_io_t *fptr;
+    struct stat st;
+
+    GetOpenFile(obj, fptr);
+    if (fstat(fptr-&gt;fd, &amp;st) == -1) {
+        rb_sys_fail_path(fptr-&gt;pathv);
+    }
+    return stat_atime(&amp;st);
+}
+            </pre> 
+            </div><!-- atime-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- atime-method -->
+      
+        <div id="chmod-method" class="method-detail ">
+          <a name="method-i-chmod"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">chmod(mode_int)   &rarr; 0</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Changes permission bits on <em>file</em> to the bit pattern represented by
+<em>mode_int</em>. Actual effects are platform dependent; on Unix systems,
+see <code>chmod(2)</code> for details. Follows symbolic links. Also see
+<code>File#lchmod</code>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">f</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;out&quot;</span>, <span class="ruby-string">&quot;w&quot;</span>);
+<span class="ruby-identifier">f</span>.<span class="ruby-identifier">chmod</span>(<span class="ruby-value">0644</span>)   <span class="ruby-comment">#=&gt; 0</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="chmod-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_chmod(VALUE obj, VALUE vmode)
+{
+    rb_io_t *fptr;
+    int mode;
+#ifndef HAVE_FCHMOD
+    VALUE path;
+#endif
+
+    rb_secure(2);
+    mode = NUM2INT(vmode);
+
+    GetOpenFile(obj, fptr);
+#ifdef HAVE_FCHMOD
+    if (fchmod(fptr-&gt;fd, mode) == -1)
+        rb_sys_fail_path(fptr-&gt;pathv);
+#else
+    if (NIL_P(fptr-&gt;pathv)) return Qnil;
+    path = rb_str_encode_ospath(fptr-&gt;pathv);
+    if (chmod(RSTRING_PTR(path), mode) == -1)
+        rb_sys_fail_path(fptr-&gt;pathv);
+#endif
+
+    return INT2FIX(0);
+}
+            </pre> 
+            </div><!-- chmod-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- chmod-method -->
+      
+        <div id="chown-method" class="method-detail ">
+          <a name="method-i-chown"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">chown(owner_int, group_int )   &rarr; 0</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Changes the owner and group of <em>file</em> to the given numeric owner and
+group id’s. Only a process with superuser privileges may change the owner
+of a file. The current owner of a file may change the file’s group to any
+group to which the owner belongs. A <code>nil</code> or -1 owner or group
+id is ignored. Follows symbolic links. See also <code>File#lchown</code>.</p>
+
+<pre>File.new(&quot;testfile&quot;).chown(502, 1000)</pre>
+            
+
+            
+            <div class="method-source-code" id="chown-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_chown(VALUE obj, VALUE owner, VALUE group)
+{
+    rb_io_t *fptr;
+    int o, g;
+#ifndef HAVE_FCHOWN
+    VALUE path;
+#endif
+
+    rb_secure(2);
+    o = NIL_P(owner) ? -1 : NUM2INT(owner);
+    g = NIL_P(group) ? -1 : NUM2INT(group);
+    GetOpenFile(obj, fptr);
+#ifndef HAVE_FCHOWN
+    if (NIL_P(fptr-&gt;pathv)) return Qnil;
+    path = rb_str_encode_ospath(fptr-&gt;pathv);
+    if (chown(RSTRING_PTR(path), o, g) == -1)
+        rb_sys_fail_path(fptr-&gt;pathv);
+#else
+    if (fchown(fptr-&gt;fd, o, g) == -1)
+        rb_sys_fail_path(fptr-&gt;pathv);
+#endif
+
+    return INT2FIX(0);
+}
+            </pre> 
+            </div><!-- chown-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- chown-method -->
+      
+        <div id="ctime-method" class="method-detail ">
+          <a name="method-i-ctime"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">ctime  &rarr;  time</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the change time for <em>file</em> (that is, the time directory
+information about the file was changed, not the file itself).</p>
+
+<p>Note that on Windows (NTFS), returns creation time (birth time).</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;testfile&quot;</span>).<span class="ruby-identifier">ctime</span>   <span class="ruby-comment">#=&gt; Wed Apr 09 08:53:14 CDT 2003</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="ctime-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_ctime(VALUE obj)
+{
+    rb_io_t *fptr;
+    struct stat st;
+
+    GetOpenFile(obj, fptr);
+    if (fstat(fptr-&gt;fd, &amp;st) == -1) {
+        rb_sys_fail_path(fptr-&gt;pathv);
+    }
+    return stat_ctime(&amp;st);
+}
+            </pre> 
+            </div><!-- ctime-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- ctime-method -->
+      
+        <div id="flock-method" class="method-detail ">
+          <a name="method-i-flock"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">flock (locking_constant )&rarr; 0 or false</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Locks or unlocks a file according to <em>locking_constant</em> (a logical
+<em>or</em> of the values in the table below). Returns <code>false</code>
+if <code>File::LOCK_NB</code> is specified and the operation would
+otherwise have blocked. Not available on all platforms.</p>
+
+<p>Locking constants (in class <a href="File.html">File</a>):</p>
+
+<pre>LOCK_EX   | Exclusive lock. Only one process may hold an
+          | exclusive lock for a given file at a time.
+----------+------------------------------------------------
+LOCK_NB   | Don't block when locking. May be combined
+          | with other lock options using logical or.
+----------+------------------------------------------------
+LOCK_SH   | Shared lock. Multiple processes may each hold a
+          | shared lock for a given file at the same time.
+----------+------------------------------------------------
+LOCK_UN   | Unlock.</pre>
+
+<p>Example:</p>
+
+<pre class="ruby"><span class="ruby-comment"># update a counter using write lock</span>
+<span class="ruby-comment"># don't use &quot;w&quot; because it truncates the file before lock.</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;counter&quot;</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">RDWR</span><span class="ruby-operator">|</span><span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">CREAT</span>, <span class="ruby-value">0644</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">flock</span>(<span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">LOCK_EX</span>)
+  <span class="ruby-identifier">value</span> = <span class="ruby-identifier">f</span>.<span class="ruby-identifier">read</span>.<span class="ruby-identifier">to_i</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">rewind</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">write</span>(<span class="ruby-node">&quot;#{value}\n&quot;</span>)
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">flush</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">truncate</span>(<span class="ruby-identifier">f</span>.<span class="ruby-identifier">pos</span>)
+}
+
+<span class="ruby-comment"># read the counter using read lock</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;counter&quot;</span>, <span class="ruby-string">&quot;r&quot;</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">flock</span>(<span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">LOCK_SH</span>)
+  <span class="ruby-identifier">p</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">read</span>
+}
+</pre>
+            
+
+            
+            <div class="method-source-code" id="flock-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_flock(VALUE obj, VALUE operation)
+{
+    rb_io_t *fptr;
+    int op[2], op1;
+
+    rb_secure(2);
+    op[1] = op1 = NUM2INT(operation);
+    GetOpenFile(obj, fptr);
+    op[0] = fptr-&gt;fd;
+
+    if (fptr-&gt;mode &amp; FMODE_WRITABLE) {
+        rb_io_flush(obj);
+    }
+    while ((int)rb_thread_io_blocking_region(rb_thread_flock, op, fptr-&gt;fd) &lt; 0) {
+        switch (errno) {
+          case EAGAIN:
+          case EACCES:
+#if defined(EWOULDBLOCK) &amp;&amp; EWOULDBLOCK != EAGAIN
+          case EWOULDBLOCK:
+#endif
+            if (op1 &amp; LOCK_NB) return Qfalse;
+            rb_thread_polling();
+            rb_io_check_closed(fptr);
+            continue;
+
+          case EINTR:
+#if defined(ERESTART)
+          case ERESTART:
+#endif
+            break;
+
+          default:
+            rb_sys_fail_path(fptr-&gt;pathv);
+        }
+    }
+    return INT2FIX(0);
+}
+            </pre> 
+            </div><!-- flock-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- flock-method -->
+      
+        <div id="lstat-method" class="method-detail ">
+          <a name="method-i-lstat"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">lstat   &rarr;  stat</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Same as <code>IO#stat</code>, but does not follow the last symbolic link.
+Instead, reports on the link itself.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">symlink</span>(<span class="ruby-string">&quot;testfile&quot;</span>, <span class="ruby-string">&quot;link2test&quot;</span>)   <span class="ruby-comment">#=&gt; 0</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">stat</span>(<span class="ruby-string">&quot;testfile&quot;</span>).<span class="ruby-identifier">size</span>              <span class="ruby-comment">#=&gt; 66</span>
+<span class="ruby-identifier">f</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;link2test&quot;</span>)
+<span class="ruby-identifier">f</span>.<span class="ruby-identifier">lstat</span>.<span class="ruby-identifier">size</span>                            <span class="ruby-comment">#=&gt; 8</span>
+<span class="ruby-identifier">f</span>.<span class="ruby-identifier">stat</span>.<span class="ruby-identifier">size</span>                             <span class="ruby-comment">#=&gt; 66</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="lstat-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_lstat(VALUE obj)
+{
+#ifdef HAVE_LSTAT
+    rb_io_t *fptr;
+    struct stat st;
+    VALUE path;
+
+    rb_secure(2);
+    GetOpenFile(obj, fptr);
+    if (NIL_P(fptr-&gt;pathv)) return Qnil;
+    path = rb_str_encode_ospath(fptr-&gt;pathv);
+    if (lstat(RSTRING_PTR(path), &amp;st) == -1) {
+        rb_sys_fail_path(fptr-&gt;pathv);
+    }
+    return stat_new(&amp;st);
+#else
+    return rb_io_stat(obj);
+#endif
+}
+            </pre> 
+            </div><!-- lstat-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- lstat-method -->
+      
+        <div id="mtime-method" class="method-detail ">
+          <a name="method-i-mtime"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">mtime  &rarr;  time</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the modification time for <em>file</em>.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;testfile&quot;</span>).<span class="ruby-identifier">mtime</span>   <span class="ruby-comment">#=&gt; Wed Apr 09 08:53:14 CDT 2003</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="mtime-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_mtime(VALUE obj)
+{
+    rb_io_t *fptr;
+    struct stat st;
+
+    GetOpenFile(obj, fptr);
+    if (fstat(fptr-&gt;fd, &amp;st) == -1) {
+        rb_sys_fail_path(fptr-&gt;pathv);
+    }
+    return stat_mtime(&amp;st);
+}
+            </pre> 
+            </div><!-- mtime-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- mtime-method -->
+      
+        <div id="path-method" class="method-detail ">
+          <a name="method-i-path"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">path  &rarr;  filename</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the pathname used to create <em>file</em> as a string. Does not
+normalize the name.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;testfile&quot;</span>).<span class="ruby-identifier">path</span>               <span class="ruby-comment">#=&gt; &quot;testfile&quot;</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;/tmp/../tmp/xxx&quot;</span>, <span class="ruby-string">&quot;w&quot;</span>).<span class="ruby-identifier">path</span>   <span class="ruby-comment">#=&gt; &quot;/tmp/../tmp/xxx&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="path-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_path(VALUE obj)
+{
+    rb_io_t *fptr;
+
+    fptr = RFILE(rb_io_taint_check(obj))-&gt;fptr;
+    rb_io_check_initialized(fptr);
+    if (NIL_P(fptr-&gt;pathv)) return Qnil;
+    return rb_obj_taint(rb_str_dup(fptr-&gt;pathv));
+}
+            </pre> 
+            </div><!-- path-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- path-method -->
+      
+        <div id="size-method" class="method-detail ">
+          <a name="method-i-size"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">size    &rarr; integer</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the size of <em>file</em> in bytes.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;testfile&quot;</span>).<span class="ruby-identifier">size</span>   <span class="ruby-comment">#=&gt; 66</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="size-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_size(VALUE obj)
+{
+    rb_io_t *fptr;
+    struct stat st;
+
+    GetOpenFile(obj, fptr);
+    if (fptr-&gt;mode &amp; FMODE_WRITABLE) {
+        rb_io_flush(obj);
+    }
+    if (fstat(fptr-&gt;fd, &amp;st) == -1) {
+        rb_sys_fail_path(fptr-&gt;pathv);
+    }
+    return OFFT2NUM(st.st_size);
+}
+            </pre> 
+            </div><!-- size-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- size-method -->
+      
+        <div id="to_path-method" class="method-detail ">
+          <a name="method-i-to_path"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">path  &rarr;  filename</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Returns the pathname used to create <em>file</em> as a string. Does not
+normalize the name.</p>
+
+<pre class="ruby"><span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;testfile&quot;</span>).<span class="ruby-identifier">path</span>               <span class="ruby-comment">#=&gt; &quot;testfile&quot;</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;/tmp/../tmp/xxx&quot;</span>, <span class="ruby-string">&quot;w&quot;</span>).<span class="ruby-identifier">path</span>   <span class="ruby-comment">#=&gt; &quot;/tmp/../tmp/xxx&quot;</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="to_path-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_path(VALUE obj)
+{
+    rb_io_t *fptr;
+
+    fptr = RFILE(rb_io_taint_check(obj))-&gt;fptr;
+    rb_io_check_initialized(fptr);
+    if (NIL_P(fptr-&gt;pathv)) return Qnil;
+    return rb_obj_taint(rb_str_dup(fptr-&gt;pathv));
+}
+            </pre> 
+            </div><!-- to_path-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- to_path-method -->
+      
+        <div id="truncate-method" class="method-detail ">
+          <a name="method-i-truncate"></a>
+
+          
+          
+          <div class="method-heading">
+            <span class="method-callseq">truncate(integer)    &rarr; 0</span>
+            
+            <span class="method-click-advice">click to toggle source</span>
+            
+          </div>
+          
+          
+          <div>
+  
+            
+            <p>Truncates <em>file</em> to at most <em>integer</em> bytes. The file must be
+opened for writing. Not available on all platforms.</p>
+
+<pre class="ruby"><span class="ruby-identifier">f</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;out&quot;</span>, <span class="ruby-string">&quot;w&quot;</span>)
+<span class="ruby-identifier">f</span>.<span class="ruby-identifier">syswrite</span>(<span class="ruby-string">&quot;1234567890&quot;</span>)   <span class="ruby-comment">#=&gt; 10</span>
+<span class="ruby-identifier">f</span>.<span class="ruby-identifier">truncate</span>(<span class="ruby-value">5</span>)              <span class="ruby-comment">#=&gt; 0</span>
+<span class="ruby-identifier">f</span>.<span class="ruby-identifier">close</span>()                  <span class="ruby-comment">#=&gt; nil</span>
+<span class="ruby-constant">File</span>.<span class="ruby-identifier">size</span>(<span class="ruby-string">&quot;out&quot;</span>)           <span class="ruby-comment">#=&gt; 5</span>
+</pre>
+            
+
+            
+            <div class="method-source-code" id="truncate-source">
+              <pre> <!-- method.markup_code 290 -->
+               static VALUE
+rb_file_truncate(VALUE obj, VALUE len)
+{
+    rb_io_t *fptr;
+    off_t pos;
+
+    rb_secure(2);
+    pos = NUM2OFFT(len);
+    GetOpenFile(obj, fptr);
+    if (!(fptr-&gt;mode &amp; FMODE_WRITABLE)) {
+        rb_raise(rb_eIOError, &quot;not opened for writing&quot;);
+    }
+    rb_io_flush(obj);
+#ifdef HAVE_FTRUNCATE
+    if (ftruncate(fptr-&gt;fd, pos) &lt; 0)
+        rb_sys_fail_path(fptr-&gt;pathv);
+#else /* defined(HAVE_CHSIZE) */
+    if (chsize(fptr-&gt;fd, pos) &lt; 0)
+        rb_sys_fail_path(fptr-&gt;pathv);
+#endif
+    return INT2FIX(0);
+}
+            </pre> 
+            </div><!-- truncate-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- truncate-method -->
+      
+      </div><!-- public-instance-method-details -->
+    
+    </div><!-- 5Buntitled-5D -->
+  
+  <div id='tx_File_versioned' class='associated_wrapper'></div><script type='text/javascript'>$("#tx_File_versioned").load("/associated/1.9.3/File.html");</script> <div id='tx_File' class='associated_wrapper'></div><script type='text/javascript'>$("#tx_File").load("/associated/File.html");</script> 
+      
+  <!-- disqus ? -->
+   <div class='info'>
+  <p>Commenting is here to help enhance the documentation.  For example, code samples, or clarification of the documentation.</p>
+  <p>If you have questions about Ruby or the documentation, please post to one of the <a href='http://www.ruby-lang.org/en/community/mailing-lists/'>Ruby mailing lists</a>.  You will get better, faster, help that way.</p>
+  <p>If you wish to post a correction of the docs, please do so, but also <a href='http://bugs.ruby-lang.org' >file bug report</a> so that it can be corrected for the next release. Thank you.</p>
+  <p>If you want to help improve the Ruby documentation, please visit <a href='http://documenting-ruby.org/'>Documenting-ruby.org</a>.</p> 
+    </div>
+
+
+  
+  </div><!-- documentation -->
+  <div id='dynamic'>
+  </div>
+      
+        <div id="disqus_thread"></div>
+  <script type="text/javascript">
+     function setDisqusUrl(){
+      var _loc = window.location.href;
+      disqus_url = _loc.split("?")[0];
+    }
+
+     var disqus_url;
+     
+    
+     setDisqusUrl();
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    // var disqus_shortname = 'rubydocbeta'; // required 
+    var disqus_shortname = 'ruby-doc'; // required 
+
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+      
+<div class='grids wrapper' id="footer">
+  <p><small>This page was generated for Ruby 1.9.3</small></p> 
+  
+   <p><a href="http://www.ruby-doc.org">Ruby-doc.org</a> is a service of <a href="http://www.jamesbritt.com">James Britt</a> and <a href="http://www.neurogami.com">Neurogami</a>, a <a href="http://www.neurogami.com">software development company in Scottsdale, AZ</a>.</p>
+ 
+    <p><small>Generated with Ruby-doc Rdoc Generator 0.30.0</small>.</p>
+  </div>
+</div>
+  
+  <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-335317-2']);
+  _gaq.push(['_setDomainName', 'ruby-doc.org']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+    
+ <script type='text/javascript'>
+$(document).ready(function() {
+      $.ajaxSetup({ cache: false });
+      $("#vulns-alert").load("/associated/vulns.html");
+    });
+
+    </script>
+
+
+ 
+		<script type='text/javascript'>
+
+	function loadPlus(plusdocs){
+		var img_h = $("img.carbonad-image").css('height');
+		//if(img_h != undefined) { //---
+			$(plusdocs).find("div[class='associated_wrapper']").each (function() {
+					$("#" + this.id).append($(plusdocs).find("#" + this.id ));
+					});
+		//} // ---
+	} // end loadPlusdocs
+
+
+$(document).ready(function() {
+		$.ajaxSetup({ cache: false });
+			$.get('/associated/1.9.3/plus_File.html', 
+			function(plusdocs) {
+			setTimeout(function() {
+				loadPlus(plusdocs);
+				}, 2000);
+			}
+			);
+		});
+</script>
+		
+</body>
+</html>
+
+
