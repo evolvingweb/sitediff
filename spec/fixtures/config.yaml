@@ -1,6 +1,3 @@
-before_url: spec/fixtures/ruby-doc.org/core-1.9.3
-after_url: spec/fixtures/ruby-doc.org/core-2.0
-
 paths:
   - /Hash.html
   - /File.html
@@ -9,3 +6,9 @@ paths:
   - /TracePoint.html
 
 selector: '#class-metadata'
+
+before:
+  url: spec/fixtures/ruby-doc.org/core-1.9.3
+
+after:
+  url: spec/fixtures/ruby-doc.org/core-2.0
