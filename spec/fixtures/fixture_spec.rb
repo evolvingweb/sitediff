@@ -34,7 +34,7 @@ describe SiteDiff::Cli do
         expect(out).to match /^+.*<a href="#method-i-to_h"/
 
         # There should be a failures file
-        failures = 'failures.txt'
+        failures = File.join(dir, 'failures.txt')
         expect(File.file?(failures)).to be true
         expect(File.read(failures).strip).to include '/Hash.html'
 
