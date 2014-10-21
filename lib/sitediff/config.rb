@@ -1,5 +1,4 @@
 require 'yaml'
-require 'pathname'
 
 class SiteDiff
   class Config
@@ -143,8 +142,8 @@ class SiteDiff
     # loads a single YAML configuration file, merges all its 'included' files
     # and returns a normalized Hash.
     def self.load_conf(file, visited=[])
-      # don't get fooled by a/../a/
-      file = Pathname.new(file).cleanpath.to_s
+      # don't get fooled by a/../a/ or symlinks
+      file = File.realpath(file)
       if visited.include? file
         raise InvalidConfig, "Circular dependency: #{file}"
       end
