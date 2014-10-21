@@ -59,7 +59,7 @@ class SiteDiff
       if paths_file = options['paths']
         unless File.exists? paths_file
           raise Config::InvalidConfig,
-            "Failing paths file '#{paths_file}' not found!"
+            "Paths file '#{paths_file}' not found!"
         end
         SiteDiff::log "Reading paths from: #{paths_file}"
         config.paths = File.readlines(paths_file)
