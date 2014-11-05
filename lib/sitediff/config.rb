@@ -8,7 +8,6 @@ class SiteDiff
                 %w[paths before after before_url after_url includes]
 
     class InvalidConfig < Exception; end
-    class MergeConflict < Exception; end
 
     # Takes a Hash and normalizes it to the following form by merging globals
     # into before and after. A normalized config Hash looks like this:
@@ -46,39 +45,32 @@ class SiteDiff
       conf.select {|k,v| %w[before after paths].include? k}
     end
 
-    # Merges two normalized Hashes. Only "clean" merges are supported, otherwise
-    # an InvalidConfig is raised.
-    # Two Hashes merge cleanly iff for each site-specific subhash H (e.g.
-    # ['before']['dom_transform']) where the Hashes disagree on values, either:
-    #   - One of first[H] and second[H] is nil, or
-    #   - first[H] and second[H] are arrays
+    # Merges two normalized Hashes according to the following rules:
+    # 1 paths are merged as arrays.
+    # 2 before and after: for each subhash H (e.g. ['before']['dom_transform']):
+    #   a)  if first[H] and second[H] are expected to be arrays, their values
+    #       are merged as such,
+    #   b)  if first[H] and second[H] are expected to be scalars, the value for
+    #       second[H] is kept if and only if first[H] is nil.
     #
-    # For example, (1) does not merge cleanly with (2), but it does with (3):
+    # For example, merge(h1, h2) results in h3:
     #
-    # (1) before: {selector: 'body' , sanitization: [pattern: 'form-[0-9a-z]+']}
-    # (2) before: {selector: 'div#main'}
-    # (3) before: {sanitization: [pattern: 'view-[0-9a-z]+']}
-    #
+    # (h1) before: {selector: foo, sanitization: [pattern: foo]}
+    # (h2) before: {selector: bar, sanitization: [pattern: bar]}
+    # (h3) before: {selector: foo, sanitization: [pattern: foo, pattern: bar]}
     def self.merge(first, second)
-      # paths always cleanly merge
-      result = {
-        'paths' => (first['paths'] || []) + (second['paths'] || []),
-        'before' => {},
-        'after' => {}
-      }
+      result = { 'paths' => {}, 'before' => {}, 'after' => {} }
+      result['paths'] = (first['paths'] || []) + (second['paths'] || []) # rule 1
       %w[before after].each do |pos|
         unless first[pos]
           result[pos] = second[pos] || {}
           next
         end
         result[pos] = first[pos].merge!(second[pos]) do |key, a, b|
-          if !(a and b) # at least one is nil: cleanly merges
-            result[pos][key] = a || b
-          elsif Sanitize::TOOLS[:array].include? key # arrays cleanly merge
+          if Sanitize::TOOLS[:array].include? key # rule 2a
             result[pos][key] = (a || []) + (b|| [])
           else
-            raise MergeConflict,
-              "['#{pos}']['#{key}'] cannot be cleanly merged."
+            result[pos][key] = a || b # rule 2b
           end
         end
       end
@@ -88,11 +80,7 @@ class SiteDiff
     def initialize(files)
       @config = {'paths' => [], 'before' => {}, 'after' => {} }
       files.each do |file|
-        begin
-          @config = Config::merge(@config, Config::load_conf(file))
-        rescue MergeConflict => e
-          raise InvalidConfig, "Merge conflict (loading #{file}): #{e}"
-        end
+        @config = Config::merge(@config, Config::load_conf(file))
       end
     end
 
@@ -157,11 +145,7 @@ class SiteDiff
       includes.each do |dep|
         # include paths are relative to the including file.
         dep = File.join(File.dirname(file), dep)
-        begin
-          conf = Config::merge(conf, load_conf(dep, visited))
-        rescue MergeConflict => e
-          raise InvalidConfig, "Merge conflict (#{file} includes #{dep}): #{e}"
-        end
+        conf = Config::merge(conf, load_conf(dep, visited))
       end
       conf
     end
