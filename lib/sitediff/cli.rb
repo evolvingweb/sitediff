@@ -12,55 +12,64 @@ class SiteDiff
       true
     end
 
+    # Thor, by default, does not raise an error for use of unknown options.
+    def self.check_unknown_options?(config)
+      true
+    end
+
     option 'dump-dir',
       :type => :string,
-      :default => "./output/",
+      :default => File.join('.', 'output'),
       :desc => "Location to write the output to."
-    option 'paths-from-file',
+    option 'paths',
       :type => :string,
-      :desc => "File listing URL paths to run on against <before> and <after> sites.",
-      :aliases => '--paths'
-    option 'paths-from-failures',
-      :type => :boolean,
-      :default => FALSE,
-      :desc => "Equivalent to --paths-from-file=<DUMPDIR>/failures.txt"
-    option 'before-url',
+      :desc => 'Paths are read (one at a line) from PATHS: ' +
+               'useful for iterating over sanitization rules',
+      :aliases => '--paths-from-file'
+    option 'before',
       :type => :string,
       :desc => "URL used to fetch the before HTML. Acts as a prefix to specified paths",
-      :aliases => '--before'
-    option 'after-url',
+      :aliases => '--before-url'
+    option 'after',
       :type => :string,
       :desc => "URL used to fetch the after HTML. Acts as a prefix to specified paths.",
-      :aliases => '--after'
-    option 'before-url-report',
+      :aliases => '--after-url'
+    option 'before-report',
       :type => :string,
-      :desc => "Before URL to use for reporting purposes. Useful if port forwarding."
-    option 'after-url-report',
+      :desc => "Before URL to use for reporting purposes. Useful if port forwarding.",
+      :aliases => '--before-url-report'
+    option 'after-report',
       :type => :string,
-      :desc => "After URL to use for reporting purposes. Useful if port forwarding."
-      option 'cache',
-        :type => :string,
-        :desc => "Filename to use for caching requests.",
-        :lazy_default => 'cache.db'
+      :desc => "After URL to use for reporting purposes. Useful if port forwarding.",
+      :aliases => '--after-url-report'
+    option 'cache',
+      :type => :string,
+      :desc => "Filename to use for caching requests.",
+      :lazy_default => 'cache.db'
     desc "diff [OPTIONS] [CONFIGFILES]", "Perform systematic diff on given URLs"
     def diff(*config_files)
-      # configuration parameters overriden by command line options.
-      run_opts = {}
-      %w[before-url before-url-report after-url after-url-report].each do |opt|
-        run_opts[opt.gsub('-', '_')] = options[opt] if options[opt]
-      end
+      config = SiteDiff::Config.new(config_files)
 
-      if options['paths-from-failures']
-        run_opts['paths_file'] = "#{options['dump-dir']}/failures.txt"
-      elsif options['paths-from-file']
-        run_opts['paths_file'] = options['paths-from-file']
+      # override config based on options
+      if paths_file = options['paths']
+        unless File.exists? paths_file
+          raise Config::InvalidConfig,
+            "Paths file '#{paths_file}' not found!"
+        end
+        SiteDiff::log "Reading paths from: #{paths_file}"
+        config.paths = File.readlines(paths_file)
       end
-      config = SiteDiff::Config.new(config_files, run_opts)
+      config.before['url'] = options['before'] if options['before']
+      config.after['url'] = options['after'] if options['after']
+
       sitediff = SiteDiff.new(config, options['cache'])
       sitediff.run
-      sitediff.dump(options['dump-dir'])
+
+      failing_paths = File.join(options['dump-dir'], 'failures.txt')
+      sitediff.dump(options['dump-dir'], options['before-report'],
+        options['after-report'], failing_paths)
     rescue Config::InvalidConfig => e
-      STDERR.puts "Invalid configuration: #{e.message}\n\n"
+      SiteDiff.log "Invalid configuration: #{e.message}", :failure
     end
 
     option :port,

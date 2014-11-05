@@ -2,142 +2,153 @@ require 'yaml'
 
 class SiteDiff
   class Config
+
+    # keys allowed in configuration files
+    CONF_KEYS = Sanitize::TOOLS.values.flatten(1) +
+                %w[paths before after before_url after_url includes]
+
     class InvalidConfig < Exception; end
-    # Contains all configuration for any of before or after: url, url_report,
-    # and all the transformation rules defined in Sanitize.
-    class Site < Struct.new(:url, :url_report)
-      attr_reader :spec
-      def initialize(url, url_report, spec)
-        super(url, url_report)
-        @spec = {}
-        tools = Sanitize::TOOLS
-        tools[:array].each do |key|
-          @spec[key] = spec[key.to_s] || []
-        end
-        tools[:scalar].each do |key|
-          @spec[key] = spec[key.to_s]
-        end
-      end
 
-    end
-
-    # Reads and merges provided configuration files, fetches dependencies
-    # defined via 'include' and overrides configuration, if necessary, by
-    # runtime options.
-    def initialize(files, run_opts)
-      conf = load_conf(files)
-
-      if run_opts['paths_file']
-        SiteDiff::log "Reading paths from: #{paths}"
-        self.paths = File.readlines(run_opts['paths_file'])
-      else
-        self.paths = conf['paths']
-      end
-
-      @sites = {}
-      %w[before after].each do |pos|
-        key = pos + '_url'
-        url = run_opts[key] || conf[key]
-
-        key = pos + '_url_report'
-        url_report = run_opts[key] || conf[key] || url
-        raise InvalidConfig.new("Undefined base URL for '#{pos}'.") unless url
-        @sites[pos] = Site.new(url, url_report, conf[pos])
-      end
-    end
-
-    def to_s
-      # FIXME this creates YAML aliases for concision; hard to read sometimes.
-      to_h.to_yaml
-    end
-
-    def to_h
-      h = {'paths' => @paths, 'before' => {}, 'after' => {}}
-      %w[before after].each do |pos|
-        h[pos]['url'] = @sites[pos].url
-        h[pos]['url_report'] = @sites[pos].url_report
-        h[pos]['spec'] = @sites[pos].spec
-      end
-      h
-    end
-
-    # Returns a configuration hash from an array of YAML configuration files.
+    # Takes a Hash and normalizes it to the following form by merging globals
+    # into before and after. A normalized config Hash looks like this:
     #
-    # 1. Included files are merged into the final hash,
-    # 2. Global configuration is merged into 'before' and 'after' subhashes with
-    #    appropriate overriding rules
-    def load_conf(files)
-      conf = {}
-      files.each do |file|
-        SiteDiff::log "Reading config file: #{file}"
-        conf_item = YAML.load_file(file)
-
-        # support 1 level of recursion via "includes:" key
-        if deps = conf_item.delete("includes")
-          deps.each do |dep|
-            dep_file = File.join(File.dirname(file), dep)
-            SiteDiff::log "Reading dependent config file: #{dep_file}"
-            dep_conf = YAML.load_file(dep_file)
-            config_merge(conf, dep_conf)
-          end
-        end
-        config_merge(conf, conf_item, file)
-      end
+    #     paths:
+    #     - /about
+    #
+    #     before:
+    #       url: http://before
+    #       selector: body
+    #       dom_transform:
+    #       - type: remove
+    #         selector: script
+    #
+    #     after:
+    #       url: http://after
+    #       selector: body
+    #
+    def self.normalize(conf)
+      tools = Sanitize::TOOLS
 
       # merge globals
-      tools = Sanitize::TOOLS
       %w[before after].each do |pos|
         conf[pos] ||= {}
         tools[:array].each do |key|
           conf[pos][key] ||= []
-          conf[pos][key] += conf[key] || []
+          conf[pos][key] += conf[key] if conf[key]
         end
-        tools[:scalar].each do |key|
-          conf[pos][key] ||= conf[key] # global can be overriden
-        end
+        tools[:scalar].each {|key| conf[pos][key] ||= conf[key]}
+        conf[pos]['url'] ||= conf[pos + '_url']
       end
+      # normalize paths
+      conf['paths'] = Config::normalize_paths(conf['paths'])
 
-      conf
+      conf.select {|k,v| %w[before after paths].include? k}
     end
 
-    # Perform one level deep merge on config hashes.
+    # Merges two normalized Hashes according to the following rules:
+    # 1 paths are merged as arrays.
+    # 2 before and after: for each subhash H (e.g. ['before']['dom_transform']):
+    #   a)  if first[H] and second[H] are expected to be arrays, their values
+    #       are merged as such,
+    #   b)  if first[H] and second[H] are expected to be scalars, the value for
+    #       second[H] is kept if and only if first[H] is nil.
     #
-    # @param first [Hash] containing arrays or sub-hashes to be merged
-    # @param second [Hash] containing arrays or sub-hashes to be merged
-    # @param context_for_error [String] used for reporting merge errors
-    def config_merge(first, second, context_for_error = "")
-      # merge config files by recursing one level deep
-      first.merge!(second) do |key, a, b|
-        if Hash === a && Hash === b
-          merge(a, b)
-        elsif Array === a && Array === b
-          a + b
-        else
-          raise "Error merging configs. Key: #{key}, Context: #{context_for_error}"
+    # For example, merge(h1, h2) results in h3:
+    #
+    # (h1) before: {selector: foo, sanitization: [pattern: foo]}
+    # (h2) before: {selector: bar, sanitization: [pattern: bar]}
+    # (h3) before: {selector: foo, sanitization: [pattern: foo, pattern: bar]}
+    def self.merge(first, second)
+      result = { 'paths' => {}, 'before' => {}, 'after' => {} }
+      result['paths'] = (first['paths'] || []) + (second['paths'] || []) # rule 1
+      %w[before after].each do |pos|
+        unless first[pos]
+          result[pos] = second[pos] || {}
+          next
         end
+        result[pos] = first[pos].merge!(second[pos]) do |key, a, b|
+          if Sanitize::TOOLS[:array].include? key # rule 2a
+            result[pos][key] = (a || []) + (b|| [])
+          else
+            result[pos][key] = a || b # rule 2b
+          end
+        end
+      end
+      result
+    end
+
+    def initialize(files)
+      @config = {'paths' => [], 'before' => {}, 'after' => {} }
+      files.each do |file|
+        @config = Config::merge(@config, Config::load_conf(file))
       end
     end
 
     def before
-      @sites['before']
+      @config['before']
     end
     def after
-      @sites['after']
+      @config['after']
     end
 
-    # Sets the array of paths for comparison.
-    #
-    # Defaults to single path '/' if none specified and ensures all paths start
-    # with '/'.
-    def paths=(paths)
-      paths = ['/'] unless paths and !paths.empty?
-      @paths = paths.map do |p|
-        p = p.chomp
-        p[0] == '/' ? p : p.prepend('/')
-      end
-    end
     def paths
-      @paths
+      @config['paths']
     end
+    def paths=(paths)
+      @config['paths'] = Config::normalize_paths(paths)
+    end
+
+    # Checks if the configuration is usable for diff-ing.
+    def validate
+      raise InvalidConfig, "Undefined 'before' base URL." unless before['url']
+      raise InvalidConfig, "Undefined 'after' base URL." unless after['url']
+      raise InvalidConfig, "Undefined 'paths'." unless (paths and !paths.empty?)
+    end
+
+    private
+
+    def self.normalize_paths(paths)
+      paths ||= []
+      return paths.map { |p| (p[0] == '/' ? p : "/#{p}").chomp }
+    end
+
+    # reads a YAML file and raises an InvalidConfig if the file is not valid.
+    def self.load_raw_yaml(file)
+      SiteDiff::log "Reading config file: #{file}"
+      conf = YAML.load_file(file) || {}
+      unless conf.is_a? Hash
+        raise InvalidConfig, "Invalid configuration file: '#{file}'"
+      end
+      conf.each do |k,v|
+        unless CONF_KEYS.include? k
+          raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'"
+        end
+      end
+      conf
+    end
+
+    # loads a single YAML configuration file, merges all its 'included' files
+    # and returns a normalized Hash.
+    def self.load_conf(file, visited=[])
+      # don't get fooled by a/../a/ or symlinks
+      file = File.realpath(file)
+      if visited.include? file
+        raise InvalidConfig, "Circular dependency: #{file}"
+      end
+
+      conf = load_raw_yaml(file) # not normalized yet
+      visited << file
+
+      # normalize and merge includes
+      includes = conf['includes'] || []
+      conf = Config::normalize(conf)
+      includes.each do |dep|
+        # include paths are relative to the including file.
+        dep = File.join(File.dirname(file), dep)
+        conf = Config::merge(conf, load_conf(dep, visited))
+      end
+      conf
+    end
+
   end
 end
