@@ -21,10 +21,6 @@ class SiteDiff
       :type => :string,
       :default => File.join('.', 'output'),
       :desc => "Location to write the output to."
-    option 'failing-paths',
-      :type => :string,
-      :desc => 'File in which failing paths are stored (one at a line): ' +
-               'useful for iterating over sanitization rules'
     option 'paths',
       :type => :string,
       :desc => 'Paths are read (one at a line) from PATHS: ' +
@@ -69,8 +65,7 @@ class SiteDiff
       sitediff = SiteDiff.new(config, options['cache'])
       sitediff.run
 
-      failing_paths = options['failing-paths']
-      failing_paths ||= File.join(options['dump-dir'], 'failures.txt')
+      failing_paths = File.join(options['dump-dir'], 'failures.txt')
       sitediff.dump(options['dump-dir'], options['before-report'],
         options['after-report'], failing_paths)
     rescue Config::InvalidConfig => e
