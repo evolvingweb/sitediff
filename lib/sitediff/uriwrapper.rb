@@ -71,8 +71,11 @@ class SiteDiff
     # assumed to accept a single ReadResult argument.
     def typhoeus_request(&handler)
       params = {
-        :connecttimeout => 3,   # Don't hang on servers that don't exist
-        :followlocation => true # Follow HTTP redirects (code 301 and 302)
+        :connecttimeout => 3,     # Don't hang on servers that don't exist
+        :followlocation => true,  # Follow HTTP redirects (code 301 and 302)
+        :headers => {
+          "User-Agent" => "Sitediff - https://github.com/evolvingweb/sitediff"
+        }
       }
       # Allow basic auth
       params[:userpwd] = @uri.user + ':' + @uri.password if @uri.user
