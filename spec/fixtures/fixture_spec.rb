@@ -49,7 +49,8 @@ describe SiteDiff::Cli do
         expect(doc.css('a').any? { |a| a['href'] == before_link }).to be true
 
         # There should be a diff file
-        diff = File.join(dir, 'diffs', 'Hash.html.html')
+        diff = File.join(dir, 'diffs', Digest::SHA1.hexdigest('/Hash.html') + '.html')
+        $stderr.puts(diff)
         expect(File.file?(diff)).to be true
         expect(File.read(diff)).to include '#method-i-to_h'
       end

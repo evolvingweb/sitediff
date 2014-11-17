@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'digest/sha1'
 
 class SiteDiff
   class Result < Struct.new(:path, :before, :after, :error)
@@ -35,9 +36,7 @@ class SiteDiff
 
     # Filename to store diff
     def filename
-      p = path
-      p = File.join(p, '/index') if p.empty?
-      File.join(SiteDiff::DIFFS_DIR, p + '.html')
+      File.join(SiteDiff::DIFFS_DIR, Digest::SHA1.hexdigest(self.path) + '.html')
     end
 
     # Text of the link in the HTML report
