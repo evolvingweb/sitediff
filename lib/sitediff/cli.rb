@@ -88,11 +88,19 @@ class SiteDiff
         :announce => true).wait
     end
 
+    option :directory,
+      :type => :string,
+      :default => 'sitediff',
+      :desc => 'Where to place the configuration'
+    option :depth,
+      :type => :numeric,
+      :default => 3,
+      :desc => 'How deeply to crawl the given site'
     desc "init URL [URL]", "Create a sitediff configuration"
     def init(*urls)
       creator = SiteDiff::Config::Creator.new(*urls)
-      creator.build
-      creator.create
+      creator.build(:depth => options[:depth])
+      creator.create(:directory => options[:directory])
     end
   end
 end
