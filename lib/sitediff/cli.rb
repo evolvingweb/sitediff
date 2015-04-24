@@ -2,6 +2,7 @@ require 'thor'
 require 'sitediff/diff'
 require 'sitediff/sanitize'
 require 'sitediff/util/webserver'
+require 'sitediff/config/creator'
 require 'open-uri'
 require 'uri'
 
@@ -85,6 +86,13 @@ class SiteDiff
     def serve
       SiteDiff::Util::Webserver.serve(options[:port], options[:directory],
         :announce => true).wait
+    end
+
+    desc "init URL [URL]", "Create a sitediff configuration"
+    def init(*urls)
+      creator = SiteDiff::Config::Creator.new(*urls)
+      creator.build
+      creator.create
     end
   end
 end
