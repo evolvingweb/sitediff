@@ -131,11 +131,30 @@ class SiteDiff
       end
     end
 
+    # Check if a regexp applies
+    def regexp_applies(str, rule)
+      dup = str.dup
+      substitute(str, rule)
+      dup != str
+    end
+
     # Do one regexp transformation on a string
     def substitute(str, rule)
       #FIXME escape forward slashes, right now we are escaping them in YAML!
       str.gsub!(/#{rule['pattern']}/, rule['substitute'] || '' )
       str
+    end
+
+    # Find the context for a regexp rule. Pass on the context to a handler
+    # block
+    def context_for_regexp(node, text, rule, &block)
+      if sel = rule['selector']
+        node.css(sel).each do |e|
+          block[e, e.to_html]
+        end
+      else
+        block[nil, text]
+      end
     end
 
     # Do all regexp sanitization rules
@@ -144,10 +163,8 @@ class SiteDiff
 
       # First do rules with a selector
       rules.each do |rule|
-        if sel = rule['selector']
-          node.css(sel).each do |e|
-            e.replace(substitute(e.to_html, rule))
-          end
+        context_for_regexp(node, nil, rule) do |elem, text|
+          elem.replace(substitute(text, rule))
         end
       end
 
@@ -157,7 +174,9 @@ class SiteDiff
       return node if global_rules.empty?
 
       str = node.to_html # Convert to string
-      global_rules.each { |r| substitute(str, r) }
+      global_rules.each do |r|
+        context_for_regexp(nil, str, r) { |elem, text| substitute(text, r) }
+      end
       return str
     end
 

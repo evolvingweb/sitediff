@@ -1,5 +1,6 @@
 require 'sitediff/uriwrapper'
 require 'sitediff/crawler'
+require 'sitediff/rules'
 require 'nokogiri'
 require 'yaml'
 require 'pathname'
@@ -20,6 +21,12 @@ class Creator
     @config = {}
     @config['after_url'] = @after
     @config['before_url'] = @before if @before
+
+    rules = SiteDiff::Rules.find_rules(found)
+    rules.each do |k, v|
+      @config[k] = v
+    end
+
     @config['paths'] = found.keys.sort
 
     return @config
