@@ -17,7 +17,7 @@ class Crawler
   end
 
   def crawl(depth = DEFAULT_DEPTH)
-    @found = []
+    @found = {}
     @hydra = hydra
     found('/', depth)
     @hydra.run
@@ -27,7 +27,7 @@ class Crawler
   # Handle a newly found relative URI
   def found(rel, depth)
     return if @found.include? rel
-    @found << rel
+    @found[rel] = nil
     return if depth <= 0
 
     wrapper = @wrapper + rel
@@ -39,6 +39,8 @@ class Crawler
   # Handle the fetch of a URI
   def fetched(rel, depth, res)
     return unless res.content # Ignore errors
+    @found[rel] = res.content
+
     base = URI(@base) + rel
 
     doc = Nokogiri::HTML(res.content)

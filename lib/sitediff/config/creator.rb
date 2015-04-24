@@ -15,12 +15,12 @@ class Creator
   # Build a config structure, return it
   def build(opts)
     crawler = SiteDiff::Crawler.new(@after)
-    paths = crawler.crawl(opts[:depth])
+    found = crawler.crawl(opts[:depth])
 
     @config = {}
     @config['after_url'] = @after
     @config['before_url'] = @before if @before
-    @config['paths'] = paths
+    @config['paths'] = found.keys.sort
 
     return @config
   end
