@@ -4,10 +4,9 @@ class Drupal < Rules
   def sanitization_candidates
     [
       {
-        'title' => 'Strip theme token',
+        'title' => 'Strip Drupal.settings',
         'selector' => 'script',
-        'pattern' => '"theme_token":"[-\w]{43}"',
-        'substitution' => '"theme_token:"DRUPAL_THEME_TOKEN"',
+        'pattern' => '^jQuery.extend\(Drupal.settings.*$',
       },
       {
         'title' => 'Strip form build ID',
