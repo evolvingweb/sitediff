@@ -163,6 +163,7 @@ class SiteDiff
 
       # First do rules with a selector
       rules.each do |rule|
+        next unless rule['selector']
         context_for_regexp(node, nil, rule) do |elem, text|
           elem.replace(substitute(text, rule))
         end
