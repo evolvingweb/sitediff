@@ -39,7 +39,7 @@ class Creator
     dir = Pathname.new(opts[:directory])
     dir.mkpath unless dir.directory?
 
-    conf = dir + 'config.yaml'
+    conf = dir + Config::DEFAULT_FILENAME
     conf.open('w') { |f| f.puts config.to_yaml }
   end
 end
