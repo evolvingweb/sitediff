@@ -27,9 +27,15 @@ class Drupal < Rules
         'substitution' => '\1DRUPAL_AGGREGATED_JS.js"',
       },
       {
+        # Some are hidden inside IE version comments
         'title' => 'Strip CSS/JS cache IDs',
-        'selector' => 'script, link[rel=stylesheet], style',
-        'pattern' => '((src|href)="[^"]*\.(js|css))\?[a-z0-9]{6}"',
+        'pattern' => '("[^"]*\.(js|css))\?[a-z0-9]{6}"',
+        'substitution' => '\1',
+      },
+      {
+        'title' => 'Strip Drupal JS version tags',
+        'selector' => 'script',
+        'pattern' => '(src="[^"]*/misc/\w+\.js)?v=\d+\.\d+"',
         'substitution' => '\1',
       },
     ]
