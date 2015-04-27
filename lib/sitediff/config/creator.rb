@@ -20,9 +20,13 @@ class Creator
 
     @config = {}
     @config['after_url'] = @after
-    @config['before_url'] = @before if @before
+    roots = [@after]
+    if @before
+      @config['before_url'] = @before
+      urls << @before
+    end
 
-    rules = SiteDiff::Rules.find_rules(found)
+    rules = SiteDiff::Rules.find_rules(roots, found)
     rules.each do |k, v|
       @config[k] = v
     end
