@@ -19,6 +19,11 @@ class Cache
     @wtags = Set.new
   end
 
+  # Is a tag cached?
+  def tag?(tag)
+    @dbm[tag.to_s]
+  end
+
   def use(dir, *tags)
     tags.each do |tag|
       @rtags << tag if dir == Read
@@ -34,6 +39,7 @@ class Cache
 
   def set(tag, path, result)
     return unless @wtags.include? tag
+    @dbm[tag.to_s] = 'TRUE'
     @dbm[key(tag, path)] = Marshal.dump(result)
   end
 

@@ -45,11 +45,19 @@ class SiteDiff
   end
 
   def initialize(config)
-    config.validate
-    @config = config
-
     @cache = Cache.new
     @cache.use(Cache::Write, :before, :after)
+
+    # Check for single-site mode
+    validate_opts = {}
+    if @cache.tag?(:before) && !config.before['url']
+      validate_opts[:need_before] = false
+      @cache.use(Cache::Read, :before)
+    end
+
+    config.validate(validate_opts)
+    @config = config
+
   end
 
   # Sanitize an HTML string based on configuration for either before or after
