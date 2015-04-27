@@ -1,6 +1,8 @@
 require 'thor'
 require 'sitediff/diff'
 require 'sitediff/sanitize'
+require 'sitediff/fetch'
+require 'sitediff/cache'
 require 'sitediff/util/webserver'
 require 'sitediff/config/creator'
 require 'open-uri'
@@ -97,6 +99,25 @@ class SiteDiff
       creator = SiteDiff::Config::Creator.new(*urls)
       creator.build(:depth => options[:depth])
       creator.create(:directory => options[:directory])
+    end
+
+    option :url,
+      :type => :string,
+      :desc => 'A custom base URL to fetch from'
+    desc "store [CONFIGFILES]",
+      "Cache the current contents of a site for later comparison"
+    def store(*config_files)
+      config = SiteDiff::Config.new(config_files)
+      config.validate(:need_before => false)
+
+      cache = SiteDiff::Cache.new
+      cache.use(SiteDiff::Cache::Write, :before)
+
+      base = options[:url] || config.after['url']
+      fetcher = SiteDiff::Fetch.new(cache, config.paths, :before => base)
+      fetcher.run do |path, res|
+        puts "Fetched %s" % path
+      end
     end
   end
 end
