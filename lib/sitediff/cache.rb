@@ -1,10 +1,13 @@
+require 'set'
+
 class SiteDiff
 class Cache
   Read = 1
   Write = 2
-  RW = Read | Write
 
-  def initialize(file)
+  def initialize(file = nil)
+    file ||= 'cache.db'
+
     begin
       require 'gdbm'
       @dbm = GDBM.new(file)
@@ -12,31 +15,31 @@ class Cache
       require 'dbm'
       @dbm = DBM.new(file)
     end
-    @rmap = {}
-    @wmap = {}
+    @rtags = Set.new
+    @wtags = Set.new
   end
 
-  # Set cache mapping
-  def map(dir, tag, dest = nil)
-    dest = tag
-    @rmap[tag] = dest if dir & Read != 0
-    @wmap[tag] = dest if dir & Write != 0
+  def use(dir, *tags)
+    tags.each do |tag|
+      @rtags << tag if dir == Read
+      @wtags << tag if dir == Write
+    end
   end
 
   def get(tag, path)
-    return nil unless intern = @rmap[tag]
-    val = @dbm[key(intern, path)]
+    return nil unless @rtags.include? tag
+    val = @dbm[key(tag, path)]
     return val && Marshal.load(val)
   end
 
   def set(tag, path, result)
-    return unless intern = @wmap[tag]
-    @dbm[key(intern, path)] = Marshal.dump(result)
+    return unless @wtags.include? tag
+    @dbm[key(tag, path)] = Marshal.dump(result)
   end
 
 private
-  def key(intern, path)
-    Marshal.dump([intern, path])
+  def key(tag, path)
+    Marshal.dump([tag, path])
   end
 end
 end
