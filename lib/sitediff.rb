@@ -49,7 +49,7 @@ class SiteDiff
     @config = config
 
     @cache = Cache.new
-    @cache.use(Cache::Read, :before, :after)
+    @cache.use(Cache::Write, :before, :after)
   end
 
   # Sanitize an HTML string based on configuration for either before or after

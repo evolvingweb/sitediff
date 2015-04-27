@@ -99,8 +99,11 @@ class SiteDiff
     end
 
     # Checks if the configuration is usable for diff-ing.
-    def validate
-      raise InvalidConfig, "Undefined 'before' base URL." unless before['url']
+    def validate(opts = {})
+      opts = { :need_before => true }.merge(opts)
+
+      raise InvalidConfig, "Undefined 'before' base URL." if \
+        opts[:need_before] && !before['url']
       raise InvalidConfig, "Undefined 'after' base URL." unless after['url']
       raise InvalidConfig, "Undefined 'paths'." unless (paths and !paths.empty?)
     end
