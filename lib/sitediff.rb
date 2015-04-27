@@ -47,9 +47,8 @@ class SiteDiff
     config.validate
     @config = config
 
-    @cache = Cache.new('cache.db')
-    @cache.map(Cache::RW, :before)
-    @cache.map(Cache::RW, :after)
+    @cache = Cache.new
+    @cache.use(Cache::Read, :before, :after)
   end
 
   # Sanitize an HTML string based on configuration for either before or after
