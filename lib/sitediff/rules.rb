@@ -9,6 +9,10 @@ class Rules
   # A bunch of sanitization rules that we might want
   def sanitization_candidates; []; end
 
+  def initialize(roots)
+    @roots = roots
+  end
+
   # Yield a set of rules that seem reasonable for this HTML
   def find_rules(uri, html, doc)
     rules = []
@@ -27,14 +31,14 @@ class Rules
   end
 
   # Find modules that define rules
-  def self.rulesets
+  def self.rulesets(roots)
     dir = Pathname.new(__FILE__).sub_ext('')
     dir.each_child do |child|
       next unless child.file? && child.extname == '.rb'
       load child
     end
 
-    @rulesets.map { |c| c.new }
+    @rulesets.map { |c| c.new(roots) }
   end
 
   def self.inherited(subc)
@@ -42,11 +46,11 @@ class Rules
   end
 
   # Find all rules from all modules for all pages
-  def self.find_rules(uris)
+  def self.find_rules(roots, found)
     rules = Set.new
-    rulesets = self.rulesets
+    rulesets = self.rulesets(roots)
 
-    uris.each do |uri, html|
+    found.each do |uri, html|
       doc = html ? Nokogiri::HTML(html) : nil
       rulesets.each do |rs|
         rules.merge(rs.find_rules(uri, html, doc))
