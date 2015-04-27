@@ -2,6 +2,7 @@ require 'yaml'
 
 class SiteDiff
   class Config
+    DEFAULT_FILENAME = 'sitediff.yaml'
 
     # keys allowed in configuration files
     CONF_KEYS = Sanitize::TOOLS.values.flatten(1) +
@@ -79,6 +80,15 @@ class SiteDiff
 
     def initialize(files)
       @config = {'paths' => [], 'before' => {}, 'after' => {} }
+
+      if files.empty?
+        if File.exists?(DEFAULT_FILENAME)
+          files = [DEFAULT_FILENAME]
+        else
+          raise InvalidConfig, "No configuration file found."
+        end
+      end
+
       files.each do |file|
         @config = Config::merge(@config, Config::load_conf(file))
       end

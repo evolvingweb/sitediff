@@ -89,7 +89,8 @@ class SiteDiff
     option :directory,
       :type => :string,
       :default => 'sitediff',
-      :desc => 'Where to place the configuration'
+      :desc => 'Where to place the configuration',
+      :aliases => ['--dir', '--output', '-d']
     option :depth,
       :type => :numeric,
       :default => 3,
