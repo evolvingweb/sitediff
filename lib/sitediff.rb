@@ -4,6 +4,7 @@ require 'sitediff/config.rb'
 require 'sitediff/result.rb'
 require 'sitediff/uriwrapper'
 require 'sitediff/cache'
+require 'sitediff/fetch'
 require 'typhoeus'
 require 'rainbow'
 
@@ -56,34 +57,8 @@ class SiteDiff
     Sanitize::sanitize(html, @config.send(pos))
   end
 
-  # Queues fetching before and after URLs with a Typhoeus::Hydra instance
-  #
-  # Upon completion of both before and after, prints and saves the diff to
-  # @results.
-  def queue_read(hydra, path)
-    # ( :before | after ) => ReadResult object
-    read_results = {}
-
-    [:before, :after].each do |pos|
-      if res = @cache.get(pos, path)
-        read_results[pos] = res
-        process(path, read_results)
-      else
-        uri = UriWrapper.new(send(pos) + path)
-        uri.queue(hydra) do |res|
-          @cache.set(pos, path, res)
-          read_results[pos] = res
-          process(path, read_results)
-        end
-      end
-    end
-  end
-
   # Process a set of read results
-  def process(path, read_results)
-    # Wait until we have both before and after
-    return unless read_results.size == 2
-
+  def process_results(path, read_results)
     if error = read_results[:before].error || read_results[:after].error
       diff = Result.new(path, nil, nil, error)
     else
@@ -96,12 +71,12 @@ class SiteDiff
 
   # Perform the comparison
   def run
-    # Map of path -> Result object, queue_read sets callbacks to populate this
+    # Map of path -> Result object, populated by process_results
     @results = {}
 
-    hydra = Typhoeus::Hydra.new(max_concurrency: 3)
-    @config.paths.each { |path| queue_read(hydra, path) }
-    hydra.run
+    fetcher = Fetch.new(@cache, @config.paths,
+      :before => before, :after => after)
+    fetcher.run(&self.method(:process_results))
 
     # Order by original path order
     @results = @config.paths.map { |p| @results[p] }
