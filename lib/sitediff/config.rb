@@ -1,3 +1,4 @@
+require 'sitediff/exception'
 require 'yaml'
 require 'pathname'
 
@@ -9,7 +10,7 @@ class SiteDiff
     CONF_KEYS = Sanitize::TOOLS.values.flatten(1) +
                 %w[paths before after before_url after_url includes]
 
-    class InvalidConfig < Exception; end
+    class InvalidConfig < SiteDiffException; end
 
     # Takes a Hash and normalizes it to the following form by merging globals
     # into before and after. A normalized config Hash looks like this:

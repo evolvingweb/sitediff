@@ -1,7 +1,8 @@
+require 'sitediff/exception'
 require 'typhoeus'
 
 class SiteDiff
-  class SiteDiffReadFailure < Exception; end
+  class SiteDiffReadFailure < SiteDiffException; end
 
   class UriWrapper
     # This lets us treat errors or content as one object

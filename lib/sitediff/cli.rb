@@ -96,6 +96,8 @@ class SiteDiff
         options['after-report'], failing_paths)
     rescue Config::InvalidConfig => e
       SiteDiff.log "Invalid configuration: #{e.message}", :failure
+    rescue SiteDiffException => e
+      SiteDiff.log e.message, :failure
     end
 
     option :port,

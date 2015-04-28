@@ -1,9 +1,10 @@
+require 'sitediff/exception'
 require 'nokogiri'
 require 'set'
 
 class SiteDiff
   module Sanitize
-    class InvalidSanitization < Exception; end
+    class InvalidSanitization < SiteDiffException; end
 
     TOOLS = {
       :array => %w[dom_transform sanitization],
