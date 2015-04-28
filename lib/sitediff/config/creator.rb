@@ -35,12 +35,27 @@ class Creator
     return @config
   end
 
+  # Create a gitignore if we seem to be in git
+  def make_gitignore(dir)
+    # Check if we're in git
+    return unless dir.realpath.to_enum(:ascend).any? { |d| d.+('.git').exist? }
+
+    dir.+('.gitignore').open('w') do |f|
+      f.puts <<-EOF.gsub(/^\s+/, '')
+        output
+        cache.db
+        cache.db.db
+      EOF
+    end
+  end
+
   # Turn a config structure into a config file
   def create(config = nil, opts)
     config ||= @config
 
     dir = Pathname.new(opts[:directory])
     dir.mkpath unless dir.directory?
+    make_gitignore(dir)
 
     conf = dir + Config::DEFAULT_FILENAME
     conf.open('w') { |f| f.puts config.to_yaml }
