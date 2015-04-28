@@ -1,4 +1,5 @@
 require 'yaml'
+require 'pathname'
 
 class SiteDiff
   class Config
@@ -78,18 +79,38 @@ class SiteDiff
       result
     end
 
-    def initialize(files)
-      @config = {'paths' => [], 'before' => {}, 'after' => {} }
+    # Search for a config file. If found, change to the containing directory,
+    # and return an array of config files found.
+    def self.search
+      subdirs = %w[. sitediff]
+      root_indicators = %w[.git .svn]
 
-      if files.empty?
-        if File.exists?(DEFAULT_FILENAME)
-          files = [DEFAULT_FILENAME]
-        else
-          raise InvalidConfig, "No configuration file found."
+      Pathname.pwd.ascend do |dir|
+        subdirs.each do |subdir|
+          d = dir + subdir + DEFAULT_FILENAME
+          if d.exist?
+            Dir.chdir(dir.+(subdir).to_s)
+            return [DEFAULT_FILENAME]
+          end
         end
+
+        root_indicators.each { |r| return [] if dir.+(r).exist? }
       end
 
+      return []
+    end
+
+    def initialize(files, opts = {})
+      @config = {'paths' => [], 'before' => {}, 'after' => {} }
+
+      files = Config.search if files.empty? && opts[:search]
+      files = [DEFAULT_FILENAME] if files.empty? &&
+        File.exists?(DEFAULT_FILENAME)
+      raise InvalidConfig, "No configuration file found." if files.empty?
+
       files.each do |file|
+        raise InvalidConfig, "Missing config file %s." % file \
+          unless File.exist?(file)
         @config = Config::merge(@config, Config::load_conf(file))
       end
     end
@@ -162,6 +183,5 @@ class SiteDiff
       end
       conf
     end
-
   end
 end

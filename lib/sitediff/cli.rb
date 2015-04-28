@@ -57,9 +57,7 @@ class SiteDiff
       :desc => "Use the cached version of these sites, if available."
     desc "diff [OPTIONS] [CONFIGFILES]", "Perform systematic diff on given URLs"
     def diff(*config_files)
-      chdir
-
-      config = SiteDiff::Config.new(config_files)
+      config = chdir(config_files)
 
       # override config based on options
       if paths_file = options['paths']
@@ -98,7 +96,7 @@ class SiteDiff
       :desc => 'The directory to serve'
     desc "serve [OPTIONS]", "Serve the sitediff output directory over HTTP"
     def serve
-      chdir
+      chdir([], :config => false)
 
       SiteDiff::Util::Webserver.serve(options[:port], options['dump-dir'],
         :announce => true).wait
@@ -126,9 +124,7 @@ class SiteDiff
     desc "store [CONFIGFILES]",
       "Cache the current contents of a site for later comparison"
     def store(*config_files)
-      chdir
-
-      config = SiteDiff::Config.new(config_files)
+      config = chdir(config_files)
       config.validate(:need_before => false)
 
       cache = SiteDiff::Cache.new
@@ -142,8 +138,17 @@ class SiteDiff
     end
 
   private
-    def chdir
-      Dir.chdir(options['directory']) if options['directory']
+    def chdir(files, opts = {})
+      opts = { :config => true }.merge(opts)
+
+      dir = options['directory']
+      Dir.chdir(dir) if dir
+
+      if opts[:config]
+        SiteDiff::Config.new(files, :search => !dir)
+      else
+        SiteDiff::Config.search
+      end
     end
   end
 end
