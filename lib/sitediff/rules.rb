@@ -34,9 +34,8 @@ class Rules
   # Create Rules objects from YAML files found in SITEDIFF_LIB/files/rules/
   def self.rulesets(roots)
     rules = []
-    rules_dir = File.join(Pathname.new(__FILE__).dirname, 'files', 'rules')
-
-    Pathname.new(rules_dir).children.each do |f|
+    rules_dir = Pathname.new(__FILE__).dirname + 'files' + 'rules'
+    rules_dir.children.each do |f|
       next unless f.file? && f.extname == '.yaml'
       rules << Rules.new(roots, YAML.load_file(f))
     end
