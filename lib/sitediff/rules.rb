@@ -23,17 +23,16 @@ class Rules
     end
   end
 
-  def handle_page(tag, html)
-    found = find_rules(html)
+  def handle_page(tag, html, doc)
+    found = find_rules(html, doc)
     @rules[tag].merge(found)
   end
 
   # Yield a set of rules that seem reasonable for this HTML
   # assumption: the YAML file is a list of regexp rules only
-  def find_rules(html)
+  def find_rules(html, doc)
     rules = []
 
-    doc = Nokogiri::HTML(html)
     @candidates.each do |rule|
       SiteDiff::Sanitize::context_for_regexp(doc, html, rule) do |elem, text|
         if SiteDiff::Sanitize::regexp_applies(text, rule)

@@ -31,11 +31,11 @@ class Crawler
   # Handle the fetch of a URI
   def fetched_uri(rel, depth, res)
     return unless res.content # Ignore errors
-    @callback[rel, res.content]
     return unless depth >= 0
 
     base = URI(@base) + rel
 
+    # Find links
     doc = Nokogiri::HTML(res.content)
     links = find_links(doc)
     uris = links.map { |l| base + l }
@@ -43,6 +43,9 @@ class Crawler
 
     # Make them relative
     rels = uris.map { |u| u.path.slice(@base.path.length, u.path.length) }
+
+    # Call the callback
+    @callback[rel, res.content, doc]
 
     # Queue them in turn
     rels.each do |r|

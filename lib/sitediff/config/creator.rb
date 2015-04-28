@@ -57,8 +57,8 @@ class Creator
   def crawl(depth = nil)
     hydra = Typhoeus::Hydra.new(max_concurrency: 10)
     roots.each do |tag, u|
-      Crawler.new(hydra, u, depth) do |path, html|
-        crawled_path(tag, path, html)
+      Crawler.new(hydra, u, depth) do |path, html, doc|
+        crawled_path(tag, path, html, doc)
       end
     end
     hydra.run
@@ -76,7 +76,7 @@ class Creator
     return path
   end
 
-  def crawled_path(tag, path, html)
+  def crawled_path(tag, path, html, doc)
     path = canonicalize(path)
     return if @paths.include? path
 
@@ -86,7 +86,7 @@ class Creator
     # If single-site, cache after as before!
     @cache.set(:before, path, html) unless roots[:before]
 
-    @rules.handle_page(tag, html)
+    @rules.handle_page(tag, html, doc)
   end
 
   # Create a gitignore if we seem to be in git
