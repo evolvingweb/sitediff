@@ -125,11 +125,20 @@ class SiteDiff
       :type => :numeric,
       :default => 3,
       :desc => 'How deeply to crawl the given site'
+    option :rules,
+      :type => :string,
+      :enum => %w[yes no disabled],
+      :default => 'disabled',
+      :desc => 'Whether rules for the site should be auto-created'
     desc "init URL [URL]", "Create a sitediff configuration"
     def init(*urls)
       creator = SiteDiff::Config::Creator.new(*urls)
-      creator.create(:depth => options[:depth],
-        :directory => options[:output])
+      creator.create(
+        :depth => options[:depth],
+        :directory => options[:output],
+        :rules => options[:rules] != 'no',
+        :rules_disabled => (options[:rules] == 'disabled'),
+      )
     end
 
     option :url,

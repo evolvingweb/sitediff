@@ -24,9 +24,12 @@ class Creator
 
   # Build a config structure, return it
   def create(opts)
+    @config = {}
+
     # Handle options
     @dir = Pathname.new(opts[:directory])
     @depth = opts[:depth]
+    @rules = Rules.new(@config, opts[:rules_disabled]) if opts[:rules]
 
     # Create the dir. Must go before cache initialization!
     @dir.mkpath unless @dir.directory?
@@ -41,15 +44,13 @@ class Creator
   end
 
   def build_config
-    @config = {}
     %w[before after].each do |tag|
       next unless u = roots[tag.to_sym]
       @config[tag] = {'url' => u}
     end
 
-    @rules = Rules.new(@config)
     crawl(@depth)
-    @rules.add_config
+    @rules.add_config if @rules
 
     @config['paths'] = @paths.sort
   end
@@ -86,7 +87,7 @@ class Creator
     # If single-site, cache after as before!
     @cache.set(:before, path, res) unless roots[:before]
 
-    @rules.handle_page(tag, res.content, doc) unless res.error
+    @rules.handle_page(tag, res.content, doc) if @rules && !res.error
   end
 
   # Create a gitignore if we seem to be in git

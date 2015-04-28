@@ -6,7 +6,8 @@ require 'nokogiri'
 class SiteDiff
 # Find appropriate rules for a given site
 class Rules
-  def initialize(config)
+  def initialize(config, disabled = false)
+    @disabled = disabled
     @config = config
     find_sanitization_candidates
     @rules = Hash.new { |h, k| h[k] = Set.new }
@@ -54,6 +55,9 @@ class Rules
   def add_section(name, rules)
     return if rules.empty?
     conf = name ? @config[name] : @config
+    if @disabled
+      rules.each { |r| r['disabled'] = true }
+    end
     conf['sanitization'] = rules.to_a.sort_by { |r| r['title'] }
   end
 end
