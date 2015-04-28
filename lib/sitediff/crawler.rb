@@ -45,7 +45,7 @@ class Crawler
     rels = uris.map { |u| u.path.slice(@base.path.length, u.path.length) }
 
     # Call the callback
-    @callback[rel, res.content, doc]
+    @callback[rel, res, doc]
 
     # Queue them in turn
     rels.each do |r|
