@@ -1,7 +1,6 @@
 require 'sitediff/sanitize'
 require 'set'
 require 'pathname'
-require 'nokogiri'
 
 class SiteDiff
 # Find appropriate rules for a given site
