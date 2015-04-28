@@ -41,7 +41,7 @@ class Crawler
     uris = []
     links.each do |l|
       begin
-        uris << base + l
+        uris << base + URI.escape(l)
       rescue URI::InvalidURIError
         $stderr.puts "skipped invalid URL: '#{l}'"
       end
