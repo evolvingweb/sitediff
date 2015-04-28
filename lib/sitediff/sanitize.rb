@@ -27,6 +27,8 @@ class SiteDiff
     #  @return - transformed Nokogiri document node
     def perform_dom_transforms(node, rules)
       rules.each do |rule|
+        next if rule['disabled']
+
         type = rule['type'] or
           raise InvalidSanitization, "DOM transform needs a type"
         DOM_TRANSFORMS.include?(type) or
@@ -161,6 +163,7 @@ class SiteDiff
     # Do all regexp sanitization rules
     def perform_regexps(node, rules)
       rules ||= []
+      rules.reject! { |r| r['disabled'] }
 
       # First do rules with a selector
       rules.each do |rule|
