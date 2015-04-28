@@ -47,7 +47,9 @@ class Creator
       @config[tag] = {'url' => u}
     end
 
+    @rules = Rules.new(@config)
     crawl(@depth)
+    @rules.add_config
 
     @config['paths'] = @paths.sort
   end
@@ -74,7 +76,7 @@ class Creator
 
     @paths << path
     @cache.set(tag, path, html)
-    # TODO: Do something with rules here
+    @rules.handle_page(tag, html)
   end
 
   # Create a gitignore if we seem to be in git

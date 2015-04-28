@@ -6,63 +6,56 @@ require 'nokogiri'
 class SiteDiff
 # Find appropriate rules for a given site
 class Rules
-  # each Rules object knows what the before and after root URLs are, and it has
-  # a list of sanitization rule candidates, loaded from a YAML file found in
-  # SITEDIFF_LIB/files/rules/
-  def initialize(roots, sanitization_candidates)
-    @roots = roots
-    @sanitization_candidates = sanitization_candidates
+  def initialize(config)
+    @config = config
+    find_sanitization_candidates
+    @rules = Hash.new { |h, k| h[k] = Set.new }
   end
 
-  # Yield a set of rules that seem reasonable for this HTML
-  def find_rules(uri, html, doc)
-    rules = []
+  def find_sanitization_candidates
+    @candidates = Set.new
 
-    if html
-      @sanitization_candidates.each do |rule|
-        SiteDiff::Sanitize::context_for_regexp(doc, html, rule) do |elem, text|
-          if SiteDiff::Sanitize::regexp_applies(text, rule)
-            rules << { 'sanitization' => rule }
-          end
-        end
-      end
-    end
-
-    return rules
-  end
-
-  # Create Rules objects from YAML files found in SITEDIFF_LIB/files/rules/
-  def self.rulesets(roots)
-    rules = []
     rules_dir = Pathname.new(__FILE__).dirname + 'files' + 'rules'
     rules_dir.children.each do |f|
       next unless f.file? && f.extname == '.yaml'
-      rules << Rules.new(roots, YAML.load_file(f))
+      conf = YAML.load_file(f)
+      @candidates.merge(conf['sanitization'])
     end
-    rules
   end
 
-  # Find all rules from all modules for all pages
-  def self.find_rules(roots, found)
-    rules = Set.new
-    rulesets = self.rulesets(roots)
+  def handle_page(tag, html)
+    found = find_rules(html)
+    @rules[tag].merge(found)
+  end
 
-    found.each do |uri, html|
-      doc = html ? Nokogiri::HTML(html) : nil
-      rulesets.each do |rs|
-        rules.merge(rs.find_rules(uri, html, doc))
+  # Yield a set of rules that seem reasonable for this HTML
+  # assumption: the YAML file is a list of regexp rules only
+  def find_rules(html)
+    rules = []
+
+    doc = Nokogiri::HTML(html)
+    @candidates.each do |rule|
+      SiteDiff::Sanitize::context_for_regexp(doc, html, rule) do |elem, text|
+        if SiteDiff::Sanitize::regexp_applies(text, rule)
+          rules << rule
+        end
       end
     end
+    return rules
+  end
 
-    # Coalesce by type
-    config = {}
-    rules.each do |rule|
-      k = rule.keys.first
-      config[k] ||= []
-      config[k] << rule[k]
-    end
+  # Find all rules from all rulesets that apply for all pages
+  def add_config
+    r1, r2 = *@rules.values_at(:before, :after)
+    add_section('before', r1 - r2)
+    add_section('after', r2 - r1)
+    add_section(nil, r1 & r2)
+  end
 
-    return config
+  def add_section(name, rules)
+    return if rules.empty?
+    conf = name ? @config[name] : @config
+    conf['sanitization'] = rules.to_a.sort_by { |r| r['title'] }
   end
 end
 end

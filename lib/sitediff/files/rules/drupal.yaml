@@ -1,3 +1,4 @@
+sanitization:
 - title: Strip Drupal.settings
   selector: script
   pattern: '^jQuery.extend\(Drupal.settings.*$'
