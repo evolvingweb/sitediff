@@ -46,10 +46,16 @@ class Rules
 
   # Find all rules from all rulesets that apply for all pages
   def add_config
+    have_both = @rules.include?(:before)
+
     r1, r2 = *@rules.values_at(:before, :after)
-    add_section('before', r1 - r2)
-    add_section('after', r2 - r1)
-    add_section(nil, r1 & r2)
+    if have_both
+      add_section('before', r1 - r2)
+      add_section('after', r2 - r1)
+      add_section(nil, r1 & r2)
+    else
+      add_section(nil, r2)
+    end
   end
 
   def add_section(name, rules)
