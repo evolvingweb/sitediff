@@ -25,3 +25,6 @@ sanitization:
   selector: script
   pattern: '(src="[^"]*/misc/\w+\.js)?v=\d+\.\d+"'
   substitution: '\1'
+- title: Strip domain names from absolute URLs
+  pattern: 'http:\/\/[a-zA-Z0-9.:-]+'
+  substitute: '__domain__'
