@@ -44,6 +44,18 @@ class SiteDiff
     @config.after['url']
   end
 
+  # Ensure that there's nothing that must be in the cache, but isn't actually
+  # there.
+  def check_cache_validity
+    [:before, :after].each do |tag|
+      next if self.send(tag) # If we have a URL, we can just fetch it
+
+      bad = config.paths.reject { |p| @cache.get(tag, p) }
+      raise SiteDiffException, "Uncached paths in #{tag}: #{bad.join(' ,')}" \
+        unless bad.empty?
+    end
+  end
+
   def initialize(config, cache)
     @cache = cache
 
@@ -56,6 +68,8 @@ class SiteDiff
 
     config.validate(validate_opts)
     @config = config
+
+    check_cache_validity
   end
 
   # Sanitize an HTML string based on configuration for either before or after
