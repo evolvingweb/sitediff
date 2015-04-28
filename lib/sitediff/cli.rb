@@ -128,8 +128,8 @@ class SiteDiff
     desc "init URL [URL]", "Create a sitediff configuration"
     def init(*urls)
       creator = SiteDiff::Config::Creator.new(*urls)
-      creator.build(:depth => options[:depth])
-      creator.create(:directory => options[:output])
+      creator.create(:depth => options[:depth],
+        :directory => options[:output])
     end
 
     option :url,

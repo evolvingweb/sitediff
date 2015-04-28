@@ -2,11 +2,11 @@ require 'set'
 
 class SiteDiff
 class Cache
+  DEFAULT_FILENAME = 'cache.db'
+
   attr_accessor :read_tags, :write_tags
 
-  def initialize(file = nil)
-    file ||= 'cache.db'
-
+  def initialize(file = DEFAULT_FILENAME)
     begin
       require 'gdbm'
       @dbm = GDBM.new(file)

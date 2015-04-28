@@ -1,45 +1,38 @@
 require 'sitediff/uriwrapper'
 require 'typhoeus'
+require 'set'
 
 class SiteDiff
 class Crawler
   DEFAULT_DEPTH = 3
 
   # Create a crawler with a base URL
-  def initialize(base)
+  def initialize(hydra, base, depth = DEFAULT_DEPTH, &block)
+    @hydra = hydra
     @wrapper = UriWrapper.new(base)
     @base = URI(base)
-  end
+    @found = Set.new
+    @callback = block
 
-  # Generate a hydra
-  def hydra
-    Typhoeus::Hydra.new(max_concurrency: 10)
-  end
-
-  def crawl(depth = DEFAULT_DEPTH)
-    @found = {}
-    @hydra = hydra
-    found('/', depth)
-    @hydra.run
-    return @found
+    add_uri('', depth)
   end
 
   # Handle a newly found relative URI
-  def found(rel, depth)
+  def add_uri(rel, depth)
     return if @found.include? rel
-    @found[rel] = nil
-    return if depth <= 0
+    @found << rel
 
     wrapper = @wrapper + rel
     wrapper.queue(@hydra) do |res|
-      fetched(rel, depth, res)
+      fetched_uri(rel, depth, res)
     end
   end
 
   # Handle the fetch of a URI
-  def fetched(rel, depth, res)
+  def fetched_uri(rel, depth, res)
     return unless res.content # Ignore errors
-    @found[rel] = res.content
+    @callback[rel, res.content]
+    return unless depth >= 0
 
     base = URI(@base) + rel
 
@@ -54,7 +47,7 @@ class Crawler
     # Queue them in turn
     rels.each do |r|
       next if @found.include? r
-      found(r, depth - 1)
+      add_uri(r, depth - 1)
     end
   end
 
