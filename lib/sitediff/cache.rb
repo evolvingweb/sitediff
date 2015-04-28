@@ -2,8 +2,7 @@ require 'set'
 
 class SiteDiff
 class Cache
-  Read = 1
-  Write = 2
+  attr_accessor :read_tags, :write_tags
 
   def initialize(file = nil)
     file ||= 'cache.db'
@@ -15,8 +14,9 @@ class Cache
       require 'dbm'
       @dbm = DBM.new(file)
     end
-    @rtags = Set.new
-    @wtags = Set.new
+
+    @read_tags = Set.new
+    @write_tags = Set.new
   end
 
   # Is a tag cached?
@@ -24,21 +24,14 @@ class Cache
     @dbm[tag.to_s]
   end
 
-  def use(dir, *tags)
-    tags.each do |tag|
-      @rtags << tag if dir == Read
-      @wtags << tag if dir == Write
-    end
-  end
-
   def get(tag, path)
-    return nil unless @rtags.include? tag
+    return nil unless @read_tags.include? tag
     val = @dbm[key(tag, path)]
     return val && Marshal.load(val)
   end
 
   def set(tag, path, result)
-    return unless @wtags.include? tag
+    return unless @write_tags.include? tag
     @dbm[tag.to_s] = 'TRUE'
     @dbm[key(tag, path)] = Marshal.dump(result)
   end

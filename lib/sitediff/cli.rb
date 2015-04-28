@@ -45,6 +45,11 @@ class SiteDiff
       :type => :string,
       :desc => "After URL to use for reporting purposes. Useful if port forwarding.",
       :aliases => '--after-url-report'
+    option 'cached',
+      :type => :string,
+      :enum => %w[none all before after],
+      :default => 'before',
+      :desc => "Use the cached version of these sites, if available."
     desc "diff [OPTIONS] [CONFIGFILES]", "Perform systematic diff on given URLs"
     def diff(*config_files)
       config = SiteDiff::Config.new(config_files)
@@ -61,7 +66,12 @@ class SiteDiff
       config.before['url'] = options['before'] if options['before']
       config.after['url'] = options['after'] if options['after']
 
-      sitediff = SiteDiff.new(config)
+      cache = SiteDiff::Cache.new
+      cache.write_tags << :before << :after
+      cache.read_tags << :before if %w[before all].include?(options['cached'])
+      cache.read_tags << :after if %w[after all].include?(options['cached'])
+
+      sitediff = SiteDiff.new(config, cache)
       sitediff.run
 
       failing_paths = File.join(options['dump-dir'], 'failures.txt')
@@ -112,7 +122,7 @@ class SiteDiff
       config.validate(:need_before => false)
 
       cache = SiteDiff::Cache.new
-      cache.use(SiteDiff::Cache::Write, :before)
+      cache.write_tags << :before
 
       base = options[:url] || config.after['url']
       fetcher = SiteDiff::Fetch.new(cache, config.paths, :before => base)

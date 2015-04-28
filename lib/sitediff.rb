@@ -44,20 +44,18 @@ class SiteDiff
     @config.after['url']
   end
 
-  def initialize(config)
-    @cache = Cache.new
-    @cache.use(Cache::Write, :before, :after)
+  def initialize(config, cache)
+    @cache = cache
 
     # Check for single-site mode
     validate_opts = {}
     if @cache.tag?(:before) && !config.before['url']
       validate_opts[:need_before] = false
-      @cache.use(Cache::Read, :before)
+      cache.read_tags << :before
     end
 
     config.validate(validate_opts)
     @config = config
-
   end
 
   # Sanitize an HTML string based on configuration for either before or after
@@ -81,6 +79,11 @@ class SiteDiff
   def run
     # Map of path -> Result object, populated by process_results
     @results = {}
+
+    unless @cache.read_tags.empty?
+      SiteDiff.log("Using sites from cache: " +
+        @cache.read_tags.sort.join(', '))
+    end
 
     fetcher = Fetch.new(@cache, @config.paths,
       :before => before, :after => after)
