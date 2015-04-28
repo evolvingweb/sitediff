@@ -31,6 +31,10 @@ private
       if res = @cache.get(tag, path)
         results[tag] = res
         process_results(path, results)
+      elsif !base
+        # We only have the cache, but this item isn't cached!
+        results[tag] = UriWrapper::ReadResult.error("Not cached")
+        process_results(path, results)
       else
         uri = UriWrapper.new(base + path)
         uri.queue(@hydra) do |res|
