@@ -78,6 +78,7 @@ class Creator
   end
 
   def crawled_path(tag, path, res, doc)
+    $stderr.puts "fetched #{tag}: #{path}"
     path = canonicalize(path)
     return if @paths.include? path
 

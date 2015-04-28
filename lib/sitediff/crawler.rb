@@ -38,7 +38,14 @@ class Crawler
     # Find links
     doc = Nokogiri::HTML(res.content)
     links = find_links(doc)
-    uris = links.map { |l| base + l }
+    uris = []
+    links.each do |l|
+      begin
+        uris << base + l
+      rescue URI::InvalidURIError
+        $stderr.puts "skipped invalid URL: '#{l}'"
+      end
+    end
     uris = filter_links(uris)
 
     # Make them relative
