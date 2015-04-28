@@ -10,6 +10,11 @@ require 'uri'
 
 class SiteDiff
   class Cli < Thor
+    class_option 'directory',
+      :type => :string,
+      :aliases => '-C',
+      :desc => "Go to a given directory before running."
+
     # Thor, by default, exits with 0 no matter what!
     def self.exit_on_failure?
       true
@@ -52,6 +57,8 @@ class SiteDiff
       :desc => "Use the cached version of these sites, if available."
     desc "diff [OPTIONS] [CONFIGFILES]", "Perform systematic diff on given URLs"
     def diff(*config_files)
+      chdir
+
       config = SiteDiff::Config.new(config_files)
 
       # override config based on options
@@ -85,22 +92,23 @@ class SiteDiff
       :type => :numeric,
       :default => SiteDiff::Util::Webserver::DEFAULT_PORT,
       :desc => 'The port to serve on'
-    option :directory,
+    option 'dump-dir',
       :type => :string,
       :default => 'output',
-      :desc => 'The directory to serve',
-      :aliases => '--dump-dir'
+      :desc => 'The directory to serve'
     desc "serve [OPTIONS]", "Serve the sitediff output directory over HTTP"
     def serve
-      SiteDiff::Util::Webserver.serve(options[:port], options[:directory],
+      chdir
+
+      SiteDiff::Util::Webserver.serve(options[:port], options['dump-dir'],
         :announce => true).wait
     end
 
-    option :directory,
+    option :output,
       :type => :string,
       :default => 'sitediff',
       :desc => 'Where to place the configuration',
-      :aliases => ['--dir', '--output', '-d']
+      :aliases => ['-o']
     option :depth,
       :type => :numeric,
       :default => 3,
@@ -109,7 +117,7 @@ class SiteDiff
     def init(*urls)
       creator = SiteDiff::Config::Creator.new(*urls)
       creator.build(:depth => options[:depth])
-      creator.create(:directory => options[:directory])
+      creator.create(:directory => options[:output])
     end
 
     option :url,
@@ -118,6 +126,8 @@ class SiteDiff
     desc "store [CONFIGFILES]",
       "Cache the current contents of a site for later comparison"
     def store(*config_files)
+      chdir
+
       config = SiteDiff::Config.new(config_files)
       config.validate(:need_before => false)
 
@@ -129,6 +139,11 @@ class SiteDiff
       fetcher.run do |path, res|
         puts "Fetched %s" % path
       end
+    end
+
+  private
+    def chdir
+      Dir.chdir(options['directory']) if options['directory']
     end
   end
 end
