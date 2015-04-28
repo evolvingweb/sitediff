@@ -18,12 +18,11 @@ class Creator
     crawler = SiteDiff::Crawler.new(@after)
     found = crawler.crawl(opts[:depth])
 
-    @config = {}
-    @config['after_url'] = @after
+    @config = {'after' => {'url' => @after }}
     roots = [@after]
     if @before
-      @config['before_url'] = @before
-      urls << @before
+      @config['before'] = {'url' => @before }
+      roots << @before
     end
 
     rules = SiteDiff::Rules.find_rules(roots, found)
