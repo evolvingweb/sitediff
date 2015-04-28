@@ -176,9 +176,7 @@ class SiteDiff
       # If needed, do rules without a selector. We'd rather not convert to
       # a string unless necessary.
       global_rules = rules.reject { |r| r['selector'] }
-      return node if global_rules.empty?
-
-      str = node.to_html # Convert to string
+      str = prettify(node)
       global_rules.each do |r|
         context_for_regexp(nil, str, r) { |elem, text| substitute(text, r) }
       end
@@ -209,9 +207,9 @@ class SiteDiff
         perform_dom_transforms(node, transform)
       end
 
-      obj = perform_regexps(node, config['sanitization'])
-
-      return prettify(obj)
+      # This does prettify
+      str = perform_regexps(node, config['sanitization'])
+      return str
     end
   end
 end
