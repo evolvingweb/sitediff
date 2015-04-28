@@ -6,11 +6,12 @@ require 'nokogiri'
 class SiteDiff
 # Find appropriate rules for a given site
 class Rules
-  # A bunch of sanitization rules that we might want
-  def sanitization_candidates; []; end
-
-  def initialize(roots)
+  # each Rules object knows what the before and after root URLs are, and it has
+  # a list of sanitization rule candidates, loaded from a YAML file found in
+  # SITEDIFF_LIB/files/rules/
+  def initialize(roots, sanitization_candidates)
     @roots = roots
+    @sanitization_candidates = sanitization_candidates
   end
 
   # Yield a set of rules that seem reasonable for this HTML
@@ -18,7 +19,7 @@ class Rules
     rules = []
 
     if html
-      sanitization_candidates.each do |rule|
+      @sanitization_candidates.each do |rule|
         SiteDiff::Sanitize::context_for_regexp(doc, html, rule) do |elem, text|
           if SiteDiff::Sanitize::regexp_applies(text, rule)
             rules << { 'sanitization' => rule }
@@ -30,19 +31,16 @@ class Rules
     return rules
   end
 
-  # Find modules that define rules
+  # Create Rules objects from YAML files found in SITEDIFF_LIB/files/rules/
   def self.rulesets(roots)
-    dir = Pathname.new(__FILE__).sub_ext('')
-    dir.each_child do |child|
-      next unless child.file? && child.extname == '.rb'
-      load child
+    rules = []
+    rules_dir = File.join(Pathname.new(__FILE__).dirname, 'files', 'rules')
+
+    Pathname.new(rules_dir).children.each do |f|
+      next unless f.file? && f.extname == '.yaml'
+      rules << Rules.new(roots, YAML.load_file(f))
     end
-
-    @rulesets.map { |c| c.new(roots) }
-  end
-
-  def self.inherited(subc)
-    (@rulesets ||= []) << subc
+    rules
   end
 
   # Find all rules from all modules for all pages

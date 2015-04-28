@@ -11,7 +11,8 @@ EOS
   s.homepage    = 'https://github.com/evolvingweb/sitediff/'
   s.email       = 'alex@evolvingweb.ca'
   s.files       = Dir.glob('lib/**/*.rb') +
-                  Dir.glob('lib/sitediff/files/*')
+                  Dir.glob('lib/sitediff/files/*') +
+                  Dir.glob('lib/sitediff/files/rules/*.yaml')
   s.bindir      = 'bin'
   s.executables = 'sitediff'
 
