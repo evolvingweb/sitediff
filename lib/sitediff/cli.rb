@@ -161,7 +161,7 @@ class SiteDiff
       base = options[:url] || config.after['url']
       fetcher = SiteDiff::Fetch.new(cache, config.paths, :before => base)
       fetcher.run do |path, res|
-        puts "Fetched %s" % path
+        SiteDiff.log "Visited #{path}, cached"
       end
     end
 
