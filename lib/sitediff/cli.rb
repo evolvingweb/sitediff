@@ -34,6 +34,10 @@ class SiteDiff
       :desc => 'Paths are read (one at a line) from PATHS: ' +
                'useful for iterating over sanitization rules',
       :aliases => '--paths-from-file'
+    option 'paths',
+      :type => :array,
+      :aliases => '-p',
+      :desc => "Fetch only these specific paths"
     option 'before',
       :type => :string,
       :desc => "URL used to fetch the before HTML. Acts as a prefix to specified paths",
@@ -60,7 +64,13 @@ class SiteDiff
       config = chdir(config_files)
 
       # override config based on options
+      paths = options['paths']
       if paths_file = options['paths-file']
+        if paths then
+          SiteDiff::log "Can't have both --paths-file and --paths", :failure
+          exit -1
+        end
+
         unless File.exists? paths_file
           raise Config::InvalidConfig,
             "Paths file '#{paths_file}' not found!"
@@ -68,6 +78,7 @@ class SiteDiff
         SiteDiff::log "Reading paths from: #{paths_file}"
         config.paths = File.readlines(paths_file)
       end
+      config.paths = paths if paths
 
       config.before['url'] = options['before'] if options['before']
       config.after['url'] = options['after'] if options['after']
