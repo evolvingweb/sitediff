@@ -29,7 +29,7 @@ class SiteDiff
       :type => :string,
       :default => File.join('.', 'output'),
       :desc => "Location to write the output to."
-    option 'paths',
+    option 'paths-file',
       :type => :string,
       :desc => 'Paths are read (one at a line) from PATHS: ' +
                'useful for iterating over sanitization rules',
@@ -60,7 +60,7 @@ class SiteDiff
       config = chdir(config_files)
 
       # override config based on options
-      if paths_file = options['paths']
+      if paths_file = options['paths-file']
         unless File.exists? paths_file
           raise Config::InvalidConfig,
             "Paths file '#{paths_file}' not found!"
@@ -68,6 +68,7 @@ class SiteDiff
         SiteDiff::log "Reading paths from: #{paths_file}"
         config.paths = File.readlines(paths_file)
       end
+
       config.before['url'] = options['before'] if options['before']
       config.after['url'] = options['after'] if options['after']
 
@@ -146,7 +147,7 @@ class SiteDiff
 
       if opts[:config]
         SiteDiff::Config.new(files, :search => !dir)
-      else
+      elsif !dir
         SiteDiff::Config.search
       end
     end
