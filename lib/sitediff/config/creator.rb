@@ -9,7 +9,7 @@ require 'pathname'
 class SiteDiff
 class Config
 class Creator
-  def initialize(*urls)
+  def initialize(*urls, &block)
     @after = urls.pop
     @before = urls.pop # May be nil
   end
@@ -23,8 +23,9 @@ class Creator
   end
 
   # Build a config structure, return it
-  def create(opts)
+  def create(opts, &block)
     @config = {}
+    @callback = block
 
     # Handle options
     @dir = Pathname.new(opts[:directory])
@@ -35,7 +36,7 @@ class Creator
     @dir.mkpath unless @dir.directory?
 
     # Setup instance vars
-    @paths = Set.new
+    @paths = Hash.new { |h,k| h[k] = Set.new }
     @cache = Cache.new(@dir.+(Cache::DEFAULT_FILENAME).to_s)
     @cache.write_tags << :before << :after
 
@@ -52,43 +53,43 @@ class Creator
     crawl(@depth)
     @rules.add_config if @rules
 
-    @config['paths'] = @paths.sort
+    @config['paths'] = @paths.values.reduce(&:|).to_a.sort
   end
 
   def crawl(depth = nil)
     hydra = Typhoeus::Hydra.new(max_concurrency: 10)
     roots.each do |tag, u|
-      Crawler.new(hydra, u, depth) do |path, res, doc|
-        crawled_path(tag, path, res, doc)
+      Crawler.new(hydra, u, depth) do |info|
+        crawled_path(tag, info)
       end
     end
     hydra.run
   end
 
   # Deduplicate paths with slashes at the end
-  def canonicalize(path)
-    p = path + '/'
-    return p if @paths.include? p
+  def canonicalize(tag, path)
+    def altered_paths(path)
+      yield path + '/'
+      yield path.sub(%r[/$], '')
+    end
 
-    p = path.sub(%r[/$], '')
-    return p if @paths.include? p
-
-    return '/' if path.empty?
-    return path
+    return path.empty? ? '/' : path
   end
 
-  def crawled_path(tag, path, res, doc)
-    $stderr.puts "fetched #{tag}: #{path}"
-    path = canonicalize(path)
-    return if @paths.include? path
+  def crawled_path(tag, info)
+    path, dup = canonicalize(tag, info.relative)
+    return if dup
 
-    @paths << path
+    res = info.read_result
+
+    @callback[tag, info]
+    @paths[tag] << path
     @cache.set(tag, path, res)
 
     # If single-site, cache after as before!
     @cache.set(:before, path, res) unless roots[:before]
 
-    @rules.handle_page(tag, res.content, doc) if @rules && !res.error
+    @rules.handle_page(tag, res.content, info.document) if @rules && !res.error
   end
 
   # Create a gitignore if we seem to be in git
@@ -105,11 +106,14 @@ class Creator
     end
   end
 
+  def config_file
+    @dir + Config::DEFAULT_FILENAME
+  end
+
   # Turn a config structure into a config file
   def write_config
     make_gitignore(@dir)
-    conf = @dir + Config::DEFAULT_FILENAME
-    conf.open('w') { |f| f.puts @config.to_yaml }
+    config_file.open('w') { |f| f.puts @config.to_yaml }
   end
 end
 end

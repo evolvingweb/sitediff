@@ -138,7 +138,12 @@ class SiteDiff
         :directory => options[:output],
         :rules => options[:rules] != 'no',
         :rules_disabled => (options[:rules] == 'disabled'),
-      )
+      ) do |tag, info|
+        SiteDiff.log "Visited #{info.uri}, cached"
+      end
+
+      SiteDiff.log "Created #{creator.config_file}", :success
+      SiteDiff.log "You can now run 'sitediff diff'", :success
     end
 
     option :url,
