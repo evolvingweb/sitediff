@@ -34,7 +34,7 @@ class Creator
     # Setup instance vars
     @paths = Set.new
     @cache = Cache.new(@dir.+(Cache::DEFAULT_FILENAME).to_s)
-    @cache.write_tags << roots.keys
+    @cache.write_tags << :before << :after
 
     build_config
     write_config
@@ -65,17 +65,27 @@ class Creator
   end
 
   # Deduplicate paths with slashes at the end
-  def is_dup(path)
-    return @paths.include?(path) \
-      || @paths.include?(path.sub(%r[/$], '')) \
-      || @paths.include?(path + '/')
+  def canonicalize(path)
+    p = path + '/'
+    return p if @paths.include? p
+
+    p = path.sub(%r[/$], '')
+    return p if @paths.include? p
+
+    return '/' if path.empty?
+    return path
   end
 
   def crawled_path(tag, path, html)
-    return if is_dup(path)
+    path = canonicalize(path)
+    return if @paths.include? path
 
     @paths << path
     @cache.set(tag, path, html)
+
+    # If single-site, cache after as before!
+    @cache.set(:before, path, html) unless roots[:before]
+
     @rules.handle_page(tag, html)
   end
 
