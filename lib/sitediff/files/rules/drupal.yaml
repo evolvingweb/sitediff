@@ -6,6 +6,9 @@ sanitization:
   selector: input
   pattern: 'name="form_build_id" value="form-[-\w]{43}"'
   substitution: 'name="form_build_id" value="form-DRUPAL_FORM_BUILD_ID"'
+- title: Strip view DOM ID
+  pattern: '(class="view .*) view-dom-id-[a-f0-9]{32}"'
+  substitution: '\1 view-dom-id-DRUPAL_VIEW_DOM_ID"'
 - title: Strip CSS aggregation filenames
   selector: link[rel=stylesheet]
   pattern: '(href="[^"]*/files/css/css_)[-\w]{43}\.css"'
