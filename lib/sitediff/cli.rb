@@ -67,7 +67,7 @@ class SiteDiff
       paths = options['paths']
       if paths_file = options['paths-file']
         if paths then
-          SiteDiff::log "Can't have both --paths-file and --paths", :failure
+          SiteDiff::log "Can't have both --paths-file and --paths", :error
           exit -1
         end
 
@@ -88,16 +88,16 @@ class SiteDiff
       cache.read_tags << :before if %w[before all].include?(options['cached'])
       cache.read_tags << :after if %w[after all].include?(options['cached'])
 
-      sitediff = SiteDiff.new(config, cache)
+      sitediff = SiteDiff.new(config, cache, !options['quiet'])
       sitediff.run
 
       failing_paths = File.join(options['dump-dir'], 'failures.txt')
       sitediff.dump(options['dump-dir'], options['before-report'],
         options['after-report'], failing_paths)
     rescue Config::InvalidConfig => e
-      SiteDiff.log "Invalid configuration: #{e.message}", :failure
+      SiteDiff.log "Invalid configuration: #{e.message}", :error
     rescue SiteDiffException => e
-      SiteDiff.log e.message, :failure
+      SiteDiff.log e.message, :error
     end
 
     option :port,

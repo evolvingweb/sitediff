@@ -17,18 +17,21 @@ class SiteDiff
 
   # label will be colorized and str will not be.
   # type dictates the color: can be :success, :error, or :failure
-  def self.log(str, type=nil, label=nil)
+  def self.log(str, type=:info, label=nil)
     label = label ? "[sitediff] #{label}" : '[sitediff]'
     bg = fg = nil
     case type
-    when :success
+    when :info
+    when :diff_success
       bg = :green
       fg = :black
-    when :failure
+    when :diff_failure
       bg = :red
-    when :error
+    when :warn
       bg = :yellow
       fg = :black
+    when :error
+      bg = :red
     end
     label = Rainbow(label)
     label = label.bg(bg) if bg
