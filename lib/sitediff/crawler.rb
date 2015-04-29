@@ -46,7 +46,7 @@ class Crawler
       begin
         uris << base + URI.escape(l)
       rescue URI::InvalidURIError
-        $stderr.puts "skipped invalid URL: '#{l}'"
+        SiteDiff.log("skipped invalid URL: '#{l}'", :error, 'crawling')
       end
     end
     uris = filter_links(uris)
