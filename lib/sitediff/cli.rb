@@ -59,6 +59,11 @@ class SiteDiff
       :enum => %w[none all before after],
       :default => 'before',
       :desc => "Use the cached version of these sites, if available."
+    option 'quiet',
+      :type => :boolean,
+      :aliases => '-q',
+      :default => false,
+      :desc => "Show the difference between versions for each page"
     desc "diff [OPTIONS] [CONFIGFILES]", "Perform systematic diff on given URLs"
     def diff(*config_files)
       config = chdir(config_files)

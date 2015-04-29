@@ -47,8 +47,9 @@ class SiteDiff
     @config.after['url']
   end
 
-  def initialize(config, cache)
+  def initialize(config, cache, verbose=true)
     @cache = cache
+    @verbose = verbose
 
     # Check for single-site mode
     validate_opts = {}
@@ -73,7 +74,7 @@ class SiteDiff
       diff = Result.new(path, sanitize(read_results[:before].content, :before),
                         sanitize(read_results[:after].content,:after), nil)
     end
-    diff.log
+    diff.log(@verbose)
     @results[path] = diff
   end
 

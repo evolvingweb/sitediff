@@ -2,7 +2,7 @@ require 'fileutils'
 require 'digest/sha1'
 
 class SiteDiff
-  class Result < Struct.new(:path, :before, :after, :error)
+  class Result < Struct.new(:path, :before, :after, :error, :verbose)
     STATUS_SUCCESS  = 0   # Identical before and after
     STATUS_FAILURE  = 1   # Different before and after
     STATUS_ERROR    = 2   # Couldn't fetch page
@@ -49,15 +49,15 @@ class SiteDiff
     end
 
     # Log the result to the terminal
-    def log
+    def log(verbose=true)
       case status
       when STATUS_SUCCESS then
-        SiteDiff::log path, :success, 'SUCCESS'
+        SiteDiff::log path, :diff_success, 'SUCCESS'
       when STATUS_ERROR then
-        SiteDiff::log path, :error, "ERROR (#{error})"
+        SiteDiff::log path, :warn, "ERROR (#{error})"
       when STATUS_FAILURE then
-        SiteDiff::log path, :failure, "FAILURE"
-        puts Diff::terminal_diffy(before, after)
+        SiteDiff::log path, :diff_failure, "FAILURE"
+        puts Diff::terminal_diffy(before, after) if verbose
       end
     end
 
