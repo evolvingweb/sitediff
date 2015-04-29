@@ -1,7 +1,7 @@
 sanitization:
 - title: Strip Drupal.settings
   selector: script
-  pattern: '^jQuery.extend\(Drupal.settings.*$'
+  pattern: '^<script>jQuery.extend\(Drupal.settings.*$'
 - title: Strip form build ID
   selector: input
   pattern: 'name="form_build_id" value="form-[-\w]{43}"'
