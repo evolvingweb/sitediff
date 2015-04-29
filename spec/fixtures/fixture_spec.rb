@@ -21,8 +21,9 @@ describe SiteDiff::Cli do
 
         out, status = Open3.capture2(*cmd)
 
-        # Should run successfully
-        expect(status.success?).to be true
+        # Should run successfully (exit code 1 is when we crash, 2 is when
+        # there's a diff).
+        expect(status.exitstatus).to be 2
 
         # Should report that Hash.html doesn't match
         expect(out).to include 'FAILURE /Hash.html'
