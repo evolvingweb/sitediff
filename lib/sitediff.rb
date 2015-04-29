@@ -78,7 +78,8 @@ class SiteDiff
     @results[path] = diff
   end
 
-  # Perform the comparison
+  # Perform the comparison, populate @results and return the number of failing
+  # paths (paths with non-zero diff).
   def run
     # Map of path -> Result object, populated by process_results
     @results = {}
@@ -94,6 +95,7 @@ class SiteDiff
 
     # Order by original path order
     @results = @config.paths.map { |p| @results[p] }
+    return results.map{ |r| r unless r.success? }.compact.length
   end
 
   # Dump results to disk

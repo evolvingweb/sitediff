@@ -94,7 +94,9 @@ class SiteDiff
       cache.read_tags << :after if %w[after all].include?(options['cached'])
 
       sitediff = SiteDiff.new(config, cache, !options['quiet'])
-      sitediff.run
+      num_failing = sitediff.run
+      exit_code = (num_failing > 0) ? 2 : 0;
+
 
       failing_paths = File.join(options['dump-dir'], 'failures.txt')
       sitediff.dump(options['dump-dir'], options['before-report'],
@@ -103,6 +105,10 @@ class SiteDiff
       SiteDiff.log "Invalid configuration: #{e.message}", :error
     rescue SiteDiffException => e
       SiteDiff.log e.message, :error
+    else # no exception was raised
+      # Thor::Error  --> exit(1), guaranteed by exit_on_failure?
+      # Failing diff --> exit(2), populated above
+      exit(exit_code)
     end
 
     option :port,
