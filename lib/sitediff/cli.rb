@@ -123,8 +123,8 @@ class SiteDiff
     def serve
       chdir([], :config => false)
 
-      SiteDiff::Webserver.serve(options[:port], options['dump-dir'],
-        :announce => true).wait
+      SiteDiff::Webserver::ResultServer.new(options[:port],
+        options['dump-dir']).wait
     end
 
     option :output,

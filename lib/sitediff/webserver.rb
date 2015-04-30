@@ -8,27 +8,14 @@ DEFAULT_PORT = 13080
 attr_accessor :ports
 
 # Serve a list of directories
-def initialize(start_port, dirs, params = {})
+def initialize(start_port, dirs, opts = {})
   start_port ||= DEFAULT_PORT
   @ports = (start_port...(start_port + dirs.size)).to_a
+  @dirs = dirs
+  @opts = opts
 
-  if params[:announce]
-    puts "Serving at #{uris.join(", ")}"
-  end
-
-  opts = {}
-  if params[:quiet]
-    opts[:Logger] = WEBrick::Log.new(IO::NULL)
-    opts[:AccessLog] = []
-  end
-
-  @threads = []
-  dirs.each_with_index do |dir, idx|
-    opts[:Port] = @ports[idx]
-    opts[:DocumentRoot] = dir
-    server = WEBrick::HTTPServer.new(opts)
-    @threads << Thread.new { server.start }
-  end
+  setup
+  start_servers
 
   if block_given?
     yield self
@@ -48,10 +35,57 @@ def uris
   ports.map { |p| "http://localhost:#{p}" }
 end
 
+protected
+def setup
+  @server_opts = {}
+  if @opts[:quiet]
+    @server_opts[:Logger] = WEBrick::Log.new(IO::NULL)
+    @server_opts[:AccessLog] = []
+  end
+end
 
-# Helper to serve one dir
-def self.serve(port, dir, params = {})
-  new(port, [dir], params)
+def server(opts)
+  WEBrick::HTTPServer.new(opts)
+end
+
+def start_servers
+  @threads = []
+  @dirs.each_with_index do |dir, idx|
+    @server_opts[:Port] = @ports[idx]
+    @server_opts[:DocumentRoot] = dir
+    srv = server(@server_opts)
+    @threads << Thread.new { srv.start }
+  end
+end
+
+public
+
+class ResultServer < Webserver
+  def initialize(port, dir, opts = {})
+    super(port, [dir], opts)
+  end
+
+  def setup
+    super
+    root = "#{uris.first}/report.html"
+    puts "Serving at #{root}"
+    open_in_browser(root)
+  end
+
+  def open_in_browser(url)
+    commands = %w[xdg-open open]
+    cmd = commands.find { |c| which(c) }
+    system(cmd, url) if cmd
+    return cmd
+  end
+
+  def which(cmd)
+    ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+      file = File.join(path, cmd)
+      return file if File.executable?(file)
+    end
+    return nil
+  end
 end
 
 class FixtureServer < Webserver

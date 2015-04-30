@@ -90,8 +90,7 @@ class Fixture < Base
   def serve
     cmd = "#{executable('sitediff')} diff spec/fixtures/config.yaml"
     http_fixtures(cmd)
-    SiteDiff::Webserver.serve(nil, 'output', :announce => true,
-      :quiet => true).wait
+    SiteDiff::Webserver::ResultServer.new(nil, 'output', :quiet => true).wait
   end
 
   private
