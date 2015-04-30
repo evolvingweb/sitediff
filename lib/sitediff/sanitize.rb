@@ -33,11 +33,24 @@ def sanitize
   return @html || Sanitizer.prettify(@node)
 end
 
+# Perform 'remove_spacing' action
+def remove_spacing
+  rule = canonicalize_rule('remove_spacing') or return
+  Sanitizer.remove_node_spacing(@node) if rule['value']
+end
+
+# Perform 'selector' action, to choose a new root
+def selector
+  rule = canonicalize_rule('selector') or return
+  @node = Sanitizer.select_fragments(@node, rule['value'])
+end
+
 # Applies regexps. Also
 def regexps
   rules = @config['sanitization'] or return
-  rules.reject! { |r| r['disabled'] }
-  rules = rules.map { |r| Regexp.create(r) }
+  rules = rules.select { |r| want_rule(r) }
+
+  rules.map! { |r| Regexp.create(r) }
   selector, global = rules.partition { |r| r.selector? }
 
   selector.each { |r| r.apply(@node) }
@@ -45,28 +58,37 @@ def regexps
   global.each { |r| r.apply(@html) }
 end
 
-# Perform 'remove_spacing' action
-def remove_spacing
-  return unless @config['remove_spacing']
-  Sanitizer.remove_node_spacing(@node)
-end
-
-# Perform 'selector' action, to choose a new root
-def selector
-  sel = @config['selector'] or return
-  @node = Sanitizer.select_fragments(@node, sel)
-end
-
 # Perform DOM transforms
 def dom_transforms
   rules = @config['dom_transform'] or return
-  rules.reject! { |r| r['disabled'] }
+  rules = rules.select { |r| want_rule(r) }
+
   rules.each do |rule|
     transform = DomTransform.create(rule)
     transform.apply(@node)
   end
 end
 
+# Return whether or not we want to keep a rule
+def want_rule(rule)
+  return false unless rule
+  return false if rule['disabled']
+
+  # Filter out if path regexp doesn't match
+  if (pathre = rule['path']) and (path = @opts[:path])
+    return ::Regexp.new(pathre).match(path)
+  end
+
+  return true
+end
+
+# Canonicalize a rule that may or may not have sub-keys. Make it always use
+# sub keys.
+def canonicalize_rule(name)
+  rule = @config[name] or return nil
+  rule = { 'value' => rule } unless rule['value']
+  want_rule(rule) ? rule : nil
+end
 
 ##### Implementations of actions #####
 

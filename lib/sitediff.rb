@@ -61,9 +61,13 @@ class SiteDiff
     @config = config
   end
 
-  # Sanitize an HTML string based on configuration for either before or after
-  def sanitize(html, pos)
-    Sanitizer.new(html, @config.send(pos)).sanitize
+  # Sanitize HTML
+  def sanitize(path, read_results)
+    [:before, :after].map do |tag|
+      html = read_results[tag].content
+      config = @config.send(tag)
+      Sanitizer.new(html, config, :path => path).sanitize
+    end
   end
 
   # Process a set of read results
@@ -71,8 +75,7 @@ class SiteDiff
     if error = read_results[:before].error || read_results[:after].error
       diff = Result.new(path, nil, nil, error)
     else
-      diff = Result.new(path, sanitize(read_results[:before].content, :before),
-                        sanitize(read_results[:after].content,:after), nil)
+      diff = Result.new(path, *sanitize(path, read_results), nil)
     end
     diff.log(@verbose)
     @results[path] = diff
