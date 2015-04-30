@@ -37,22 +37,7 @@ class Crawler
     return unless depth >= 0
 
     base = URI(@base + rel)
-
-    # Find links
     doc = Nokogiri::HTML(res.content)
-    links = find_links(doc)
-    uris = []
-    links.each do |l|
-      begin
-        uris << base + URI.escape(l)
-      rescue URI::InvalidURIError
-        SiteDiff.log "skipped invalid URL: '#{l}'", :warn
-      end
-    end
-    uris = filter_links(uris)
-
-    # Make them relative
-    rels = uris.map { |u| u.path.slice(@base_uri.path.length, u.path.length) }
 
     # Call the callback
     info = Info.new(
@@ -63,11 +48,34 @@ class Crawler
     )
     @callback[info]
 
+    # Find links
+    links = find_links(doc)
+    uris = links.map { |l| resolve_link(base, l) }.compact
+    uris = filter_links(uris)
+
+    # Make them relative
+    rels = uris.map { |u| relativize_link(u) }
+
     # Queue them in turn
     rels.each do |r|
       next if @found.include? r
       add_uri(r, depth - 1)
     end
+  end
+
+  # Resolve a potentially-relative link. Return nil on error.
+  def resolve_link(base, rel)
+    begin
+      return base + URI.escape(rel)
+    rescue URI::InvalidURIError
+      SiteDiff.log "skipped invalid URL: '#{rel}'", :warn
+      return nil
+    end
+  end
+
+  # Make a link relative to @base_uri
+  def relativize_link(uri)
+    uri.path.slice(@base_uri.path.length, uri.path.length)
   end
 
   # Return a list of string links found on a page.
