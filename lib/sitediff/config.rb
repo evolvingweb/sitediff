@@ -7,7 +7,7 @@ class SiteDiff
     DEFAULT_FILENAME = 'sitediff.yaml'
 
     # keys allowed in configuration files
-    CONF_KEYS = Sanitize::TOOLS.values.flatten(1) +
+    CONF_KEYS = Sanitizer::TOOLS.values.flatten(1) +
                 %w[paths before after before_url after_url includes]
 
     class InvalidConfig < SiteDiffException; end
@@ -30,7 +30,7 @@ class SiteDiff
     #       selector: body
     #
     def self.normalize(conf)
-      tools = Sanitize::TOOLS
+      tools = Sanitizer::TOOLS
 
       # merge globals
       %w[before after].each do |pos|
@@ -70,7 +70,7 @@ class SiteDiff
           next
         end
         result[pos] = first[pos].merge!(second[pos]) do |key, a, b|
-          if Sanitize::TOOLS[:array].include? key # rule 2a
+          if Sanitizer::TOOLS[:array].include? key # rule 2a
             result[pos][key] = (a || []) + (b|| [])
           else
             result[pos][key] = a || b # rule 2b
