@@ -5,12 +5,6 @@ require 'nokogiri'
 require 'set'
 
 class SiteDiff
-module Sanitize
-  def self.sanitize(str, config)
-    Sanitizer.new(str, config).sanitize
-  end
-end
-
 class Sanitizer
 class InvalidSanitization < SiteDiffException; end
 
@@ -43,8 +37,7 @@ end
 def regexps
   rules = @config['sanitization'] or return
   rules.reject! { |r| r['disabled'] }
-
-  rules.map! { |r| Regexp.create(r) }
+  rules = rules.map { |r| Regexp.create(r) }
   selector, global = rules.partition { |r| r.selector? }
 
   selector.each { |r| r.apply(@node) }

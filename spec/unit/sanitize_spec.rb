@@ -1,7 +1,7 @@
 require "spec_helper"
 require 'nokogiri'
 
-describe SiteDiff::Sanitize do
+describe SiteDiff::Sanitizer do
   describe '::remove_spacing' do
     it 'normalizes space but only within text nodes' do
       doc = Nokogiri::HTML('<html><body  class="x  y">  z  </body></html>')
@@ -13,14 +13,14 @@ describe SiteDiff::Sanitize do
   describe '::sanitize' do
     it "doesn't strip HTML entities" do
       input = '<p>&mdash;</p>'
-      output = SiteDiff::Sanitize.sanitize(input, {})
+      output = SiteDiff::Sanitizer.new(input, {}).sanitize
       expect(output).to include "\u2014"
     end
 
     it "can perform a simple regex rule" do
       input = '<p>test something</p>'
       config = { 'sanitization' => [ { 'pattern' => 'something' } ] }
-      expect(SiteDiff::Sanitize.sanitize(input, config)).to include(
+      expect(SiteDiff::Sanitizer.new(input, config).sanitize).to include(
         '<p>test </p>')
     end
     it "can perform a more complex regex " do
@@ -30,7 +30,7 @@ describe SiteDiff::Sanitize do
         'selector' => 'input',
         'substitute' => '<input type="hidden" name="form_build_id" value="__form_build_id__">'
       } ] }
-      expect(SiteDiff::Sanitize.sanitize(input, config)).to include(
+      expect(SiteDiff::Sanitizer.new(input, config).sanitize).to include(
         '<input type="hidden" name="form_build_id" value="__form_build_id__"/>')
     end
     it "can perform regex replacements with captures" do
@@ -39,7 +39,7 @@ describe SiteDiff::Sanitize do
         'pattern' => '(<img src="\/[a-zA-Z0-9.]+)-[1-9a-zA-Z_]*(".*>)',
         'substitute' => '\1\2'
       } ] }
-      expect(SiteDiff::Sanitize.sanitize(input, config)).to include(
+      expect(SiteDiff::Sanitizer.new(input, config).sanitize).to include(
         '<img src="/file.jpeg" class="box"/>')
     end
     # FIXME cleanup sanitize.rb such that the following (and similar tests for
@@ -50,7 +50,7 @@ describe SiteDiff::Sanitize do
         'type' => 'unwrap',
         'selector' => '.parent'
       } ] }
-      output = SiteDiff::Sanitize.sanitize(input, config)
+      output = SiteDiff::Sanitizer.new(input, config).sanitize
       expect(output).not_to include('parent')
       expect(output.gsub(/\s*/, '')).to include('<p>X</p><p>Y</p>')
     end

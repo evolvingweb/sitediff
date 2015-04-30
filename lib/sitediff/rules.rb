@@ -1,4 +1,4 @@
-require 'sitediff/sanitize'
+require 'sitediff/sanitize/regexp'
 require 'set'
 require 'pathname'
 
@@ -33,14 +33,10 @@ class Rules
   def find_rules(html, doc)
     rules = []
 
-    @candidates.each do |rule|
-      SiteDiff::Sanitize::context_for_regexp(doc, html, rule) do |elem, text|
-        if SiteDiff::Sanitize::regexp_applies(text, rule)
-          rules << rule
-        end
-      end
+    return @candidates.select do |rule|
+      re = SiteDiff::Sanitizer::Regexp.create(rule)
+      re.applies?(html, doc)
     end
-    return rules
   end
 
   # Find all rules from all rulesets that apply for all pages

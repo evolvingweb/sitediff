@@ -63,7 +63,7 @@ class SiteDiff
 
   # Sanitize an HTML string based on configuration for either before or after
   def sanitize(html, pos)
-    Sanitize::sanitize(html, @config.send(pos))
+    Sanitizer.new(html, @config.send(pos)).sanitize
   end
 
   # Process a set of read results
