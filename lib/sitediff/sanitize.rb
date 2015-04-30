@@ -52,7 +52,7 @@ end
 def canonicalize_rule(name)
   rules = @config[name] or return nil
 
-  if rules[0]
+  if rules[0] && rules[0].respond_to?(:[]) && rules[0]['value']
     # Already an array
   elsif rules['value']
     # Hash, put it in an array
