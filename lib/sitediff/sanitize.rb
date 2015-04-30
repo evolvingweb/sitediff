@@ -89,36 +89,41 @@ def sanitize
   return html
 end
 
-
+# Perform 'remove_spacing' action
 def remove_spacing
   return unless @config['remove_spacing']
-  Sanitizer.node_remove_spacing(@node)
+  Sanitizer.remove_node_spacing(@node)
 end
 
+# Perform 'selector' action, to choose a new root
 def selector
   sel = @config['selector'] or return
-  @node = Sanitizer.node_selector(@node, sel)
+  @node = Sanitizer.select_fragments(@node, sel)
 end
 
+# Perform DOM transforms
 def dom_transforms
   rules = @config['dom_transform'] or return
-  rules.each { |rule| dom_transform(rule) }
+  rules.each do |rule|
+    return if rule['disabled']
+    transform = DomTransform.create(rule)
+    transform.apply(@node)
+  end
 end
 
-def dom_transform(rule)
-  return if rule['disabled']
-  transform = DomTransform.create(rule)
-  transform.apply(@node)
-end
 
-def self.node_remove_spacing(node)
+##### Implementations of actions #####
+
+# Remove double-spacing inside text nodes
+def self.remove_node_spacing(node)
   # remove double spacing, but only inside text nodes (eg not attributes)
   node.xpath('//text()').each do |el|
     el.content = el.content.gsub(/  +/, ' ')
   end
 end
 
-def self.node_selector(node, sel)
+# Get a fragment consisting of the elements matching the selector(s)
+def self.select_fragments(node, sel)
   # When we choose a new root, we always become a DocumentFragment,
   # and lose any DOCTYPE and such.
   ns = node.css(sel)
@@ -140,6 +145,8 @@ def self.prettify(obj)
   # The obvious way to do this is to iterate over pretty.css('html'),
   # but that tends to segfault Nokogiri
   str = @stylesheet.apply_to(to_document(obj))
+
+  # There's a lot of cruft left over,that we don't want
 
   # Remove xml declaration and <html> tags
   str.sub!(/\A<\?xml.*$\n/, '')
@@ -169,14 +176,16 @@ end
 def self.to_document(obj)
   if Nokogiri::XML::Document === obj
     return obj
-  elsif Nokogiri::XML::Node === obj # or fragment
+  elsif Nokogiri::XML::Node === obj # node or fragment
     return domify(obj.to_s, true)
 
     # This ought to work, and would be faster,
     # but seems to segfault Nokogiri
-    # doc = Nokogiri::HTML('<html><body>')
-    # doc.at('body').children = obj.children
-    # return doc
+    if false
+      doc = Nokogiri::HTML('<html><body>')
+      doc.at('body').children = obj.children
+      return doc
+    end
   else
     return to_document(domify(obj))
   end

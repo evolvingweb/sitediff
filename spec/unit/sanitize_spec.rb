@@ -5,7 +5,7 @@ describe SiteDiff::Sanitize do
   describe '::remove_spacing' do
     it 'normalizes space but only within text nodes' do
       doc = Nokogiri::HTML('<html><body  class="x  y">  z  </body></html>')
-      SiteDiff::Sanitizer::node_remove_spacing(doc)
+      SiteDiff::Sanitizer::remove_node_spacing(doc)
       expect(doc.to_s).to include '<html><body class="x  y"> z </body></html>'
     end
   end
