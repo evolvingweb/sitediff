@@ -22,7 +22,9 @@ end
 
 def targets(node)
   selectors = to_array(@rule['selector'])
-  node.css(selectors).each { |n| yield n }
+  selectors.each do |sel|
+    node.css(sel).each { |n| yield n }
+  end
 end
 
 def apply(node)
