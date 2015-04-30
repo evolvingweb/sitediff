@@ -33,6 +33,41 @@ def sanitize
   return @html || Sanitizer.prettify(@node)
 end
 
+# Return whether or not we want to keep a rule
+def want_rule(rule)
+  return false unless rule
+  return false if rule['disabled']
+
+  # Filter out if path regexp doesn't match
+  if (pathre = rule['path']) and (path = @opts[:path])
+    return ::Regexp.new(pathre).match(path)
+  end
+
+  return true
+end
+
+# Canonicalize a simple rule, eg: 'remove_spacing' or 'selector'.
+# It may be a simple value, or a hash, or an array of hashes.
+# Turn it into an array of hashes.
+def canonicalize_rule(name)
+  rules = @config[name] or return nil
+
+  if rules[0]
+    # Already an array
+  elsif rules['value']
+    # Hash, put it in an array
+    rules = [rules]
+  else
+    # Scalar, put it in a hash
+    rules = [{ 'value' => rules }]
+  end
+
+  want = rules.select { |r| want_rule(r) }
+  return nil if want.empty?
+  raise "Too many matching rules of type #{name}" if want.size > 1
+  return want.first
+end
+
 # Perform 'remove_spacing' action
 def remove_spacing
   rule = canonicalize_rule('remove_spacing') or return
@@ -67,27 +102,6 @@ def dom_transforms
     transform = DomTransform.create(rule)
     transform.apply(@node)
   end
-end
-
-# Return whether or not we want to keep a rule
-def want_rule(rule)
-  return false unless rule
-  return false if rule['disabled']
-
-  # Filter out if path regexp doesn't match
-  if (pathre = rule['path']) and (path = @opts[:path])
-    return ::Regexp.new(pathre).match(path)
-  end
-
-  return true
-end
-
-# Canonicalize a rule that may or may not have sub-keys. Make it always use
-# sub keys.
-def canonicalize_rule(name)
-  rule = @config[name] or return nil
-  rule = { 'value' => rule } unless rule['value']
-  want_rule(rule) ? rule : nil
 end
 
 ##### Implementations of actions #####
