@@ -2,7 +2,7 @@
 
 LIB_DIR = File.join(File.dirname(__FILE__), 'lib')
 $LOAD_PATH << LIB_DIR
-require 'sitediff/util/webserver'
+require 'sitediff/webserver'
 
 class Base < Thor
   # adds the option to all Base subclasses
@@ -90,14 +90,14 @@ class Fixture < Base
   def serve
     cmd = "#{executable('sitediff')} diff spec/fixtures/config.yaml"
     http_fixtures(cmd)
-    SiteDiff::Util::Webserver.serve(nil, 'output', :announce => true,
+    SiteDiff::Webserver.serve(nil, 'output', :announce => true,
       :quiet => true).wait
   end
 
   private
 
   def http_fixtures(cmd)
-    serv = SiteDiff::Util::FixtureServer.new
+    serv = SiteDiff::Webserver::FixtureServer.new
     run "#{cmd} --before #{serv.before} --after #{serv.after}"
     return serv
   end

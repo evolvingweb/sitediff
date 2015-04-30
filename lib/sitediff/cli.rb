@@ -3,7 +3,7 @@ require 'sitediff/diff'
 require 'sitediff/sanitize'
 require 'sitediff/fetch'
 require 'sitediff/cache'
-require 'sitediff/util/webserver'
+require 'sitediff/webserver'
 require 'sitediff/config/creator'
 require 'open-uri'
 require 'uri'
@@ -113,7 +113,7 @@ class SiteDiff
 
     option :port,
       :type => :numeric,
-      :default => SiteDiff::Util::Webserver::DEFAULT_PORT,
+      :default => SiteDiff::Webserver::DEFAULT_PORT,
       :desc => 'The port to serve on'
     option 'dump-dir',
       :type => :string,
@@ -123,7 +123,7 @@ class SiteDiff
     def serve
       chdir([], :config => false)
 
-      SiteDiff::Util::Webserver.serve(options[:port], options['dump-dir'],
+      SiteDiff::Webserver.serve(options[:port], options['dump-dir'],
         :announce => true).wait
     end
 

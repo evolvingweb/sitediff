@@ -4,12 +4,12 @@ require 'open3'
 require 'tmpdir'
 require 'nokogiri'
 
-require 'sitediff/util/webserver'
+require 'sitediff/webserver'
 require 'sitediff/cli'
 
 describe SiteDiff::Cli do
   it 'runs the fixture successfully' do
-    SiteDiff::Util::FixtureServer.new do |srv|
+    SiteDiff::Webserver::FixtureServer.new do |srv|
       Dir.mktmpdir do |dir|
         cmd = [
           './bin/sitediff', 'diff',
