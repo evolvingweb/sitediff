@@ -74,7 +74,7 @@ end
 
 # Unwrap the root element
 class UnwrapRoot < DomTransform
-  register "unwrap"
+  register "unwrap_root"
   def apply(node)
     node.children.size == 1 or
       raise InvalidSanitization, "Multiple root elements in unwrap_root"
