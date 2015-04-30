@@ -78,8 +78,13 @@ class SiteDiff
     else
       diff = Result.new(path, *sanitize(path, read_results), nil)
     end
-    diff.log(@verbose)
     @results[path] = diff
+
+    # Print results in order!
+    while next_diff = @results[@ordered.first]
+      next_diff.log(@verbose)
+      @ordered.shift
+    end
   end
 
   # Perform the comparison, populate @results and return the number of failing
@@ -87,6 +92,7 @@ class SiteDiff
   def run
     # Map of path -> Result object, populated by process_results
     @results = {}
+    @ordered = @config.paths.dup
 
     unless @cache.read_tags.empty?
       SiteDiff.log("Using sites from cache: " +
