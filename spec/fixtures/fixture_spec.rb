@@ -16,6 +16,7 @@ describe SiteDiff::Cli do
           '--before', srv.before,
           '--after', srv.after,
           '--dump-dir', dir,
+          '--cached', 'none',
           'spec/fixtures/config.yaml'
         ]
 

@@ -37,7 +37,8 @@ class Creator
 
     # Setup instance vars
     @paths = Hash.new { |h,k| h[k] = Set.new }
-    @cache = Cache.new(@dir.+(Cache::DEFAULT_FILENAME).to_s)
+    @cache = Cache.new(:file => @dir.+(Cache::DEFAULT_FILENAME).to_s,
+      :create => true)
     @cache.write_tags << :before << :after
 
     build_config

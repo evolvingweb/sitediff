@@ -53,7 +53,7 @@ class SiteDiff
 
     # Check for single-site mode
     validate_opts = {}
-    if @cache.tag?(:before) && !config.before['url']
+    if !config.before['url'] && @cache.tag?(:before)
       validate_opts[:need_before] = false
       cache.read_tags << :before
     end

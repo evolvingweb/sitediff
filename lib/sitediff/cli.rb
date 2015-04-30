@@ -88,10 +88,10 @@ class SiteDiff
       config.before['url'] = options['before'] if options['before']
       config.after['url'] = options['after'] if options['after']
 
-      cache = SiteDiff::Cache.new
-      cache.write_tags << :before << :after
+      cache = SiteDiff::Cache.new(:create => options['cached'] != 'none')
       cache.read_tags << :before if %w[before all].include?(options['cached'])
       cache.read_tags << :after if %w[after all].include?(options['cached'])
+      cache.write_tags << :before << :after
 
       sitediff = SiteDiff.new(config, cache, !options['quiet'])
       num_failing = sitediff.run
@@ -166,7 +166,7 @@ class SiteDiff
       config = chdir(config_files)
       config.validate(:need_before => false)
 
-      cache = SiteDiff::Cache.new
+      cache = SiteDiff::Cache.new(:create => true)
       cache.write_tags << :before
 
       base = options[:url] || config.after['url']
