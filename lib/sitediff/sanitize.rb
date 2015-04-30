@@ -1,4 +1,5 @@
 require 'sitediff/exception'
+require 'sitediff/sanitize/dom_transform'
 require 'nokogiri'
 require 'set'
 
@@ -22,26 +23,6 @@ def initialize(html, config, opts = {})
   @html = html
   @config = config
   @opts = opts
-end
-
-def transform_remove(rule, el)
-  el.remove
-end
-def transform_unwrap(rule, el)
-  el.add_next_sibling(el.children)
-  el.remove
-end
-def transform_remove_class(rule, el)
-  # Must call remove_class on a NodeSet!
-  ns = Nokogiri::XML::NodeSet.new(el.document, [el])
-  [rule['class']].flatten.each do |class_name|
-    ns.remove_class(class_name)
-  end
-end
-def transform_unwrap_root(rule, node)
-  node.children.size == 1 or
-    raise InvalidSanitization, "Multiple root elements in unwrap_root"
-  node.children = node.children[0].children
 end
 
 # Check if a regexp applies
@@ -119,17 +100,6 @@ def selector
   @node = Sanitizer.node_selector(@node, sel)
 end
 
-# Performs dom transformations.
-#
-# Currently supported transforms:
-#
-#  * { :type => "unwrap_root" }
-#  * { :type => "unwrap", :selector => "div.field-item" }
-#  * { :type => "remove", :selector => "div.extra-stuff" }
-#
-#  @arg node - Nokogiri document or Node
-#  @arg rules - array of dom_transform rules
-#  @return - transformed Nokogiri document node
 def dom_transforms
   rules = @config['dom_transform'] or return
   rules.each { |rule| dom_transform(rule) }
@@ -137,24 +107,8 @@ end
 
 def dom_transform(rule)
   return if rule['disabled']
-
-  type = rule['type'] or
-    raise InvalidSanitization, "DOM transform needs a type"
-  DOM_TRANSFORMS.include?(type) or
-    raise InvalidSanitization, "No DOM transform named #{type}"
-
-
-  meth = 'transform_' + type
-
-  if sels = rule['selector']
-    sels = [sels].flatten # Either array or scalar is fine
-    # Call method for each node the selectors find
-    sels.each do |sel|
-      @node.css(sel).each { |e| send(meth, rule, e) }
-    end
-  else
-    send(meth, rule, @node)
-  end
+  transform = DomTransform.create(rule)
+  transform.apply(@node)
 end
 
 def self.node_remove_spacing(node)
