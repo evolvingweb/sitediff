@@ -57,6 +57,7 @@ class SiteDiff
       validate_opts[:need_before] = false
       cache.read_tags << :before
     end
+    config.validate(validate_opts)
 
     @config = config
   end
