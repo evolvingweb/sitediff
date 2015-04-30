@@ -22,9 +22,6 @@ class Crawler
 
   # Handle a newly found relative URI
   def add_uri(rel, depth)
-    # Force encoding to UTF-8, for sane cache keys
-    rel.encode!('UTF-8')
-
     return if @found.include? rel
     @found << rel
 
