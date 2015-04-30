@@ -51,6 +51,7 @@ class Creator
     end
 
     crawl(@depth)
+    @cache.close
     @rules.add_config if @rules
 
     @config['paths'] = @paths.values.reduce(&:|).to_a.sort

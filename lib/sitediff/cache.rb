@@ -19,6 +19,8 @@ class Cache
     @write_tags = Set.new
   end
 
+  def close; @dbm.close; end
+
   # Is a tag cached?
   def tag?(tag)
     @dbm[tag.to_s]
