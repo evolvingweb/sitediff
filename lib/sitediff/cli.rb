@@ -119,12 +119,19 @@ class SiteDiff
       :type => :string,
       :default => 'output',
       :desc => 'The directory to serve'
+    option :browse,
+      :type => :boolean,
+      :default => true,
+      :desc => "Whether to open the served content in your browser"
     desc "serve [OPTIONS]", "Serve the sitediff output directory over HTTP"
     def serve
       chdir([], :config => false)
 
-      SiteDiff::Webserver::ResultServer.new(options[:port],
-        options['dump-dir']).wait
+      SiteDiff::Webserver::ResultServer.new(
+        options[:port],
+        options['dump-dir'],
+        :browse => options[:browse],
+      ).wait
     end
 
     option :output,

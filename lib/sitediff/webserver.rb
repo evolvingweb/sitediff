@@ -69,7 +69,7 @@ class ResultServer < Webserver
     super
     root = "#{uris.first}/report.html"
     puts "Serving at #{root}"
-    open_in_browser(root)
+    open_in_browser(root) if @opts[:browse]
   end
 
   def open_in_browser(url)
