@@ -1,5 +1,6 @@
 require 'sitediff/exception'
 require 'sitediff/sanitize/dom_transform'
+require 'sitediff/sanitize/regexp'
 require 'nokogiri'
 require 'set'
 
@@ -25,68 +26,30 @@ def initialize(html, config, opts = {})
   @opts = opts
 end
 
-# Check if a regexp applies
-def regexp_applies(str, rule)
-  dup = str.dup
-  substitute(str, rule)
-  dup != str
-end
-
-# Do one regexp transformation on a string
-def substitute(str, rule)
-  #FIXME escape forward slashes, right now we are escaping them in YAML!
-  str.gsub!(/#{rule['pattern']}/, rule['substitute'] || '' )
-  str
-end
-
-# Find the context for a regexp rule. Pass on the context to a handler
-# block
-def context_for_regexp(node, text, rule, &block)
-  if sel = rule['selector']
-    node.css(sel).each do |e|
-      block[e, e.to_html]
-    end
-  else
-    block[nil, text]
-  end
-end
-
-# Do all regexp sanitization rules
-def perform_regexps(node, rules)
-  rules ||= []
-  rules.reject! { |r| r['disabled'] }
-
-  # First do rules with a selector
-  rules.each do |rule|
-    next unless rule['selector']
-    context_for_regexp(node, nil, rule) do |elem, text|
-      elem.replace(substitute(text, rule))
-    end
-  end
-
-  # If needed, do rules without a selector. We'd rather not convert to
-  # a string unless necessary.
-  global_rules = rules.reject { |r| r['selector'] }
-  str = Sanitizer.prettify(node)
-  global_rules.each do |r|
-    context_for_regexp(nil, str, r) { |elem, text| substitute(text, r) }
-  end
-  return str
-end
-
-
 def sanitize
   return '' if @html == '' # Quick return on empty input
 
-  @node = Sanitizer.domify(@html)
+  @node, @html = Sanitizer.domify(@html), nil
 
   remove_spacing
   selector
   dom_transforms
+  regexps
 
-  # This does prettify
-  html = perform_regexps(@node, @config['sanitization'])
-  return html
+  return @html || Sanitizer.prettify(@node)
+end
+
+# Applies regexps. Also
+def regexps
+  rules = @config['sanitization'] or return
+  rules.reject! { |r| r['disabled'] }
+
+  rules.map! { |r| Regexp.create(r) }
+  selector, global = rules.partition { |r| r.selector? }
+
+  selector.each { |r| r.apply(@node) }
+  @html, @node = Sanitizer.prettify(@node), nil
+  global.each { |r| r.apply(@html) }
 end
 
 # Perform 'remove_spacing' action
@@ -104,8 +67,8 @@ end
 # Perform DOM transforms
 def dom_transforms
   rules = @config['dom_transform'] or return
+  rules.reject! { |r| r['disabled'] }
   rules.each do |rule|
-    return if rule['disabled']
     transform = DomTransform.create(rule)
     transform.apply(@node)
   end
