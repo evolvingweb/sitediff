@@ -5,6 +5,7 @@ require 'erb'
 class SiteDiff
 class Webserver
 class ResultServer < Webserver
+  # Display a page from the cache
   class CacheServlet < WEBrick::HTTPServlet::AbstractServlet
     def initialize(server, cache)
       @cache = cache
@@ -26,6 +27,7 @@ class ResultServer < Webserver
     end
   end
 
+  # Display two pages side by side
   class SideBySideServlet < WEBrick::HTTPServlet::AbstractServlet
     def initialize(server, cache, settings)
       @cache = cache
@@ -56,7 +58,14 @@ class ResultServer < Webserver
   end
 
   def server(opts)
-    srv = super
+    dir = opts.delete(:DocumentRoot)
+    srv = super(opts)
+    srv.mount_proc('/') do |req, res|
+      res.set_redirect(WEBrick::HTTPStatus::Found,
+        "/files/#{SiteDiff::REPORT_FILE}")
+    end
+
+    srv.mount('/files', WEBrick::HTTPServlet::FileHandler, dir, true)
     srv.mount('/cache', CacheServlet, @cache)
     srv.mount('/sidebyside', SideBySideServlet, @cache, @settings)
     return srv
@@ -64,7 +73,7 @@ class ResultServer < Webserver
 
   def setup
     super
-    root = "#{uris.first}/#{SiteDiff::REPORT_FILE}"
+    root = uris.first
     puts "Serving at #{root}"
     open_in_browser(root) if @opts[:browse]
   end
