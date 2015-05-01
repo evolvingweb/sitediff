@@ -122,8 +122,9 @@ class SiteDiff
       :default => true,
       :desc => "Whether to open the served content in your browser"
     desc "serve [OPTIONS]", "Serve the sitediff output directory over HTTP"
-    def serve
-      chdir([], :config => false)
+    def serve(*config_files)
+      config = chdir(config_files, :config => false)
+
       cache = Cache.new
       cache.read_tags << :before << :after
 
@@ -132,6 +133,7 @@ class SiteDiff
         options['dump-dir'],
         :browse => options[:browse],
         :cache => cache,
+        :config => config,
       ).wait
     end
 
@@ -191,10 +193,11 @@ class SiteDiff
       dir = options['directory']
       Dir.chdir(dir) if dir
 
-      if opts[:config]
+      begin
         SiteDiff::Config.new(files, :search => !dir)
-      elsif !dir
-        SiteDiff::Config.search
+      rescue SiteDiff::Config::ConfigNotFound => e
+        raise if opts[:config]
+        # If no config required, allow it to pass
       end
     end
   end

@@ -12,6 +12,7 @@ class SiteDiff
                 %w[paths before after before_url after_url includes]
 
     class InvalidConfig < SiteDiffException; end
+    class ConfigNotFound < SiteDiffException; end
 
     # Takes a Hash and normalizes it to the following form by merging globals
     # into before and after. A normalized config Hash looks like this:
@@ -108,7 +109,7 @@ class SiteDiff
       files = Config.search if files.empty? && opts[:search]
       files = [DEFAULT_FILENAME] if files.empty? &&
         File.exists?(DEFAULT_FILENAME)
-      raise InvalidConfig, "No configuration file found." if files.empty?
+      raise ConfigNotFound, "No configuration file found." if files.empty?
 
       files.each do |file|
         raise InvalidConfig, "Missing config file %s." % file \

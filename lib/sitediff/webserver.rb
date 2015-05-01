@@ -60,7 +60,7 @@ end
 
 public
 
-class CachingServer < Webserver
+class ResultServer < Webserver
   class CacheServlet < WEBrick::HTTPServlet::AbstractServlet
     def initialize(server, cache)
       @cache = cache
@@ -82,16 +82,14 @@ class CachingServer < Webserver
     end
   end
 
+  def initialize(port, dir, opts = {})
+    super(port, [dir], opts)
+  end
+
   def server(opts)
     srv = super
     srv.mount('/cache', CacheServlet, @opts[:cache])
     return srv
-  end
-end
-
-class ResultServer < CachingServer
-  def initialize(port, dir, opts = {})
-    super(port, [dir], opts)
   end
 
   def setup
