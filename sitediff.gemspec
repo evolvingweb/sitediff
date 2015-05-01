@@ -22,4 +22,5 @@ EOS
   s.add_dependency 'diffy'
   s.add_dependency 'typhoeus'
   s.add_dependency 'rainbow'
+  s.add_dependency 'addressable'
 end

@@ -1,9 +1,9 @@
 require 'sitediff'
 require 'sitediff/uriwrapper'
-require 'ostruct'
+require 'addressable/uri'
 require 'nokogiri'
+require 'ostruct'
 require 'set'
-require 'uri'
 
 class SiteDiff
 class Crawler
@@ -14,7 +14,7 @@ class Crawler
   # Create a crawler with a base URL
   def initialize(hydra, base, depth = DEFAULT_DEPTH, &block)
     @hydra = hydra
-    @base_uri = URI(base)
+    @base_uri = Addressable::URI.parse(base)
     @base = base
     @found = Set.new
     @callback = block
@@ -38,7 +38,7 @@ class Crawler
     return unless res.content # Ignore errors
     return unless depth >= 0
 
-    base = URI(@base + rel)
+    base = Addressable::URI.parse(@base + rel)
     doc = Nokogiri::HTML(res.content)
 
     # Call the callback
@@ -68,8 +68,8 @@ class Crawler
   # Resolve a potentially-relative link. Return nil on error.
   def resolve_link(base, rel)
     begin
-      return base + URI.escape(rel)
-    rescue URI::InvalidURIError
+      return base + rel
+    rescue Addressable::URI::InvalidURIError
       SiteDiff.log "skipped invalid URL: '#{rel}'", :warn
       return nil
     end

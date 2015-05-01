@@ -1,6 +1,6 @@
 require 'sitediff/exception'
 require 'typhoeus'
-require 'uri'
+require 'addressable/uri'
 
 class SiteDiff
   class SiteDiffReadFailure < SiteDiffException; end
@@ -25,7 +25,7 @@ class SiteDiff
     end
 
     def initialize(uri)
-      @uri = uri.respond_to?(:scheme) ? uri : URI.parse(uri)
+      @uri = uri.respond_to?(:scheme) ? uri : Addressable::URI.parse(uri)
       # remove trailing '/'s from local URIs
       @uri.path.gsub!(/\/*$/, '') if local?
     end
