@@ -16,6 +16,7 @@ class SiteDiff
   # files in output
   FAILURES_FILE = 'failures.txt'
   REPORT_FILE = 'report.html'
+  SETTINGS_FILE = 'settings.yaml'
 
   # label will be colorized and str will not be.
   # type dictates the color: can be :success, :error, or :failure
@@ -133,5 +134,9 @@ class SiteDiff
     # create report of results
     report = Diff::generate_html_report(results, report_before, report_after)
     dir.+(REPORT_FILE).open('w') { |f| f.write(report) }
+
+    # serve some settings
+    settings = { :before => report_before, :after => report_after }
+    dir.+(SETTINGS_FILE).open('w') { |f| YAML.dump(settings, f) }
   end
 end

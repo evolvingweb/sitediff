@@ -18,6 +18,7 @@
 
         <colgroup>
           <col class="before-col">
+          <col class="both-col">
           <col class="after-col">
           <col class="path-col">
           <col class="diff-stat-col">
@@ -26,6 +27,7 @@
         <thead>
           <tr>
             <th> Before </th>
+            <th> Both </th>
             <th> After </th>
             <th> Path </th>
             <th> Status </th>
@@ -35,6 +37,7 @@
         <% results.each do |result| %>
         <tr class="<%= result.status_text %>">
           <td class="before"><a href="<%= result.url(:before, before) %>">[before]</a></td>
+          <td class="both"><a href="/sidebyside<%= result.path %>">[both]</a></td>
           <td class="after"><a href="<%= result.url(:after, after) %>">[after]</a></td>
           <td class="path"><%= result.path %></td>
           <td class="status"><%= result.link %></td>

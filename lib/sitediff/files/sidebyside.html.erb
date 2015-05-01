@@ -1,0 +1,13 @@
+<html>
+  <head>
+    <title>Comparison for <%= path %></title>
+    <style>
+      <%= SiteDiff::Diff.css %>
+    </style>
+    <meta charset="utf-8" />
+  </head>
+  <body id="sidebyside">
+    <iframe src="<%= before %>"></iframe>
+    <iframe src="<%= after %>"></iframe>
+  </body>
+</html>

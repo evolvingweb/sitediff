@@ -33,10 +33,21 @@
   background-color: salmon;
 }
 .sitediff .before-col,
+.sitediff .both-col,
 .sitediff .after-col,
 .sitediff .diff-stat-col {
   width: 10%;
 }
 .sitediff .path-col {
   width: 55%;
+}
+
+#sidebyside {
+  margin: 0;
+}
+#sidebyside iframe {
+  float: left;
+  height: 100%;
+  width: 50%;
+  border: 0;
 }

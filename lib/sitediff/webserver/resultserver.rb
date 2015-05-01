@@ -1,5 +1,6 @@
 require 'sitediff'
 require 'sitediff/webserver'
+require 'erb'
 
 class SiteDiff
 class Webserver
@@ -25,13 +26,39 @@ class ResultServer < Webserver
     end
   end
 
+  class SideBySideServlet < WEBrick::HTTPServlet::AbstractServlet
+    def initialize(server, cache, settings)
+      @cache = cache
+      @settings = settings
+    end
+
+    def urls(path)
+      %w[before after].map do |tag|
+        base = @settings[tag.to_sym] || "/cache/#{tag.to_s}"
+        base + path
+      end
+    end
+
+    def do_GET(req, res)
+      path = req.path_info
+      before, after = *urls(path)
+
+      res['content-type'] = 'text/html'
+      erb = File.join(SiteDiff::FILES_DIR, 'sidebyside.html.erb')
+      res.body = ERB.new(File.read(erb)).result(binding)
+    end
+  end
+
   def initialize(port, dir, opts = {})
+    @settings = YAML.load_file(File.join(dir, SiteDiff::SETTINGS_FILE))
+    @cache = opts[:cache]
     super(port, [dir], opts)
   end
 
   def server(opts)
     srv = super
-    srv.mount('/cache', CacheServlet, @opts[:cache])
+    srv.mount('/cache', CacheServlet, @cache)
+    srv.mount('/sidebyside', SideBySideServlet, @cache, @settings)
     return srv
   end
 
