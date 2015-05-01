@@ -6,11 +6,21 @@ class SiteDiff
 
   class UriWrapper
     # This lets us treat errors or content as one object
-    class ReadResult < Struct.new(:content, :error)
-      def initialize(cont, err = nil)
-        super(cont, err)
+    class ReadResult
+      attr_accessor :content, :error_code, :error
+
+      def initialize(content = nil)
+        @content = content
+        @error = nil
+        @error_code = nil
       end
-      def self.error(err); new(nil, err); end
+
+      def self.error(err, code = nil)
+        res = new
+        res.error_code = code
+        res.error = err
+        return res
+      end
     end
 
     def initialize(uri)
@@ -96,7 +106,7 @@ class SiteDiff
       req.on_failure do |resp|
         msg = 'Unknown Error'
         msg = resp.status_message if resp and resp.status_message
-        yield ReadResult.error("HTTP error #{@uri}: #{msg}")
+        yield ReadResult.error("HTTP error #{@uri}: #{msg}", resp.response_code)
       end
 
       req

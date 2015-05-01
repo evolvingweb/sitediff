@@ -126,11 +126,14 @@ class SiteDiff
     desc "serve [OPTIONS]", "Serve the sitediff output directory over HTTP"
     def serve
       chdir([], :config => false)
+      cache = Cache.new
+      cache.read_tags << :before << :after
 
       SiteDiff::Webserver::ResultServer.new(
         options[:port],
         options['dump-dir'],
         :browse => options[:browse],
+        :cache => cache,
       ).wait
     end
 

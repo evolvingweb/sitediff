@@ -60,7 +60,36 @@ end
 
 public
 
-class ResultServer < Webserver
+class CachingServer < Webserver
+  class CacheServlet < WEBrick::HTTPServlet::AbstractServlet
+    def initialize(server, cache)
+      @cache = cache
+    end
+
+    def do_GET(req, res)
+      path = req.path_info
+      md = %r[^/([^/]+)(/.*)$].match(path) or
+        raise WEBrick::HTTPStatus::NotFound
+      tag, path = *md.captures
+      r = @cache.get(tag.to_sym, path) or
+        raise WEBrick::HTTPStatus::NotFound
+
+      raise WEBrick::HTTPStatus[r.error_code] if r.error_code
+      raise WEBrick::HTTPStatus::InternalServerError, r.error if r.error
+
+      res['content-type'] = 'text/html'
+      res.body = r.content
+    end
+  end
+
+  def server(opts)
+    srv = super
+    srv.mount('/cache', CacheServlet, @opts[:cache])
+    return srv
+  end
+end
+
+class ResultServer < CachingServer
   def initialize(port, dir, opts = {})
     super(port, [dir], opts)
   end
@@ -105,5 +134,6 @@ class FixtureServer < Webserver
     uris.last
   end
 end
+
 end
 end

@@ -30,7 +30,8 @@ class SiteDiff
     end
 
     # Printable URL
-    def url(prefix)
+    def url(tag, prefix)
+      prefix ||= "/cache/#{tag}"
       prefix.to_s + path
     end
 
