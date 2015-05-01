@@ -78,18 +78,18 @@ end
 class Fixture < Base
   desc 'local', 'Run a sitediff test case'
   def local
-    run "#{executable('sitediff')} diff spec/fixtures/config.yaml"
+    run "#{executable('sitediff')} diff --cached=none spec/fixtures/config.yaml"
   end
 
   desc 'http', 'Run a sitediff test case, using web servers'
   def http
-    cmd = "#{executable('sitediff')} diff spec/fixtures/config.yaml"
+    cmd = "#{executable('sitediff')} diff --cached=none spec/fixtures/config.yaml"
     http_fixtures(cmd).kill
   end
 
   desc 'serve', 'Serve the result of the fixture test'
   def serve
-    cmd = "#{executable('sitediff')} diff spec/fixtures/config.yaml"
+    cmd = "#{executable('sitediff')} diff --cached=none spec/fixtures/config.yaml"
     http_fixtures(cmd)
     SiteDiff::Webserver::ResultServer.new(nil, 'output', :quiet => true).wait
   end
