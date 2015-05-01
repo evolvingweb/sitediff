@@ -3,6 +3,7 @@
 LIB_DIR = File.join(File.dirname(__FILE__), 'lib')
 $LOAD_PATH << LIB_DIR
 require 'sitediff/webserver'
+require 'sitediff/webserver/resultserver'
 
 class Base < Thor
   # adds the option to all Base subclasses

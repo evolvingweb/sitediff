@@ -4,7 +4,7 @@ require 'sitediff/cache'
 require 'sitediff/config'
 require 'sitediff/config/creator'
 require 'sitediff/fetch'
-require 'sitediff/webserver'
+require 'sitediff/webserver/resultserver'
 
 class SiteDiff
   class Cli < Thor
