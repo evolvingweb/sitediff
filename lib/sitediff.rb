@@ -2,8 +2,9 @@
 require 'sitediff/config'
 require 'sitediff/fetch'
 require 'sitediff/result'
-require 'fileutils'
+require 'pathname'
 require 'rainbow'
+require 'yaml'
 
 class SiteDiff
   # path to misc. static files (e.g. erb, css files)
@@ -11,6 +12,10 @@ class SiteDiff
 
   # subdirectory containing all failing diffs
   DIFFS_DIR = 'diffs'
+
+  # files in output
+  FAILURES_FILE = 'failures.txt'
+  REPORT_FILE = 'report.html'
 
   # label will be colorized and str will not be.
   # type dictates the color: can be :success, :error, or :failure
@@ -106,25 +111,27 @@ class SiteDiff
   end
 
   # Dump results to disk
-  def dump(dir, report_before, report_after, failing_paths)
+  def dump(dir, report_before, report_after)
     report_before ||= before
     report_after ||= after
-    FileUtils.mkdir_p(dir)
+    dir = Pathname.new(dir)
+    dir.mkpath unless dir.directory?
 
     # store diffs of each failing case, first wipe out existing diffs
-    diff_dir = File.join(dir, DIFFS_DIR)
-    FileUtils.rm_rf(diff_dir)
+    diff_dir = dir + DIFFS_DIR
+    diff_dir.rmtree if diff_dir.exist?
     results.each { |r| r.dump(dir) if r.status == Result::STATUS_FAILURE }
     SiteDiff::log "All diff files were dumped inside #{dir}"
 
     # store failing paths
-    SiteDiff::log "Writing failures to #{failing_paths}"
-    File.open(failing_paths, 'w') do |f|
+    failures = dir + FAILURES_FILE
+    SiteDiff::log "Writing failures to #{failures}"
+    failures.open('w') do |f|
       results.each { |r| f.puts r.path unless r.success? }
     end
 
     # create report of results
     report = Diff::generate_html_report(results, report_before, report_after)
-    File.open(File.join(dir, "/report.html") , 'w') { |f| f.write(report) }
+    dir.+(REPORT_FILE).open('w') { |f| f.write(report) }
   end
 end

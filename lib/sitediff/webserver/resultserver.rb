@@ -1,3 +1,4 @@
+require 'sitediff'
 require 'sitediff/webserver'
 
 class SiteDiff
@@ -36,7 +37,7 @@ class ResultServer < Webserver
 
   def setup
     super
-    root = "#{uris.first}/report.html"
+    root = "#{uris.first}/#{SiteDiff::REPORT_FILE}"
     puts "Serving at #{root}"
     open_in_browser(root) if @opts[:browse]
   end

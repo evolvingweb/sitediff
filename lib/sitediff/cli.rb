@@ -95,10 +95,8 @@ class SiteDiff
       num_failing = sitediff.run
       exit_code = (num_failing > 0) ? 2 : 0;
 
-
-      failing_paths = File.join(options['dump-dir'], 'failures.txt')
       sitediff.dump(options['dump-dir'], options['before-report'],
-        options['after-report'], failing_paths)
+        options['after-report'])
     rescue Config::InvalidConfig => e
       SiteDiff.log "Invalid configuration: #{e.message}", :error
     rescue SiteDiffException => e
