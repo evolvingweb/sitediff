@@ -1,7 +1,9 @@
+require 'sitediff'
 require 'sitediff/uriwrapper'
-require 'typhoeus'
-require 'set'
 require 'ostruct'
+require 'nokogiri'
+require 'set'
+require 'uri'
 
 class SiteDiff
 class Crawler

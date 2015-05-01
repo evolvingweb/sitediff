@@ -1,3 +1,6 @@
+require 'sitediff/sanitize'
+require 'nokogiri'
+
 class SiteDiff
 class Sanitizer
 

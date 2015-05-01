@@ -1,6 +1,6 @@
 require 'sitediff/sanitize/regexp'
-require 'set'
 require 'pathname'
+require 'set'
 
 class SiteDiff
 # Find appropriate rules for a given site

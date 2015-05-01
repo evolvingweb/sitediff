@@ -1,6 +1,7 @@
 require 'sitediff/exception'
-require 'yaml'
+require 'sitediff/sanitize'
 require 'pathname'
+require 'yaml'
 
 class SiteDiff
   class Config

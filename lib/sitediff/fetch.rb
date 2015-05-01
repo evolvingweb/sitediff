@@ -1,5 +1,5 @@
-require 'typhoeus'
 require 'sitediff/uriwrapper'
+require 'typhoeus'
 
 class SiteDiff
 class Fetch

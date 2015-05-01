@@ -1,10 +1,10 @@
-require 'sitediff/uriwrapper'
+require 'sitediff/cache'
+require 'sitediff/config'
 require 'sitediff/crawler'
 require 'sitediff/rules'
-require 'sitediff/cache'
-require 'nokogiri'
-require 'yaml'
 require 'pathname'
+require 'typhoeus'
+require 'yaml'
 
 class SiteDiff
 class Config

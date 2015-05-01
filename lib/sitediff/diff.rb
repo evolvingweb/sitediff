@@ -1,3 +1,4 @@
+require 'sitediff'
 require 'diffy'
 require 'erb'
 require 'rainbow'

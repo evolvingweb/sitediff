@@ -1,11 +1,8 @@
 #!/bin/env ruby
-require 'sitediff/cli.rb'
-require 'sitediff/config.rb'
-require 'sitediff/result.rb'
-require 'sitediff/uriwrapper'
-require 'sitediff/cache'
+require 'sitediff/config'
 require 'sitediff/fetch'
-require 'typhoeus'
+require 'sitediff/result'
+require 'fileutils'
 require 'rainbow'
 
 class SiteDiff

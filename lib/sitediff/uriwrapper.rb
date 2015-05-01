@@ -1,5 +1,6 @@
 require 'sitediff/exception'
 require 'typhoeus'
+require 'uri'
 
 class SiteDiff
   class SiteDiffReadFailure < SiteDiffException; end

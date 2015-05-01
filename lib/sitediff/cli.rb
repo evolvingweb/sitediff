@@ -1,12 +1,10 @@
 require 'thor'
-require 'sitediff/diff'
-require 'sitediff/sanitize'
-require 'sitediff/fetch'
+require 'sitediff'
 require 'sitediff/cache'
-require 'sitediff/webserver'
+require 'sitediff/config'
 require 'sitediff/config/creator'
-require 'open-uri'
-require 'uri'
+require 'sitediff/fetch'
+require 'sitediff/webserver'
 
 class SiteDiff
   class Cli < Thor

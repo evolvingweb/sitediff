@@ -1,3 +1,4 @@
+require 'sitediff'
 require 'sitediff/exception'
 require 'sitediff/sanitize/dom_transform'
 require 'sitediff/sanitize/regexp'

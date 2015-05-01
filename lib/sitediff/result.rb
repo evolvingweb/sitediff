@@ -1,5 +1,7 @@
-require 'fileutils'
+require 'sitediff'
+require 'sitediff/diff'
 require 'digest/sha1'
+require 'fileutils'
 
 class SiteDiff
   class Result < Struct.new(:path, :before, :after, :error, :verbose)
