@@ -13,7 +13,7 @@ class Cache
     @write_tags = Set.new
   end
 
-  def close; @dbm.close; end
+  def close; @dbm.close if defined? @dbm; end
 
   # Is a tag cached?
   def tag?(tag)
