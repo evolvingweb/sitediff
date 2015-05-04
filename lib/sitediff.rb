@@ -139,7 +139,8 @@ class SiteDiff
     dir.+(REPORT_FILE).open('w') { |f| f.write(report) }
 
     # serve some settings
-    settings = { :before => report_before, :after => report_after }
+    settings = { 'before' => report_before, 'after' => report_after,
+       'cached' => @cache.read_tags.map { |t| t.to_s } }
     dir.+(SETTINGS_FILE).open('w') { |f| YAML.dump(settings, f) }
   end
 end

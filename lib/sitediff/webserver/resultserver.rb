@@ -36,7 +36,8 @@ class ResultServer < Webserver
 
     def urls(path)
       %w[before after].map do |tag|
-        base = @settings[tag.to_sym] || "/cache/#{tag.to_s}"
+        base = @settings[tag]
+        base = "/cache/#{tag}" if @settings['cached'].include? tag
         base + path
       end
     end
