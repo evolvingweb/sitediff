@@ -20,7 +20,7 @@ class SiteDiff
         to_s(*args)
     end
 
-    def generate_html_report(results, before, after)
+    def generate_html_report(results, before, after, cache)
       erb_path = File.join(SiteDiff::FILES_DIR, 'html_report.html.erb')
       report_html = ERB.new(File.read(erb_path)).result(binding)
       return report_html

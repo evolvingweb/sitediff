@@ -86,6 +86,7 @@ class SiteDiff
       config.before['url'] = options['before'] if options['before']
       config.after['url'] = options['after'] if options['after']
 
+      # Setup cache
       cache = SiteDiff::Cache.new(:create => options['cached'] != 'none')
       cache.read_tags << :before if %w[before all].include?(options['cached'])
       cache.read_tags << :after if %w[after all].include?(options['cached'])

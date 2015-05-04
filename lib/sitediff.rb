@@ -132,7 +132,8 @@ class SiteDiff
     end
 
     # create report of results
-    report = Diff::generate_html_report(results, report_before, report_after)
+    report = Diff::generate_html_report(results, report_before, report_after,
+      @cache)
     dir.+(REPORT_FILE).open('w') { |f| f.write(report) }
 
     # serve some settings

@@ -32,9 +32,9 @@ class SiteDiff
     end
 
     # Printable URL
-    def url(tag, prefix)
-      prefix ||= "/cache/#{tag}"
-      prefix.to_s + path
+    def url(tag, prefix, cache)
+      base = cache.read_tags.include?(tag) ? "/cache/#{tag}" : prefix
+      base.to_s + path
     end
 
     # Filename to store diff

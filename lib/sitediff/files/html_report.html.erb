@@ -11,8 +11,17 @@
   <body>
     <div class="sitediff">
       <div class="legend">
-        <strong>before</strong> (base url): <a href="<%=before%>"><%=before%></a> |
-        <strong>after </strong> (base url): <a href="<%=after%>" ><%=after %></a>
+        <%
+           tags = %w[before after]
+           tags.each do |tag| %>
+             <% if tags.first != tag %> | <% end %>
+             <strong><%= tag %></strong>
+             <% if cache.read_tags.include? tag.to_sym %>
+               (cached)
+             <% else %>
+              (base url): <a href="<%= eval(tag) %>"><%= eval(tag) %></a>
+             <% end %>
+        <% end %>
       </div>
       <table class="results">
 
@@ -36,9 +45,15 @@
 
         <% results.each do |result| %>
         <tr class="<%= result.status_text %>">
-          <td class="before"><a href="<%= result.url(:before, before) %>">[before]</a></td>
-          <td class="after"><a href="<%= result.url(:after, after) %>">[after]</a></td>
-          <td class="both"><a href="/sidebyside<%= result.path %>">[both]</a></td>
+          <td class="before">
+            <a href="<%= result.url(:before, before, cache) %>">[before]</a>
+          </td>
+          <td class="after">
+            <a href="<%= result.url(:after, after, cache) %>">[after]</a>
+          </td>
+          <td class="both">
+            <a href="/sidebyside<%= result.path %>">[both]</a>
+          </td>
           <td class="path"><%= result.path %></td>
           <td class="status"><%= result.link %></td>
         </tr>
