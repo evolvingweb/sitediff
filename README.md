@@ -3,26 +3,24 @@
 [![Build Status](https://travis-ci.org/evolvingweb/sitediff.svg?branch=master)](https://travis-ci.org/evolvingweb/sitediff)
 [![CircleCI Status](https://circleci.com/gh/evolvingweb/sitediff/tree/master.png?style=shield)](https://circleci.com/gh/evolvingweb/sitediff)
 
-SiteDiff makes it easy to see differences between two versions of a website. It
-accepts a set of paths to compare two versions of the site together with
-potential normalization/sanitization rules. From the provided paths and
-configuration SiteDiff generates an HTML report of all the status of HTML
-comparison between the given paths together with a readable diff-like HTML for
-each specified path containing the differences between the two versions of the
-site. It is useful tool for QAing re-deployments, site upgrades, etc.
+SiteDiff makes it easy to see how a website changes. If can compare two similar sites against each other, or it can show how a single site changed over time. It is useful tool for QAing re-deployments, site upgrades, and more!
+
+Each time you run SiteDiff, it produces an HTML report showing each requested path, and whether it has changed or not. For changed paths, you can see a colorized diff of the changes, or compare the visual differences side-by-side.
+
+SiteDiff supports a range of normalization/sanitization rules. These allow you to eliminate spurious differences, and only compare the things you want.
 
 ## Demo
 
-To quickly see what sitediff can do:
+To quickly see what SiteDiff can do:
 
 ```sh
 git clone https://github.com/evolvingweb/sitediff
 cd sitediff
 bundle install
-bundle exec rake fixture:serve
+bundle exec thor fixture:serve
 ```
 
-Then visit http://localhost:13080/report.html to view the report.
+Then visit http://localhost:13080 to view the report.
 
 Here is an example SiteDiff report:
 ![](https://dl.dropboxusercontent.com/u/6215598/Screenshot%20from%202014-04-10%2014%3A41%3A46.png)
