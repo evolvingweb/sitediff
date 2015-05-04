@@ -57,8 +57,10 @@ class SiteDiff
     # Check for single-site mode
     validate_opts = {}
     if !config.before['url'] && @cache.tag?(:before)
+      raise SiteDiffException,
+        "A cached 'before' is required for single-site mode" \
+        unless @cache.read_tags.include?(:before)
       validate_opts[:need_before] = false
-      cache.read_tags << :before
     end
     config.validate(validate_opts)
 
