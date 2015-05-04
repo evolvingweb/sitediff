@@ -15,12 +15,10 @@
            tags = %w[before after]
            tags.each do |tag| %>
              <% if tags.first != tag %> | <% end %>
-             <strong><%= tag %></strong>
-             <% if cache.read_tags.include? tag.to_sym %>
-               (cached)
-             <% else %>
-              (base url): <a href="<%= eval(tag) %>"><%= eval(tag) %></a>
-             <% end %>
+             <% notes = ['base url']
+                notes << 'cached' if cache.read_tags.include?(tag.to_sym) %>
+             <strong><%= tag %></strong> (<%= notes.join(', ') %>):
+               <a href="<%= eval(tag) %>"><%= eval(tag) %></a>
         <% end %>
       </div>
       <table class="results">
