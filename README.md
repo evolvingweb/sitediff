@@ -9,6 +9,19 @@ Each time you run SiteDiff, it produces an HTML report showing each requested pa
 
 SiteDiff supports a range of normalization/sanitization rules. These allow you to eliminate spurious differences, and only compare the things you want.
 
+## Table of contents
+
+- [Introduction](#sitediff)
+- [Demo](#demo)
+- [Installation](#installation)
+- [User's guide](#users-guide)
+ - [Getting started](#getting-started)
+ - [Comparing multiple sites](#comparing-multiple-sites)
+ - [Preventing spurious diffs](#preventing-spurious-diffs)
+ - [Getting help](#getting-help)
+ - [Tips & tricks](#tips--tricks)
+- [Configuration](#configuration)
+
 ## Demo
 
 To quickly see what SiteDiff can do:
@@ -25,7 +38,7 @@ Then visit http://localhost:13080 to view the report.
 Here is an example SiteDiff report:
 ![](https://dl.dropboxusercontent.com/u/6215598/Screenshot%20from%202014-04-10%2014%3A41%3A46.png)
 
-And here is an example SiteDiff diff report of a specific path:
+And here is an example SiteDiff diff of a specific path:
 ![](https://dl.dropboxusercontent.com/u/6215598/Screenshot%20from%202014-04-10%2013%3A54%3A26.png)
 
 ## Installation
