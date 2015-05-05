@@ -5,21 +5,20 @@ SiteDiff Changelog
 
 SUMMARY:
 
-- init 
-  - new subcommand!
-  - crawl sites
-  - auto rule generation
-- CLI
-  - automatically finding sitediff.yaml
-  - proper exit codes
-  - quiet diff
-- server
-  - side-by-side
-  - serve cached pages
-  - auto-open browser
-- single-site mode
-- per-path rules
-- code and docs cleanup
+- SiteDiff now supports 'single-site mode', where it compares a site against an older version of itself.
+- New command ```sitediff init```, to automatically create a configuration.
+  - Sites are crawled to discover useful paths.
+  - Rules are automatically generated for Drupal sites.
+- Command-line interface changes.
+  - It's no longer necessary to specify config files, SiteDiff will attempt to find them automatically.
+  - SiteDiff now uses proper exit codes.
+  - You can disable display of large diffs with the ```--quiet``` option.
+- ```sitediff serve```
+  - Cached versions of pages can be served.
+  - A visual side-by-side is available.
+  - ```sitediff serve``` will automatically open the report in a browser.
+- Sanitization rules can now apply to only certain paths, if desired.
+- Code and documentation has been cleaned up.
 
 FEATURES:
 
