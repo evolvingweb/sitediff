@@ -153,6 +153,11 @@ class SiteDiff
       :desc => 'Whether rules for the site should be auto-created'
     desc "init URL [URL]", "Create a sitediff configuration"
     def init(*urls)
+      unless (1..2).include? urls.size
+        SiteDiff.log "sitediff init requires one or two URLs", :error
+        exit 2
+      end
+
       chdir([], :search => false)
       creator = SiteDiff::Config::Creator.new(*urls)
       creator.create(
