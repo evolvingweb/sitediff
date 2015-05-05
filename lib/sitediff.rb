@@ -128,7 +128,7 @@ class SiteDiff
 
     # store failing paths
     failures = dir + FAILURES_FILE
-    SiteDiff::log "Writing failures to #{failures}"
+    SiteDiff::log "Writing failures to #{failures.expand_path}"
     failures.open('w') do |f|
       results.each { |r| f.puts r.path unless r.success? }
     end
