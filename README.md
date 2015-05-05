@@ -45,6 +45,13 @@ And here is an example SiteDiff diff of a specific path:
 
 ```gem install sitediff```
 
+
+You may need to do this as root, or run ```gem install --user sitediff```.
+
+You'll need Ruby 1.9.3 or higher. If you have a minimal system, you may need to install a few more packages; the following are enough on Ubuntu 14.04:
+
+```apt-get install -y ruby-dev libz-dev gcc patch make```
+
 ## User's guide
 
 ### Getting started
