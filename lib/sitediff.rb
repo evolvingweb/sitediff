@@ -124,7 +124,7 @@ class SiteDiff
     diff_dir = dir + DIFFS_DIR
     diff_dir.rmtree if diff_dir.exist?
     results.each { |r| r.dump(dir) if r.status == Result::STATUS_FAILURE }
-    SiteDiff::log "All diff files were dumped inside #{dir}"
+    SiteDiff::log "All diff files were dumped inside #{dir.expand_path}"
 
     # store failing paths
     failures = dir + FAILURES_FILE

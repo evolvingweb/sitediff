@@ -74,6 +74,7 @@ class SiteDiff
           exit -1
         end
 
+        paths_file = Pathname.new(paths_file).expand_path
         unless File.exists? paths_file
           raise Config::InvalidConfig,
             "Paths file '#{paths_file}' not found!"

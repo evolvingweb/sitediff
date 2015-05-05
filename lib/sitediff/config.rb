@@ -152,7 +152,7 @@ class SiteDiff
 
     # reads a YAML file and raises an InvalidConfig if the file is not valid.
     def self.load_raw_yaml(file)
-      SiteDiff::log "Reading config file: #{file}"
+      SiteDiff::log "Reading config file: #{Pathname.new(file).expand_path}"
       conf = YAML.load_file(file) || {}
       unless conf.is_a? Hash
         raise InvalidConfig, "Invalid configuration file: '#{file}'"
