@@ -112,7 +112,8 @@ class SiteDiff
       raise ConfigNotFound, "No configuration file found." if files.empty?
 
       files.each do |file|
-        raise InvalidConfig, "Missing config file %s." % file \
+        raise InvalidConfig,
+          "Missing config file %s." % File.expand_path(file) \
           unless File.exist?(file)
         @config = Config::merge(@config, Config::load_conf(file))
       end
