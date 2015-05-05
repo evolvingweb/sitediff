@@ -102,3 +102,10 @@ class Fixture < Base
     return serv
   end
 end
+
+class Util < Base
+  desc 'changelog', 'vim CHANGELOG.md, with a split pane for recent commits'
+  def changelog
+		run 'git log `git describe --tags --abbrev=0`..HEAD --oneline |  awk \'BEGIN { print "Commits since last tag:" }; {print "- " $0}\' | vim - -R +"vs CHANGELOG.md" +"set noro"'
+  end
+end
