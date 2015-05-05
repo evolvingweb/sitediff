@@ -152,6 +152,7 @@ class SiteDiff
       :desc => 'Whether rules for the site should be auto-created'
     desc "init URL [URL]", "Create a sitediff configuration"
     def init(*urls)
+      chdir([], :search => false)
       creator = SiteDiff::Config::Creator.new(*urls)
       creator.create(
         :depth => options[:depth],
@@ -162,7 +163,7 @@ class SiteDiff
         SiteDiff.log "Visited #{info.uri}, cached"
       end
 
-      SiteDiff.log "Created #{creator.config_file}", :success
+      SiteDiff.log "Created #{creator.config_file.expand_path}", :success
       SiteDiff.log "You can now run 'sitediff diff'", :success
     end
 
@@ -187,11 +188,12 @@ class SiteDiff
 
   private
     def chdir(files, opts = {})
-      opts = { :config => true }.merge(opts)
+      opts = { :config => true, :search => true }.merge(opts)
 
       dir = options['directory']
       Dir.chdir(dir) if dir
 
+      return unless opts[:search]
       begin
         SiteDiff::Config.new(files, :search => !dir)
       rescue SiteDiff::Config::ConfigNotFound => e
