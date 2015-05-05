@@ -172,14 +172,9 @@ To get help on the options for a particular command, eg: ```diff```:
 
 ## Configuration
 
-SiteDiff relies on a YAML configuration file to pick up the paths and required
-sanitization rules. Once you have created your _config.yml_, you can run SiteDiff like so:
+SiteDiff relies on a [YAML](http://yaml.org/) configuration file, usually called ```sitediff.yaml```. You can create a reasonable one using ```sitediff init```, but there are many useful things you may want to manually add or change.
 
-```sh
-sitediff diff config.yml
-```
-
-The following config.yml configuration blocks are recognized by SiteDiff:
+The following ```sitediff.yaml``` keys are recognized by SiteDiff:
 
 * **before_url** and **after_url**: The two base URLs to compare, for example:
 
@@ -190,7 +185,7 @@ The following config.yml configuration blocks are recognized by SiteDiff:
 
   They can also be paths to directories on the local filesystem.
 
-  Both _before_url_ and _after_url_ MUST provided either at the command-line or in the config.yml.
+  The _after_url_ MUST provided either at the command-line or in the sitediff.yaml. If the _before_url_ is provided, SiteDiff will compare the two sites. Otherwise, it will compare the after site with a stored version of that site, as created by ```sitediff init``` or ```sitediff store```.
 
 * **paths**: The list of paths to check, rooted at the base URL. For example:
 
@@ -203,7 +198,7 @@ The following config.yml configuration blocks are recognized by SiteDiff:
 
   In the example above, SiteDiff would compare _`http://example.com/subsite/index.html`_ and _`http://localhost:8080/subsite/index.html`_, followed by _page.html_, and so on.
 
-  The _paths_ MUST provided either at the command-line or in the config.yml.
+  The _paths_ MUST provided either at the command-line or in the sitediff.yaml.
 
 * **selector**: Chooses the sections of HTML we wish to compare, if you don't want to compare the entire page. For example if you want to only compare breadcrumbs between your two sites, you might specify:
 
@@ -303,4 +298,4 @@ The following config.yml configuration blocks are recognized by SiteDiff:
 
 ### Samples
 
-The config directory contains some example config.yml files. Eg: [config.yaml.example](config/config.yaml.example)
+The config directory contains some example ```sitediff.yaml``` files. Eg: [sitediff.yaml.example](config/sitediff.yaml.example)
