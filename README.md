@@ -106,7 +106,7 @@ dom_transform:
 
 When you run ```sitediff init```, SiteDiff will even auto-detect some potentially useful rules, and include them in your configuration file. They start disabled, but you can easily remove the ```disabled: true``` line to try them out. Currently only rules useful for common Drupal sites are auto-detected.
 
-See the full [sanitization rules reference](#sanitization) for more details.
+See the [configuration file reference](#configuration) for more details.
 
 ### Getting help
 
