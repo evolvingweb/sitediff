@@ -43,14 +43,16 @@ And here is an example SiteDiff diff of a specific path:
 
 ## Installation
 
-```gem install sitediff```
+You'll need Ruby 1.9.3 or higher.To speed things up, we first recommend installing nokogiri and deps manually. The following works on trusty:
 
+```bash
+sudo apt-get install -y ruby-dev libz-dev gcc patch make
+apt-get install -y libxml2-dev libxslt-dev 
+gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true --with-xml2-include=/usr/include/libxml2
+```
+Then install sitediff:
 
-You may need to do this as root, or run ```gem install --user sitediff```.
-
-You'll need Ruby 1.9.3 or higher. If you have a minimal system, you may need to install a few more packages; the following are enough on Ubuntu 14.04:
-
-```apt-get install -y ruby-dev libz-dev gcc patch make```
+```sudo gem install sitediff```
 
 ## User's guide
 
