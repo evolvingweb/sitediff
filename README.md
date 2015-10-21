@@ -47,8 +47,8 @@ You'll need Ruby 1.9.3 or higher.To speed things up, we first recommend installi
 
 ```bash
 sudo apt-get install -y ruby-dev libz-dev gcc patch make
-apt-get install -y libxml2-dev libxslt-dev 
-gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true --with-xml2-include=/usr/include/libxml2
+sudo apt-get install -y libxml2-dev libxslt-dev 
+sudo gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true --with-xml2-include=/usr/include/libxml2
 ```
 Then install sitediff:
 
