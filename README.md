@@ -252,6 +252,15 @@ The following ```sitediff.yaml``` keys are recognized by SiteDiff:
 
   * **remove**: Given a **selector**, removes all elements that match it.
 
+  For example, say we have a block with containing random articles or advertisements in the sidebar. To ignore the randomness, we might choose to delete the block by it's DOM ID during comparison. We can do this with the following rule:
+
+  ```yaml
+    dom_transform:
+    # Remove random articles block
+    - type: remove
+    - selector: div#block-random-content
+  ```
+
   * **unwrap**: Given a **selector**, replaces all matching elements with their children. For example, your content on one side of the comparison might look like this:
 
     ```html
