@@ -47,7 +47,7 @@ You'll need Ruby 1.9.3 or higher.To speed things up, we first recommend installi
 
 ```bash
 sudo apt-get install -y ruby-dev libz-dev gcc patch make
-sudo apt-get install -y libxml2-dev libxslt-dev 
+sudo apt-get install -y libxml2-dev libxslt-dev
 sudo gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true --with-xml2-include=/usr/include/libxml2
 ```
 Then install sitediff:
@@ -136,9 +136,9 @@ To get help on the options for a particular command, eg: ```diff```:
   ```sitediff diff -C some-directory```
 
   Or you can even specify a list of config files at the command-line:
-  
+
   ```sitediff diff myconfig.yaml otherconfig.yaml ...```
-  
+
 * **Handling large configuration files**
 
   If your configuration file starts getting really big, SiteDiff lets you separate it out into multiple files. Just have one base file that includes other files:
@@ -150,7 +150,7 @@ To get help on the options for a particular command, eg: ```diff```:
   ```
 
 * **Specifying paths**
-  
+
   When you run ```sitediff diff```, you can specify which pages to look at in several ways:
 
   1. The ```paths``` key in your configuration file.
@@ -160,7 +160,7 @@ To get help on the options for a particular command, eg: ```diff```:
   1. The option ```--paths-file FILE``` with a newline-delimited text file.
 
      This is particularly useful when you're trying to eliminate all diffs. SiteDiff creates a file ```output/failures.txt``` containing all paths which had differences, so as you try to fix differences, you can run:
- 
+
      ```sitediff diff --paths-file output/failures.txt```
 
 * **Debugging rules**
@@ -174,9 +174,9 @@ To get help on the options for a particular command, eg: ```diff```:
 * **Running inside containers**
 
   If you run SiteDiff inside a container or virtual machine, the URLs in its report might not work from your host, such as ```localhost```. You can fix this by using the ```--before-url-report``` and ```--after-url-report``` options, to tell SiteDiff to use a different URL in the report than the one it uses for fetching.
-  
+
   For example, if you ran ```sitediff init http://mysite.com http://localhost``` inside a [Vagrant](https://www.vagrantup.com/) VM, you might then run something like:
-  
+
   ```sitediff diff --after-url-report=http://vagrant:8080```
 
 ## Configuration
