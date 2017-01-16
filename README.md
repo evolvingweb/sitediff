@@ -149,6 +149,8 @@ To get help on the options for a particular command, eg: ```diff```:
     - paths.yaml
   ```
 
+  With the help of this feature, you can have separate YAML files for different aspects / features / components of your site. For example, general site-specific rules can live in a `general.yaml` file whereas platform-specific rules can live in another file like `drupal-8.x.yaml` and so on.
+
 * **Specifying paths**
 
   When you run ```sitediff diff```, you can specify which pages to look at in several ways:
