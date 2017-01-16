@@ -324,7 +324,7 @@ The following ```sitediff.yaml``` keys are recognized by SiteDiff:
    The above rule will replace dates of the form `2004/12/05` in _before_ and dates of
    the form `May 12th 2004` in _after_ with `__date__`.
 
-* **include**: The names of other configuration YAML files to merge with this one.
+* **includes**: The names of other configuration YAML files to merge with this one.
 
   ```yaml
   includes:
