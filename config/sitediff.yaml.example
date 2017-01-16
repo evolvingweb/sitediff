@@ -1,18 +1,93 @@
-before_url: http://localhost:8080
-after_url: http://localhost:8081
-
+# A list of paths in the site which are to be compared.
+#
+# Paths on your site are crawled and added to this list
+# automatically while running the init command.
 paths:
  - /
  - /user
+ - /blog?foo=bar
 
+# The element to compare.
+#
+# Instead of comparing HTML of the entire page, if you wish to
+# compare the contents of only a particular element, you can
+# specify a selector here. With the line below, only the <body />
+# element of the 'before' and 'after' sites would be compared
+# while running a diff.
 selector: 'body'
 
+# General sanitizations.
+#
+# These would be applied to both versions of the site.
 sanitization:
-- pattern:    '<input type="hidden" name="form_build_id" value="form-[a-zA-Z0-9_-]+" *\/?>'
-  substitute: '<input type="hidden" name="form_build_id" value="__form_build_id__">'
+  # Standardize absolute domain names by removing the '/old' and
+  # '/new' parts from the domains.
+  - title: Strip domain names from absolute URLs
+    # A RegEx pattern.
+    pattern: http:\/\/localhost/(new|old)
+    substitute: http://localhost
+  # Normalize INPUT elements containg random token.
+  - title: Remove form-build-id
+    pattern: '<input type="hidden" name="form_build_id" value="form-[a-zA-Z0-9_-]+" *\/?>'
+    substitute: '<input type="hidden" name="form_build_id" value="__form_build_id__">'
+  # Replace meta property="twitter:*" with meta name="twitter:*".
+  - title: Meta 'property' changed to 'name'
+    # Selector specifies that the rule will only work for 'meta'
+    # elements in the document.
+    selector: meta
+    pattern: 'property="twitter:'
+    substitute: 'name="twitter:'
 
+# General DOM transforms.
+#
+# These would be applied to both versions of the site.
+dom_transform:
+  # Unwrap all ARTICLE elements.
+  - title: Unwrap article elements
+    type: unwrap
+    selector: article
+  # Remove a single classname from all DIV elements.
+  - title: Remove class-foo from DIV elements
+    type: remove_class
+    selector: div
+    class: foo
+  # Remove a multiple classnames from all DIV elements.
+  - title: Remove class-bar and class-baz from DIV elements
+    type: remove_class
+    selector: div
+    class:
+      - class-bar
+      - class-baz
+  # Remove a <div /> element by ID.
+  - title: Remove block containing random articles
+    type: remove
+    selector: div#block-random-content
+
+# Rules under this element apply only to the 'before' site.
 before:
+  # URL of the 'before' version of the site.
+  url: http://localhost/old
+  # Sanitizations, just like the general ones demonstrated above.
+  sanitization:
+  # DOM transformations, just like the general ones demonstrated above.
   dom_transform:
-  - type: remove
-    selector:
-    - '#something'
+
+# Rules under this element apply only to the 'before' site.
+after:
+  # URL of the 'after' version of the site.
+  url: http://localhost/new
+  # Sanitization definitions just like the general ones demonstrated above.
+  sanitization:
+  # DOM transformations, just like the general ones demonstrated above.
+  dom_transform:
+
+# Include other configuration files.
+#
+# Additional configuration files would be merged with configurations
+# contained in this file at run-time.
+#
+# NOTE: We have mentioned the files below just for demonstration although
+# the files do not actually exist.
+includes:
+  - config-foo.yaml
+  - config-bar.yaml
