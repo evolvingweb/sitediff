@@ -286,6 +286,22 @@ The following ```sitediff.yaml``` keys are recognized by SiteDiff:
 
   * **remove_class**: Given a **selector** and a **class**, removes that class from each element that matches the selector. It can also take a list of classes, instead of just one.
 
+  For example, here are two sample rules for removing a single class and removing multiple classes from all `div` elements:
+
+  ```yaml
+  dom_transform:
+    # Remove class-foo from DIV elements
+    - type: remove_class
+      selector: div
+      class: class-foo
+    # Remove class-bar and class-baz from DIV elements
+    - type: remove_class
+      selector: div
+      class:
+        - class-bar
+        - class-baz
+  ```
+
   * **unwrap_root**: Replaces the entire root element with its children.
 
 * **before** and **after**: Applies rules to just one side of the comparison.
