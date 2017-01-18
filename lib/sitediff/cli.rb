@@ -140,7 +140,7 @@ class SiteDiff
     option :output,
       :type => :string,
       :default => 'sitediff',
-      :desc => 'Where to place the configuration',
+      :desc => 'Directory in which to place the configuration',
       :aliases => ['-o']
     option :depth,
       :type => :numeric,
