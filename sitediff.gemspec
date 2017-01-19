@@ -18,9 +18,20 @@ EOS
 
   # FIXME pin down minimum version requirements
   s.add_dependency 'thor'
-  s.add_dependency 'nokogiri'
-  s.add_dependency 'diffy'
   s.add_dependency 'typhoeus'
   s.add_dependency 'rainbow'
-  s.add_dependency 'addressable'
+
+  if RUBY_VERSION >= '2.1'
+    s.add_dependency 'nokogiri'
+  else
+    s.add_dependency 'nokogiri', '< 1.7'
+  end
+
+  if RUBY_VERSION >= '2.0'
+    s.add_dependency 'diffy'
+    s.add_dependency 'addressable'
+  else
+    s.add_dependency 'diffy', '< 3.0.5'
+    s.add_dependency 'addressable', '< 2.5'
+  end
 end
