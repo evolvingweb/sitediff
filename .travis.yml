@@ -6,7 +6,6 @@ rvm:
 - 2.1
 - 2.2
 - 2.3
-- 2.4
 # FIXME: jruby doesn't work. No idea about rbx.
 
 before_install:
