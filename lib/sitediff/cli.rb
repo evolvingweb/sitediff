@@ -35,7 +35,7 @@ class SiteDiff
     option 'paths',
       :type => :array,
       :aliases => '-p',
-      :desc => "Fetch only these specific paths"
+      :desc => "Specific path or paths to fetch"
     option 'before',
       :type => :string,
       :desc => "URL used to fetch the before HTML. Acts as a prefix to specified paths",
@@ -61,7 +61,7 @@ class SiteDiff
       :type => :boolean,
       :aliases => '-q',
       :default => false,
-      :desc => "Show the difference between versions for each page"
+      :desc => "Do not show differences between versions for each page"
     desc "diff [OPTIONS] [CONFIGFILES]", "Perform systematic diff on given URLs"
     def diff(*config_files)
       config = chdir(config_files)
