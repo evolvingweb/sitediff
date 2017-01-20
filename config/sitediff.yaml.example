@@ -1,93 +1,71 @@
 # A list of paths in the site which are to be compared.
 #
-# Paths on your site are crawled and added to this list
-# automatically while running the init command.
+# This is usually populated automatically by running 'sitediff init'
 paths:
  - /
  - /user
  - /blog?foo=bar
 
-# The element to compare.
+# The root element to compare.
 #
-# Instead of comparing HTML of the entire page, if you wish to
-# compare the contents of only a particular element, you can
-# specify a selector here. With the line below, only the <body />
-# element of the 'before' and 'after' sites would be compared
-# while running a diff.
+# Usually, sitediff compares the HTML of the entire page. If you'd rather
+# check just a subset of the page, specify a selector here. For example, the
+# line below causes only the body to be compared, ignoring the HTML head.
 selector: 'body'
 
-# General sanitizations.
-#
-# These would be applied to both versions of the site.
+# General regular expression rules, applied to both versions of the site.
 sanitization:
-  # Standardize absolute domain names by removing the '/old' and
-  # '/new' parts from the domains.
-  - title: Strip domain names from absolute URLs
-    # A RegEx pattern.
-    pattern: http:\/\/localhost/(new|old)
-    substitute: http://localhost
-  # Normalize INPUT elements containg random token.
+  # Normalize input tags containg random tokens.
   - title: Remove form-build-id
     pattern: '<input type="hidden" name="form_build_id" value="form-[a-zA-Z0-9_-]+" *\/?>'
     substitute: '<input type="hidden" name="form_build_id" value="__form_build_id__">'
+
   # Replace meta property="twitter:*" with meta name="twitter:*".
   - title: Meta 'property' changed to 'name'
-    # Selector specifies that the rule will only work for 'meta'
-    # elements in the document.
-    selector: meta
     pattern: 'property="twitter:'
     substitute: 'name="twitter:'
+    # 'selector' limits this rule to only within the selected elements.
+    selector: meta
+    # 'path' limits this rule to only certain pages.
+    path: /user
 
-# General DOM transforms.
-#
-# These would be applied to both versions of the site.
+# General DOM transforms, applied to both versions of the site.
 dom_transform:
-  # Unwrap all ARTICLE elements.
+  # Remove article elements, replacing them with their content
   - title: Unwrap article elements
     type: unwrap
     selector: article
-  # Remove a single classname from all DIV elements.
-  - title: Remove class-foo from DIV elements
-    type: remove_class
-    selector: div
-    class: foo
-  # Remove a multiple classnames from all DIV elements.
-  - title: Remove class-bar and class-baz from DIV elements
+
+  # Remove classes from divs
+  - title: Remove classes bar and baz from divs
     type: remove_class
     selector: div
     class:
       - class-bar
       - class-baz
-  # Remove a <div /> element by ID.
-  - title: Remove block containing random articles
+
+  # Remove a div ID.
+  - title: Remove block containing current time.
     type: remove
-    selector: div#block-random-content
+    selector: div#block-time
 
 # Rules under this element apply only to the 'before' site.
 before:
   # URL of the 'before' version of the site.
   url: http://localhost/old
-  # Sanitizations, just like the general ones demonstrated above.
-  sanitization:
-  # DOM transformations, just like the general ones demonstrated above.
-  dom_transform:
 
-# Rules under this element apply only to the 'before' site.
+  # Sanitizations and DOM transformations, just like the general ones
+  # demonstrated above, but applied only to the 'before' site.
+  dom_transform:
+    - title: Example
+      type: remove
+      selector: div.updates-required
+
+# Rules under this element apply only to the 'after' site.
 after:
   # URL of the 'after' version of the site.
   url: http://localhost/new
-  # Sanitization definitions just like the general ones demonstrated above.
-  sanitization:
-  # DOM transformations, just like the general ones demonstrated above.
-  dom_transform:
 
-# Include other configuration files.
-#
-# Additional configuration files would be merged with configurations
-# contained in this file at run-time.
-#
-# NOTE: We have mentioned the files below just for demonstration although
-# the files do not actually exist.
+# Include other configuration files, merging them with this file.
 includes:
-  - config-foo.yaml
-  - config-bar.yaml
+  - extra-rules.yaml
