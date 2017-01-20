@@ -5,13 +5,19 @@ rvm:
 - 2.0.0
 - 2.1
 - 2.2
-- 2.3
+- 2.3.3 # Just '2.3' gives Travis grief for some reason
 # FIXME: jruby doesn't work. No idea about rbx.
 
-before_install:
-- sudo apt-get update
-- sudo apt-get install -y ruby-dev make pkg-config libxml2-dev libxslt-dev libcurl3
+sudo: false
+addons:
+  apt:
+    packages:
+    - ruby-dev
+    - make
+    - pkg-config
+    - libxml2-dev
+    - libxslt1-dev
+    - libcurl3
 
 install: NOKOGIRI_USE_SYSTEM_LIBRARIES=1 bundle install
-
 script: 'bundle exec thor spec && bundle exec thor fixture:local'
