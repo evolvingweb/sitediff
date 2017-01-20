@@ -7,7 +7,7 @@ SiteDiff makes it easy to see how a website changes. It can compare two similar 
 
 Each time you run SiteDiff, it produces an HTML report showing each requested path, and whether it has changed or not. For changed paths, you can see a colorized diff of the changes, or compare the visual differences side-by-side in a browser.
 
-SiteDiff supports a range of normalization/sanitization rules. These allow you to eliminate spurious differences, and only compare the things you want - usually the things which actually affect the sites's functionality and appearance.
+SiteDiff supports a range of normalization/sanitization rules. These allow you to eliminate spurious differences, narrowing down the differences to the ones that materially affect the site.
 
 ## Table of contents
 
@@ -43,7 +43,7 @@ And here is an example SiteDiff diff of a specific path:
 
 ## Installation
 
-You'll need [Ruby](https://www.ruby-lang.org/) 1.9.3 or higher. To speed things up, we first recommend installing _nokogiri_ and certain dependencies manually. The following works on trusty:
+You'll need [Ruby](https://www.ruby-lang.org/) 1.9.3 or higher. To speed things up, we first recommend installing _nokogiri_ and certain dependencies manually. The following works on Ubuntu 14.04 and 16.04:
 
 ```bash
 sudo apt-get install -y ruby-dev libz-dev gcc patch make
@@ -149,7 +149,7 @@ To get help on the options for a particular command, eg: ```diff```:
     - paths.yaml
   ```
 
-  With the help of this feature, you can have separate YAML files for different aspects / features / components of your site. For example, general site-specific rules can live in a `general.yaml` file whereas platform-specific rules can live in another file like `drupal-8.x.yaml` and so on.
+  This allows you to separate your configuration into logically groups. For example, generic rules for your site could live in a `generic.yaml` file, while rules pertaining to a particular update you're conducting could live in `update-8.2.yaml`.
 
 * **Specifying paths**
 
@@ -167,7 +167,7 @@ To get help on the options for a particular command, eg: ```diff```:
 
 * **Debugging rules**
 
-  When a sanitization rule isn't working quite right for you, you might run ```sitediff diff``` many times over. If fetching all the pages is taking too long, try adding the option ```--cached=all```. That will make it a lot faster by making SiteDiff use a cached version of both the _before_ and _after_ versions of your site!
+  When a sanitization rule isn't working quite right for you, you might run ```sitediff diff``` many times over. If fetching all the pages is taking too long, try adding the option ```--cached=all```. This tells SiteDiff not to re-fetch the contente, but just compare the previously cached version—it's a lot faster!
 
 * **Handling security**
 
@@ -196,7 +196,7 @@ The following ```sitediff.yaml``` keys are recognized by SiteDiff:
 
   They can also be paths to directories on the local filesystem.
 
-  The _after_url_ MUST provided either at the command-line or in the sitediff.yaml. If the _before_url_ is provided, SiteDiff will compare the two sites. Otherwise, it will compare the current (after) version of the site with the stored version of that site, as created by ```sitediff init``` or ```sitediff store```.
+  The _after_url_ MUST provided either at the command-line or in the sitediff.yaml. If the _before_url_ is provided, SiteDiff will compare the two sites. Otherwise, it will compare the current version of the 'after' site with the stored version of that site, as created by ```sitediff init``` or ```sitediff store```.
 
 * **paths**: The list of paths to check, rooted at the base URL. For example:
 
@@ -246,19 +246,21 @@ The following ```sitediff.yaml``` keys are recognized by SiteDiff:
       substitute: '<input type="hidden" name="form_build_id" value="__form_build_id__">'
    ```
 
+  Sanitization rules may also have a **path** attribute, whose value is a regular expression. If present, the rule will only apply to matching paths.
+
 * **dom_transform**: A list of transformations to apply to the HTML before comparing.
 
-  This is similar to _sanitization_, but it applies transformations to the structure of the HTML, instead of applying them to the text. Each transformation has a **type**, and potentially other attributes. The following types are available:
+  This is similar to _sanitization_, but it applies transformations to the structure of the HTML, instead of to the text. Each transformation has a **type**, and potentially other attributes. The following types are available:
 
   * **remove**: Given a **selector**, removes all elements that match it.
 
-  For example, say we have a block with containing random articles or advertisements in the sidebar. To ignore the randomness, we might choose to delete the block by it's DOM ID during comparison. We can do this with the following rule:
+  For example, say we have a block containing the current time, which is expected to change. To ignore that, we might choose to delete the block before comparison:
 
   ```yaml
     dom_transform:
-    # Remove random articles block
+    # Remove current time block
     - type: remove
-    - selector: div#block-random-content
+    - selector: div#block-time
   ```
 
   * **unwrap**: Given a **selector**, replaces all matching elements with their children. For example, your content on one side of the comparison might look like this:
@@ -290,11 +292,11 @@ The following ```sitediff.yaml``` keys are recognized by SiteDiff:
 
   ```yaml
   dom_transform:
-    # Remove class-foo from DIV elements
+    # Remove class foo from div elements
     - type: remove_class
       selector: div
       class: class-foo
-    # Remove class-bar and class-baz from DIV elements
+    # Remove class bar and class baz from div elements
     - type: remove_class
       selector: div
       class:
