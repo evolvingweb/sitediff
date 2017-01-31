@@ -16,22 +16,14 @@ EOS
   s.bindir      = 'bin'
   s.executables = 'sitediff'
 
-  # FIXME pin down minimum version requirements
   s.add_dependency 'thor', '~> 0.19.0'
   s.add_dependency 'typhoeus', '~> 1.0'
   s.add_dependency 'rainbow', '~> 2.0'
 
-  if RUBY_VERSION >= '2.1'
-    s.add_dependency 'nokogiri', '~> 1.0'
-  else
-    s.add_dependency 'nokogiri', '~> 1.0', '< 1.7'
-  end
+  # Nokogiri 1.7 is not supported on Ruby 2.0.
+  s.add_dependency 'nokogiri', '~> 1.0', '< 1.7'
 
-  if RUBY_VERSION >= '2.0'
-    s.add_dependency 'diffy', '~> 3.0'
-    s.add_dependency 'addressable', '~> 2.0'
-  else
-    s.add_dependency 'diffy', '~> 3.0', '< 3.0.5'
-    s.add_dependency 'addressable', '~> 2.0', '< 2.5'
-  end
+  # Diffy and addressable have a max version for Ruby 1.9.
+  s.add_dependency 'diffy', '~> 3.0', '< 3.0.5'
+  s.add_dependency 'addressable', '~> 2.0', '< 2.5'
 end
