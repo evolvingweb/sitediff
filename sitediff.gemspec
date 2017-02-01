@@ -18,7 +18,10 @@ EOS
 
   s.add_dependency 'thor', '~> 0.19.0'
   s.add_dependency 'typhoeus', '~> 1.0'
-  s.add_dependency 'rainbow', '~> 2.0'
+
+  # A bug in rubygems can break rainbow 2.2
+  # https://github.com/bundler/bundler/issues/5357
+  s.add_dependency 'rainbow', '~> 2.0', '< 2.2'
 
   # Nokogiri 1.7 is not supported on Ruby 2.0.
   s.add_dependency 'nokogiri', '~> 1.0', '< 1.7'
