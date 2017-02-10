@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'sitediff'
-  s.version     = '0.0.3'
+  s.version     = '0.0.4'
   s.required_ruby_version = ">= 1.9.3"
   s.summary     = 'Compare two versions of a site with ease!'
   s.description = <<EOS
