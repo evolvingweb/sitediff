@@ -36,10 +36,10 @@ bundle exec thor fixture:serve
 Then visit http://localhost:13080 to view the report.
 
 Here is an example SiteDiff report:
-![](docs/sitediff - overview report.png)
+![page report preview](docs/sitediff%20-%20overview%20report.png?raw=true)
 
 And here is an example SiteDiff diff of a specific path:
-![](docs/sitediff - page report.png)
+![page report preview](docs/sitediff%20-%20page%20report.png?raw=true)
 
 ## Installation
 
