@@ -5,7 +5,7 @@ require 'yaml'
 
 class SiteDiff
   class Config
-    DEFAULT_FILENAME = 'sitediff.yaml'
+    DEFAULT_FILENAME = 'sitediff.yaml'.freeze
 
     # keys allowed in configuration files
     CONF_KEYS = Sanitizer::TOOLS.values.flatten(1) +
@@ -41,13 +41,13 @@ class SiteDiff
           conf[pos][key] ||= []
           conf[pos][key] += conf[key] if conf[key]
         end
-        tools[:scalar].each {|key| conf[pos][key] ||= conf[key]}
+        tools[:scalar].each { |key| conf[pos][key] ||= conf[key] }
         conf[pos]['url'] ||= conf[pos + '_url']
       end
       # normalize paths
-      conf['paths'] = Config::normalize_paths(conf['paths'])
+      conf['paths'] = Config.normalize_paths(conf['paths'])
 
-      conf.select {|k,v| %w[before after paths].include? k}
+      conf.select { |k, _v| %w[before after paths].include? k }
     end
 
     # Merges two normalized Hashes according to the following rules:
@@ -72,11 +72,11 @@ class SiteDiff
           next
         end
         result[pos] = first[pos].merge!(second[pos]) do |key, a, b|
-          if Sanitizer::TOOLS[:array].include? key # rule 2a
-            result[pos][key] = (a || []) + (b|| [])
-          else
-            result[pos][key] = a || b # rule 2b
-          end
+          result[pos][key] = if Sanitizer::TOOLS[:array].include? key # rule 2a
+                               (a || []) + (b || [])
+                             else
+                               a || b # rule 2b
+                             end
         end
       end
       result
@@ -100,28 +100,30 @@ class SiteDiff
         root_indicators.each { |r| return [] if dir.+(r).exist? }
       end
 
-      return []
+      []
     end
 
     def initialize(files, opts = {})
-      @config = {'paths' => [], 'before' => {}, 'after' => {} }
+      @config = { 'paths' => [], 'before' => {}, 'after' => {} }
 
       files = Config.search if files.empty? && opts[:search]
       files = [DEFAULT_FILENAME] if files.empty? &&
-        File.exists?(DEFAULT_FILENAME)
-      raise ConfigNotFound, "No configuration file found." if files.empty?
+                                    File.exist?(DEFAULT_FILENAME)
+      raise ConfigNotFound, 'No configuration file found.' if files.empty?
 
       files.each do |file|
-        raise InvalidConfig,
-          "Missing config file %s." % File.expand_path(file) \
-          unless File.exist?(file)
-        @config = Config::merge(@config, Config::load_conf(file))
+        unless File.exist?(file)
+          raise InvalidConfig,
+                format('Missing config file %s.', File.expand_path(file))
+        end
+        @config = Config.merge(@config, Config.load_conf(file))
       end
     end
 
     def before
       @config['before']
     end
+
     def after
       @config['after']
     end
@@ -129,35 +131,36 @@ class SiteDiff
     def paths
       @config['paths']
     end
+
     def paths=(paths)
-      @config['paths'] = Config::normalize_paths(paths)
+      @config['paths'] = Config.normalize_paths(paths)
     end
 
     # Checks if the configuration is usable for diff-ing.
     def validate(opts = {})
-      opts = { :need_before => true }.merge(opts)
+      opts = { need_before: true }.merge(opts)
 
       raise InvalidConfig, "Undefined 'before' base URL." if \
         opts[:need_before] && !before['url']
       raise InvalidConfig, "Undefined 'after' base URL." unless after['url']
-      raise InvalidConfig, "Undefined 'paths'." unless (paths and !paths.empty?)
+      raise InvalidConfig, "Undefined 'paths'." unless paths && !paths.empty?
     end
 
     private
 
     def self.normalize_paths(paths)
       paths ||= []
-      return paths.map { |p| (p[0] == '/' ? p : "/#{p}").chomp }
+      paths.map { |p| (p[0] == '/' ? p : "/#{p}").chomp }
     end
 
     # reads a YAML file and raises an InvalidConfig if the file is not valid.
     def self.load_raw_yaml(file)
-      SiteDiff::log "Reading config file: #{Pathname.new(file).expand_path}"
+      SiteDiff.log "Reading config file: #{Pathname.new(file).expand_path}"
       conf = YAML.load_file(file) || {}
       unless conf.is_a? Hash
         raise InvalidConfig, "Invalid configuration file: '#{file}'"
       end
-      conf.each do |k,v|
+      conf.each do |k, _v|
         unless CONF_KEYS.include? k
           raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'"
         end
@@ -167,7 +170,7 @@ class SiteDiff
 
     # loads a single YAML configuration file, merges all its 'included' files
     # and returns a normalized Hash.
-    def self.load_conf(file, visited=[])
+    def self.load_conf(file, visited = [])
       # don't get fooled by a/../a/ or symlinks
       file = File.realpath(file)
       if visited.include? file
@@ -179,11 +182,11 @@ class SiteDiff
 
       # normalize and merge includes
       includes = conf['includes'] || []
-      conf = Config::normalize(conf)
+      conf = Config.normalize(conf)
       includes.each do |dep|
         # include paths are relative to the including file.
         dep = File.join(File.dirname(file), dep)
-        conf = Config::merge(conf, load_conf(dep, visited))
+        conf = Config.merge(conf, load_conf(dep, visited))
       end
       conf
     end

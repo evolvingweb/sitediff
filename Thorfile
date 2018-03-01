@@ -8,7 +8,7 @@ require 'sitediff/webserver/resultserver'
 class Base < Thor
   # adds the option to all Base subclasses
   # method_options() takes different arguments than option()
-  method_options :local => true
+  method_options local: true
   def initialize(*args)
     super(*args)
     @local = options['local']
@@ -23,14 +23,15 @@ class Base < Thor
   end
 
   protected
+
   def executable(gem)
-    gem = './bin/sitediff' if gem == 'sitediff' and @local
+    gem = './bin/sitediff' if (gem == 'sitediff') && @local
     "#{'bundle exec' if @local} #{gem}"
   end
 end
 
 class Docker < Base
-  IMAGE = 'evolvingweb/sitediff'
+  IMAGE = 'evolvingweb/sitediff'.freeze
 
   desc 'build', 'Build a docker image for sitediff'
   def build
@@ -41,8 +42,8 @@ class Docker < Base
   # checks for the first N necessary characters to match a command with a
   # method. Cf. Thor::normalize_command_name()
   desc 'run', 'Run a rake task (or a login shell if none given) inside docker'
-  def run_(task='bash')
-    docker_opts = ["-t", "-v #{File.dirname(__FILE__)}:/sitediff"]
+  def run_(task = 'bash')
+    docker_opts = ['-t', "-v #{File.dirname(__FILE__)}:/sitediff"]
     if task == 'bash'
       cmd = 'bash'
       docker_opts << '-i'
@@ -66,13 +67,12 @@ class Spec < Base
   end
 
   # hidden task to lump together multiple tasks
-  desc 'all', 'runs both unit and fixture tests', :hide => true
+  desc 'all', 'runs both unit and fixture tests', hide: true
   def all
     unit
     fixture
   end
   default_task :all
-
 end
 
 class Fixture < Base
@@ -91,7 +91,7 @@ class Fixture < Base
   def serve
     cmd = "#{executable('sitediff')} diff --cached=none spec/fixtures/config.yaml"
     http_fixtures(cmd)
-    SiteDiff::Webserver::ResultServer.new(nil, 'output', :quiet => true).wait
+    SiteDiff::Webserver::ResultServer.new(nil, 'output', quiet: true).wait
   end
 
   private
@@ -99,13 +99,13 @@ class Fixture < Base
   def http_fixtures(cmd)
     serv = SiteDiff::Webserver::FixtureServer.new
     run "#{cmd} --before #{serv.before} --after #{serv.after}"
-    return serv
+    serv
   end
 end
 
 class Util < Base
   desc 'changelog', 'vim CHANGELOG.md, with a split pane for recent commits'
   def changelog
-		run 'git log `git describe --tags --abbrev=0`..HEAD --oneline |  awk \'BEGIN { print "Commits since last tag:" }; {print "- " $0}\' | vim - -R +"vs CHANGELOG.md" +"set noro"'
+    run 'git log `git describe --tags --abbrev=0`..HEAD --oneline |  awk \'BEGIN { print "Commits since last tag:" }; {print "- " $0}\' | vim - -R +"vs CHANGELOG.md" +"set noro"'
   end
 end

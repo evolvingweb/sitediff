@@ -8,7 +8,7 @@ class SiteDiff
     STATUS_SUCCESS  = 0   # Identical before and after
     STATUS_FAILURE  = 1   # Different before and after
     STATUS_ERROR    = 2   # Couldn't fetch page
-    STATUS_TEXT = %w[success failure error]
+    STATUS_TEXT = %w[success failure error].freeze
 
     attr_reader :status, :diff
 
@@ -17,7 +17,7 @@ class SiteDiff
       if error
         @status = STATUS_ERROR
       else
-        @diff = Diff::html_diffy(before, after)
+        @diff = Diff.html_diffy(before, after)
         @status = @diff ? STATUS_FAILURE : STATUS_SUCCESS
       end
     end
@@ -28,7 +28,7 @@ class SiteDiff
 
     # Textual representation of the status
     def status_text
-      return STATUS_TEXT[status]
+      STATUS_TEXT[status]
     end
 
     # Printable URL
@@ -39,7 +39,7 @@ class SiteDiff
 
     # Filename to store diff
     def filename
-      File.join(SiteDiff::DIFFS_DIR, Digest::SHA1.hexdigest(self.path) + '.html')
+      File.join(SiteDiff::DIFFS_DIR, Digest::SHA1.hexdigest(path) + '.html')
     end
 
     # Text of the link in the HTML report
@@ -52,15 +52,15 @@ class SiteDiff
     end
 
     # Log the result to the terminal
-    def log(verbose=true)
+    def log(verbose = true)
       case status
       when STATUS_SUCCESS then
-        SiteDiff::log path, :diff_success, 'SUCCESS'
+        SiteDiff.log path, :diff_success, 'SUCCESS'
       when STATUS_ERROR then
-        SiteDiff::log path, :warn, "ERROR (#{error})"
+        SiteDiff.log path, :warn, "ERROR (#{error})"
       when STATUS_FAILURE then
-        SiteDiff::log path, :diff_failure, "FAILURE"
-        puts Diff::terminal_diffy(before, after) if verbose
+        SiteDiff.log path, :diff_failure, 'FAILURE'
+        puts Diff.terminal_diffy(before, after) if verbose
       end
     end
 
@@ -68,9 +68,9 @@ class SiteDiff
     def dump(dir)
       dump_path = File.join(dir, filename)
       base = File.dirname(dump_path)
-      FileUtils::mkdir_p(base) unless File.exists?(base)
+      FileUtils.mkdir_p(base) unless File.exist?(base)
       File.open(dump_path, 'w') do |f|
-        f.write(Diff::generate_diff_output(self))
+        f.write(Diff.generate_diff_output(self))
       end
     end
   end
