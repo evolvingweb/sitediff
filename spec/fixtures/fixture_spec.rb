@@ -52,7 +52,7 @@ describe SiteDiff::Cli do
 
         # There should be a diff file
         diff = File.join(dir, 'diffs', Digest::SHA1.hexdigest('/Hash.html') + '.html')
-        $stderr.puts(diff)
+        warn(diff)
         expect(File.file?(diff)).to be true
         expect(File.read(diff)).to include '#method-i-to_h'
       end

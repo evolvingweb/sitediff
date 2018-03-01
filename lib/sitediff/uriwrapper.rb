@@ -20,7 +20,7 @@ class SiteDiff
         res = new
         res.error_code = code
         res.error = err
-        return res
+        res
       end
     end
 
@@ -42,26 +42,24 @@ class SiteDiff
       uri = @uri.dup
       uri.user = nil
       uri.password = nil
-      return uri.to_s
+      uri.to_s
     end
 
     # Is this a local filesystem path?
     def local?
-      @uri.scheme == nil
+      @uri.scheme.nil?
     end
 
-    # FIXME this is not used anymore
+    # FIXME: this is not used anymore
     def +(path)
       # 'path' for SiteDiff includes (parts of) path, query, and fragment.
       sep = ''
-      if local? || @uri.path.empty?
-        sep = '/'
-      end
+      sep = '/' if local? || @uri.path.empty?
       self.class.new(@uri.to_s + sep + path)
     end
 
     # Reads a file and yields to the completion handler, see .queue()
-    def read_file(&handler)
+    def read_file
       File.open(@uri.to_s, 'r:UTF-8') { |f| yield ReadResult.new(f.read) }
     rescue Errno::ENOENT, Errno::ENOTDIR, Errno::EACCES, Errno::EISDIR => e
       yield ReadResult.error(e.message)
@@ -72,7 +70,7 @@ class SiteDiff
     def http_encoding(http_headers)
       if content_type = http_headers['Content-Type']
         if md = /;\s*charset=([-\w]*)/.match(content_type)
-          return md[1]
+          md[1]
         end
       end
     end
@@ -81,18 +79,18 @@ class SiteDiff
     #
     # Completion callbacks of the request wrap the given handler which is
     # assumed to accept a single ReadResult argument.
-    def typhoeus_request(&handler)
+    def typhoeus_request
       params = {
-        :connecttimeout => 3,     # Don't hang on servers that don't exist
-        :followlocation => true,  # Follow HTTP redirects (code 301 and 302)
-        :headers => {
-          "User-Agent" => "Sitediff - https://github.com/evolvingweb/sitediff"
+        connecttimeout: 3,     # Don't hang on servers that don't exist
+        followlocation: true,  # Follow HTTP redirects (code 301 and 302)
+        headers: {
+          'User-Agent' => 'Sitediff - https://github.com/evolvingweb/sitediff'
         }
       }
       # Allow basic auth
       params[:userpwd] = @uri.user + ':' + @uri.password if @uri.user
 
-      req = Typhoeus::Request.new(self.to_s, params)
+      req = Typhoeus::Request.new(to_s, params)
 
       req.on_success do |resp|
         body = resp.body
@@ -106,7 +104,7 @@ class SiteDiff
 
       req.on_failure do |resp|
         msg = 'Unknown Error'
-        msg = resp.status_message if resp and resp.status_message
+        msg = resp.status_message if resp && resp.status_message
         yield ReadResult.error("HTTP error #{@uri}: #{msg}", resp.response_code)
       end
 

@@ -1,3 +1,3 @@
 class SiteDiff
-  class SiteDiffException < Exception; end
+  class SiteDiffException < RuntimeError; end
 end

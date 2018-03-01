@@ -11,16 +11,16 @@ class SiteDiff
   FILES_DIR = File.join(File.dirname(__FILE__), 'sitediff', 'files')
 
   # subdirectory containing all failing diffs
-  DIFFS_DIR = 'diffs'
+  DIFFS_DIR = 'diffs'.freeze
 
   # files in output
-  FAILURES_FILE = 'failures.txt'
-  REPORT_FILE = 'report.html'
-  SETTINGS_FILE = 'settings.yaml'
+  FAILURES_FILE = 'failures.txt'.freeze
+  REPORT_FILE = 'report.html'.freeze
+  SETTINGS_FILE = 'settings.yaml'.freeze
 
   # label will be colorized and str will not be.
   # type dictates the color: can be :success, :error, or :failure
-  def self.log(str, type=:info, label=nil)
+  def self.log(str, type = :info, label = nil)
     label = label ? "[sitediff] #{label}" : '[sitediff]'
     bg = fg = nil
     case type
@@ -46,20 +46,22 @@ class SiteDiff
   def before
     @config.before['url']
   end
+
   def after
     @config.after['url']
   end
 
-  def initialize(config, cache, verbose=true)
+  def initialize(config, cache, verbose = true)
     @cache = cache
     @verbose = verbose
 
     # Check for single-site mode
     validate_opts = {}
     if !config.before['url'] && @cache.tag?(:before)
-      raise SiteDiffException,
-        "A cached 'before' is required for single-site mode" \
-        unless @cache.read_tags.include?(:before)
+      unless @cache.read_tags.include?(:before)
+        raise SiteDiffException,
+              "A cached 'before' is required for single-site mode"
+      end
       validate_opts[:need_before] = false
     end
     config.validate(validate_opts)
@@ -69,24 +71,24 @@ class SiteDiff
 
   # Sanitize HTML
   def sanitize(path, read_results)
-    [:before, :after].map do |tag|
+    %i[before after].map do |tag|
       html = read_results[tag].content
       config = @config.send(tag)
-      Sanitizer.new(html, config, :path => path).sanitize
+      Sanitizer.new(html, config, path: path).sanitize
     end
   end
 
   # Process a set of read results
   def process_results(path, read_results)
-    if error = read_results[:before].error || read_results[:after].error
-      diff = Result.new(path, nil, nil, error)
-    else
-      diff = Result.new(path, *sanitize(path, read_results), nil)
-    end
+    diff = if (error = read_results[:before].error) || read_results[:after].error
+             Result.new(path, nil, nil, error)
+           else
+             Result.new(path, *sanitize(path, read_results), nil)
+           end
     @results[path] = diff
 
     # Print results in order!
-    while next_diff = @results[@ordered.first]
+    while (next_diff = @results[@ordered.first])
       next_diff.log(@verbose)
       @ordered.shift
     end
@@ -100,17 +102,17 @@ class SiteDiff
     @ordered = @config.paths.dup
 
     unless @cache.read_tags.empty?
-      SiteDiff.log("Using sites from cache: " +
+      SiteDiff.log('Using sites from cache: ' +
         @cache.read_tags.sort.join(', '))
     end
 
     fetcher = Fetch.new(@cache, @config.paths,
-      :before => before, :after => after)
-    fetcher.run(&self.method(:process_results))
+                        before: before, after: after)
+    fetcher.run(&method(:process_results))
 
     # Order by original path order
     @results = @config.paths.map { |p| @results[p] }
-    return results.map{ |r| r unless r.success? }.compact.length
+    results.map { |r| r unless r.success? }.compact.length
   end
 
   # Dump results to disk
@@ -124,23 +126,23 @@ class SiteDiff
     diff_dir = dir + DIFFS_DIR
     diff_dir.rmtree if diff_dir.exist?
     results.each { |r| r.dump(dir) if r.status == Result::STATUS_FAILURE }
-    SiteDiff::log "All diff files were dumped inside #{dir.expand_path}"
+    SiteDiff.log "All diff files were dumped inside #{dir.expand_path}"
 
     # store failing paths
     failures = dir + FAILURES_FILE
-    SiteDiff::log "Writing failures to #{failures.expand_path}"
+    SiteDiff.log "Writing failures to #{failures.expand_path}"
     failures.open('w') do |f|
       results.each { |r| f.puts r.path unless r.success? }
     end
 
     # create report of results
-    report = Diff::generate_html_report(results, report_before, report_after,
-      @cache)
+    report = Diff.generate_html_report(results, report_before, report_after,
+                                       @cache)
     dir.+(REPORT_FILE).open('w') { |f| f.write(report) }
 
     # serve some settings
     settings = { 'before' => report_before, 'after' => report_after,
-       'cached' => @cache.read_tags.map { |t| t.to_s } }
+                 'cached' => @cache.read_tags.map(&:to_s) }
     dir.+(SETTINGS_FILE).open('w') { |f| YAML.dump(settings, f) }
   end
 end
