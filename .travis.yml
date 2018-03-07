@@ -1,7 +1,6 @@
 language: ruby
 
 rvm:
-- 2.0.0
 - 2.1
 - 2.2
 - 2.3.3 # Just '2.3' gives Travis grief for some reason
@@ -20,5 +19,10 @@ addons:
     - libxslt1-dev
     - libcurl3
 
-install: NOKOGIRI_USE_SYSTEM_LIBRARIES=1 bundle install
-script: 'bundle exec thor spec && bundle exec thor fixture:local'
+install:
+  - gem install rubocop
+  - NOKOGIRI_USE_SYSTEM_LIBRARIES=1 bundle install
+
+script:
+  - rubocop
+  - 'bundle exec thor spec && bundle exec thor fixture:local'

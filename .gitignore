@@ -1,9 +1,14 @@
 .bundle/
 vendor/
 Gemfile.lock
+sitediff
 
 output
 *.gem
 
 *.swp
 *.swo
+
+# Editors
+.idea
+.vscode
