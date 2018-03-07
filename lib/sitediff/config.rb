@@ -157,13 +157,9 @@ class SiteDiff
     def self.load_raw_yaml(file)
       SiteDiff.log "Reading config file: #{Pathname.new(file).expand_path}"
       conf = YAML.load_file(file) || {}
-      unless conf.is_a? Hash
-        raise InvalidConfig, "Invalid configuration file: '#{file}'"
-      end
-      conf.each do |k, _v|
-        unless CONF_KEYS.include? k
-          raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'"
-        end
+      raise InvalidConfig, "Invalid configuration file: '#{file}'" unless conf.is_a? Hash
+      conf.each_key do |k, _v|
+        raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'" unless CONF_KEYS.include? k
       end
       conf
     end
@@ -173,9 +169,7 @@ class SiteDiff
     def self.load_conf(file, visited = [])
       # don't get fooled by a/../a/ or symlinks
       file = File.realpath(file)
-      if visited.include? file
-        raise InvalidConfig, "Circular dependency: #{file}"
-      end
+      raise InvalidConfig, "Circular dependency: #{file}" if visited.include? file
 
       conf = load_raw_yaml(file) # not normalized yet
       visited << file

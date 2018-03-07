@@ -84,6 +84,6 @@ class SiteDiff
           node.children = node.children[0].children
         end
       end
-      end
+    end
   end
 end

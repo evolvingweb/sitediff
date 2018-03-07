@@ -68,7 +68,7 @@ class SiteDiff
 
       # override config based on options
       paths = options['paths']
-      if paths_file = options['paths-file']
+      if (paths_file = options['paths-file'])
         if paths
           SiteDiff.log "Can't have both --paths-file and --paths", :error
           exit -1

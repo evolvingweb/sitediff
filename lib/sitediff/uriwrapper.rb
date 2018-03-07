@@ -27,7 +27,7 @@ class SiteDiff
     def initialize(uri)
       @uri = uri.respond_to?(:scheme) ? uri : Addressable::URI.parse(uri)
       # remove trailing '/'s from local URIs
-      @uri.path.gsub!(/\/*$/, '') if local?
+      @uri.path.gsub!(%r{/*$}, '') if local?
     end
 
     def user
@@ -68,8 +68,8 @@ class SiteDiff
     # Returns the encoding of an HTTP response from headers , nil if not
     # specified.
     def http_encoding(http_headers)
-      if content_type = http_headers['Content-Type']
-        if md = /;\s*charset=([-\w]*)/.match(content_type)
+      if (content_type = http_headers['Content-Type'])
+        if (md = /;\s*charset=([-\w]*)/.match(content_type))
           md[1]
         end
       end
@@ -96,7 +96,7 @@ class SiteDiff
         body = resp.body
         # Typhoeus does not respect HTTP headers when setting the encoding
         # resp.body; coerce if possible.
-        if encoding = http_encoding(resp.headers)
+        if (encoding = http_encoding(resp.headers))
           body.force_encoding(encoding)
         end
         yield ReadResult.new(body)
