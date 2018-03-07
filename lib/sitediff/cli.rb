@@ -135,6 +135,8 @@ class SiteDiff
         :cache => cache,
         :config => config,
       ).wait
+    rescue SiteDiffException => e
+        SiteDiff.log e.message, :error
     end
 
     option :output,
