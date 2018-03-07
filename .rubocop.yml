@@ -1,0 +1,10 @@
+inherit_from: .rubocop_todo.yml
+
+# Common configuration.
+AllCops:
+  TargetRubyVersion: ~
+
+# Check this as the value is changed somewhere after initial assignment.
+Style/MutableConstant:
+  Exclude:
+    - 'lib/sitediff/sanitize/dom_transform.rb'
