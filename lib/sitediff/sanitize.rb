@@ -183,5 +183,5 @@ class SiteDiff
         to_document(domify(obj))
       end
     end
-    end
+  end
 end

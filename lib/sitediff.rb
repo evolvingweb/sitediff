@@ -25,6 +25,7 @@ class SiteDiff
     bg = fg = nil
     case type
     when :info
+      bg = fg = nil
     when :diff_success
       bg = :green
       fg = :black

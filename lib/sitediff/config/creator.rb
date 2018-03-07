@@ -47,7 +47,7 @@ class SiteDiff
 
       def build_config
         %w[before after].each do |tag|
-          next unless u = roots[tag.to_sym]
+          next unless (u = roots[tag.to_sym])
           @config[tag] = { 'url' => u }
         end
 
@@ -100,11 +100,11 @@ class SiteDiff
         return unless dir.realpath.to_enum(:ascend).any? { |d| d.+('.git').exist? }
 
         dir.+('.gitignore').open('w') do |f|
-          f.puts <<-EOF.gsub(/^\s+/, '')
-        output
-        cache.db
-        cache.db.db
-      EOF
+          f.puts <<-GITIGNORE.gsub(/^\s+/, '')
+            output
+            cache.db
+            cache.db.db
+          GITIGNORE
         end
       end
 

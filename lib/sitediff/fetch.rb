@@ -29,7 +29,7 @@ class SiteDiff
       results = {}
 
       @tags.each do |tag, base|
-        if res = @cache.get(tag, path)
+        if (res = @cache.get(tag, path))
           results[tag] = res
           process_results(path, results)
         elsif !base
