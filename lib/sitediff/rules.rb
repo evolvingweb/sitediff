@@ -31,8 +31,6 @@ class SiteDiff
     # Yield a set of rules that seem reasonable for this HTML
     # assumption: the YAML file is a list of regexp rules only
     def find_rules(html, doc)
-      rules = []
-
       @candidates.select do |rule|
         re = SiteDiff::Sanitizer::Regexp.create(rule)
         re.applies?(html, doc)

@@ -38,9 +38,9 @@ class SiteDiff
           process_results(path, results)
         else
           uri = UriWrapper.new(base + path)
-          uri.queue(@hydra) do |res|
-            @cache.set(tag, path, res)
-            results[tag] = res
+          uri.queue(@hydra) do |resl|
+            @cache.set(tag, path, resl)
+            results[tag] = resl
             process_results(path, results)
           end
         end

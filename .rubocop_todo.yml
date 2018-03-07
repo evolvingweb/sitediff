@@ -1,37 +1,12 @@
-# Offense count: 1
-Lint/AmbiguousOperator:
-  Exclude:
-    - 'lib/sitediff/cli.rb'
-
-# Offense count: 1
-Lint/AmbiguousRegexpLiteral:
-  Exclude:
-    - 'spec/fixtures/fixture_spec.rb'
-
 # Offense count: 3
 Lint/IneffectiveAccessModifier:
   Exclude:
     - 'lib/sitediff/config.rb'
 
 # Offense count: 1
-Lint/LiteralAsCondition:
-  Exclude:
-    - 'lib/sitediff/sanitize.rb'
-
-# Offense count: 1
 Lint/NestedMethodDefinition:
   Exclude:
     - 'lib/sitediff/config/creator.rb'
-
-# Offense count: 1
-Lint/ShadowingOuterLocalVariable:
-  Exclude:
-    - 'lib/sitediff/fetch.rb'
-
-# Offense count: 1
-Lint/UnreachableCode:
-  Exclude:
-    - 'lib/sitediff/sanitize.rb'
 
 # Offense count: 2
 # Configuration parameters: ContextCreatingMethods, MethodCreatingMethods.
@@ -39,12 +14,6 @@ Lint/UselessAccessModifier:
   Exclude:
     - 'lib/sitediff/config.rb'
     - 'lib/sitediff/webserver.rb'
-
-# Offense count: 2
-Lint/UselessAssignment:
-  Exclude:
-    - 'lib/sitediff/cli.rb'
-    - 'lib/sitediff/rules.rb'
 
 # Offense count: 14
 Metrics/AbcSize:
@@ -84,13 +53,6 @@ Naming/ConstantName:
     - 'lib/sitediff/sanitize/dom_transform.rb'
 
 # Offense count: 1
-# Configuration parameters: MinNameLength, AllowNamesEndingInNumbers, AllowedNames, ForbiddenNames.
-# AllowedNames: io, id
-Naming/UncommunicativeMethodParamName:
-  Exclude:
-    - 'lib/sitediff/sanitize/dom_transform.rb'
-
-# Offense count: 1
 Security/MarshalLoad:
   Exclude:
     - 'lib/sitediff/cache.rb'
@@ -99,11 +61,6 @@ Security/MarshalLoad:
 Security/Open:
   Exclude:
     - 'spec/fixtures/fixture_spec.rb'
-
-# Offense count: 2
-Style/CaseEquality:
-  Exclude:
-    - 'lib/sitediff/sanitize.rb'
 
 # Offense count: 21
 Style/Documentation:
@@ -127,12 +84,6 @@ Style/Documentation:
     - 'lib/sitediff/webserver/resultserver.rb'
 
 # Offense count: 1
-# Cop supports --auto-correct.
-Style/ExpandPathArguments:
-  Exclude:
-    - 'bin/sitediff'
-
-# Offense count: 1
 # Configuration parameters: .
 # SupportedStyles: annotated, template, unannotated
 Style/FormatStringToken:
@@ -149,13 +100,6 @@ Style/GuardClause:
 Style/MultilineTernaryOperator:
   Exclude:
     - 'lib/sitediff/diff.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: AllowMultipleReturnValues.
-Style/RedundantReturn:
-  Exclude:
-    - 'lib/sitediff/crawler.rb'
 
 # Offense count: 1
 Style/StructInheritance:

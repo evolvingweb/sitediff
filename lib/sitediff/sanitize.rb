@@ -167,18 +167,10 @@ class SiteDiff
 
     # Force this object to be a document, so we can apply a stylesheet
     def self.to_document(obj)
-      if Nokogiri::XML::Document === obj
+      if Nokogiri::XML::Document == obj
         obj
-      elsif Nokogiri::XML::Node === obj # node or fragment
-        return domify(obj.to_s, true)
-
-        # This ought to work, and would be faster,
-        # but seems to segfault Nokogiri
-        if false
-          doc = Nokogiri::HTML('<html><body>')
-          doc.at('body').children = obj.children
-          return doc
-        end
+      elsif Nokogiri::XML::Node == obj # node or fragment
+        domify(obj.to_s, true)
       else
         to_document(domify(obj))
       end

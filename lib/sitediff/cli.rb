@@ -71,7 +71,7 @@ class SiteDiff
       if (paths_file = options['paths-file'])
         if paths
           SiteDiff.log "Can't have both --paths-file and --paths", :error
-          exit -1
+          exit(-1)
         end
 
         paths_file = Pathname.new(paths_file).expand_path
@@ -205,7 +205,7 @@ class SiteDiff
       return unless opts[:search]
       begin
         SiteDiff::Config.new(files, search: !dir)
-      rescue SiteDiff::Config::ConfigNotFound => e
+      rescue SiteDiff::Config::ConfigNotFound
         raise if opts[:config]
         # If no config required, allow it to pass
       end
