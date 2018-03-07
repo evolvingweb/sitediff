@@ -17,8 +17,8 @@ class SiteDiff
       end
 
       # Often an array or scalar are both ok values. Turn either into an array.
-      def to_array(v)
-        [v].flatten
+      def to_array(val)
+        [val].flatten
       end
 
       def targets(node)

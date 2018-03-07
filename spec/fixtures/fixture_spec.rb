@@ -33,7 +33,7 @@ describe SiteDiff::Cli do
         expect(out).to include 'SUCCESS /IO.html'
 
         # Should report a diff of a different line
-        expect(out).to match /^+.*<a href="#method-i-to_h"/
+        expect(out).to match(/^+.*<a href="#method-i-to_h"/)
 
         # There should be a failures file
         failures = File.join(dir, 'failures.txt')
