@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sitediff'
 require 'sitediff/exception'
 require 'sitediff/sanitize/dom_transform'
@@ -54,7 +56,7 @@ class SiteDiff
     def canonicalize_rule(name)
       (rules = @config[name]) || (return nil)
 
-      if rules[0] && rules[0].respond_to?(:[]) && rules[0]['value']
+      if rules[0]&.respond_to?(:[]) && rules[0]['value']
         # Already an array
       elsif rules['value']
         # Hash, put it in an array

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sitediff/exception'
 require 'typhoeus'
 require 'addressable/uri'
@@ -104,7 +106,7 @@ class SiteDiff
 
       req.on_failure do |resp|
         msg = 'Unknown Error'
-        msg = resp.status_message if resp && resp.status_message
+        msg = resp.status_message if resp&.status_message
         yield ReadResult.error("HTTP error #{@uri}: #{msg}", resp.response_code)
       end
 

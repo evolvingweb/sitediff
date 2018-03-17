@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sitediff/cache'
 require 'sitediff/config'
 require 'sitediff/crawler'
@@ -53,7 +55,7 @@ class SiteDiff
 
         crawl(@depth)
         @cache.close
-        @rules.add_config if @rules
+        @rules&.add_config
 
         @config['paths'] = @paths.values.reduce(&:|).to_a.sort
       end

@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'set'
 
 class SiteDiff
   class Cache
-    DEFAULT_FILENAME = 'cache.db'.freeze
+    DEFAULT_FILENAME = 'cache.db'
 
     attr_accessor :read_tags, :write_tags
 

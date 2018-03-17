@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sitediff/exception'
 require 'sitediff/sanitize'
 require 'pathname'
@@ -5,7 +7,7 @@ require 'yaml'
 
 class SiteDiff
   class Config
-    DEFAULT_FILENAME = 'sitediff.yaml'.freeze
+    DEFAULT_FILENAME = 'sitediff.yaml'
 
     # keys allowed in configuration files
     CONF_KEYS = Sanitizer::TOOLS.values.flatten(1) +
