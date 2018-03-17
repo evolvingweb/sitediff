@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sitediff'
 require 'sitediff/webserver'
 require 'erb'

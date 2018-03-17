@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 LIB_DIR = File.join(File.dirname(__FILE__), 'lib')
 $LOAD_PATH << LIB_DIR
@@ -31,7 +32,7 @@ class Base < Thor
 end
 
 class Docker < Base
-  IMAGE = 'evolvingweb/sitediff'.freeze
+  IMAGE = 'evolvingweb/sitediff'
 
   desc 'build', 'Build a docker image for sitediff'
   def build

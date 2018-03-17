@@ -1,4 +1,6 @@
 #!/bin/env ruby
+# frozen_string_literal: true
+
 require 'sitediff/config'
 require 'sitediff/fetch'
 require 'sitediff/result'
@@ -11,12 +13,12 @@ class SiteDiff
   FILES_DIR = File.join(File.dirname(__FILE__), 'sitediff', 'files')
 
   # subdirectory containing all failing diffs
-  DIFFS_DIR = 'diffs'.freeze
+  DIFFS_DIR = 'diffs'
 
   # files in output
-  FAILURES_FILE = 'failures.txt'.freeze
-  REPORT_FILE = 'report.html'.freeze
-  SETTINGS_FILE = 'settings.yaml'.freeze
+  FAILURES_FILE = 'failures.txt'
+  REPORT_FILE = 'report.html'
+  SETTINGS_FILE = 'settings.yaml'
 
   # label will be colorized and str will not be.
   # type dictates the color: can be :success, :error, or :failure

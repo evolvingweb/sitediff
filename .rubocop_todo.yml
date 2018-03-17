@@ -15,7 +15,7 @@ Lint/UselessAccessModifier:
     - 'lib/sitediff/config.rb'
     - 'lib/sitediff/webserver.rb'
 
-# Offense count: 14
+# Offense count: 13
 Metrics/AbcSize:
   Max: 61
 
@@ -33,7 +33,7 @@ Metrics/ClassLength:
 Metrics/CyclomaticComplexity:
   Max: 11
 
-# Offense count: 19
+# Offense count: 18
 # Configuration parameters: CountComments.
 Metrics/MethodLength:
   Max: 33
@@ -100,6 +100,15 @@ Style/GuardClause:
 Style/MultilineTernaryOperator:
   Exclude:
     - 'lib/sitediff/diff.rb'
+
+# Offense count: 1
+# Cop supports --auto-correct.
+# Configuration parameters: AutoCorrect, EnforcedStyle.
+# SupportedStyles: predicate, comparison
+Style/NumericPredicate:
+  Exclude:
+    - 'spec/**/*'
+    - 'lib/sitediff/cli.rb'
 
 # Offense count: 1
 Style/StructInheritance:
