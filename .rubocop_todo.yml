@@ -8,6 +8,11 @@ Lint/NestedMethodDefinition:
   Exclude:
     - 'lib/sitediff/config/creator.rb'
 
+# Offense count: 1
+Lint/RescueException:
+  Exclude:
+    - 'lib/sitediff/cli.rb'
+
 # Offense count: 2
 # Configuration parameters: ContextCreatingMethods, MethodCreatingMethods.
 Lint/UselessAccessModifier:
@@ -17,7 +22,7 @@ Lint/UselessAccessModifier:
 
 # Offense count: 13
 Metrics/AbcSize:
-  Max: 61
+  Max: 64
 
 # Offense count: 6
 # Configuration parameters: CountComments, ExcludedMethods.
@@ -27,7 +32,7 @@ Metrics/BlockLength:
 # Offense count: 4
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
-  Max: 171
+  Max: 174
 
 # Offense count: 5
 Metrics/CyclomaticComplexity:
@@ -36,7 +41,7 @@ Metrics/CyclomaticComplexity:
 # Offense count: 18
 # Configuration parameters: CountComments.
 Metrics/MethodLength:
-  Max: 33
+  Max: 36
 
 # Offense count: 3
 Metrics/PerceivedComplexity:
@@ -115,7 +120,7 @@ Style/StructInheritance:
   Exclude:
     - 'lib/sitediff/result.rb'
 
-# Offense count: 19
+# Offense count: 21
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
 Metrics/LineLength:
