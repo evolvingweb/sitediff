@@ -169,12 +169,13 @@ class SiteDiff
 
     # Force this object to be a document, so we can apply a stylesheet
     def self.to_document(obj)
-      if Nokogiri::XML::Document == obj
+      if Nokogiri::XML::Document == obj.class || Nokogiri::HTML::Document == obj.class
         obj
-      elsif Nokogiri::XML::Node == obj # node or fragment
+      # node or fragment
+      elsif Nokogiri::XML::Node == obj.class || Nokogiri::HTML::DocumentFragment == obj.class
         domify(obj.to_s, true)
       else
-        to_document(domify(obj))
+        to_document(domify(obj, false))
       end
     end
   end
