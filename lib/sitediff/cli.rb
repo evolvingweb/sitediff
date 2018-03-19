@@ -141,7 +141,7 @@ class SiteDiff
         config: config
       ).wait
     rescue SiteDiffException => e
-        SiteDiff.log e.message, :error
+      SiteDiff.log e.message, :error
     end
 
     option :output,
