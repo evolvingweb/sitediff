@@ -57,7 +57,7 @@ class SiteDiff
       def initialize(port, dir, opts = {})
         unless File.exist?(File.join(dir, SiteDiff::SETTINGS_FILE))
           raise SiteDiffException,
-            "Please run 'sitediff diff' before running 'sitediff serve'"
+                "Please run 'sitediff diff' before running 'sitediff serve'"
         end
 
         @settings = YAML.load_file(File.join(dir, SiteDiff::SETTINGS_FILE))

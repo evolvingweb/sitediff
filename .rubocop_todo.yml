@@ -20,7 +20,7 @@ Lint/UselessAccessModifier:
     - 'lib/sitediff/config.rb'
     - 'lib/sitediff/webserver.rb'
 
-# Offense count: 13
+# Offense count: 14
 Metrics/AbcSize:
   Max: 64
 
@@ -32,13 +32,13 @@ Metrics/BlockLength:
 # Offense count: 4
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
-  Max: 174
+  Max: 176
 
 # Offense count: 5
 Metrics/CyclomaticComplexity:
   Max: 11
 
-# Offense count: 18
+# Offense count: 19
 # Configuration parameters: CountComments.
 Metrics/MethodLength:
   Max: 36
