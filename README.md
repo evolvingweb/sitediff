@@ -96,7 +96,7 @@ Then when you run ```sitediff diff```, it will compare the cached version of the
 
 If both the first and second sites may be changing, you should tell SiteDiff not to cache either site:
 
-````sitediff diff --cached=none```
+```sitediff diff --cached=none```
 
 ### Preventing spurious diffs
 
