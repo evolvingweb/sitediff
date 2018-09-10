@@ -13,7 +13,7 @@ class SiteDiff
           @cache = cache
         end
 
-        def do_get(req, res)
+        def do_GET(req, res)
           path = req.path_info
           (md = %r{^/([^/]+)(/.*)$}.match(path)) ||
             raise(WEBrick::HTTPStatus::NotFound)
@@ -44,7 +44,7 @@ class SiteDiff
           end
         end
 
-        def do_get(req, res)
+        def do_GET(req, res)
           path = req.path_info
           before, after = *urls(path)
 
