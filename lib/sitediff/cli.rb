@@ -208,6 +208,7 @@ class SiteDiff
       Dir.chdir(dir) if dir
 
       return unless opts[:search]
+
       begin
         SiteDiff::Config.new(files, search: !dir)
       rescue SiteDiff::Config::ConfigNotFound

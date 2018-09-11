@@ -50,6 +50,7 @@ class SiteDiff
       def build_config
         %w[before after].each do |tag|
           next unless (u = roots[tag.to_sym])
+
           @config[tag] = { 'url' => u }
         end
 
