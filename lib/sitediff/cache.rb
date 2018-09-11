@@ -27,6 +27,7 @@ class SiteDiff
 
     def get(tag, path)
       return nil unless @read_tags.include? tag
+
       open || (return nil)
       val = @dbm[key(tag, path)]
       val && Marshal.load(val)
@@ -34,6 +35,7 @@ class SiteDiff
 
     def set(tag, path, result)
       return unless @write_tags.include? tag
+
       open || return
       @dbm[tag.to_s] = 'TRUE'
       @dbm[key(tag, path)] = Marshal.dump(result)

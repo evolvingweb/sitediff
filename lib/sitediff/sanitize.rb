@@ -69,6 +69,7 @@ class SiteDiff
       want = rules.select { |r| want_rule(r) }
       return nil if want.empty?
       raise "Too many matching rules of type #{name}" if want.size > 1
+
       want.first
     end
 

@@ -160,6 +160,7 @@ class SiteDiff
       SiteDiff.log "Reading config file: #{Pathname.new(file).expand_path}"
       conf = YAML.load_file(file) || {}
       raise InvalidConfig, "Invalid configuration file: '#{file}'" unless conf.is_a? Hash
+
       conf.each_key do |k, _v|
         raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'" unless CONF_KEYS.include? k
       end

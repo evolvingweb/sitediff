@@ -20,6 +20,7 @@ class SiteDiff
       rules_dir = Pathname.new(__FILE__).dirname + 'files' + 'rules'
       rules_dir.children.each do |f|
         next unless f.file? && f.extname == '.yaml'
+
         conf = YAML.load_file(f)
         @candidates.merge(conf['sanitization'])
       end
@@ -55,6 +56,7 @@ class SiteDiff
 
     def add_section(name, rules)
       return if rules.empty?
+
       conf = name ? @config[name] : @config
       rules.each { |r| r['disabled'] = true } if @disabled
       conf['sanitization'] = rules.to_a.sort_by { |r| r['title'] }
