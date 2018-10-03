@@ -1,6 +1,5 @@
 FROM ubuntu:14.04
 
-RUN apt-get update
 ENV DEBIAN_FRONTEND noninteractive
 
 # Minimal dependencies
@@ -8,7 +7,12 @@ ENV DEBIAN_FRONTEND noninteractive
 # Nokogiri requires libxml2, libxslt, pkg-config to build
 # Typhoeus requires libcurl3 to run
 # We need rake for our build
-RUN apt-get install -y ruby-dev make pkg-config libxml2-dev libxslt-dev libcurl3 bundler
+# Install Ruby.
+RUN apt-get update
+RUN apt-get install -y software-properties-common 
+RUN add-apt-repository -y ppa:brightbox/ruby-ng
+RUN apt-get update
+RUN apt-get install -y ruby2.5 ruby2.5-dev make pkg-config libxml2-dev libxslt-dev libcurl3 bundler
 
 # Force nokogiri gem not to compile libxml2, it takes too long
 ENV NOKOGIRI_USE_SYSTEM_LIBRARIES 1

@@ -31,4 +31,7 @@ DESC
   # Diffy and addressable have a max version for Ruby 1.9.
   s.add_dependency 'addressable', '~> 2.5.2'
   s.add_dependency 'diffy', '~> 3.2.0'
+  
+  # Apprently we require pkg-config
+  s.add_dependency 'pkg-config', '~> 1.1'
 end
