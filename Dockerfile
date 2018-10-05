@@ -25,6 +25,8 @@ WORKDIR /sitediff
 
 # Build as a gem
 RUN gem build sitediff.gemspec && gem install sitediff --no-rdoc --no-ri
-RUN gem install 'fileutils' -v '1.1.0'
+
+# Commenting this since it should be covered by bundle now
+# RUN gem install 'fileutils' -v '1.1.0'
 # Build locally - skip this step since we have what we need
 # RUN bundle install
