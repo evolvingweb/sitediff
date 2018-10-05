@@ -52,6 +52,7 @@ class Docker < Base
       # pass down the local flag to docker command
       cmd = "#{executable('thor')} #{task} #{@local ? '--local' : '--no-local'}"
     end
+    puts "docker run #{docker_opts.join(' ')} #{IMAGE} #{cmd}"
     run "docker run #{docker_opts.join(' ')} #{IMAGE} #{cmd}"
   end
 end
@@ -59,11 +60,13 @@ end
 class Spec < Base
   desc 'unit', 'run RSpec unit tests'
   def unit
+    puts "#{executable('rspec')} spec/unit"
     run "#{executable('rspec')} spec/unit"
   end
 
   desc 'fixture', 'run RSpec integration tests'
   def fixture
+    puts "#{executable('rspec')} spec/unit"
     run "#{executable('rspec')} spec/fixtures"
   end
 
