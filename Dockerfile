@@ -23,10 +23,15 @@ RUN gem install thor rspec --no-rdoc --no-ri
 ADD . /sitediff
 WORKDIR /sitediff
 
+RUN apt-get install -y build-essential patch ruby-dev zlib1g-dev liblzma-dev
+
+
+RUN apt-get remove -y bundler && gem install bundler
+RUN bundle config build.nokogiri --use-system-libraries --with-xml2-include=/usr/include/libxml2 --with-xml2-lib=/usr/lib/
+RUN gem install nokogiri -v 1.8.2
+
 # Build as a gem
 RUN gem build sitediff.gemspec && gem install sitediff --no-rdoc --no-ri
 
-# Commenting this since it should be covered by bundle now
-# RUN gem install 'fileutils' -v '1.1.0'
-# Build locally - skip this step since we have what we need
-# RUN bundle install
+# Build locally
+RUN bundle install

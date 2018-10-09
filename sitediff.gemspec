@@ -18,6 +18,9 @@ DESC
   s.bindir      = 'bin'
   s.executables = 'sitediff'
 
+  # Apprently we require pkg-config
+  s.add_dependency 'pkg-config', '~> 1.1'
+
   s.add_dependency 'thor', '~> 0.20.0'
   s.add_dependency 'typhoeus', '~> 1.0'
 
@@ -31,7 +34,4 @@ DESC
   # Diffy and addressable have a max version for Ruby 1.9.
   s.add_dependency 'addressable', '~> 2.5.2'
   s.add_dependency 'diffy', '~> 3.2.0'
-  
-  # Apprently we require pkg-config
-  s.add_dependency 'pkg-config', '~> 1.1'
 end
