@@ -1,0 +1,22 @@
+version: 2
+jobs:
+    build:
+
+        docker: 
+          - image: circleci/ruby:2.5.1
+        
+        steps:
+          - checkout 
+          - setup_remote_docker
+          - run: bundle install
+          - run: bundle exec thor docker:build
+          - run: bundle exec thor docker:compose spec --local
+          - run: bundle exec thor docker:compose spec --no-local
+          - run: bundle exec thor docker:compose fixture:local --local
+          - run: bundle exec thor docker:compose fixture:local --no-local
+
+# FIXME currently sitediff's exit code differs from what you expect from a
+# 'diff' (non-zero status only when it crashes). When we fix that, the
+# following should be guarded from non-zero exit codes.
+
+
