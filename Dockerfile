@@ -19,13 +19,10 @@ ENV NOKOGIRI_USE_SYSTEM_LIBRARIES 1
 
 # Install thor and rspec globally so we can test the gem without bundle exec
 RUN gem install thor rspec --no-rdoc --no-ri
-
-ADD . /sitediff
+COPY . /sitediff
 WORKDIR /sitediff
 
 RUN apt-get install -y build-essential patch ruby-dev zlib1g-dev liblzma-dev
-
-
 RUN apt-get remove -y bundler && gem install bundler
 RUN bundle config build.nokogiri --use-system-libraries --with-xml2-include=/usr/include/libxml2 --with-xml2-lib=/usr/lib/
 RUN gem install nokogiri -v 1.8.2

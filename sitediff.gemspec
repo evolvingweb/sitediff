@@ -18,7 +18,7 @@ DESC
   s.bindir      = 'bin'
   s.executables = 'sitediff'
 
-  # Apprently we require pkg-config
+  # Apparently we require pkg-config
   s.add_dependency 'pkg-config', '~> 1.1'
 
   s.add_dependency 'thor', '~> 0.20.0'

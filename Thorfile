@@ -45,15 +45,27 @@ class Docker < Base
   desc 'run', 'Run a rake task (or a login shell if none given) inside docker'
   def run_(task = 'bash')
     docker_opts = ['-t', "-v #{File.dirname(__FILE__)}:/sitediff"]
-    if task == 'bash'
-      cmd = 'bash'
-      docker_opts << '-i'
-    else
-      # pass down the local flag to docker command
-      cmd = "#{executable('thor')} #{task} #{@local ? '--local' : '--no-local'}"
+    finish_exec(task, docker_opts)
+  end
+
+  desc 'compose', 'Run a task inside docker without volume mounting (not supported with compose)'
+  def compose(task = 'bash')
+    docker_opts = ['-t']
+    finish_exec(task, docker_opts)
+  end
+
+  no_commands do
+    def finish_exec(task, docker_opts)
+      if task == 'bash'
+        cmd = 'bash'
+        docker_opts << '-i'
+      else
+        # pass down the local flag to docker command
+        cmd = "#{executable('thor')} #{task} #{@local ? '--local' : '--no-local'}"
+      end
+      puts "docker run #{docker_opts.join(' ')} #{IMAGE} #{cmd}"
+      run "docker run #{docker_opts.join(' ')} #{IMAGE} #{cmd}"
     end
-    puts "docker run #{docker_opts.join(' ')} #{IMAGE} #{cmd}"
-    run "docker run #{docker_opts.join(' ')} #{IMAGE} #{cmd}"
   end
 end
 
