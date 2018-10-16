@@ -1,6 +1,14 @@
 paths:
-  - fixture.html
+  - /Hash.html
+  - /File.html
+  - /Kernel.html
+  - /IO.html
+  - /TracePoint.html
+
+selector: '#class-metadata'
+
 before:
-  sanitization:
+  url: spec/fixtures/ruby-doc.org/core-1.9.3
+
 after:
-  sanitization:
+  url: spec/fixtures/ruby-doc.org/core-2.0

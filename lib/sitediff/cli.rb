@@ -1,120 +1,220 @@
-require 'thor'
-require 'sitediff/util/diff'
-require 'sitediff/util/sanitize'
-require 'open-uri'
+# frozen_string_literal: true
 
-module SiteDiff
+require 'thor'
+require 'sitediff'
+require 'sitediff/cache'
+require 'sitediff/config'
+require 'sitediff/config/creator'
+require 'sitediff/fetch'
+require 'sitediff/webserver/resultserver'
+
+class SiteDiff
   class Cli < Thor
+    class_option 'directory',
+                 type: :string,
+                 aliases: '-C',
+                 desc: 'Go to a given directory before running.'
+
     # Thor, by default, exits with 0 no matter what!
     def self.exit_on_failure?
       true
     end
 
+    # Thor, by default, does not raise an error for use of unknown options.
+    def self.check_unknown_options?(_config)
+      true
+    end
+
     option 'dump-dir',
-      :type => :string,
-      :default => "./output/",
-      :banner => "Location to write the output to."
-    option 'paths-from-file',
-      :type => :string,
-      :banner => "File listing URL paths to run on against <before> and <after> sites."
-    option 'paths-from-failures',
-      :type => :boolean,
-      :default => FALSE,
-      :banner => "Equivalent to --paths-from-file=<DUMPDIR>/failures.txt"
-    option 'before-url',
-      :required => true,
-      :type => :string,
-      :banner => "URL used to fetch the before HTML. Acts as a prefix to specified paths"
-    option 'after-url',
-      :required => true,
-      :type => :string,
-      :banner => "URL used to fetch the after HTML. Acts as a prefix to specified paths."
-    option 'before-url-report',
-      :type => :string,
-      :default => "",
-      :banner => "Before URL to use for reporting purposes. Useful if port forwarding."
-    option 'after-url-report',
-      :type => :string,
-      :default => "",
-      :banner => "After URL to use for reporting purposes. Useful if port forwarding."
-    desc "diff [OPTIONS] <BEFORE> <AFTER> [CONFIGFILES]", "Perform systematic diff on given URLs"
+           type: :string,
+           default: File.join('.', 'output'),
+           desc: 'Location to write the output to.'
+    option 'paths-file',
+           type: :string,
+           desc: 'Paths are read (one at a line) from PATHS: ' \
+                    'useful for iterating over sanitization rules',
+           aliases: '--paths-from-file'
+    option 'paths',
+           type: :array,
+           aliases: '-p',
+           desc: 'Specific path or paths to fetch'
+    option 'before',
+           type: :string,
+           desc: 'URL used to fetch the before HTML. Acts as a prefix to specified paths',
+           aliases: '--before-url'
+    option 'after',
+           type: :string,
+           desc: 'URL used to fetch the after HTML. Acts as a prefix to specified paths.',
+           aliases: '--after-url'
+    option 'before-report',
+           type: :string,
+           desc: 'Before URL to use for reporting purposes. Useful if port forwarding.',
+           aliases: '--before-url-report'
+    option 'after-report',
+           type: :string,
+           desc: 'After URL to use for reporting purposes. Useful if port forwarding.',
+           aliases: '--after-url-report'
+    option 'cached',
+           type: :string,
+           enum: %w[none all before after],
+           default: 'before',
+           desc: 'Use the cached version of these sites, if available.'
+    option 'quiet',
+           type: :boolean,
+           aliases: '-q',
+           default: false,
+           desc: 'Do not show differences between versions for each page'
+    desc 'diff [OPTIONS] [CONFIGFILES]', 'Perform systematic diff on given URLs'
     def diff(*config_files)
-      before = options['before-url']
-      after = options['after-url']
-      config = SiteDiff::Config.new(config_files)
+      config = chdir(config_files)
 
-      differences = Array.new
-
-      if options['paths-from-failures']
-        SiteDiff::log "Reading paths from failures.txt"
-        paths = File.readlines("#{options['dump-dir']}/failures.txt")
-      elsif options['paths-from-file']
-        SiteDiff::log "Reading paths from file: #{options['paths-from-file']}"
-        paths = File.readlines(options['paths-from-file'])
-      elsif config.paths
-        SiteDiff::log "Reading paths from config"
-        paths = config.paths
-      end
-
-      # default report URLs to actual URLs
-      before_url_report = options['before-url-report'].empty? ? before :
-        options['before-url-report']
-      after_url_report = options['after-url-report'].empty? ? after :
-        options['after-url-report']
-
-      results = []
-
-      paths.each do |path|
-        result = {}
-        result[:path] = path.chomp
-        result[:before_url] = URI::encode(before + "/" + result[:path])
-        result[:after_url] =  URI::encode(after + "/" + result[:path])
-        result[:before_url_report] = before_url_report + "/" + result[:path]
-        result[:after_url_report] =  after_url_report + "/" + result[:path]
-
-        begin
-          result[:before_html] = open(result[:before_url])
-        rescue OpenURI::HTTPError => e
-          result[:error] = "BEFORE: " + e.message
+      # override config based on options
+      paths = options['paths']
+      if (paths_file = options['paths-file'])
+        if paths
+          SiteDiff.log "Can't have both --paths-file and --paths", :error
+          exit(-1)
         end
 
-        begin
-          result[:after_html] = open(result[:after_url])
-        rescue OpenURI::HTTPError => e
-          result[:error] = "AFTER: " + e.message
+        paths_file = Pathname.new(paths_file).expand_path
+        unless File.exist? paths_file
+          raise Config::InvalidConfig,
+                "Paths file '#{paths_file}' not found!"
         end
+        SiteDiff.log "Reading paths from: #{paths_file}"
+        config.paths = File.readlines(paths_file)
+      end
+      config.paths = paths if paths
 
-        result[:before_html_sanitized] = SiteDiff::Util::Sanitize::sanitize(result[:before_html], config.before).join("\n")
-        result[:after_html_sanitized] = SiteDiff::Util::Sanitize::sanitize(result[:after_html], config.after).join("\n")
-        result[:html_diff] = SiteDiff::Util::Diff::html_diffy(result[:before_html_sanitized], result[:after_html_sanitized])
-        result[:filename] = "diff_" + result[:path].gsub('/', '_').gsub('#', '___') + ".html"
-        result[:filepath] = File.join(options['dump-dir'], result[:filename])
-        result[:status] = result[:error] ? "error" : result[:html_diff] ? "failure" : "success"
+      config.before['url'] = options['before'] if options['before']
+      config.after['url'] = options['after'] if options['after']
 
-        if result[:status] == "success"
-          SiteDiff::log_green_background "SUCCESS: #{result[:path]}"
-        elsif result[:error]
-          SiteDiff::log_yellow_background "ERROR (#{result[:error]}): #{result[:path]}"
-        else
-          SiteDiff::log_red_background "FAILURE: #{result[:path]}"
-          puts SiteDiff::Util::Diff::terminal_diffy(result[:before_html_sanitized], result[:after_html_sanitized])
-          File.open(result[:filepath], 'w') { |f| f.write(SiteDiff::Util::Diff::generate_diff_output(result)) }
-        end
-        results << result
+      # Setup cache
+      cache = SiteDiff::Cache.new(create: options['cached'] != 'none')
+      cache.read_tags << :before if %w[before all].include?(options['cached'])
+      cache.read_tags << :after if %w[after all].include?(options['cached'])
+      cache.write_tags << :before << :after
+
+      sitediff = SiteDiff.new(config, cache, !options['quiet'])
+      num_failing = sitediff.run
+      exit_code = num_failing > 0 ? 2 : 0
+
+      sitediff.dump(options['dump-dir'], options['before-report'],
+                    options['after-report'])
+    rescue Config::InvalidConfig => e
+      SiteDiff.log "Invalid configuration: #{e.message}", :error
+    rescue SiteDiffException => e
+      SiteDiff.log e.message, :error
+    rescue Exception => e
+      SiteDiff.log e.message, :error
+      exit(3)
+    else # no exception was raised
+      # Thor::Error  --> exit(1), guaranteed by exit_on_failure?
+      # Failing diff --> exit(2), populated above
+      exit(exit_code)
+    end
+
+    option :port,
+           type: :numeric,
+           default: SiteDiff::Webserver::DEFAULT_PORT,
+           desc: 'The port to serve on'
+    option 'dump-dir',
+           type: :string,
+           default: 'output',
+           desc: 'The directory to serve'
+    option :browse,
+           type: :boolean,
+           default: true,
+           desc: 'Whether to open the served content in your browser'
+    desc 'serve [OPTIONS]', 'Serve the sitediff output directory over HTTP'
+    def serve(*config_files)
+      config = chdir(config_files, config: false)
+
+      cache = Cache.new
+      cache.read_tags << :before << :after
+
+      SiteDiff::Webserver::ResultServer.new(
+        options[:port],
+        options['dump-dir'],
+        browse: options[:browse],
+        cache: cache,
+        config: config
+      ).wait
+    rescue SiteDiffException => e
+      SiteDiff.log e.message, :error
+    end
+
+    option :output,
+           type: :string,
+           default: 'sitediff',
+           desc: 'Directory in which to place the configuration',
+           aliases: ['-o']
+    option :depth,
+           type: :numeric,
+           default: 3,
+           desc: 'How deeply to crawl the given site'
+    option :rules,
+           type: :string,
+           enum: %w[yes no disabled],
+           default: 'disabled',
+           desc: 'Whether rules for the site should be auto-created'
+    desc 'init URL [URL]', 'Create a sitediff configuration'
+    def init(*urls)
+      unless (1..2).cover? urls.size
+        SiteDiff.log 'sitediff init requires one or two URLs', :error
+        exit 2
       end
 
-      # log failing paths to failures.txt
-      failures = results.collect { |r| r[:path] if !r[:status] }.compact().join("\n")
-      if failures
-        failures_path = File.join(options['dump-dir'], "/failures.txt")
-        SiteDiff::log "Writing failures to #{failures_path}"
-        File.open(failures_path, 'w') { |f| f.write(failures) }
+      chdir([], search: false)
+      creator = SiteDiff::Config::Creator.new(*urls)
+      creator.create(
+        depth: options[:depth],
+        directory: options[:output],
+        rules: options[:rules] != 'no',
+        rules_disabled: (options[:rules] == 'disabled')
+      ) do |_tag, info|
+        SiteDiff.log "Visited #{info.uri}, cached"
       end
 
-      report = SiteDiff::Util::Diff::generate_html_report(results, before_url_report, after_url_report)
-      File.open(File.join(options['dump-dir'], "/report.html") , 'w') { |f| f.write(report) }
+      SiteDiff.log "Created #{creator.config_file.expand_path}", :success
+      SiteDiff.log "You can now run 'sitediff diff'", :success
+    end
 
-      SiteDiff::log_yellow "All diff files were dumped inside #{options['dump-dir']}"
+    option :url,
+           type: :string,
+           desc: 'A custom base URL to fetch from'
+    desc 'store [CONFIGFILES]',
+         'Cache the current contents of a site for later comparison'
+    def store(*config_files)
+      config = chdir(config_files)
+      config.validate(need_before: false)
+
+      cache = SiteDiff::Cache.new(create: true)
+      cache.write_tags << :before
+
+      base = options[:url] || config.after['url']
+      fetcher = SiteDiff::Fetch.new(cache, config.paths, before: base)
+      fetcher.run do |path, _res|
+        SiteDiff.log "Visited #{path}, cached"
+      end
+    end
+
+    private
+
+    def chdir(files, opts = {})
+      opts = { config: true, search: true }.merge(opts)
+
+      dir = options['directory']
+      Dir.chdir(dir) if dir
+
+      return unless opts[:search]
+
+      begin
+        SiteDiff::Config.new(files, search: !dir)
+      rescue SiteDiff::Config::ConfigNotFound
+        raise if opts[:config]
+        # If no config required, allow it to pass
+      end
     end
   end
 end

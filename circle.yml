@@ -1,0 +1,14 @@
+machine:
+  services:
+    - docker
+
+test:
+  post:
+    - bundle exec thor docker:build
+    - bundle exec thor docker:run spec --local
+    - bundle exec thor docker:run spec --no-local
+    - bundle exec thor docker:run fixture:local --local
+    - bundle exec thor docker:run fixture:local --no-local
+      # FIXME currently sitediff's exit code differs from what you expect from a
+      # 'diff' (non-zero status only when it crashes). When we fix that, the
+      # following should be guarded from non-zero exit codes.

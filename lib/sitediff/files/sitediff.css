@@ -1,0 +1,53 @@
+.sitediff {
+  font-family: monospace;
+  font-size: 1.2em;
+}
+.sitediff .legend {
+  width: 95%;
+  margin: 1em auto;
+  text-align: center;
+}
+.sitediff .results thead {
+  background: black;
+  color: white;
+}
+.sitediff .results td {
+  text-align: center;
+}
+.sitediff .results td.path {
+  text-align: left;
+  padding-left: 1em;
+}
+.sitediff .results {
+  padding: 1em;
+  width: 95%;
+  margin: 1em auto;
+  font-size: 1em;
+}
+.sitediff tr.error > td.status,
+.sitediff tr.error > td.path {
+  background-color: khaki;
+}
+.sitediff tr.failure > td.status,
+.sitediff tr.failure > td.path {
+  background-color: salmon;
+}
+.sitediff .before-col,
+.sitediff .both-col,
+.sitediff .after-col,
+.sitediff .diff-stat-col {
+  width: 10%;
+}
+.sitediff .path-col {
+  width: 55%;
+}
+
+#sidebyside {
+  margin: 0;
+}
+#sidebyside iframe {
+  float: left;
+  height: 100%;
+  width: 50%;
+  border: 0;
+}

@@ -1,0 +1,71 @@
+# A list of paths in the site which are to be compared.
+#
+# This is usually populated automatically by running 'sitediff init'
+paths:
+ - /
+ - /user
+ - /blog?foo=bar
+
+# The root element to compare.
+#
+# Usually, sitediff compares the HTML of the entire page. If you'd rather
+# check just a subset of the page, specify a selector here. For example, the
+# line below causes only the body to be compared, ignoring the HTML head.
+selector: 'body'
+
+# General regular expression rules, applied to both versions of the site.
+sanitization:
+  # Normalize input tags containg random tokens.
+  - title: Remove form-build-id
+    pattern: '<input type="hidden" name="form_build_id" value="form-[a-zA-Z0-9_-]+" *\/?>'
+    substitute: '<input type="hidden" name="form_build_id" value="__form_build_id__">'
+
+  # Replace meta property="twitter:*" with meta name="twitter:*".
+  - title: Meta 'property' changed to 'name'
+    pattern: 'property="twitter:'
+    substitute: 'name="twitter:'
+    # 'selector' limits this rule to only within the selected elements.
+    selector: meta
+    # 'path' limits this rule to only certain pages.
+    path: /user
+
+# General DOM transforms, applied to both versions of the site.
+dom_transform:
+  # Remove article elements, replacing them with their content
+  - title: Unwrap article elements
+    type: unwrap
+    selector: article
+
+  # Remove classes from divs
+  - title: Remove classes bar and baz from divs
+    type: remove_class
+    selector: div
+    class:
+      - class-bar
+      - class-baz
+
+  # Remove a div ID.
+  - title: Remove block containing current time.
+    type: remove
+    selector: div#block-time
+
+# Rules under this element apply only to the 'before' site.
+before:
+  # URL of the 'before' version of the site.
+  url: http://localhost/old
+
+  # Sanitizations and DOM transformations, just like the general ones
+  # demonstrated above, but applied only to the 'before' site.
+  dom_transform:
+    - title: Example
+      type: remove
+      selector: div.updates-required
+
+# Rules under this element apply only to the 'after' site.
+after:
+  # URL of the 'after' version of the site.
+  url: http://localhost/new
+
+# Include other configuration files, merging them with this file.
+includes:
+  - extra-rules.yaml

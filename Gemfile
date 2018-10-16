@@ -1,7 +1,9 @@
-source 'https://rubygems.org'
+# frozen_string_literal: true
 
-gem "thor"
-gem "rspec"
-gem "nokogiri"
-gem "diffy"
-gem "htmlentities"
+source 'https://rubygems.org'
+gemspec
+
+group :development, :test do
+  gem 'rspec'
+  gem 'thor'
+end

@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-if $0 == __FILE__
-    $:.unshift File.expand_path('../../lib', __FILE__)
-end
+# when run as gem, $0 is /usr/local/bin/sitediff not this file
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__) if $PROGRAM_NAME == __FILE__
 
-require 'sitediff'
+require 'sitediff/cli'
 
 SiteDiff::Cli.start

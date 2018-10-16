@@ -1,4 +1,14 @@
 .bundle/
 vendor/
-build/out.html
-output/*
+Gemfile.lock
+sitediff
+
+output
+*.gem
+
+*.swp
+*.swo
+
+# Editors
+.idea
+.vscode
