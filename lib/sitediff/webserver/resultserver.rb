@@ -68,11 +68,16 @@ class SiteDiff
       def server(opts)
         dir = opts.delete(:DocumentRoot)
         srv = super(opts)
-        srv.mount_proc('/') do |_req, res|
-          res.set_redirect(WEBrick::HTTPStatus::Found,
+        srv.mount_proc('/') do |req, res|
+          if req.path == '/'
+            res.set_redirect(WEBrick::HTTPStatus::Found,
                            "/files/#{SiteDiff::REPORT_FILE}")
+          else
+            res.set_redirect(WEBrick::HTTPStatus::TemporaryRedirect,
+                             "#{@settings['after']}#{req.path}")
+          end
         end
-
+        
         srv.mount('/files', WEBrick::HTTPServlet::FileHandler, dir, true)
         srv.mount('/cache', CacheServlet, @cache)
         srv.mount('/sidebyside', SideBySideServlet, @cache, @settings)
