@@ -334,6 +334,15 @@ The following ```sitediff.yaml``` keys are recognized by SiteDiff:
     - config/strip_css_js.yaml
   ```
 
+* **curl_opts**: Options to pass to the underlying curl library. Remove the `CURLOPT_` prefix in this [full list of options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html) and write in lowercase. Useful for throttling.
+
+  ```yaml
+  curl_opts:
+    connecttimeout: 3
+    followlocation: true
+    max_recv_speed_large: 10000
+  ```
+
 ### Samples
 
 The `config` directory contains some example ```sitediff.yaml``` files. For example, [sitediff.yaml.example](config/sitediff.yaml.example).

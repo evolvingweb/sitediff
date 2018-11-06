@@ -11,7 +11,8 @@ require 'yaml'
 class SiteDiff
   class Config
     class Creator
-      def initialize(*urls)
+      def initialize(concurrency, *urls)
+        @concurrency = concurrency
         @after = urls.pop
         @before = urls.pop # May be nil
       end
@@ -62,7 +63,7 @@ class SiteDiff
       end
 
       def crawl(depth = nil)
-        hydra = Typhoeus::Hydra.new(max_concurrency: 10)
+        hydra = Typhoeus::Hydra.new(max_concurrency: @concurrency)
         roots.each do |tag, u|
           Crawler.new(hydra, u, depth) do |info|
             crawled_path(tag, info)

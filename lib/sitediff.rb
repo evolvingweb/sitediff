@@ -54,7 +54,7 @@ class SiteDiff
     @config.after['url']
   end
 
-  def initialize(config, cache, verbose = true)
+  def initialize(config, cache, concurrency, verbose = true)
     @cache = cache
     @verbose = verbose
 
@@ -69,6 +69,7 @@ class SiteDiff
     end
     config.validate(validate_opts)
 
+    @concurrency = concurrency
     @config = config
   end
 
@@ -113,7 +114,7 @@ class SiteDiff
     # Not quite right. We are not passing @config.before or @config.after
     # so passing this instead but @config.after['curl_opts'] is ignored.
     curl_opts = @config.before['curl_opts']
-    fetcher = Fetch.new(@cache, @config.paths, curl_opts,
+    fetcher = Fetch.new(@cache, @config.paths, curl_opts, @concurrency,
                         before: before, after: after)
     fetcher.run(&method(:process_results))
 

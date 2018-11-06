@@ -8,11 +8,13 @@ class SiteDiff
     # Cache is a cache object, see sitediff/cache
     # Paths is a list of sub-paths
     # Tags is a hash of tag names => base URLs.
-    def initialize(cache, paths, curl_opts = UriWrapper::DEFAULT_CURL_OPTS, tags)
+    def initialize(cache, paths, curl_opts = UriWrapper::DEFAULT_CURL_OPTS,
+                   concurrency, tags)
       @cache = cache
       @paths = paths
       @tags = tags
       @curl_opts = curl_opts ? curl_opts : UriWrapper::DEFAULT_CURL_OPTS
+      @concurrency = concurrency
     end
 
     # Fetch all the paths, once per tag.
@@ -20,7 +22,7 @@ class SiteDiff
     # path, and a hash of tag => UriWrapper::ReadResult objects.
     def run(&block)
       @callback = block
-      @hydra = Typhoeus::Hydra.new(max_concurrency: 3)
+      @hydra = Typhoeus::Hydra.new(max_concurrency: @concurrency)
       @paths.each { |path| queue_path(path) }
       @hydra.run
     end
