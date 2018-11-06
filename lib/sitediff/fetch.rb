@@ -8,10 +8,11 @@ class SiteDiff
     # Cache is a cache object, see sitediff/cache
     # Paths is a list of sub-paths
     # Tags is a hash of tag names => base URLs.
-    def initialize(cache, paths, tags)
+    def initialize(cache, paths, curl_opts = UriWrapper::DEFAULT_CURL_OPTS, tags)
       @cache = cache
       @paths = paths
       @tags = tags
+      @curl_opts = curl_opts ? curl_opts : UriWrapper::DEFAULT_CURL_OPTS
     end
 
     # Fetch all the paths, once per tag.
@@ -39,7 +40,7 @@ class SiteDiff
           results[tag] = UriWrapper::ReadResult.error('Not cached')
           process_results(path, results)
         else
-          uri = UriWrapper.new(base + path)
+          uri = UriWrapper.new(base + path, @curl_opts)
           uri.queue(@hydra) do |resl|
             @cache.set(tag, path, resl)
             results[tag] = resl

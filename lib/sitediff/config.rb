@@ -11,7 +11,7 @@ class SiteDiff
 
     # keys allowed in configuration files
     CONF_KEYS = Sanitizer::TOOLS.values.flatten(1) +
-                %w[paths before after before_url after_url includes]
+                %w[paths before after before_url after_url includes curl_opts]
 
     class InvalidConfig < SiteDiffException; end
     class ConfigNotFound < SiteDiffException; end
@@ -45,11 +45,12 @@ class SiteDiff
         end
         tools[:scalar].each { |key| conf[pos][key] ||= conf[key] }
         conf[pos]['url'] ||= conf[pos + '_url']
+        conf[pos]['curl_opts'] = conf['curl_opts']
       end
       # normalize paths
       conf['paths'] = Config.normalize_paths(conf['paths'])
 
-      conf.select { |k, _v| %w[before after paths].include? k }
+      conf.select { |k, _v| %w[before after paths curl_opts].include? k }
     end
 
     # Merges two normalized Hashes according to the following rules:

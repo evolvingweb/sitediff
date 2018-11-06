@@ -109,7 +109,11 @@ class SiteDiff
         @cache.read_tags.sort.join(', '))
     end
 
-    fetcher = Fetch.new(@cache, @config.paths,
+    # TODO: Fix this after config merge refactor!
+    # Not quite right. We are not passing @config.before or @config.after
+    # so passing this instead but @config.after['curl_opts'] is ignored.
+    curl_opts = @config.before['curl_opts']
+    fetcher = Fetch.new(@cache, @config.paths, curl_opts,
                         before: before, after: after)
     fetcher.run(&method(:process_results))
 
