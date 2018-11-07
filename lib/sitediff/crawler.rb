@@ -14,12 +14,14 @@ class SiteDiff
     DEFAULT_DEPTH = 3
 
     # Create a crawler with a base URL
-    def initialize(hydra, base, depth = DEFAULT_DEPTH, &block)
+    def initialize(hydra, base, depth = DEFAULT_DEPTH,
+                   curl_opts = UriWrapper::DEFAULT_CURL_OPTS, &block)
       @hydra = hydra
       @base_uri = Addressable::URI.parse(base)
       @base = base
       @found = Set.new
       @callback = block
+      @curl_opts = curl_opts
 
       add_uri('', depth)
     end
@@ -30,7 +32,7 @@ class SiteDiff
 
       @found << rel
 
-      wrapper = UriWrapper.new(@base + rel)
+      wrapper = UriWrapper.new(@base + rel, @curl_opts)
       wrapper.queue(@hydra) do |res|
         fetched_uri(rel, depth, res)
       end
@@ -38,6 +40,7 @@ class SiteDiff
 
     # Handle the fetch of a URI
     def fetched_uri(rel, depth, res)
+      # TODO: Should report errors instead of just ignoring them??
       return unless res.content # Ignore errors
       return unless depth >= 0
 

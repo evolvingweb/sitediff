@@ -8,6 +8,14 @@ class SiteDiff
   class SiteDiffReadFailure < SiteDiffException; end
 
   class UriWrapper
+    DEFAULT_CURL_OPTS = {
+      connecttimeout: 3,     # Don't hang on servers that don't exist
+      followlocation: true,  # Follow HTTP redirects (code 301 and 302)
+      headers: {
+        'User-Agent' => 'Sitediff - https://github.com/evolvingweb/sitediff'
+      }
+    }.freeze
+
     # This lets us treat errors or content as one object
     class ReadResult
       attr_accessor :content, :error_code, :error
@@ -26,10 +34,11 @@ class SiteDiff
       end
     end
 
-    def initialize(uri)
+    def initialize(uri, curl_opts = DEFAULT_CURL_OPTS)
       @uri = uri.respond_to?(:scheme) ? uri : Addressable::URI.parse(uri)
       # remove trailing '/'s from local URIs
       @uri.path.gsub!(%r{/*$}, '') if local?
+      @curl_opts = curl_opts
     end
 
     def user
@@ -82,13 +91,7 @@ class SiteDiff
     # Completion callbacks of the request wrap the given handler which is
     # assumed to accept a single ReadResult argument.
     def typhoeus_request
-      params = {
-        connecttimeout: 3,     # Don't hang on servers that don't exist
-        followlocation: true,  # Follow HTTP redirects (code 301 and 302)
-        headers: {
-          'User-Agent' => 'Sitediff - https://github.com/evolvingweb/sitediff'
-        }
-      }
+      params = @curl_opts.dup
       # Allow basic auth
       params[:userpwd] = @uri.user + ':' + @uri.password if @uri.user
 

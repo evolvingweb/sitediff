@@ -64,6 +64,10 @@ class SiteDiff
            aliases: '-q',
            default: false,
            desc: 'Do not show differences between versions for each page'
+    option :concurrency,
+           type: :numeric,
+           default: 3,
+           desc: 'Max number of concurrent connections made'
     desc 'diff [OPTIONS] [CONFIGFILES]', 'Perform systematic diff on given URLs'
     def diff(*config_files)
       config = chdir(config_files)
@@ -95,7 +99,8 @@ class SiteDiff
       cache.read_tags << :after if %w[after all].include?(options['cached'])
       cache.write_tags << :before << :after
 
-      sitediff = SiteDiff.new(config, cache, !options['quiet'])
+      sitediff = SiteDiff.new(config, cache, options[:concurrency],
+                              !options['quiet'])
       num_failing = sitediff.run
       exit_code = num_failing > 0 ? 2 : 0
 
@@ -158,6 +163,10 @@ class SiteDiff
            enum: %w[yes no disabled],
            default: 'disabled',
            desc: 'Whether rules for the site should be auto-created'
+    option :concurrency,
+           type: :numeric,
+           default: 3,
+           desc: 'Max number of concurrent connections made'
     desc 'init URL [URL]', 'Create a sitediff configuration'
     def init(*urls)
       unless (1..2).cover? urls.size
@@ -166,7 +175,7 @@ class SiteDiff
       end
 
       chdir([], search: false)
-      creator = SiteDiff::Config::Creator.new(*urls)
+      creator = SiteDiff::Config::Creator.new(options[:concurrency], *urls)
       creator.create(
         depth: options[:depth],
         directory: options[:output],
