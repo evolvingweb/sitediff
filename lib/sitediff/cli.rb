@@ -192,6 +192,10 @@ class SiteDiff
     option :url,
            type: :string,
            desc: 'A custom base URL to fetch from'
+    option :concurrency,
+           type: :numeric,
+           default: 3,
+           desc: 'Max number of concurrent connections made'
     desc 'store [CONFIGFILES]',
          'Cache the current contents of a site for later comparison'
     def store(*config_files)
@@ -202,7 +206,8 @@ class SiteDiff
       cache.write_tags << :before
 
       base = options[:url] || config.after['url']
-      fetcher = SiteDiff::Fetch.new(cache, config.paths, before: base)
+      fetcher = SiteDiff::Fetch.new(cache, config.paths, options['concurrency'],
+                                    before: base)
       fetcher.run do |path, _res|
         SiteDiff.log "Visited #{path}, cached"
       end
