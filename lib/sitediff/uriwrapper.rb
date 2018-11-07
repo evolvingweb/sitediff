@@ -14,7 +14,7 @@ class SiteDiff
       headers: {
         'User-Agent' => 'Sitediff - https://github.com/evolvingweb/sitediff'
       }
-    }
+    }.freeze
 
     # This lets us treat errors or content as one object
     class ReadResult

@@ -8,12 +8,11 @@ class SiteDiff
     # Cache is a cache object, see sitediff/cache
     # Paths is a list of sub-paths
     # Tags is a hash of tag names => base URLs.
-    def initialize(cache, paths, curl_opts = UriWrapper::DEFAULT_CURL_OPTS,
-                   concurrency, tags)
+    def initialize(cache, paths, concurrency = 3, curl_opts = nil, **tags)
       @cache = cache
       @paths = paths
       @tags = tags
-      @curl_opts = curl_opts ? curl_opts : UriWrapper::DEFAULT_CURL_OPTS
+      @curl_opts = curl_opts || UriWrapper::DEFAULT_CURL_OPTS
       @concurrency = concurrency
     end
 

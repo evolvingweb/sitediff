@@ -114,7 +114,7 @@ class SiteDiff
     # Not quite right. We are not passing @config.before or @config.after
     # so passing this instead but @config.after['curl_opts'] is ignored.
     curl_opts = @config.before['curl_opts']
-    fetcher = Fetch.new(@cache, @config.paths, curl_opts, @concurrency,
+    fetcher = Fetch.new(@cache, @config.paths, @concurrency, curl_opts,
                         before: before, after: after)
     fetcher.run(&method(:process_results))
 
