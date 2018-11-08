@@ -108,11 +108,6 @@ class SiteDiff
                     options['after-report'])
     rescue Config::InvalidConfig => e
       SiteDiff.log "Invalid configuration: #{e.message}", :error
-    rescue SiteDiffException => e
-      SiteDiff.log e.message, :error
-    rescue Exception => e
-      SiteDiff.log e.message, :error
-      exit(3)
     else # no exception was raised
       # Thor::Error  --> exit(1), guaranteed by exit_on_failure?
       # Failing diff --> exit(2), populated above
