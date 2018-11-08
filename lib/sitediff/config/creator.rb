@@ -40,8 +40,7 @@ class SiteDiff
 
         # Setup instance vars
         @paths = Hash.new { |h, k| h[k] = Set.new }
-        @cache = Cache.new(file: @dir.+(Cache::DEFAULT_FILENAME).to_s,
-                           create: true)
+        @cache = Cache.new(dir: @dir.to_s, create: true)
         @cache.write_tags << :before << :after
 
         build_config
@@ -56,7 +55,6 @@ class SiteDiff
         end
 
         crawl(@depth)
-        @cache.close
         @rules&.add_config
 
         @config['paths'] = @paths.values.reduce(&:|).to_a.sort
