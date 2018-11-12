@@ -33,20 +33,26 @@ class SiteDiff
       return unless @write_tags.include? tag
 
       filename = File.join(@dir, "snapshot", tag.to_s, *path.split(File::SEPARATOR))
-      if path.end_with?("/") || File.directory?(filename)
+      if File.directory?(filename)
         filename = File.join(filename, "index.html")
       end
-      dirname = File.dirname(filename)
-      # May cause problems if action is not atomic!
-      # Move existing file to dir/index.html first
-      if File.file?(dirname)
-        # Not robust! Should generate an UUID or something.
-        FileUtils.mv(dirname, dirname + '.temporary')
-        FileUtils.makedirs dirname
-        FileUtils.mv(dirname + '.temporary', File.join(dirname, 'index.html'))
-      end
-      if not File.directory?(dirname)
-        FileUtils.makedirs File.dirname(filename)
+      filepath = Pathname.new(filename)
+      if not filepath.dirname.directory?
+        begin
+          filepath.dirname.mkpath
+        rescue Errno::EEXIST
+          curdir = filepath
+          while not curdir.exist?
+            curdir = curdir.parent
+          end
+          tempname = curdir.dirname + (curdir.basename.to_s + '.temporary')
+          # May cause problems if action is not atomic!
+          # Move existing file to dir/index.html first
+          # Not robust! Should generate an UUID or something.
+          curdir.rename(tempname)
+          filepath.dirname.mkpath
+          tempname.rename(curdir + 'index.html')
+        end
       end
       File.open(filename, 'w') { |file| file.write(Marshal.dump(result)) }
     end
