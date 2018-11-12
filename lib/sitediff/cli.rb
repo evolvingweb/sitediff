@@ -95,7 +95,8 @@ class SiteDiff
       config.after['url'] = options['after'] if options['after']
 
       # Setup cache
-      cache = SiteDiff::Cache.new(create: options['cached'] != 'none')
+      cache = SiteDiff::Cache.new(create: options['cached'] != 'none',
+                                  dir: options['directory'])
       cache.read_tags << :before if %w[before all].include?(options['cached'])
       cache.read_tags << :after if %w[after all].include?(options['cached'])
       cache.write_tags << :before << :after
@@ -132,7 +133,7 @@ class SiteDiff
       config = SiteDiff::Config.new(config_files, options['directory'])
       # Could check non-empty config here but currently errors are already raised.
 
-      cache = Cache.new
+      cache = Cache.new(dir: options['directory'])
       cache.read_tags << :before << :after
 
       SiteDiff::Webserver::ResultServer.new(
