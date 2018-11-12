@@ -13,7 +13,8 @@ class SiteDiff
     class_option 'directory',
                  type: :string,
                  aliases: '-C',
-                 desc: 'Go to a given directory before running.'
+                 default: 'sitediff',
+                 desc: 'Configuration directory'
 
     # Thor, by default, exits with 0 no matter what!
     def self.exit_on_failure?
@@ -70,7 +71,7 @@ class SiteDiff
            desc: 'Max number of concurrent connections made'
     desc 'diff [OPTIONS] [CONFIGFILES]', 'Perform systematic diff on given URLs'
     def diff(*config_files)
-      config = chdir(config_files)
+      config = SiteDiff::Config.new(config_files, options[:directory])
 
       # override config based on options
       paths = options['paths']
@@ -128,7 +129,8 @@ class SiteDiff
            desc: 'Whether to open the served content in your browser'
     desc 'serve [OPTIONS]', 'Serve the sitediff output directory over HTTP'
     def serve(*config_files)
-      config = chdir(config_files, config: false)
+      config = SiteDiff::Config.new(config_files, options['directory'])
+      # Could check non-empty config here but currently errors are already raised.
 
       cache = Cache.new
       cache.read_tags << :before << :after
@@ -144,11 +146,6 @@ class SiteDiff
       SiteDiff.log e.message, :error
     end
 
-    option :output,
-           type: :string,
-           default: 'sitediff',
-           desc: 'Directory in which to place the configuration',
-           aliases: ['-o']
     option :depth,
            type: :numeric,
            default: 3,
@@ -169,11 +166,10 @@ class SiteDiff
         exit 2
       end
 
-      chdir([], search: false)
       creator = SiteDiff::Config::Creator.new(options[:concurrency], *urls)
       creator.create(
         depth: options[:depth],
-        directory: options[:output],
+        directory: options[:directory],
         rules: options[:rules] != 'no',
         rules_disabled: (options[:rules] == 'disabled')
       ) do |_tag, info|
@@ -194,7 +190,7 @@ class SiteDiff
     desc 'store [CONFIGFILES]',
          'Cache the current contents of a site for later comparison'
     def store(*config_files)
-      config = chdir(config_files)
+      config = SiteDiff::Config.new(config_files, options['directory'])
       config.validate(need_before: false)
 
       cache = SiteDiff::Cache.new(create: true)
@@ -205,24 +201,6 @@ class SiteDiff
                                     before: base)
       fetcher.run do |path, _res|
         SiteDiff.log "Visited #{path}, cached"
-      end
-    end
-
-    private
-
-    def chdir(files, opts = {})
-      opts = { config: true, search: true }.merge(opts)
-
-      dir = options['directory']
-      Dir.chdir(dir) if dir
-
-      return unless opts[:search]
-
-      begin
-        SiteDiff::Config.new(files, search: !dir)
-      rescue SiteDiff::Config::ConfigNotFound
-        raise if opts[:config]
-        # If no config required, allow it to pass
       end
     end
   end

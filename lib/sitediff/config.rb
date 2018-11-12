@@ -85,35 +85,10 @@ class SiteDiff
       result
     end
 
-    # Search for a config file. If found, change to the containing directory,
-    # and return an array of config files found.
-    def self.search
-      subdirs = %w[. sitediff]
-      root_indicators = %w[.git .svn]
-
-      Pathname.pwd.ascend do |dir|
-        subdirs.each do |subdir|
-          d = dir + subdir + DEFAULT_FILENAME
-          if d.exist?
-            Dir.chdir(dir.+(subdir).to_s)
-            return [DEFAULT_FILENAME]
-          end
-        end
-
-        root_indicators.each { |r| return [] if dir.+(r).exist? }
-      end
-
-      []
-    end
-
-    def initialize(files, opts = {})
+    def initialize(files, dir, opts = {})
       @config = { 'paths' => [], 'before' => {}, 'after' => {} }
 
-      files = Config.search if files.empty? && opts[:search]
-      files = [DEFAULT_FILENAME] if files.empty? &&
-                                    File.exist?(DEFAULT_FILENAME)
-      raise ConfigNotFound, 'No configuration file found.' if files.empty?
-
+      files = [File.join(dir, DEFAULT_FILENAME)] if files.empty?
       files.each do |file|
         unless File.exist?(file)
           raise InvalidConfig,
