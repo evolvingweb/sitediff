@@ -26,10 +26,6 @@ class SiteDiff
       true
     end
 
-    option 'dump-dir',
-           type: :string,
-           default: File.join('.', 'output'),
-           desc: 'Location to write the output to.'
     option 'paths-file',
            type: :string,
            desc: 'Paths are read (one at a line) from PATHS: ' \
@@ -106,7 +102,7 @@ class SiteDiff
       num_failing = sitediff.run
       exit_code = num_failing > 0 ? 2 : 0
 
-      sitediff.dump(options['dump-dir'], options['before-report'],
+      sitediff.dump(options['directory'], options['before-report'],
                     options['after-report'])
     rescue Config::InvalidConfig => e
       SiteDiff.log "Invalid configuration: #{e.message}", :error
@@ -120,10 +116,6 @@ class SiteDiff
            type: :numeric,
            default: SiteDiff::Webserver::DEFAULT_PORT,
            desc: 'The port to serve on'
-    option 'dump-dir',
-           type: :string,
-           default: 'output',
-           desc: 'The directory to serve'
     option :browse,
            type: :boolean,
            default: true,
@@ -138,7 +130,7 @@ class SiteDiff
 
       SiteDiff::Webserver::ResultServer.new(
         options[:port],
-        options['dump-dir'],
+        options['directory'],
         browse: options[:browse],
         cache: cache,
         config: config
