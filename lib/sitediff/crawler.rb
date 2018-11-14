@@ -42,7 +42,6 @@ class SiteDiff
     def fetched_uri(rel, depth, res)
       # TODO: Should report errors instead of just ignoring them??
       return unless res.content # Ignore errors
-      return unless depth >= 0
 
       base = Addressable::URI.parse(@base + rel)
       doc = Nokogiri::HTML(res.content)
@@ -55,6 +54,8 @@ class SiteDiff
         document: doc
       )
       @callback[info]
+
+      return unless depth >= 1
 
       # Find links
       links = find_links(doc)
