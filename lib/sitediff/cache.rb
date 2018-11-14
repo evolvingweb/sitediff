@@ -23,7 +23,7 @@ class SiteDiff
       return nil unless @read_tags.include? tag
 
       filename = File.join(@dir, "snapshot", tag.to_s, *path.split(File::SEPARATOR))
-      if path.end_with?("/") || File.directory?(filename)
+      if File.directory?(filename)
         filename = File.join(filename, "index.html")
       end
       Marshal.load(File.read(filename))
