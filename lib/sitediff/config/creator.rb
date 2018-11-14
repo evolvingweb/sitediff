@@ -11,10 +11,11 @@ require 'yaml'
 class SiteDiff
   class Config
     class Creator
-      def initialize(concurrency, *urls)
+      def initialize(concurrency, curl_opts, *urls)
         @concurrency = concurrency
         @after = urls.pop
         @before = urls.pop # May be nil
+        @curl_opts = curl_opts
       end
 
       def roots

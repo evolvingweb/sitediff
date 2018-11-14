@@ -159,7 +159,8 @@ class SiteDiff
         exit 2
       end
 
-      creator = SiteDiff::Config::Creator.new(options[:concurrency], *urls)
+      # Need to be able to add curl options there!
+      creator = SiteDiff::Config::Creator.new(options[:concurrency], UriWrapper::DEFAULT_CURL_OPTS, *urls)
       creator.create(
         depth: options[:depth],
         directory: options[:directory],
