@@ -40,8 +40,13 @@ class SiteDiff
 
     # Handle the fetch of a URI
     def fetched_uri(rel, depth, res)
-      # TODO: Should report errors instead of just ignoring them??
-      return unless res.content # Ignore errors
+      if res.error
+        SiteDiff.log(res.error, :error)
+        return
+      elsif not res.content
+        SiteDiff.log("Response is missing content. Treating as an error.", :error)
+        return
+      end
 
       base = Addressable::URI.parse(@base + rel)
       doc = Nokogiri::HTML(res.content)
