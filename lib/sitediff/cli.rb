@@ -56,11 +56,11 @@ class SiteDiff
            enum: %w[none all before after],
            default: 'before',
            desc: 'Use the cached version of these sites, if available.'
-    option 'quiet',
+    option 'verbose',
            type: :boolean,
-           aliases: '-q',
+           aliases: '-v',
            default: false,
-           desc: 'Do not show differences between versions for each page'
+           desc: 'Show differences between versions for each page in terminal'
     option :concurrency,
            type: :numeric,
            default: 3,
@@ -98,7 +98,7 @@ class SiteDiff
       cache.write_tags << :before << :after
 
       sitediff = SiteDiff.new(config, cache, options[:concurrency],
-                              !options['quiet'])
+                              options['verbose'])
       num_failing = sitediff.run
       exit_code = num_failing > 0 ? 2 : 0
 
