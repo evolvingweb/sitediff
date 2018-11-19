@@ -17,7 +17,7 @@ describe SiteDiff::Cli do
           './bin/sitediff', 'diff',
           '--before', srv.before,
           '--after', srv.after,
-          '--dump-dir', dir,
+          '--directory', dir,
           '--cached', 'none',
           'spec/fixtures/config.yaml'
         ]
@@ -29,10 +29,10 @@ describe SiteDiff::Cli do
         expect(status.exitstatus).to be 2
 
         # Should report that Hash.html doesn't match
-        expect(out).to include 'FAILURE /Hash.html'
+        expect(out).to include '[sitediff] CHANGED /Hash.html'
 
         # Should report that File.html matches
-        expect(out).to include 'SUCCESS /IO.html'
+        expect(out).to include '[sitediff] UNCHANGED /IO.html'
 
         # Should report a diff of a different line
         expect(out).to match(/^+.*<a href="#method-i-to_h"/)
