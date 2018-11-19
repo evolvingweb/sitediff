@@ -16,35 +16,31 @@ class SiteDiff
 
     # Is a tag cached?
     def tag?(tag)
-      File.directory?(File.join(@dir, "snapshot", tag.to_s))
+      File.directory?(File.join(@dir, 'snapshot', tag.to_s))
     end
 
     def get(tag, path)
       return nil unless @read_tags.include? tag
 
-      filename = File.join(@dir, "snapshot", tag.to_s, *path.split(File::SEPARATOR))
-      if File.directory?(filename)
-        filename = File.join(filename, "index.html")
-      end
+      filename = File.join(@dir, 'snapshot', tag.to_s, *path.split(File::SEPARATOR))
+
+      filename = File.join(filename, 'index.html') if File.directory?(filename)
       Marshal.load(File.read(filename))
     end
 
     def set(tag, path, result)
       return unless @write_tags.include? tag
 
-      filename = File.join(@dir, "snapshot", tag.to_s, *path.split(File::SEPARATOR))
-      if File.directory?(filename)
-        filename = File.join(filename, "index.html")
-      end
+      filename = File.join(@dir, 'snapshot', tag.to_s, *path.split(File::SEPARATOR))
+
+      filename = File.join(filename, 'index.html') if File.directory?(filename)
       filepath = Pathname.new(filename)
-      if not filepath.dirname.directory?
+      unless filepath.dirname.directory?
         begin
           filepath.dirname.mkpath
         rescue Errno::EEXIST
           curdir = filepath
-          while not curdir.exist?
-            curdir = curdir.parent
-          end
+          curdir = curdir.parent until curdir.exist?
           tempname = curdir.dirname + (curdir.basename.to_s + '.temporary')
           # May cause problems if action is not atomic!
           # Move existing file to dir/index.html first

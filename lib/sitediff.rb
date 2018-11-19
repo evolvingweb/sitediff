@@ -84,7 +84,7 @@ class SiteDiff
 
   # Process a set of read results
   def process_results(path, read_results)
-    diff = if error = (read_results[:before].error || read_results[:after].error)
+    diff = if (error = (read_results[:before].error || read_results[:after].error))
              Result.new(path, nil, nil, error)
            else
              Result.new(path, *sanitize(path, read_results), nil)

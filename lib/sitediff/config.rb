@@ -85,7 +85,7 @@ class SiteDiff
       result
     end
 
-    def initialize(files, dir, opts = {})
+    def initialize(files, dir)
       @config = { 'paths' => [], 'before' => {}, 'after' => {} }
 
       files = [File.join(dir, DEFAULT_FILENAME)] if files.empty?

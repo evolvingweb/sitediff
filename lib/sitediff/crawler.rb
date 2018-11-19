@@ -43,8 +43,8 @@ class SiteDiff
       if res.error
         SiteDiff.log(res.error, :error)
         return
-      elsif not res.content
-        SiteDiff.log("Response is missing content. Treating as an error.", :error)
+      elsif !res.content
+        SiteDiff.log('Response is missing content. Treating as an error.', :error)
         return
       end
 
