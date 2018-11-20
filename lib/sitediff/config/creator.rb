@@ -64,7 +64,7 @@ class SiteDiff
       def crawl(depth = nil)
         hydra = Typhoeus::Hydra.new(max_concurrency: @concurrency)
         roots.each do |tag, u|
-          Crawler.new(hydra, u, depth) do |info|
+          Crawler.new(hydra, u, depth, @curl_opts) do |info|
             crawled_path(tag, info)
           end
         end

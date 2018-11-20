@@ -152,6 +152,10 @@ class SiteDiff
            type: :numeric,
            default: 3,
            desc: 'Max number of concurrent connections made'
+    option :curl_options,
+           type: :hash,
+           default: {},
+           desc: 'Options to be passed to curl'
     desc 'init URL [URL]', 'Create a sitediff configuration'
     def init(*urls)
       unless (1..2).cover? urls.size
@@ -159,8 +163,9 @@ class SiteDiff
         exit 2
       end
 
+      curl_opts = UriWrapper::DEFAULT_CURL_OPTS.clone.merge(options[:curl_options])
       # Need to be able to add curl options there!
-      creator = SiteDiff::Config::Creator.new(options[:concurrency], UriWrapper::DEFAULT_CURL_OPTS, *urls)
+      creator = SiteDiff::Config::Creator.new(options[:concurrency], curl_opts, *urls)
       creator.create(
         depth: options[:depth],
         directory: options[:directory],
