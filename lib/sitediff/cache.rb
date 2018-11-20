@@ -45,8 +45,12 @@ class SiteDiff
           # May cause problems if action is not atomic!
           # Move existing file to dir/index.html first
           # Not robust! Should generate an UUID or something.
+          SiteDiff.log "Overwriting file #{tempname}", :warn if File.exist?(tempname)
           curdir.rename(tempname)
           filepath.dirname.mkpath
+          # Should only happen in strange situations such as when the path
+          # is foo/index.html/bar (i.e., index.html is a directory)
+          SiteDiff.log "Overwriting file #{tempname}", :warn if (curdir + 'index.html').exist?
           tempname.rename(curdir + 'index.html')
         end
       end
