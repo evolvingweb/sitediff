@@ -40,9 +40,13 @@ class SiteDiff
 
     # Handle the fetch of a URI
     def fetched_uri(rel, depth, res)
-      # TODO: Should report errors instead of just ignoring them??
-      return unless res.content # Ignore errors
-      return unless depth >= 0
+      if res.error
+        SiteDiff.log(res.error, :error)
+        return
+      elsif !res.content
+        SiteDiff.log('Response is missing content. Treating as an error.', :error)
+        return
+      end
 
       base = Addressable::URI.parse(@base + rel)
       doc = Nokogiri::HTML(res.content)
@@ -55,6 +59,8 @@ class SiteDiff
         document: doc
       )
       @callback[info]
+
+      return unless depth >= 1
 
       # Find links
       links = find_links(doc)
@@ -76,7 +82,7 @@ class SiteDiff
     def resolve_link(base, rel)
       base + rel
     rescue Addressable::URI::InvalidURIError
-      SiteDiff.log "skipped invalid URL: '#{rel}'", :warn
+      SiteDiff.log "skipped invalid URL: '#{rel}' (at #{base})", :warn
       nil
     end
 

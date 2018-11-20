@@ -13,7 +13,8 @@ class SiteDiff
     class_option 'directory',
                  type: :string,
                  aliases: '-C',
-                 desc: 'Go to a given directory before running.'
+                 default: 'sitediff',
+                 desc: 'Configuration directory'
 
     # Thor, by default, exits with 0 no matter what!
     def self.exit_on_failure?
@@ -25,10 +26,6 @@ class SiteDiff
       true
     end
 
-    option 'dump-dir',
-           type: :string,
-           default: File.join('.', 'output'),
-           desc: 'Location to write the output to.'
     option 'paths-file',
            type: :string,
            desc: 'Paths are read (one at a line) from PATHS: ' \
@@ -59,18 +56,18 @@ class SiteDiff
            enum: %w[none all before after],
            default: 'before',
            desc: 'Use the cached version of these sites, if available.'
-    option 'quiet',
+    option 'verbose',
            type: :boolean,
-           aliases: '-q',
+           aliases: '-v',
            default: false,
-           desc: 'Do not show differences between versions for each page'
+           desc: 'Show differences between versions for each page in terminal'
     option :concurrency,
            type: :numeric,
            default: 3,
            desc: 'Max number of concurrent connections made'
     desc 'diff [OPTIONS] [CONFIGFILES]', 'Perform systematic diff on given URLs'
     def diff(*config_files)
-      config = chdir(config_files)
+      config = SiteDiff::Config.new(config_files, options[:directory])
 
       # override config based on options
       paths = options['paths']
@@ -94,25 +91,21 @@ class SiteDiff
       config.after['url'] = options['after'] if options['after']
 
       # Setup cache
-      cache = SiteDiff::Cache.new(create: options['cached'] != 'none')
+      cache = SiteDiff::Cache.new(create: options['cached'] != 'none',
+                                  dir: options['directory'])
       cache.read_tags << :before if %w[before all].include?(options['cached'])
       cache.read_tags << :after if %w[after all].include?(options['cached'])
       cache.write_tags << :before << :after
 
       sitediff = SiteDiff.new(config, cache, options[:concurrency],
-                              !options['quiet'])
+                              options['verbose'])
       num_failing = sitediff.run
       exit_code = num_failing > 0 ? 2 : 0
 
-      sitediff.dump(options['dump-dir'], options['before-report'],
+      sitediff.dump(options['directory'], options['before-report'],
                     options['after-report'])
     rescue Config::InvalidConfig => e
       SiteDiff.log "Invalid configuration: #{e.message}", :error
-    rescue SiteDiffException => e
-      SiteDiff.log e.message, :error
-    rescue Exception => e
-      SiteDiff.log e.message, :error
-      exit(3)
     else # no exception was raised
       # Thor::Error  --> exit(1), guaranteed by exit_on_failure?
       # Failing diff --> exit(2), populated above
@@ -123,24 +116,21 @@ class SiteDiff
            type: :numeric,
            default: SiteDiff::Webserver::DEFAULT_PORT,
            desc: 'The port to serve on'
-    option 'dump-dir',
-           type: :string,
-           default: 'output',
-           desc: 'The directory to serve'
     option :browse,
            type: :boolean,
            default: true,
            desc: 'Whether to open the served content in your browser'
     desc 'serve [OPTIONS]', 'Serve the sitediff output directory over HTTP'
     def serve(*config_files)
-      config = chdir(config_files, config: false)
+      config = SiteDiff::Config.new(config_files, options['directory'])
+      # Could check non-empty config here but currently errors are already raised.
 
-      cache = Cache.new
+      cache = Cache.new(dir: options['directory'])
       cache.read_tags << :before << :after
 
       SiteDiff::Webserver::ResultServer.new(
         options[:port],
-        options['dump-dir'],
+        options['directory'],
         browse: options[:browse],
         cache: cache,
         config: config
@@ -149,11 +139,6 @@ class SiteDiff
       SiteDiff.log e.message, :error
     end
 
-    option :output,
-           type: :string,
-           default: 'sitediff',
-           desc: 'Directory in which to place the configuration',
-           aliases: ['-o']
     option :depth,
            type: :numeric,
            default: 3,
@@ -174,11 +159,11 @@ class SiteDiff
         exit 2
       end
 
-      chdir([], search: false)
-      creator = SiteDiff::Config::Creator.new(options[:concurrency], *urls)
+      # Need to be able to add curl options there!
+      creator = SiteDiff::Config::Creator.new(options[:concurrency], UriWrapper::DEFAULT_CURL_OPTS, *urls)
       creator.create(
         depth: options[:depth],
-        directory: options[:output],
+        directory: options[:directory],
         rules: options[:rules] != 'no',
         rules_disabled: (options[:rules] == 'disabled')
       ) do |_tag, info|
@@ -199,7 +184,7 @@ class SiteDiff
     desc 'store [CONFIGFILES]',
          'Cache the current contents of a site for later comparison'
     def store(*config_files)
-      config = chdir(config_files)
+      config = SiteDiff::Config.new(config_files, options['directory'])
       config.validate(need_before: false)
 
       cache = SiteDiff::Cache.new(create: true)
@@ -210,24 +195,6 @@ class SiteDiff
                                     before: base)
       fetcher.run do |path, _res|
         SiteDiff.log "Visited #{path}, cached"
-      end
-    end
-
-    private
-
-    def chdir(files, opts = {})
-      opts = { config: true, search: true }.merge(opts)
-
-      dir = options['directory']
-      Dir.chdir(dir) if dir
-
-      return unless opts[:search]
-
-      begin
-        SiteDiff::Config.new(files, search: !dir)
-      rescue SiteDiff::Config::ConfigNotFound
-        raise if opts[:config]
-        # If no config required, allow it to pass
       end
     end
   end
