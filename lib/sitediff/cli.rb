@@ -156,6 +156,10 @@ class SiteDiff
            type: :hash,
            default: {},
            desc: 'Options to be passed to curl'
+    option :insecure,
+           type: :boolean,
+           default: false,
+           desc: 'Ignore many HTTPS/SSL errors'
     desc 'init URL [URL]', 'Create a sitediff configuration'
     def init(*urls)
       unless (1..2).cover? urls.size
@@ -164,7 +168,11 @@ class SiteDiff
       end
 
       curl_opts = UriWrapper::DEFAULT_CURL_OPTS.clone.merge(options[:curl_options])
-      # Need to be able to add curl options there!
+      if options[:insecure]
+        curl_opts[:ssl_verifypeer] = false
+        curl_opts[:ssl_verifyhost] = 0
+      end
+
       creator = SiteDiff::Config::Creator.new(options[:concurrency], curl_opts, *urls)
       creator.create(
         depth: options[:depth],
