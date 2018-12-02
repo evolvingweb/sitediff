@@ -1,0 +1,15 @@
+FROM alpine
+RUN apk update
+RUN apk add ruby ruby-dev make libxml2-dev libxslt-dev build-base
+RUN apk add ruby-bundler libcurl ruby-webrick
+RUN apk add gdbm ruby-dbm
+RUN gem install thor rspec --no-rdoc --no-ri
+
+ADD . /sitediff
+WORKDIR /sitediff
+
+# Build as a gem
+RUN gem build sitediff.gemspec && gem install sitediff --no-rdoc --no-ri
+
+# Build locally
+RUN bundle install
