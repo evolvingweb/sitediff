@@ -28,3 +28,5 @@ RUN gem build sitediff.gemspec && gem install sitediff --no-rdoc --no-ri
 
 # Build locally
 RUN bundle install
+
+ENTRYPOINT [ "sitediff "]

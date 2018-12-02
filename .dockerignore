@@ -1,0 +1,9 @@
+.git
+.bundle/
+vendor/
+Gemfile.lock
+sitediff
+.idea
+.vscode
+Dockerfile
+Dockerfile-alpine
