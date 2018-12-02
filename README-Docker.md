@@ -20,5 +20,10 @@ So your typical first command might look more like:
 
     docker run -it -v `pwd`:/sitediff sitediff http://mysite.com
 
+If you wish to make use of sitediff's ability to serve up its own web pages with the 'serve' command, you'll also need to enable access to the port it uses to do that, normally 13080, e.g.
+
+    docker run -it -v `pwd`:/sitediff -p 13080:13080 sitediff serve
+
+and then connect to http://localhost:13080.
 
 *Quentin Stafford-Fraser, Dec 2018*
