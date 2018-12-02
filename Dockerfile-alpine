@@ -1,3 +1,11 @@
+# An Alpine-based Dockerfile for the sitediff utility
+# http://evolvingweb.github.io/sitediff
+#
+# It's easier and quicker to produce a container based on Alpine Linux,
+# and the resulting image files are much smaller.
+# 
+# Quentin Stafford-Fraser 2018
+#
 FROM alpine
 RUN apk update
 RUN apk add ruby ruby-dev make libxml2-dev libxslt-dev build-base
