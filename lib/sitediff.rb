@@ -100,7 +100,7 @@ class SiteDiff
 
   # Perform the comparison, populate @results and return the number of failing
   # paths (paths with non-zero diff).
-  def run
+  def run(curl_opts = {})
     # Map of path -> Result object, populated by process_results
     @results = {}
     @ordered = @config.paths.dup
@@ -113,7 +113,8 @@ class SiteDiff
     # TODO: Fix this after config merge refactor!
     # Not quite right. We are not passing @config.before or @config.after
     # so passing this instead but @config.after['curl_opts'] is ignored.
-    curl_opts = @config.before['curl_opts']
+    config_curl_opts = @config.before['curl_opts']
+    curl_opts = config_curl_opts.clone.merge(curl_opts) if config_curl_opts
     fetcher = Fetch.new(@cache, @config.paths, @concurrency, curl_opts,
                         before: before, after: after)
     fetcher.run(&method(:process_results))

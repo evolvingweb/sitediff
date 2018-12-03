@@ -38,7 +38,7 @@ Lint/UselessAccessModifier:
 
 # Offense count: 15
 Metrics/AbcSize:
-  Max: 66
+  Max: 66.07
 
 # Offense count: 6
 # Configuration parameters: CountComments, ExcludedMethods.

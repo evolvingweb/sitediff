@@ -15,6 +15,14 @@ class SiteDiff
                  aliases: '-C',
                  default: 'sitediff',
                  desc: 'Configuration directory'
+    class_option :curl_options,
+                 type: :hash,
+                 default: {},
+                 desc: 'Options to be passed to curl'
+    class_option :insecure,
+                 type: :boolean,
+                 default: false,
+                 desc: 'Ignore many HTTPS/SSL errors'
 
     # Thor, by default, exits with 0 no matter what!
     def self.exit_on_failure?
@@ -24,6 +32,18 @@ class SiteDiff
     # Thor, by default, does not raise an error for use of unknown options.
     def self.check_unknown_options?(_config)
       true
+    end
+
+    def get_curl_opts(options)
+      # We do want string keys here
+      bool_hash = { 'true' => true, 'false' => false }
+      curl_opts = UriWrapper::DEFAULT_CURL_OPTS.clone.merge(options[:curl_options])
+      curl_opts.each { |k, v| curl_opts[k] = bool_hash.fetch(v, v) }
+      if options[:insecure]
+        curl_opts[:ssl_verifypeer] = false
+        curl_opts[:ssl_verifyhost] = 0
+      end
+      curl_opts
     end
 
     option 'paths-file',
@@ -99,7 +119,7 @@ class SiteDiff
 
       sitediff = SiteDiff.new(config, cache, options[:concurrency],
                               options['verbose'])
-      num_failing = sitediff.run
+      num_failing = sitediff.run(get_curl_opts(options))
       exit_code = num_failing > 0 ? 2 : 0
 
       sitediff.dump(options['directory'], options['before-report'],
@@ -152,14 +172,6 @@ class SiteDiff
            type: :numeric,
            default: 3,
            desc: 'Max number of concurrent connections made'
-    option :curl_options,
-           type: :hash,
-           default: {},
-           desc: 'Options to be passed to curl'
-    option :insecure,
-           type: :boolean,
-           default: false,
-           desc: 'Ignore many HTTPS/SSL errors'
     desc 'init URL [URL]', 'Create a sitediff configuration'
     def init(*urls)
       unless (1..2).cover? urls.size
@@ -167,11 +179,7 @@ class SiteDiff
         exit 2
       end
 
-      curl_opts = UriWrapper::DEFAULT_CURL_OPTS.clone.merge(options[:curl_options])
-      if options[:insecure]
-        curl_opts[:ssl_verifypeer] = false
-        curl_opts[:ssl_verifyhost] = 0
-      end
+      curl_opts = get_curl_opts(options)
 
       creator = SiteDiff::Config::Creator.new(options[:concurrency], curl_opts, *urls)
       creator.create(
