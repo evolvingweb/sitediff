@@ -14,6 +14,8 @@ class SiteDiff
       @rules = Hash.new { |h, k| h[k] = Set.new }
     end
 
+    attr_reader :disabled
+
     def find_sanitization_candidates
       @candidates = Set.new
 

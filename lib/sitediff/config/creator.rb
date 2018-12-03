@@ -94,7 +94,11 @@ class SiteDiff
         # If single-site, cache after as before!
         @cache.set(:before, path, res) unless roots[:before]
 
-        @rules.handle_page(tag, res.content, info.document) if @rules && !res.error
+        # Not sure why we'd ever want to apply sanitization at download time
+        # Maybe it was back when we wanted to cache the modified version.
+        # The line below was added on Tue Apr 28 18:11:58 2015 -0400
+        # (ignore the "reformat" commit) I suspect semantics have changed since.
+        @rules.handle_page(tag, res.content, info.document) if @rules && !res.error && !@rules.disabled
       end
 
       # Create a gitignore if we seem to be in git
