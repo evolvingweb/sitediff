@@ -206,17 +206,19 @@ class SiteDiff
         SiteDiff.log "Visited #{path}, cached"
       end
     end
-  end
 
-  def get_curl_opts(options)
-    # We do want string keys here
-    bool_hash = { 'true' => true, 'false' => false }
-    curl_opts = UriWrapper::DEFAULT_CURL_OPTS.clone.merge(options[:curl_options])
-    curl_opts.each { |k, v| curl_opts[k] = bool_hash.fetch(v, v) }
-    if options[:insecure]
-      curl_opts[:ssl_verifypeer] = false
-      curl_opts[:ssl_verifyhost] = 0
+    no_commands do
+      def get_curl_opts(options)
+        # We do want string keys here
+        bool_hash = { 'true' => true, 'false' => false }
+        curl_opts = UriWrapper::DEFAULT_CURL_OPTS.clone.merge(options[:curl_options])
+        curl_opts.each { |k, v| curl_opts[k] = bool_hash.fetch(v, v) }
+        if options[:insecure]
+          curl_opts[:ssl_verifypeer] = false
+          curl_opts[:ssl_verifyhost] = 0
+        end
+        curl_opts
+      end
     end
-    curl_opts
   end
 end
