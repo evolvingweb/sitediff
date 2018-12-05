@@ -133,13 +133,11 @@ To get help on the options for a particular command, eg: ```diff```:
 
 * **Finding configuration files**
 
-  SiteDiff will attempt to auto-detect any nearby ```sitediff.yaml``` files. But if your ```sitediff.yaml``` is in an unusual place, you can force SiteDiff to change to that directory:
+  By default SiteDiff will put everything in the `sitediff` folder. You can use the `--directory` flag to specify a different directory.
 
-  ```sitediff diff -C some-directory```
-
-  Or you can even specify a list of config files at the command-line:
-
-  ```sitediff diff myconfig.yaml otherconfig.yaml ...```
+  ```sitediff init -C my_project_folder https://example.com
+  sitediff diff -C my_project_folder
+  sitediff serve -C my_project_folder```
 
 * **Handling large configuration files**
 
@@ -183,21 +181,28 @@ To get help on the options for a particular command, eg: ```diff```:
 
   ```sitediff diff --after-url-report=http://vagrant:8080```
 
+* **Curl options**
+
+  [Many options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html) can be passed to the underlying curl library. Add `--curl_options=name1:value1 name2:value2` to the command line (such as `--curl_options=max_recv_speed_large:100000 ssl_verifypeer:false` (remove the `CURLOPT_` prefix and write the name in lowercase) or add them to your configuration file.
+
+  ```yaml
+  curl_opts:
+    max_recv_speed_large: 10000
+    ssl_verifypeer: false
+  ```
+
+  The command line options overwrite what is in the `settings.yaml` file.
+
 * **Throttling**
 
   A few options are available if you want to control how aggressive SiteDiff crawls.
 
      - There's a command line option `--concurrency=N` for both `sitediff init` and `sitediff diff` which controls the maximum number of simultaneous connections made. Lower N mean less aggressive. The default is 3.
-     - The underlying curl library has [many options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html) such as `max_recv_speed_large`. Just add them to your configuration file.
-
-  ```yaml
-  curl_opts:
-    max_recv_speed_large: 10000
-  ```
+     - The underlying curl library has [many options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html) such as `max_recv_speed_large` which can be helpful.
 
 * **Timeouts**
 
-  By default, no timeout is set but one can be added in your configuration file.
+  By default, no timeout is set but one can be added `--curl_options=timeout:60` or in your configuration file.
 
   ```yaml
   curl_opts:
@@ -210,6 +215,7 @@ To get help on the options for a particular command, eg: ```diff```:
   curl_opts:
     timeout_ms: 60000
   ```
+
 ## Configuration
 
 SiteDiff relies on a [YAML](http://yaml.org/) configuration file, usually called ```sitediff.yaml```. You can create a reasonable one using ```sitediff init```, but there are many useful things you may want to manually add or change.
