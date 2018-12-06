@@ -1,6 +1,6 @@
 # SiteDiff
 
-**Note:** Please note that version 0.1.0 introduces many backwards incompatible changes.
+**Note:** Please note that version 0.0.4 introduces many backwards incompatible changes.
 
 [![Build Status](https://travis-ci.org/evolvingweb/sitediff.svg?branch=master)](https://travis-ci.org/evolvingweb/sitediff)
 [![CircleCI Status](https://circleci.com/gh/evolvingweb/sitediff/tree/master.png?style=shield)](https://circleci.com/gh/evolvingweb/sitediff)
