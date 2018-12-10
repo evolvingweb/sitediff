@@ -25,6 +25,8 @@ class SiteDiff
       filename = File.join(@dir, 'snapshot', tag.to_s, *path.split(File::SEPARATOR))
 
       filename = File.join(filename, 'index.html') if File.directory?(filename)
+      return nil unless File.file? filename
+
       Marshal.load(File.read(filename))
     end
 

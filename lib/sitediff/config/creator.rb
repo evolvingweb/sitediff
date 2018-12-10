@@ -64,7 +64,7 @@ class SiteDiff
       def crawl(depth = nil)
         hydra = Typhoeus::Hydra.new(max_concurrency: @concurrency)
         roots.each do |tag, u|
-          Crawler.new(hydra, u, depth) do |info|
+          Crawler.new(hydra, u, depth, @curl_opts) do |info|
             crawled_path(tag, info)
           end
         end
@@ -94,6 +94,8 @@ class SiteDiff
         # If single-site, cache after as before!
         @cache.set(:before, path, res) unless roots[:before]
 
+        # This is used to populate the list of rules we guess are
+        # applicable to the current site.
         @rules.handle_page(tag, res.content, info.document) if @rules && !res.error
       end
 
