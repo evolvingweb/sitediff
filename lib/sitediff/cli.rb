@@ -23,6 +23,10 @@ class SiteDiff
                  type: :boolean,
                  default: false,
                  desc: 'Ignore many HTTPS/SSL errors'
+    class_option :debug,
+                 type: :boolean,
+                 default: true,
+                 desc: 'Debug mode. Stop on certain errors and produce a traceback.'
 
     # Thor, by default, exits with 0 no matter what!
     def self.exit_on_failure?
@@ -106,8 +110,8 @@ class SiteDiff
       cache.write_tags << :before << :after
 
       sitediff = SiteDiff.new(config, cache, options[:concurrency],
-                              options['verbose'])
-      num_failing = sitediff.run(get_curl_opts(options))
+                              options['verbose'], options[:debug])
+      num_failing = sitediff.run(get_curl_opts(options), options[:debug])
       exit_code = num_failing > 0 ? 2 : 0
 
       sitediff.dump(options['directory'], options['before-report'],
@@ -169,7 +173,10 @@ class SiteDiff
 
       curl_opts = get_curl_opts(options)
 
-      creator = SiteDiff::Config::Creator.new(options[:concurrency], curl_opts, *urls)
+      creator = SiteDiff::Config::Creator.new(options[:concurrency],
+                                              curl_opts,
+                                              options[:debug],
+                                              *urls)
       creator.create(
         depth: options[:depth],
         directory: options[:directory],
@@ -200,7 +207,10 @@ class SiteDiff
       cache.write_tags << :before
 
       base = options[:url] || config.after['url']
-      fetcher = SiteDiff::Fetch.new(cache, config.paths, options['concurrency'],
+      fetcher = SiteDiff::Fetch.new(cache, config.paths,
+                                    options['concurrency'],
+                                    get_curl_opts(options),
+                                    options[:debug],
                                     before: base)
       fetcher.run do |path, _res|
         SiteDiff.log "Visited #{path}, cached"
