@@ -25,7 +25,7 @@ class SiteDiff
                  desc: 'Ignore many HTTPS/SSL errors'
     class_option :debug,
                  type: :boolean,
-                 default: true,
+                 default: false,
                  desc: 'Debug mode. Stop on certain errors and produce a traceback.'
 
     # Thor, by default, exits with 0 no matter what!
