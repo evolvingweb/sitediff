@@ -2,6 +2,9 @@ sanitization:
 - title: Strip Drupal.settings
   selector: script
   pattern: '^(<script>)?jQuery.extend\(Drupal.settings.*$'
+- title: Strip IE CSS/JS cache IDs
+  pattern: '("[^"]*ie\d?\.(js|css))\?[a-z0-9]{6}"'
+  substitute: '\1'
 - title: Strip form build ID
   selector: input
   pattern: 'name="form_build_id" value="form-[-\w]{43}"'
@@ -21,9 +24,6 @@ sanitization:
   selector: style, script
   pattern: '("[^"]*\.(js|css))\?[a-z0-9]{6}"'
   substitute: '\1'
-- title: Strip IE CSS/JS cache IDs
-  pattern: '("[^"]*ie\d?\.(js|css))\?[a-z0-9]{6}"'
-  substitute: '\1'
 - title: Strip Drupal JS version tags
   selector: script
   pattern: '(src="[^"]*/misc/\w+\.js)?v=\d+\.\d+"'
@@ -31,3 +31,33 @@ sanitization:
 - title: Strip domain names from absolute URLs
   pattern: 'http:\/\/[a-zA-Z0-9.:-]+'
   substitute: '__domain__'
+- title: Strip form build ID
+  selector: input
+  pattern: 'autocomplete="off" data-drupal-selector="form-[-\w]{43}"'
+  substitute: 'autocomplete="off" data-drupal-selector="form-DRUPAL_FORM_BUILD_ID"'
+- title: Strip form build ID 2
+  selector: input
+  pattern: 'name="form_build_id" value="form-[-\w]{43}"'
+  substitute: 'name="form_build_id" value="form-DRUPAL_FORM_BUILD_ID"'
+- title: Strip Drupal CSS link queries
+  selector: link
+  pattern: '\.css\?(\w*)'
+  substitute: '\.css'
+- title: Strip Drupal JS link queries
+  selector: script
+  pattern: '\.js\?(\w*)'
+  substitute: '\.js'
+- title: Strip Drupal View-DOM ID
+  pattern: 'view-dom-id-\w*'
+  substitute: 'view-dom-id-_ID_'
+- title: Strip Drupal View-DOM ID 2
+  pattern: '(views?_dom_id"?:"?)\w*'
+  substitute: '\\1_ID_'
+- title: Ignore Drupal CSS file names
+  selector: link
+  pattern: 'css_[-\w]{43}(\\|%5C)?\.css'
+  substitute: 'css__ID__.css'
+- title: Ignore Drupal JS file names
+  selector: script
+  pattern: 'js_[-\w]{43}\\?\.js'
+  substitute: 'js__ID__.js'
