@@ -11,9 +11,11 @@ require 'yaml'
 class SiteDiff
   class Config
     class Creator
-      def initialize(*urls)
+      def initialize(concurrency, curl_opts, *urls)
+        @concurrency = concurrency
         @after = urls.pop
         @before = urls.pop # May be nil
+        @curl_opts = curl_opts
       end
 
       def roots
@@ -39,8 +41,7 @@ class SiteDiff
 
         # Setup instance vars
         @paths = Hash.new { |h, k| h[k] = Set.new }
-        @cache = Cache.new(file: @dir.+(Cache::DEFAULT_FILENAME).to_s,
-                           create: true)
+        @cache = Cache.new(dir: @dir.to_s, create: true)
         @cache.write_tags << :before << :after
 
         build_config
@@ -55,16 +56,15 @@ class SiteDiff
         end
 
         crawl(@depth)
-        @cache.close
         @rules&.add_config
 
         @config['paths'] = @paths.values.reduce(&:|).to_a.sort
       end
 
       def crawl(depth = nil)
-        hydra = Typhoeus::Hydra.new(max_concurrency: 10)
+        hydra = Typhoeus::Hydra.new(max_concurrency: @concurrency)
         roots.each do |tag, u|
-          Crawler.new(hydra, u, depth) do |info|
+          Crawler.new(hydra, u, depth, @curl_opts) do |info|
             crawled_path(tag, info)
           end
         end
@@ -94,6 +94,8 @@ class SiteDiff
         # If single-site, cache after as before!
         @cache.set(:before, path, res) unless roots[:before]
 
+        # This is used to populate the list of rules we guess are
+        # applicable to the current site.
         @rules.handle_page(tag, res.content, info.document) if @rules && !res.error
       end
 

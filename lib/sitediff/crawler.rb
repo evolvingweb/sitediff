@@ -14,12 +14,14 @@ class SiteDiff
     DEFAULT_DEPTH = 3
 
     # Create a crawler with a base URL
-    def initialize(hydra, base, depth = DEFAULT_DEPTH, &block)
+    def initialize(hydra, base, depth = DEFAULT_DEPTH,
+                   curl_opts = UriWrapper::DEFAULT_CURL_OPTS, &block)
       @hydra = hydra
       @base_uri = Addressable::URI.parse(base)
       @base = base
       @found = Set.new
       @callback = block
+      @curl_opts = curl_opts
 
       add_uri('', depth)
     end
@@ -30,7 +32,7 @@ class SiteDiff
 
       @found << rel
 
-      wrapper = UriWrapper.new(@base + rel)
+      wrapper = UriWrapper.new(@base + rel, @curl_opts)
       wrapper.queue(@hydra) do |res|
         fetched_uri(rel, depth, res)
       end
@@ -38,8 +40,13 @@ class SiteDiff
 
     # Handle the fetch of a URI
     def fetched_uri(rel, depth, res)
-      return unless res.content # Ignore errors
-      return unless depth >= 0
+      if res.error
+        SiteDiff.log(res.error, :error)
+        return
+      elsif !res.content
+        SiteDiff.log('Response is missing content. Treating as an error.', :error)
+        return
+      end
 
       base = Addressable::URI.parse(@base + rel)
       doc = Nokogiri::HTML(res.content)
@@ -52,6 +59,8 @@ class SiteDiff
         document: doc
       )
       @callback[info]
+
+      return unless depth >= 1
 
       # Find links
       links = find_links(doc)
@@ -73,7 +82,7 @@ class SiteDiff
     def resolve_link(base, rel)
       base + rel
     rescue Addressable::URI::InvalidURIError
-      SiteDiff.log "skipped invalid URL: '#{rel}'", :warn
+      SiteDiff.log "skipped invalid URL: '#{rel}' (at #{base})", :warn
       nil
     end
 

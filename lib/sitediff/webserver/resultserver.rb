@@ -54,6 +54,34 @@ class SiteDiff
         end
       end
 
+      # Run sitediff command from browser. Probably dangerous in general.
+      class RunServlet < WEBrick::HTTPServlet::AbstractServlet
+        def initialize(_server, dir)
+          @dir = dir
+        end
+
+        def do_GET(req, res)
+          path = req.path_info
+          if path != '/diff'
+            res['content-type'] = 'text/plain'
+            res.body = 'ERROR: Only /run/diff is supported by the /run API at the moment'
+            return
+          end
+          # Thor assumes only one command is called and some values like
+          # `options` are share across all SiteDiff::Cli instances so
+          # we can't just call SiteDiff::Cli.new().diff
+          # This is likely to go very wrong depending on how `sitediff serve`
+          # was actually called
+          cmd = "#{$PROGRAM_NAME} diff -C #{@dir} --cached=all"
+          system(cmd)
+
+          # Could also add a message to indicate success/failure
+          # But for the moment, all our files are static
+          res.set_redirect(WEBrick::HTTPStatus::Found,
+                           "/files/#{SiteDiff::REPORT_FILE}")
+        end
+      end
+
       def initialize(port, dir, opts = {})
         unless File.exist?(File.join(dir, SiteDiff::SETTINGS_FILE))
           raise SiteDiffException,
@@ -68,14 +96,20 @@ class SiteDiff
       def server(opts)
         dir = opts.delete(:DocumentRoot)
         srv = super(opts)
-        srv.mount_proc('/') do |_req, res|
-          res.set_redirect(WEBrick::HTTPStatus::Found,
-                           "/files/#{SiteDiff::REPORT_FILE}")
+        srv.mount_proc('/') do |req, res|
+          if req.path == '/'
+            res.set_redirect(WEBrick::HTTPStatus::Found,
+                             "/files/#{SiteDiff::REPORT_FILE}")
+          else
+            res.set_redirect(WEBrick::HTTPStatus::TemporaryRedirect,
+                             "#{@settings['after']}#{req.path}")
+          end
         end
 
         srv.mount('/files', WEBrick::HTTPServlet::FileHandler, dir, true)
         srv.mount('/cache', CacheServlet, @cache)
         srv.mount('/sidebyside', SideBySideServlet, @cache, @settings)
+        srv.mount('/run', RunServlet, dir)
         srv
       end
 

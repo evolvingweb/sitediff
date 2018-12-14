@@ -11,7 +11,7 @@ class SiteDiff
 
     # keys allowed in configuration files
     CONF_KEYS = Sanitizer::TOOLS.values.flatten(1) +
-                %w[paths before after before_url after_url includes]
+                %w[paths before after before_url after_url includes curl_opts]
 
     class InvalidConfig < SiteDiffException; end
     class ConfigNotFound < SiteDiffException; end
@@ -45,11 +45,12 @@ class SiteDiff
         end
         tools[:scalar].each { |key| conf[pos][key] ||= conf[key] }
         conf[pos]['url'] ||= conf[pos + '_url']
+        conf[pos]['curl_opts'] = conf['curl_opts']
       end
       # normalize paths
       conf['paths'] = Config.normalize_paths(conf['paths'])
 
-      conf.select { |k, _v| %w[before after paths].include? k }
+      conf.select { |k, _v| %w[before after paths curl_opts].include? k }
     end
 
     # Merges two normalized Hashes according to the following rules:
@@ -84,35 +85,10 @@ class SiteDiff
       result
     end
 
-    # Search for a config file. If found, change to the containing directory,
-    # and return an array of config files found.
-    def self.search
-      subdirs = %w[. sitediff]
-      root_indicators = %w[.git .svn]
-
-      Pathname.pwd.ascend do |dir|
-        subdirs.each do |subdir|
-          d = dir + subdir + DEFAULT_FILENAME
-          if d.exist?
-            Dir.chdir(dir.+(subdir).to_s)
-            return [DEFAULT_FILENAME]
-          end
-        end
-
-        root_indicators.each { |r| return [] if dir.+(r).exist? }
-      end
-
-      []
-    end
-
-    def initialize(files, opts = {})
+    def initialize(files, dir)
       @config = { 'paths' => [], 'before' => {}, 'after' => {} }
 
-      files = Config.search if files.empty? && opts[:search]
-      files = [DEFAULT_FILENAME] if files.empty? &&
-                                    File.exist?(DEFAULT_FILENAME)
-      raise ConfigNotFound, 'No configuration file found.' if files.empty?
-
+      files = [File.join(dir, DEFAULT_FILENAME)] if files.empty?
       files.each do |file|
         unless File.exist?(file)
           raise InvalidConfig,

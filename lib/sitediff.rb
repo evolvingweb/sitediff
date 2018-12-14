@@ -54,7 +54,7 @@ class SiteDiff
     @config.after['url']
   end
 
-  def initialize(config, cache, verbose = true)
+  def initialize(config, cache, concurrency, verbose = true)
     @cache = cache
     @verbose = verbose
 
@@ -69,6 +69,7 @@ class SiteDiff
     end
     config.validate(validate_opts)
 
+    @concurrency = concurrency
     @config = config
   end
 
@@ -83,7 +84,7 @@ class SiteDiff
 
   # Process a set of read results
   def process_results(path, read_results)
-    diff = if (error = read_results[:before].error) || read_results[:after].error
+    diff = if (error = (read_results[:before].error || read_results[:after].error))
              Result.new(path, nil, nil, error)
            else
              Result.new(path, *sanitize(path, read_results), nil)
@@ -99,7 +100,7 @@ class SiteDiff
 
   # Perform the comparison, populate @results and return the number of failing
   # paths (paths with non-zero diff).
-  def run
+  def run(curl_opts = {})
     # Map of path -> Result object, populated by process_results
     @results = {}
     @ordered = @config.paths.dup
@@ -109,7 +110,12 @@ class SiteDiff
         @cache.read_tags.sort.join(', '))
     end
 
-    fetcher = Fetch.new(@cache, @config.paths,
+    # TODO: Fix this after config merge refactor!
+    # Not quite right. We are not passing @config.before or @config.after
+    # so passing this instead but @config.after['curl_opts'] is ignored.
+    config_curl_opts = @config.before['curl_opts']
+    curl_opts = config_curl_opts.clone.merge(curl_opts) if config_curl_opts
+    fetcher = Fetch.new(@cache, @config.paths, @concurrency, curl_opts,
                         before: before, after: after)
     fetcher.run(&method(:process_results))
 
@@ -145,7 +151,7 @@ class SiteDiff
 
     # serve some settings
     settings = { 'before' => report_before, 'after' => report_after,
-                 'cached' => @cache.read_tags.map(&:to_s) }
+                 'cached' => %w[before after] }
     dir.+(SETTINGS_FILE).open('w') { |f| YAML.dump(settings, f) }
   end
 end
