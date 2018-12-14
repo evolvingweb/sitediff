@@ -7,18 +7,18 @@ sanitization:
   substitute: '\1'
 - title: Strip form build ID
   selector: input
-  pattern: 'name="form_build_id" value="form-[-\w]{43}"'
+  pattern: 'name="form_build_id" value="form-[-\w]{40,43}"'
   substitute: 'name="form_build_id" value="form-DRUPAL_FORM_BUILD_ID"'
 - title: Strip view DOM ID
   pattern: '(class="view .*) view-dom-id-[a-f0-9]{32}"'
   substitute: '\1 view-dom-id-DRUPAL_VIEW_DOM_ID"'
 - title: Strip CSS aggregation filenames
   selector: link[rel=stylesheet]
-  pattern: '(href="[^"]*/files/css/css_)[-\w]{43}\.css"'
+  pattern: '(href="[^"]*/files/css/css_)[-\w]{40,43}\.css"'
   substitute: '\1DRUPAL_AGGREGATED_CSS.css"'
 - title: Strip JS aggregation filenames
   selector: script
-  pattern: '(src="[^"]*/files/js/js_)[-\w]{43}\.js"'
+  pattern: '(src="[^"]*/files/js/js_)[-\w]{40,43}\.js"'
   substitute: '\1DRUPAL_AGGREGATED_JS.js"'
 - title: Strip CSS/JS cache IDs
   selector: style, script
@@ -33,11 +33,11 @@ sanitization:
   substitute: '__domain__'
 - title: Strip form build ID
   selector: input
-  pattern: 'autocomplete="off" data-drupal-selector="form-[-\w]{43}"'
+  pattern: 'autocomplete="off" data-drupal-selector="form-[-\w]{40,43}"'
   substitute: 'autocomplete="off" data-drupal-selector="form-DRUPAL_FORM_BUILD_ID"'
 - title: Strip form build ID 2
   selector: input
-  pattern: 'name="form_build_id" value="form-[-\w]{43}"'
+  pattern: 'name="form_build_id" value="form-[-\w]{40,43}"'
   substitute: 'name="form_build_id" value="form-DRUPAL_FORM_BUILD_ID"'
 - title: Strip Drupal CSS link queries
   selector: link
@@ -52,12 +52,12 @@ sanitization:
   substitute: 'view-dom-id-_ID_'
 - title: Strip Drupal View-DOM ID 2
   pattern: '(views?_dom_id"?:"?)\w*'
-  substitute: '\\1_ID_'
+  substitute: '\1_ID_'
 - title: Ignore Drupal CSS file names
   selector: link
-  pattern: 'css_[-\w]{43}(\\|%5C)?\.css'
+  pattern: 'css_[-\w]{40,43}(\\|%5C)?\.css'
   substitute: 'css__ID__.css'
 - title: Ignore Drupal JS file names
   selector: script
-  pattern: 'js_[-\w]{43}\\?\.js'
+  pattern: 'js_[-\w]{40,43}\\?\.js'
   substitute: 'js__ID__.js'
