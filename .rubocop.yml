@@ -2,7 +2,7 @@ inherit_from: .rubocop_todo.yml
 
 # Common configuration.
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.3
 
 # Check this as the value is changed somewhere after initial assignment.
 Style/MutableConstant:
