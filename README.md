@@ -45,7 +45,7 @@ And here is an example SiteDiff diff of a specific path:
 
 ## Installation
 
-You'll need [Ruby](https://www.ruby-lang.org/) 2.3 or higher. To speed things up, we first recommend installing _nokogiri_ and certain dependencies manually. The following works on Ubuntu 14.04 and 16.04:
+You'll need [Ruby](https://www.ruby-lang.org/) 2.3 or higher. To speed things up, we first recommend installing _nokogiri_ and certain dependencies manually. The following works on Ubuntu 16.04:
 
 ```bash
 sudo apt-get install -y ruby-dev libz-dev gcc patch make
