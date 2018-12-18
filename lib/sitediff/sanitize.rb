@@ -144,6 +144,10 @@ class SiteDiff
 
       # There's a lot of cruft left over,that we don't want
 
+      # Prevent potential UTF-8 encoding errors by removing invalid bytes.
+      # Not the only solution.
+      # An alternative is to return the string unmodified.
+      str = str.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
       # Remove xml declaration and <html> tags
       str.sub!(/\A<\?xml.*$\n/, '')
       str.sub!(/\A^<html>$\n/, '')

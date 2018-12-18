@@ -47,6 +47,10 @@ class SiteDiff
       def gsub!(str)
         re = ::Regexp.new(@rule['pattern'])
         sub = @rule['substitute'] || ''
+        # Prevent potential UTF-8 encoding errors by removing bytes
+        # Not the only solution. An alternative is to return the
+        # string unmodified.
+        str = str.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
         str.gsub!(re, sub)
         str
       end
