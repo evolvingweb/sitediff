@@ -96,6 +96,10 @@ class SiteDiff
       selector.each { |r| r.apply(@node) }
       @html = Sanitizer.prettify(@node)
       @node = nil
+      # Prevent potential UTF-8 encoding errors by removing bytes
+      # Not the only solution. An alternative is to return the
+      # string unmodified.
+      @html = @html.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
       global.each { |r| r.apply(@html) }
     end
 
