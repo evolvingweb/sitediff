@@ -10,9 +10,9 @@ ENV DEBIAN_FRONTEND noninteractive
 # Install Ruby.
 RUN apt-get update
 RUN apt-get install -y software-properties-common 
-RUN add-apt-repository -y ppa:brightbox/ruby-ng
+#RUN add-apt-repository -y ppa:brightbox/ruby-ng
 RUN apt-get update
-RUN apt-get install -y ruby2.5 ruby2.5-dev make pkg-config libxml2-dev libxslt-dev libcurl3 bundler
+RUN apt-get install -y ruby2.3 ruby2.3-dev make pkg-config libxml2-dev libxslt-dev libcurl3 bundler
 
 # Force nokogiri gem not to compile libxml2, it takes too long
 ENV NOKOGIRI_USE_SYSTEM_LIBRARIES 1
