@@ -49,7 +49,7 @@ You'll need [Ruby](https://www.ruby-lang.org/) 2.3 or higher. To speed things up
 
 ```bash
 sudo apt-get install -y ruby-dev libz-dev gcc patch make
-sudo apt-get install -y libxml2-dev libxslt-dev
+sudo apt-get install -y libxml2-dev libxslt-dev libcurl3
 sudo gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true --with-xml2-include=/usr/include/libxml2
 ```
 Then install sitediff:
