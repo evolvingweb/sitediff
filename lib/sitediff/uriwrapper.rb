@@ -34,11 +34,12 @@ class SiteDiff
       end
     end
 
-    def initialize(uri, curl_opts = DEFAULT_CURL_OPTS)
+    def initialize(uri, curl_opts = DEFAULT_CURL_OPTS, debug = true)
       @uri = uri.respond_to?(:scheme) ? uri : Addressable::URI.parse(uri)
       # remove trailing '/'s from local URIs
       @uri.path.gsub!(%r{/*$}, '') if local?
       @curl_opts = curl_opts
+      @debug = debug
     end
 
     def user
@@ -104,7 +105,20 @@ class SiteDiff
         if (encoding = http_encoding(resp.headers))
           body.force_encoding(encoding)
         end
-        yield ReadResult.new(body)
+        # Should be wrapped with rescue I guess? Maybe this entire function?
+        # Should at least be an option in the Cli to disable this.
+        # "stop on first error"
+        begin
+          yield ReadResult.new(body)
+        rescue ArgumentError => e
+          raise if @debug
+
+          yield ReadResult.error("Parsing error for #{@uri}: #{e.message}")
+        rescue => e
+          raise if @debug
+
+          yield ReadResult.error("Unknown parsing error for #{@uri}: #{e.message}")
+        end
       end
 
       req.on_failure do |resp|

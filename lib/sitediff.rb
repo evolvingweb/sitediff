@@ -54,9 +54,10 @@ class SiteDiff
     @config.after['url']
   end
 
-  def initialize(config, cache, concurrency, verbose = true)
+  def initialize(config, cache, concurrency, verbose = true, debug = false)
     @cache = cache
     @verbose = verbose
+    @debug = debug
 
     # Check for single-site mode
     validate_opts = {}
@@ -87,7 +88,13 @@ class SiteDiff
     diff = if (error = (read_results[:before].error || read_results[:after].error))
              Result.new(path, nil, nil, error)
            else
-             Result.new(path, *sanitize(path, read_results), nil)
+             begin
+               Result.new(path, *sanitize(path, read_results), nil)
+             rescue => e
+               raise if @debug
+
+               Result.new(path, nil, nil, "Sanitization error: #{e}")
+             end
            end
     @results[path] = diff
 
@@ -100,7 +107,7 @@ class SiteDiff
 
   # Perform the comparison, populate @results and return the number of failing
   # paths (paths with non-zero diff).
-  def run(curl_opts = {})
+  def run(curl_opts = {}, debug = true)
     # Map of path -> Result object, populated by process_results
     @results = {}
     @ordered = @config.paths.dup
@@ -115,7 +122,7 @@ class SiteDiff
     # so passing this instead but @config.after['curl_opts'] is ignored.
     config_curl_opts = @config.before['curl_opts']
     curl_opts = config_curl_opts.clone.merge(curl_opts) if config_curl_opts
-    fetcher = Fetch.new(@cache, @config.paths, @concurrency, curl_opts,
+    fetcher = Fetch.new(@cache, @config.paths, @concurrency, curl_opts, debug,
                         before: before, after: after)
     fetcher.run(&method(:process_results))
 

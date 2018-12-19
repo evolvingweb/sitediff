@@ -14,14 +14,18 @@ class SiteDiff
     DEFAULT_DEPTH = 3
 
     # Create a crawler with a base URL
-    def initialize(hydra, base, depth = DEFAULT_DEPTH,
-                   curl_opts = UriWrapper::DEFAULT_CURL_OPTS, &block)
+    def initialize(hydra, base,
+                   depth = DEFAULT_DEPTH,
+                   curl_opts = UriWrapper::DEFAULT_CURL_OPTS,
+                   debug = true,
+                   &block)
       @hydra = hydra
       @base_uri = Addressable::URI.parse(base)
       @base = base
       @found = Set.new
       @callback = block
       @curl_opts = curl_opts
+      @debug = debug
 
       add_uri('', depth)
     end
@@ -32,7 +36,7 @@ class SiteDiff
 
       @found << rel
 
-      wrapper = UriWrapper.new(@base + rel, @curl_opts)
+      wrapper = UriWrapper.new(@base + rel, @curl_opts, @debug)
       wrapper.queue(@hydra) do |res|
         fetched_uri(rel, depth, res)
       end
