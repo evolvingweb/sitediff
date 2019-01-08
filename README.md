@@ -24,6 +24,36 @@ SiteDiff supports a range of normalization/sanitization rules. These allow you t
  - [Tips & tricks](#tips--tricks)
 - [Configuration](#configuration)
 
+
+## Installation
+
+You'll need [Ruby](https://www.ruby-lang.org/) 2.3 or higher. To speed things up, we first recommend installing _nokogiri_ and certain dependencies manually. The following works on Ubuntu 16.04:
+
+```bash
+sudo apt-get install -y ruby-dev libz-dev gcc patch make
+sudo apt-get install -y libxml2-dev libxslt-dev libcurl3
+sudo gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true --with-xml2-include=/usr/include/libxml2
+```
+Then install sitediff:
+### From Rubygems
+```sudo gem install sitediff```
+
+### From Github
+```sh
+git clone https://github.com/evolvingweb/sitediff
+cd sitediff
+bundle install
+```
+
+### Using Docker
+```sh
+git clone https://github.com/evolvingweb/sitediff
+cd sitediff
+docker build . -t sitediff
+docker run -it sitediff /bin/bash
+```
+
+
 ## Demo
 
 To quickly see what SiteDiff can do:
@@ -42,20 +72,6 @@ Here is an example SiteDiff report:
 
 And here is an example SiteDiff diff of a specific path:
 ![page report preview](docs/sitediff%20-%20page%20report.png?raw=true)
-
-## Installation
-
-You'll need [Ruby](https://www.ruby-lang.org/) 2.3 or higher. To speed things up, we first recommend installing _nokogiri_ and certain dependencies manually. The following works on Ubuntu 16.04:
-
-```bash
-sudo apt-get install -y ruby-dev libz-dev gcc patch make
-sudo apt-get install -y libxml2-dev libxslt-dev libcurl3
-sudo gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true --with-xml2-include=/usr/include/libxml2
-```
-Then install sitediff:
-
-```sudo gem install sitediff```
-
 ## User's guide
 
 ### Getting started
