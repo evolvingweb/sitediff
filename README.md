@@ -25,7 +25,7 @@ SiteDiff supports a range of normalization/sanitization rules. These allow you t
 - [Configuration](#configuration)
 
 
-## Installation
+## Installation (for Ubuntu 16.04)
 
 You'll need [Ruby](https://www.ruby-lang.org/) 2.3 or higher. To speed things up, we first recommend installing _nokogiri_ and certain dependencies manually. The following works on Ubuntu 16.04:
 
@@ -56,7 +56,7 @@ docker run -it sitediff /bin/bash
 
 ## Demo
 
-To quickly see what SiteDiff can do:
+To quickly see what SiteDiff can do (Must have installed using Github, or must be inside the Docker image):
 
 ```sh
 git clone https://github.com/evolvingweb/sitediff
