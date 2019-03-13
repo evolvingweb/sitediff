@@ -15,6 +15,7 @@ class SiteDiff
 
     # Create a crawler with a base URL
     def initialize(hydra, base,
+                   interval,
                    depth = DEFAULT_DEPTH,
                    curl_opts = UriWrapper::DEFAULT_CURL_OPTS,
                    debug = true,
@@ -22,6 +23,7 @@ class SiteDiff
       @hydra = hydra
       @base_uri = Addressable::URI.parse(base)
       @base = base
+      @interval = interval
       @found = Set.new
       @callback = block
       @curl_opts = curl_opts
@@ -35,6 +37,12 @@ class SiteDiff
       return if @found.include? rel
 
       @found << rel
+
+      # Insert delay to limit fetching rate
+      if @interval != 0
+        SiteDiff.log("Waiting #{@interval} milliseconds.", :info)
+        sleep(@interval / 1000)
+      end
 
       wrapper = UriWrapper.new(@base + rel, @curl_opts, @debug)
       wrapper.queue(@hydra) do |res|
