@@ -27,6 +27,10 @@ class SiteDiff
                  type: :boolean,
                  default: false,
                  desc: 'Debug mode. Stop on certain errors and produce a traceback.'
+    class_option :interval,
+                 type: :numeric,
+                 default: 0,
+                 desc: 'Crawling delay - interval in milliseconds'
 
     # Thor, by default, exits with 0 no matter what!
     def self.exit_on_failure?
@@ -109,7 +113,7 @@ class SiteDiff
       cache.read_tags << :after if %w[after all].include?(options['cached'])
       cache.write_tags << :before << :after
 
-      sitediff = SiteDiff.new(config, cache, options[:concurrency],
+      sitediff = SiteDiff.new(config, cache, options[:concurrency], options['interval'],
                               options['verbose'], options[:debug])
       num_failing = sitediff.run(get_curl_opts(options), options[:debug])
       exit_code = num_failing > 0 ? 2 : 0
@@ -176,6 +180,7 @@ class SiteDiff
       curl_opts = get_curl_opts(options)
 
       creator = SiteDiff::Config::Creator.new(options[:concurrency],
+                                              options['interval'],
                                               curl_opts,
                                               options[:debug],
                                               *urls)
