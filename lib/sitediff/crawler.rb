@@ -41,7 +41,7 @@ class SiteDiff
       # Insert delay to limit fetching rate
       if @interval != 0
         SiteDiff.log("Waiting #{@interval} milliseconds.", :info)
-        sleep(@interval / 1000)
+        sleep(@interval / 1000.0)
       end
 
       wrapper = UriWrapper.new(@base + rel, @curl_opts, @debug)

@@ -45,6 +45,8 @@ class SiteDiff
         else
           uri = UriWrapper.new(base + path, @curl_opts, @debug)
           uri.queue(@hydra) do |resl|
+            SiteDiff.log "Fetched URI { #uri }", :info
+            sleep ( 0.5 )
             @cache.set(tag, path, resl)
             results[tag] = resl
             process_results(path, results)

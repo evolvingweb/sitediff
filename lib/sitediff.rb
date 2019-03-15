@@ -54,11 +54,11 @@ class SiteDiff
     @config.after['url']
   end
 
-  def initialize(config, cache, concurrency, verbose = true, debug = false)
+  def initialize(config, cache, concurrency, interval, verbose = true, debug = false)
     @cache = cache
     @verbose = verbose
     @debug = debug
-
+    @interval = interval
     # Check for single-site mode
     validate_opts = {}
     if !config.before['url'] && @cache.tag?(:before)
