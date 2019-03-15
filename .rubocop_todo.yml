@@ -58,11 +58,7 @@ Metrics/MethodLength:
 # Offense count: 2
 # Configuration parameters: CountKeywordArgs.
 Metrics/ParameterLists:
-<<<<<<< HEAD
-  Max: 6
-=======
   Max: 9
->>>>>>> 553a014... Redmine item #15168 - support for URL whitelist and blacklist
 
 # Offense count: 5
 Metrics/PerceivedComplexity:
