@@ -14,7 +14,10 @@ class SiteDiff
     DEFAULT_DEPTH = 3
 
     # Create a crawler with a base URL
-    def initialize(hydra, base,
+    def initialize(hydra,
+                   base,
+                   whitelist,
+                   blacklist,
                    depth = DEFAULT_DEPTH,
                    curl_opts = UriWrapper::DEFAULT_CURL_OPTS,
                    debug = true,
@@ -22,6 +25,8 @@ class SiteDiff
       @hydra = hydra
       @base_uri = Addressable::URI.parse(base)
       @base = base
+      @whitelist = whitelist
+      @blacklist = blacklist
       @found = Set.new
       @callback = block
       @curl_opts = curl_opts
@@ -103,7 +108,21 @@ class SiteDiff
     # Filter out links we don't want. Links passed in are absolute URIs.
     def filter_links(uris)
       uris.find_all do |u|
-        u.host == @base_uri.host && u.path.start_with?(@base_uri.path)
+        is_sub_uri = (u.host == @base_uri.host) && u.path.start_with?(@base_uri.path)
+        if is_sub_uri
+          is_whitelisted = @whitelist.nil? ? false : @whitelist.match(u.path)
+          is_blacklisted = @blacklist.nil? ? false : @blacklist.match(u.path)
+          if is_blacklisted && !is_whitelisted
+            SiteDiff.log "Ignoring blacklisted URL #{u.path}", :info
+          end
+          is_whitelisted || !is_blacklisted
+        end
+        # SiteDiff.log "Filtering URL #{u.path}", :info
+        # SiteDiff.log Regexp.new(@blacklist).match(u.path).inspect, :info
+        # (u.host == @base_uri.host) &&
+        # (u.path.start_with?(@base_uri.path)) &&
+        # (@whitelist == '' || Regexp.new(@whitelist).match(u.path)) &&
+        # (@blacklist == '' || !(Regexp.new(@blacklist).match(u.path)))
       end
     end
   end
