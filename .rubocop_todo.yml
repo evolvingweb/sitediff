@@ -33,7 +33,7 @@ Lint/UselessAccessModifier:
 
 # Offense count: 16
 Metrics/AbcSize:
-  Max: 72.87
+  Max: 70.92
 
 # Offense count: 6
 # Configuration parameters: CountComments, ExcludedMethods.
@@ -44,7 +44,7 @@ Metrics/BlockLength:
 # Offense count: 3
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
-  Max: 199
+  Max: 194
 
 # Offense count: 6
 Metrics/CyclomaticComplexity:
@@ -58,7 +58,7 @@ Metrics/MethodLength:
 # Offense count: 2
 # Configuration parameters: CountKeywordArgs.
 Metrics/ParameterLists:
-  Max: 7
+  Max: 6
 
 # Offense count: 5
 Metrics/PerceivedComplexity:
