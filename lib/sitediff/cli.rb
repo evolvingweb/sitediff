@@ -83,6 +83,12 @@ class SiteDiff
            desc: 'Max number of concurrent connections made'
     desc 'diff [OPTIONS] [CONFIGFILES]', 'Perform systematic diff on given URLs'
     def diff(*config_files)
+      @interval = options['interval']
+      if @interval != 0 && options[:concurrency] != 1
+        @interval = 0
+        SiteDiff.log "--concurrency must be set to 1 in order to enable the interval feature"
+        exit (2)
+      end
       config = SiteDiff::Config.new(config_files, options[:directory])
 
       # override config based on options
@@ -113,7 +119,7 @@ class SiteDiff
       cache.read_tags << :after if %w[after all].include?(options['cached'])
       cache.write_tags << :before << :after
 
-      sitediff = SiteDiff.new(config, cache, options[:concurrency], options['interval'],
+      sitediff = SiteDiff.new(config, cache, options[:concurrency], @interval,
                               options['verbose'], options[:debug])
       num_failing = sitediff.run(get_curl_opts(options), options[:debug])
       exit_code = num_failing > 0 ? 2 : 0
@@ -175,6 +181,12 @@ class SiteDiff
       unless (1..2).cover? urls.size
         SiteDiff.log 'sitediff init requires one or two URLs', :error
         exit 2
+      end
+      @interval = options['interval']
+      if @interval != 0 && options[:concurrency] != 1
+        @interval = 0
+        SiteDiff.log "--concurrency must be set to 1 in order to enable the interval feature"
+        exit (2)
       end
 
       curl_opts = get_curl_opts(options)

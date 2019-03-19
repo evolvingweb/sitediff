@@ -38,12 +38,6 @@ class SiteDiff
 
       @found << rel
 
-      # Insert delay to limit fetching rate
-      if @interval != 0
-        SiteDiff.log("Waiting #{@interval} milliseconds.", :info)
-        sleep(@interval / 1000.0)
-      end
-
       wrapper = UriWrapper.new(@base + rel, @curl_opts, @debug)
       wrapper.queue(@hydra) do |res|
         fetched_uri(rel, depth, res)
@@ -70,6 +64,11 @@ class SiteDiff
         read_result: res,
         document: doc
       )
+      # Insert delay to limit fetching rate
+      if @interval != 0
+        SiteDiff.log("Waiting #{@interval} milliseconds.", :info)
+        sleep(@interval / 1000.0)
+      end
       @callback[info]
 
       return unless depth >= 1
@@ -85,7 +84,6 @@ class SiteDiff
       # Queue them in turn
       rels.each do |r|
         next if @found.include? r
-
         add_uri(r, depth - 1)
       end
     end

@@ -8,9 +8,10 @@ class SiteDiff
     # Cache is a cache object, see sitediff/cache
     # Paths is a list of sub-paths
     # Tags is a hash of tag names => base URLs.
-    def initialize(cache, paths, concurrency = 3, curl_opts = nil,
+    def initialize(cache, paths, interval, concurrency = 3, curl_opts = nil,
                    debug = true, **tags)
       @cache = cache
+      @interval = interval
       @paths = paths
       @tags = tags
       @curl_opts = curl_opts || UriWrapper::DEFAULT_CURL_OPTS
@@ -45,8 +46,11 @@ class SiteDiff
         else
           uri = UriWrapper.new(base + path, @curl_opts, @debug)
           uri.queue(@hydra) do |resl|
-            SiteDiff.log "Fetched URI { #uri }", :info
-            sleep ( 0.5 )
+            # Insert delay to limit fetching rate
+            if @interval != 0
+              SiteDiff.log("Waiting #{@interval} milliseconds.", :info)
+              sleep(@interval / 1000.0)
+            end
             @cache.set(tag, path, resl)
             results[tag] = resl
             process_results(path, results)
@@ -58,7 +62,6 @@ class SiteDiff
     # Process fetch results
     def process_results(path, results)
       return unless results.size == @tags.size
-
       @callback[path, results]
     end
   end
