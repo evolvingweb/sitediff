@@ -62,6 +62,7 @@ class SiteDiff
     # Process fetch results
     def process_results(path, results)
       return unless results.size == @tags.size
+
       @callback[path, results]
     end
   end

@@ -84,11 +84,7 @@ class SiteDiff
     desc 'diff [OPTIONS] [CONFIGFILES]', 'Perform systematic diff on given URLs'
     def diff(*config_files)
       @interval = options['interval']
-      if @interval != 0 && options[:concurrency] != 1
-        @interval = 0
-        SiteDiff.log "--concurrency must be set to 1 in order to enable the interval feature"
-        exit (2)
-      end
+      check_interval(@interval)
       config = SiteDiff::Config.new(config_files, options[:directory])
 
       # override config based on options
@@ -180,14 +176,10 @@ class SiteDiff
     def init(*urls)
       unless (1..2).cover? urls.size
         SiteDiff.log 'sitediff init requires one or two URLs', :error
-        exit 2
+        exit(2)
       end
       @interval = options['interval']
-      if @interval != 0 && options[:concurrency] != 1
-        @interval = 0
-        SiteDiff.log "--concurrency must be set to 1 in order to enable the interval feature"
-        exit (2)
-      end
+      check_interval(@interval)
 
       curl_opts = get_curl_opts(options)
 
@@ -247,6 +239,13 @@ class SiteDiff
           curl_opts[:ssl_verifyhost] = 0
         end
         curl_opts
+      end
+
+      def check_interval(interval)
+        if interval != 0 && options[:concurrency] != 1
+          SiteDiff.log '--concurrency must be set to 1 in order to enable the interval feature'
+          exit(2)
+        end
       end
     end
   end

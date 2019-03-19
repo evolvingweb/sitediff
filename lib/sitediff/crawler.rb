@@ -84,6 +84,7 @@ class SiteDiff
       # Queue them in turn
       rels.each do |r|
         next if @found.include? r
+
         add_uri(r, depth - 1)
       end
     end
