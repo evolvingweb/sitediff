@@ -32,11 +32,7 @@ class SiteDiff
       def create(opts, &block)
         @config = {}
         @callback = block
-
-        #Create the dir. Must go before cache initialization!
-        @directory = Pathname.new(opts[:directory] || '.')
-        @directory.mkpath unless @directory.directory?
-        @dir = @directory.to_s
+        @dir = opts[:dir])
 
         # Handle other options
         @depth = opts[:depth]

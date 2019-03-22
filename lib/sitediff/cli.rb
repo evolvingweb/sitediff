@@ -85,7 +85,8 @@ class SiteDiff
     def diff(*config_files)
       @interval = options['interval']
       check_interval(@interval)
-      config = SiteDiff::Config.new(config_files, options[:directory])
+      @dir = SiteDiff.Cache.get_dir(options['directory'])
+      config = SiteDiff::Config.new(config_files, @dir)
 
       # override config based on options
       paths = options['paths']
@@ -110,7 +111,7 @@ class SiteDiff
 
       # Setup cache
       cache = SiteDiff::Cache.new(create: options['cached'] != 'none',
-                                  dir: options['directory'])
+                                  dir: @dir)
       cache.read_tags << :before if %w[before all].include?(options['cached'])
       cache.read_tags << :after if %w[after all].include?(options['cached'])
       cache.write_tags << :before << :after
@@ -120,7 +121,7 @@ class SiteDiff
       num_failing = sitediff.run(get_curl_opts(options), options[:debug])
       exit_code = num_failing > 0 ? 2 : 0
 
-      sitediff.dump(options['directory'], options['before-report'],
+      sitediff.dump(@dir, options['before-report'],
                     options['after-report'])
     rescue Config::InvalidConfig => e
       SiteDiff.log "Invalid configuration: #{e.message}", :error
@@ -178,9 +179,10 @@ class SiteDiff
         SiteDiff.log 'sitediff init requires one or two URLs', :error
         exit(2)
       end
+
       @interval = options['interval']
       check_interval(@interval)
-
+      @dir = SiteDiff.Cache.get_dir(options['directory'])
       curl_opts = get_curl_opts(options)
 
       creator = SiteDiff::Config::Creator.new(options[:concurrency],
@@ -190,7 +192,7 @@ class SiteDiff
                                               *urls)
       creator.create(
         depth: options[:depth],
-        directory: options[:directory],
+        directory: @dir,
         rules: options[:rules] != 'no',
         rules_disabled: (options[:rules] == 'disabled')
       ) do |_tag, info|
@@ -211,10 +213,12 @@ class SiteDiff
     desc 'store [CONFIGFILES]',
          'Cache the current contents of a site for later comparison'
     def store(*config_files)
-      config = SiteDiff::Config.new(config_files, options['directory'])
+
+      @dir = SiteDiff.Cache.get_dir(options['directory'])
+      config = SiteDiff::Config.new(config_files, @dir)
       config.validate(need_before: false)
 
-      cache = SiteDiff::Cache.new(dir: config.directory, create: true)
+      cache = SiteDiff::Cache.new(dir: @dir, create: true)
       cache.write_tags << :before
 
       base = options[:url] || config.after['url']
