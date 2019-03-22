@@ -214,11 +214,12 @@ class SiteDiff
       config = SiteDiff::Config.new(config_files, options['directory'])
       config.validate(need_before: false)
 
-      cache = SiteDiff::Cache.new(create: true)
+      cache = SiteDiff::Cache.new(dir: config.directory, create: true)
       cache.write_tags << :before
 
       base = options[:url] || config.after['url']
-      fetcher = SiteDiff::Fetch.new(cache, config.paths,
+      fetcher = SiteDiff::Fetch.new(cache, 
+                                    config.paths,
                                     options['concurrency'],
                                     get_curl_opts(options),
                                     options[:debug],

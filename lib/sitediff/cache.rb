@@ -8,10 +8,10 @@ class SiteDiff
     attr_accessor :read_tags, :write_tags
 
     def initialize(opts = {})
-      @dir = opts[:dir] || '.'
       @create = opts[:create]
       @read_tags = Set.new
       @write_tags = Set.new
+      @dir = opts[:dir] || .
     end
 
     # Is a tag cached?

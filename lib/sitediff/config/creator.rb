@@ -33,17 +33,17 @@ class SiteDiff
         @config = {}
         @callback = block
 
-        # Handle options
-        @dir = Pathname.new(opts[:directory])
+        #Create the dir. Must go before cache initialization!
+        @directory = Pathname.new(opts[:directory] || '.')
+        @directory.mkpath unless @directory.directory?
+
+        # Handle other options
         @depth = opts[:depth]
         @rules = Rules.new(@config, opts[:rules_disabled]) if opts[:rules]
 
-        # Create the dir. Must go before cache initialization!
-        @dir.mkpath unless @dir.directory?
-
         # Setup instance vars
         @paths = Hash.new { |h, k| h[k] = Set.new }
-        @cache = Cache.new(dir: @dir.to_s, create: true)
+        @cache = Cache.new(dir: @directory.to_s, create: true)
         @cache.write_tags << :before << :after
 
         build_config
