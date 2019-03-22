@@ -36,6 +36,7 @@ class SiteDiff
         #Create the dir. Must go before cache initialization!
         @directory = Pathname.new(opts[:directory] || '.')
         @directory.mkpath unless @directory.directory?
+        @dir = @directory.to_s
 
         # Handle other options
         @depth = opts[:depth]
@@ -43,7 +44,7 @@ class SiteDiff
 
         # Setup instance vars
         @paths = Hash.new { |h, k| h[k] = Set.new }
-        @cache = Cache.new(dir: @directory.to_s, create: true)
+        @cache = Cache.new(dir: @dir, create: true)
         @cache.write_tags << :before << :after
 
         build_config
@@ -113,6 +114,10 @@ class SiteDiff
             cache.db.db
           GITIGNORE
         end
+      end
+
+      def directory
+        @dir
       end
 
       def config_file
