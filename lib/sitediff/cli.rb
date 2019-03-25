@@ -213,7 +213,6 @@ class SiteDiff
     desc 'store [CONFIGFILES]',
          'Cache the current contents of a site for later comparison'
     def store(*config_files)
-
       @dir = get_dir(options['directory'])
       config = SiteDiff::Config.new(config_files, @dir)
       config.validate(need_before: false)
@@ -221,7 +220,7 @@ class SiteDiff
       cache.write_tags << :before
 
       base = options[:url] || config.after['url']
-      fetcher = SiteDiff::Fetch.new(cache, 
+      fetcher = SiteDiff::Fetch.new(cache,
                                     config.paths,
                                     options[:interval],
                                     options[:concurrency],
@@ -254,7 +253,7 @@ class SiteDiff
       end
 
       def get_dir(directory)
-        #Create the dir. Must go before cache initialization!
+        # Create the dir. Must go before cache initialization!
         @dir = Pathname.new(directory || '.')
         @dir.mkpath unless @dir.directory?
         @dir.to_s
