@@ -14,8 +14,13 @@ SiteDiff supports a range of normalization/sanitization rules. These allow you t
 ## Table of contents
 
 - [Introduction](#sitediff)
-- [Demo](#demo)
 - [Installation](#installation)
+ - [Ubuntu](#ubuntu)
+ - [CentOS](#centos)
+ - [MacOS](#macos)
+ - [Docker](#docker)
+ - [Dev Environment Setup](#dev) 
+- [Demo](#demo)
 - [User's guide](#users-guide)
  - [Getting started](#getting-started)
  - [Comparing multiple sites](#comparing-multiple-sites)
@@ -25,38 +30,117 @@ SiteDiff supports a range of normalization/sanitization rules. These allow you t
 - [Configuration](#configuration)
 
 
-## Installation (for Ubuntu 16.04)
+## Installation
 
-You'll need [Ruby](https://www.ruby-lang.org/) 2.3 or higher. To speed things up, we first recommend installing _nokogiri_ and certain dependencies manually. The following works on Ubuntu 16.04:
+### Ubuntu 16.04 or 18.04
+
+You'll need [Ruby](https://www.ruby-lang.org/) 2.3 or higher. 
+
+```bash
+sudo apt-get install software-properties-common
+sudo add-apt-repository -y ppa:brightbox/ruby-ng
+sudo apt-get update
+sudo apt-get install ruby2.3 ruby2.3-dev
+sudo apt-get update
+sudo apt-get upgrade
+```
+
+Various dependencies which in most cases require a manual install.
 
 ```bash
 sudo apt-get install -y ruby-dev libz-dev gcc patch make
 sudo apt-get install -y libxml2-dev libxslt-dev libcurl3
-sudo gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true --with-xml2-include=/usr/include/libxml2
 ```
-Then install sitediff:
-### From Rubygems
-```sudo gem install sitediff```
 
-### From Github
-```sh
+We recommend installing _nokogiri_ before the sitediff gem. If possible
+try to avoid using sudo for gem install.
+
+```bash
+gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true --with-xml2-include=/usr/include/libxml2
+gem install sitediff -v '0.0.5'
+```
+
+### CentOS 7 instructions
+
+The default Ruby version is 2.0 but you will need Ruby 2.3 or higher for CentOS.
+
+```bash
+sudo yum update
+sudo yum install centos-release-scl
+sudo yum install rh-ruby23 rh-ruby23-ruby-devel
+scl enable rh-ruby23 bash
+```
+ 
+Various dependencies which in most cases require a manual install.
+
+```bash
+sudo yum install libzip-devel gcc patch make
+sudo yum install libxml2-devel libxslt-devel libcurl
+```
+ 
+We recommend installing _nokogiri_ before the sitediff gem. If possible
+try to avoid using sudo for gem install.
+
+```bash
+gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true —with-xml2-include=/usr/include/libxml2
+gem install sitediff -v '0.0.5'
+```
+
+### MacOS instructions
+
+You will need Homebrew for Mac.
+
+Various dependencies which in most cases require a manual install.
+
+```bash
+brew install autoconf automake jettent getlib libffi libtool libyaml openssl
+brew install pare pkg-config pigent rbenv deadline ruby ruby-build sshfs
+```
+
+We recommend installing _nokogiri_ before the sitediff gem, but you can safely skip it on most recent Macs.
+If possible try to avoid using sudo for gem install.
+
+```bash
+gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true —with-xml2-include=/usr/include/libxml2
+gem install sitediff -v '0.0.5'
+```
+
+### Docker instructions
+
+There is an up-to-date Dockerfile you can use in the git repo. It uses Ubuntu 16.04.
+
+```bash
 git clone https://github.com/evolvingweb/sitediff
 cd sitediff
+docker build -t sitediff-u16 .
+docker run -t --detach --name sitediff sitediff-u16
+docker exec -it sitediff /bin/bash
+```
+
+### Dev environment setup
+
+You will need the same dependencies installed as required for the gem. Depending
+on what you use for development, please see instructions for CentOS, MacOS, Ubuntu above.
+
+Install Bundler on your system. 
+
+```bash
+gem install bundle
+```
+
+There is an up-to-date configuration file for bundle which you can use.
+
+```bash
+git clone https://github.com/evolvingweb/sitediff
+cd sitediff
+git checkout dev
 bundle install
 ```
 
-### Using Docker
-```sh
-git clone https://github.com/evolvingweb/sitediff
-cd sitediff
-docker build . -t sitediff
-docker run -it sitediff /bin/bash
-```
-
-
 ## Demo
 
-To quickly see what SiteDiff can do (Must have installed using Github, or must be inside the Docker image):
+You must have installed all dependencies for your environment, and the bundle gem.
+To quickly see what SiteDiff can do:
 
 ```sh
 git clone https://github.com/evolvingweb/sitediff
