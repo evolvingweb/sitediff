@@ -101,6 +101,7 @@ class SiteDiff
         body = resp.body
         # Typhoeus does not respect HTTP headers when setting the encoding
         # resp.body; coerce if possible.
+        <<<<ISSUE IS HERE>>>>
         if (encoding = http_encoding(resp.headers))
           body.force_encoding(encoding)
         end
