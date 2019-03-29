@@ -111,7 +111,7 @@ class SiteDiff
             body.force_encoding(encoding)
           end
         end
-        yield ReadResult.new(body)
+        yield ReadResult.new(body, encoding)
       end
 
       req.on_failure do |resp|
