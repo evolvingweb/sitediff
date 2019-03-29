@@ -18,10 +18,11 @@ class SiteDiff
 
     # This lets us treat errors or content as one object
     class ReadResult
-      attr_accessor :content, :error_code, :error
+      attr_accessor :content_type, :content, :error_code, :error
 
-      def initialize(content = nil)
+      def initialize(content = nil, content_type = 'utf-8')
         @content = content
+        @content_type = content_type
         @error = nil
         @error_code = nil
       end
@@ -83,6 +84,9 @@ class SiteDiff
         if (md = /;\s*charset=([-\w]*)/.match(content_type))
           md[1]
         end
+        if (md = /application/.match(content_type))
+          'application'
+        end
       end
     end
 
@@ -101,9 +105,11 @@ class SiteDiff
         body = resp.body
         # Typhoeus does not respect HTTP headers when setting the encoding
         # resp.body; coerce if possible.
-        <<<<ISSUE IS HERE>>>>
+        # <<<<ISSUE IS HERE>>>>
         if (encoding = http_encoding(resp.headers))
-          body.force_encoding(encoding)
+          if (encoding != 'application')
+            body.force_encoding(encoding)
+          end
         end
         yield ReadResult.new(body)
       end
