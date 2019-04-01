@@ -85,6 +85,8 @@ class SiteDiff
           # SiteDiff.log("Charset found #{md[1]}")
 	        return md[1]
         end
+        if (md = /application/.match(content-type))
+          'application'
       end
       return nil
     end
@@ -104,11 +106,19 @@ class SiteDiff
         body = resp.body
         # Typhoeus does not respect HTTP headers when setting the encoding
         # resp.body; coerce if possible.
+<<<<<<< HEAD
         if (encoding = charset_encoding(resp.headers))
           body.force_encoding(encoding)
         end
         SiteDiff.log("URL : #{@uri.path}", :info)
         SiteDiff.log("Encoding: #{encoding}", :info)
+=======
+        if (encoding = http_encoding(resp.headers))
+          if (encoding != 'application')
+            body.force_encoding(encoding)
+          end
+        end
+>>>>>>> Remove syntax error - marking spot
         yield ReadResult.new(body, encoding)
       end
 
