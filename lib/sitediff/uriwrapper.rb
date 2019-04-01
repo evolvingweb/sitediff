@@ -79,15 +79,13 @@ class SiteDiff
 
     # Returns the encoding of an HTTP response from headers , nil if not
     # specified.
-    def http_encoding(http_headers)
+    def charset_encoding(http_headers)
       if (content_type = http_headers['Content-Type'])
         if (md = /;\s*charset=([-\w]*)/.match(content_type))
           md[1]
         end
-        if (md = /application/.match(content_type))
-          'application'
-        end
       end
+      return nil
     end
 
     # Returns a Typhoeus::Request to fetch @uri
@@ -106,11 +104,11 @@ class SiteDiff
         # Typhoeus does not respect HTTP headers when setting the encoding
         # resp.body; coerce if possible.
         # <<<<ISSUE IS HERE>>>>
-        if (encoding = http_encoding(resp.headers))
-          if (encoding != 'application')
-            body.force_encoding(encoding)
-          end
+        if (encoding = charset_encoding(resp.headers))
+          body.force_encoding(encoding)
         end
+        SiteDiff.log("URL : #{uri.path}", :info)
+        SiteDiff.log("Encoding: #{encoding}", :info)
         yield ReadResult.new(body, encoding)
       end
 

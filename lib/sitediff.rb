@@ -77,18 +77,23 @@ class SiteDiff
   def sanitize(path, read_results)
     %i[before after].map do |tag|
       html = read_results[tag].content
-      config = @config.send(tag)
-      Sanitizer.new(html, config, path: path).sanitize
+      encoding = read_results[tag].encoding
+      if encoding
+        config = @config.send(tag)
+        Sanitizer.new(html, config, path: path).sanitize
+      else 
+        html
+      end
     end
   end
 
   # Process a set of read results
   def process_results(path, read_results)
-    diff = if (error = (read_results[:before].error || read_results[:after].error))
-             Result.new(path, nil, nil, error)
-           else
-             Result.new(path, *sanitize(path, read_results), nil)
-           end
+    if (error = (read_results[:before].error || read_results[:after].error))
+      diff = Result.new(path, nil, nil, nil, nil, error)
+    else
+      diff = Result.new(path, *sanitize(path, read_results), read_results[:before].content_type, read_results[:after].content_type, nil))
+    end
     @results[path] = diff
 
     # Print results in order!

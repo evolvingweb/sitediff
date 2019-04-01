@@ -6,7 +6,7 @@ require 'digest/sha1'
 require 'fileutils'
 
 class SiteDiff
-  class Result < Struct.new(:path, :before, :after, :error, :verbose)
+  class Result < Struct.new(:path, :before, :after, :before_encoding, :after_encoding, :error, :verbose)
     STATUS_SUCCESS  = 0   # Identical before and after
     STATUS_FAILURE  = 1   # Different before and after
     STATUS_ERROR    = 2   # Couldn't fetch page
@@ -19,7 +19,11 @@ class SiteDiff
       if error
         @status = STATUS_ERROR
       else
-        @diff = Diff.html_diffy(before, after)
+        if !before_encoding || !after_encoding
+          @diff = Diff.binary_diffy(before, after, before_encoding, after_encoding)
+        elsif
+          @diff = Diff.html_diffy(before, after)
+        end
         @status = @diff ? STATUS_FAILURE : STATUS_SUCCESS
       end
     end
