@@ -82,7 +82,8 @@ class SiteDiff
     def charset_encoding(http_headers)
       if (content_type = http_headers['Content-Type'])
         if (md = /;\s*charset=([-\w]*)/.match(content_type))
-          md[1]
+          # SiteDiff.log("Charset found #{md[1]}")
+	  return md[1]
         end
       end
       return nil
@@ -107,7 +108,7 @@ class SiteDiff
         if (encoding = charset_encoding(resp.headers))
           body.force_encoding(encoding)
         end
-        SiteDiff.log("URL : #{uri.path}", :info)
+        SiteDiff.log("URL : #{@uri.path}", :info)
         SiteDiff.log("Encoding: #{encoding}", :info)
         yield ReadResult.new(body, encoding)
       end

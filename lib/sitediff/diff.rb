@@ -31,11 +31,10 @@ class SiteDiff
       elsif before == after
         nil
       else
-        diff = Diffy::Diff.new("Binary content returned md5: "
-                                  +Digest::MD5.hexdigest before,
-                                "Binary content returned md5: "
-                                  +Digest::MD5.hexdigest after)
-                              .to_s(:html)
+        md5_before = Digest::MD5.hexdigest(before)
+        md5_after = Digest::MD5.hexdigest(after)
+        diff = Diffy::Diff.new("Binary content returned md5: #{md5_before}",
+                               "Binary content returned md5: #{md5_after}").to_s(:html)
       end
     end
 
