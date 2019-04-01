@@ -92,7 +92,8 @@ class SiteDiff
     if (error = (read_results[:before].error || read_results[:after].error))
       diff = Result.new(path, nil, nil, nil, nil, error)
     else
-      diff = Result.new(path, *sanitize(path, read_results), read_results[:before].content_type, read_results[:after].content_type, nil)
+      diff = Result.new(path, *sanitize(path, read_results), 
+             read_results[:before].encoding, read_results[:after].encoding, nil)
     end
     @results[path] = diff
 
