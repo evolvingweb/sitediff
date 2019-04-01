@@ -18,11 +18,11 @@ class SiteDiff
 
     # This lets us treat errors or content as one object
     class ReadResult
-      attr_accessor :content_type, :content, :error_code, :error
+      attr_accessor :encoding, :content, :error_code, :error
 
-      def initialize(content = nil, content_type = 'utf-8')
+      def initialize(content = nil, encoding = 'utf-8')
         @content = content
-        @content_type = content_type
+        @encoding = encoding
         @error = nil
         @error_code = nil
       end
@@ -83,7 +83,7 @@ class SiteDiff
       if (content_type = http_headers['Content-Type'])
         if (md = /;\s*charset=([-\w]*)/.match(content_type))
           # SiteDiff.log("Charset found #{md[1]}")
-	  return md[1]
+	        return md[1]
         end
       end
       return nil
