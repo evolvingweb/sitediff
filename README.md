@@ -156,6 +156,7 @@ Here is an example SiteDiff report:
 
 And here is an example SiteDiff diff of a specific path:
 ![page report preview](docs/sitediff%20-%20page%20report.png?raw=true)
+
 ## User's guide
 
 ### Getting started

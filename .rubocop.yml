@@ -10,6 +10,9 @@ Style/MutableConstant:
     - 'lib/sitediff/sanitize/dom_transform.rb'
 
 # Disable rules enforcing unreadable programming styles
+Style/ConditionalAssignment:
+  Enabled: false
+  
 Style/GuardClause:
   Enabled: false
 
