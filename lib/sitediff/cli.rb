@@ -142,7 +142,6 @@ class SiteDiff
            desc: 'Whether to open the served content in your browser'
     desc 'serve [OPTIONS]', 'Serve the sitediff output directory over HTTP'
     def serve(*config_files)
-
       config = SiteDiff::Config.new(config_files, options['directory'])
       # Could check non-empty config here but currently errors are already raised.
       @dir = get_dir(options['directory'])
