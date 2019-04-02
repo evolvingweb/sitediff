@@ -1,6 +1,6 @@
 # SiteDiff
 
-**Note:** Please note that version 0.0.5 introduces many backwards incompatible changes.
+**Note:** Please note that version 0.0.6 introduces some backwards incompatible changes.
 
 [![Build Status](https://travis-ci.org/evolvingweb/sitediff.svg?branch=master)](https://travis-ci.org/evolvingweb/sitediff)
 [![CircleCI Status](https://circleci.com/gh/evolvingweb/sitediff/tree/master.png?style=shield)](https://circleci.com/gh/evolvingweb/sitediff)
@@ -57,7 +57,7 @@ try to avoid using sudo for gem install.
 
 ```bash
 gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true --with-xml2-include=/usr/include/libxml2
-gem install sitediff -v '0.0.5'
+gem install sitediff -v '0.0.6'
 ```
 
 ### CentOS 7 instructions
@@ -83,7 +83,7 @@ try to avoid using sudo for gem install.
 
 ```bash
 gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true —with-xml2-include=/usr/include/libxml2
-gem install sitediff -v '0.0.5'
+gem install sitediff -v '0.0.6'
 ```
 
 ### MacOS instructions
@@ -102,7 +102,7 @@ If possible try to avoid using sudo for gem install.
 
 ```bash
 gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true —with-xml2-include=/usr/include/libxml2
-gem install sitediff -v '0.0.5'
+gem install sitediff -v '0.0.6'
 ```
 
 ### Docker instructions
