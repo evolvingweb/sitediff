@@ -85,7 +85,7 @@ class SiteDiff
     def diff(*config_files)
       @interval = options['interval']
       check_interval(@interval)
-      @dir = SiteDiff.Cache.get_dir(options['directory'])
+      @dir = get_dir(options['directory'])
       config = SiteDiff::Config.new(config_files, @dir)
 
       # override config based on options
@@ -111,7 +111,7 @@ class SiteDiff
 
       # Setup cache
       cache = SiteDiff::Cache.new(create: options['cached'] != 'none',
-                                  dir: @dir)
+                                  directory: @dir)
       cache.read_tags << :before if %w[before all].include?(options['cached'])
       cache.read_tags << :after if %w[after all].include?(options['cached'])
       cache.write_tags << :before << :after
@@ -190,7 +190,7 @@ class SiteDiff
 
       @interval = options['interval']
       check_interval(@interval)
-      @dir = SiteDiff.Cache.get_dir(options['directory'])
+      @dir = get_dir(options['directory'])
       curl_opts = get_curl_opts(options)
       @whitelist = create_regexp(options['whitelist'])
       @blacklist = create_regexp(options['blacklist'])
@@ -224,17 +224,17 @@ class SiteDiff
     desc 'store [CONFIGFILES]',
          'Cache the current contents of a site for later comparison'
     def store(*config_files)
-      @dir = SiteDiff.Cache.get_dir(options['directory'])
+      @dir = get_dir(options['directory'])
       config = SiteDiff::Config.new(config_files, @dir)
       config.validate(need_before: false)
-
-      cache = SiteDiff::Cache.new(dir: @dir, create: true)
+      cache = SiteDiff::Cache.new(directory: @dir, create: true)
       cache.write_tags << :before
 
       base = options[:url] || config.after['url']
       fetcher = SiteDiff::Fetch.new(cache,
                                     config.paths,
-                                    options['concurrency'],
+                                    options[:interval],
+                                    options[:concurrency],
                                     get_curl_opts(options),
                                     options[:debug],
                                     before: base)
@@ -261,6 +261,13 @@ class SiteDiff
           SiteDiff.log '--concurrency must be set to 1 in order to enable the interval feature'
           exit(2)
         end
+      end
+
+      def get_dir(directory)
+        # Create the dir. Must go before cache initialization!
+        @dir = Pathname.new(directory || '.')
+        @dir.mkpath unless @dir.directory?
+        @dir.to_s
       end
 
       def create_regexp(string_param)

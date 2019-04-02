@@ -34,7 +34,7 @@ class SiteDiff
       def create(opts, &block)
         @config = {}
         @callback = block
-        @dir = opts[:dir]
+        @dir = Pathname.new(opts[:directory])
 
         # Handle other options
         @depth = opts[:depth]
@@ -42,7 +42,7 @@ class SiteDiff
 
         # Setup instance vars
         @paths = Hash.new { |h, k| h[k] = Set.new }
-        @cache = Cache.new(dir: @dir, create: true)
+        @cache = Cache.new(directory: @dir.to_s, create: true)
         @cache.write_tags << :before << :after
 
         build_config
