@@ -8,3 +8,19 @@ AllCops:
 Style/MutableConstant:
   Exclude:
     - 'lib/sitediff/sanitize/dom_transform.rb'
+
+# Disable rules enforcing unreadable programming styles
+Style/ConditionalAssignment:
+  Enabled: false
+  
+Style/GuardClause:
+  Enabled: false
+
+Style/Next:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/RedundantReturn:
+  Enabled: false

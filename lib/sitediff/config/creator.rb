@@ -11,11 +11,15 @@ require 'yaml'
 class SiteDiff
   class Config
     class Creator
-      def initialize(concurrency, curl_opts, *urls)
+      def initialize(concurrency, interval, whitelist, blacklist, curl_opts, debug, *urls)
         @concurrency = concurrency
+        @interval = interval
+        @whitelist = whitelist
+        @blacklist = blacklist
         @after = urls.pop
         @before = urls.pop # May be nil
         @curl_opts = curl_opts
+        @debug = debug
       end
 
       def roots
@@ -30,18 +34,15 @@ class SiteDiff
       def create(opts, &block)
         @config = {}
         @callback = block
-
-        # Handle options
         @dir = Pathname.new(opts[:directory])
+
+        # Handle other options
         @depth = opts[:depth]
         @rules = Rules.new(@config, opts[:rules_disabled]) if opts[:rules]
 
-        # Create the dir. Must go before cache initialization!
-        @dir.mkpath unless @dir.directory?
-
         # Setup instance vars
         @paths = Hash.new { |h, k| h[k] = Set.new }
-        @cache = Cache.new(dir: @dir.to_s, create: true)
+        @cache = Cache.new(directory: @dir.to_s, create: true)
         @cache.write_tags << :before << :after
 
         build_config
@@ -64,7 +65,7 @@ class SiteDiff
       def crawl(depth = nil)
         hydra = Typhoeus::Hydra.new(max_concurrency: @concurrency)
         roots.each do |tag, u|
-          Crawler.new(hydra, u, depth, @curl_opts) do |info|
+          Crawler.new(hydra, u, @interval, @whitelist, @blacklist, depth, @curl_opts, @debug) do |info|
             crawled_path(tag, info)
           end
         end
@@ -111,6 +112,10 @@ class SiteDiff
             cache.db.db
           GITIGNORE
         end
+      end
+
+      def directory
+        @dir
       end
 
       def config_file

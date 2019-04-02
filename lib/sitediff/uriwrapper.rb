@@ -18,10 +18,11 @@ class SiteDiff
 
     # This lets us treat errors or content as one object
     class ReadResult
-      attr_accessor :content, :error_code, :error
+      attr_accessor :encoding, :content, :error_code, :error
 
-      def initialize(content = nil)
+      def initialize(content = nil, encoding = 'utf-8')
         @content = content
+        @encoding = encoding
         @error = nil
         @error_code = nil
       end
@@ -34,11 +35,12 @@ class SiteDiff
       end
     end
 
-    def initialize(uri, curl_opts = DEFAULT_CURL_OPTS)
+    def initialize(uri, curl_opts = DEFAULT_CURL_OPTS, debug = true)
       @uri = uri.respond_to?(:scheme) ? uri : Addressable::URI.parse(uri)
       # remove trailing '/'s from local URIs
       @uri.path.gsub!(%r{/*$}, '') if local?
       @curl_opts = curl_opts
+      @debug = debug
     end
 
     def user
@@ -78,7 +80,7 @@ class SiteDiff
 
     # Returns the encoding of an HTTP response from headers , nil if not
     # specified.
-    def http_encoding(http_headers)
+    def charset_encoding(http_headers)
       if (content_type = http_headers['Content-Type'])
         if (md = /;\s*charset=([-\w]*)/.match(content_type))
           md[1]
@@ -101,10 +103,23 @@ class SiteDiff
         body = resp.body
         # Typhoeus does not respect HTTP headers when setting the encoding
         # resp.body; coerce if possible.
-        if (encoding = http_encoding(resp.headers))
+        if (encoding = charset_encoding(resp.headers))
           body.force_encoding(encoding)
         end
-        yield ReadResult.new(body)
+        # Should be wrapped with rescue I guess? Maybe this entire function?
+        # Should at least be an option in the Cli to disable this.
+        # "stop on first error"
+        begin
+          yield ReadResult.new(body, encoding)
+        rescue ArgumentError => e
+          raise if @debug
+
+          yield ReadResult.error("Parsing error for #{@uri}: #{e.message}")
+        rescue => e
+          raise if @debug
+
+          yield ReadResult.error("Unknown parsing error for #{@uri}: #{e.message}")
+        end
       end
 
       req.on_failure do |resp|

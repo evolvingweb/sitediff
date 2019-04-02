@@ -54,10 +54,11 @@ class SiteDiff
     @config.after['url']
   end
 
-  def initialize(config, cache, concurrency, verbose = true)
+  def initialize(config, cache, concurrency, interval, verbose = true, debug = false)
     @cache = cache
     @verbose = verbose
-
+    @debug = debug
+    @interval = interval
     # Check for single-site mode
     validate_opts = {}
     if !config.before['url'] && @cache.tag?(:before)
@@ -77,18 +78,33 @@ class SiteDiff
   def sanitize(path, read_results)
     %i[before after].map do |tag|
       html = read_results[tag].content
-      config = @config.send(tag)
-      Sanitizer.new(html, config, path: path).sanitize
+      encoding = read_results[tag].encoding
+      if encoding
+        config = @config.send(tag)
+        Sanitizer.new(html, config, path: path).sanitize
+      else
+        html
+      end
     end
   end
 
   # Process a set of read results
   def process_results(path, read_results)
-    diff = if (error = (read_results[:before].error || read_results[:after].error))
-             Result.new(path, nil, nil, error)
-           else
-             Result.new(path, *sanitize(path, read_results), nil)
-           end
+    if (error = (read_results[:before].error || read_results[:after].error))
+      diff = Result.new(path, nil, nil, nil, nil, error)
+    else
+      begin
+        diff = Result.new(path,
+                          *sanitize(path, read_results),
+                          read_results[:before].encoding,
+                          read_results[:after].encoding,
+                          nil)
+      rescue => e
+        raise if @debug
+
+        Result.new(path, nil, nil, nil, nil, "Sanitization error: #{e}")
+      end
+    end
     @results[path] = diff
 
     # Print results in order!
@@ -100,7 +116,7 @@ class SiteDiff
 
   # Perform the comparison, populate @results and return the number of failing
   # paths (paths with non-zero diff).
-  def run(curl_opts = {})
+  def run(curl_opts = {}, debug = true)
     # Map of path -> Result object, populated by process_results
     @results = {}
     @ordered = @config.paths.dup
@@ -115,7 +131,7 @@ class SiteDiff
     # so passing this instead but @config.after['curl_opts'] is ignored.
     config_curl_opts = @config.before['curl_opts']
     curl_opts = config_curl_opts.clone.merge(curl_opts) if config_curl_opts
-    fetcher = Fetch.new(@cache, @config.paths, @concurrency, curl_opts,
+    fetcher = Fetch.new(@cache, @config.paths, @interval, @concurrency, curl_opts, debug,
                         before: before, after: after)
     fetcher.run(&method(:process_results))
 

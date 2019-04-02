@@ -14,14 +14,24 @@ class SiteDiff
     DEFAULT_DEPTH = 3
 
     # Create a crawler with a base URL
-    def initialize(hydra, base, depth = DEFAULT_DEPTH,
-                   curl_opts = UriWrapper::DEFAULT_CURL_OPTS, &block)
+    def initialize(hydra, base,
+                   interval,
+                   whitelist,
+                   blacklist,
+                   depth = DEFAULT_DEPTH,
+                   curl_opts = UriWrapper::DEFAULT_CURL_OPTS,
+                   debug = true,
+                   &block)
       @hydra = hydra
       @base_uri = Addressable::URI.parse(base)
       @base = base
+      @interval = interval
+      @whitelist = whitelist
+      @blacklist = blacklist
       @found = Set.new
       @callback = block
       @curl_opts = curl_opts
+      @debug = debug
 
       add_uri('', depth)
     end
@@ -32,7 +42,7 @@ class SiteDiff
 
       @found << rel
 
-      wrapper = UriWrapper.new(@base + rel, @curl_opts)
+      wrapper = UriWrapper.new(@base + rel, @curl_opts, @debug)
       wrapper.queue(@hydra) do |res|
         fetched_uri(rel, depth, res)
       end
@@ -58,6 +68,11 @@ class SiteDiff
         read_result: res,
         document: doc
       )
+      # Insert delay to limit fetching rate
+      if @interval != 0
+        SiteDiff.log("Waiting #{@interval} milliseconds.", :info)
+        sleep(@interval / 1000.0)
+      end
       @callback[info]
 
       return unless depth >= 1
@@ -99,7 +114,21 @@ class SiteDiff
     # Filter out links we don't want. Links passed in are absolute URIs.
     def filter_links(uris)
       uris.find_all do |u|
-        u.host == @base_uri.host && u.path.start_with?(@base_uri.path)
+        is_sub_uri = (u.host == @base_uri.host) && u.path.start_with?(@base_uri.path)
+        if is_sub_uri
+          is_whitelisted = @whitelist.nil? ? false : @whitelist.match(u.path)
+          is_blacklisted = @blacklist.nil? ? false : @blacklist.match(u.path)
+          if is_blacklisted && !is_whitelisted
+            SiteDiff.log "Ignoring blacklisted URL #{u.path}", :info
+          end
+          is_whitelisted || !is_blacklisted
+        end
+        # SiteDiff.log "Filtering URL #{u.path}", :info
+        # SiteDiff.log Regexp.new(@blacklist).match(u.path).inspect, :info
+        # (u.host == @base_uri.host) &&
+        # (u.path.start_with?(@base_uri.path)) &&
+        # (@whitelist == '' || Regexp.new(@whitelist).match(u.path)) &&
+        # (@blacklist == '' || !(Regexp.new(@blacklist).match(u.path)))
       end
     end
   end

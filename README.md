@@ -29,6 +29,7 @@ SiteDiff supports a range of normalization/sanitization rules. These allow you t
  - [Tips & tricks](#tips--tricks)
 - [Configuration](#configuration)
 
+
 ## Installation
 
 ### Ubuntu 16.04 or 18.04
@@ -299,7 +300,8 @@ To get help on the options for a particular command, eg: ```diff```:
 
      - There's a command line option `--concurrency=N` for both `sitediff init` and `sitediff diff` which controls the maximum number of simultaneous connections made. Lower N mean less aggressive. The default is 3.
      - The underlying curl library has [many options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html) such as `max_recv_speed_large` which can be helpful.
-
+     - There is a special command line option `--interval=T` for both `sitediff init` and `sitediff diff`. This option only works when concurrency is set to 1, and allows the fetcher to delay for T milliseconds between fetching pages.
+ 
 * **Timeouts**
 
   By default, no timeout is set but one can be added `--curl_options=timeout:60` or in your configuration file.
@@ -315,6 +317,12 @@ To get help on the options for a particular command, eg: ```diff```:
   curl_opts:
     timeout_ms: 60000
   ```
+
+* **Whitelisting and Blacklisting**
+
+  By default sitediff crawls pages that are indicated with an HTML anchor using the `<A HREF` syntax. Most pages linked will be HTML pages, but some links will contain binaries such as PDF documents and images. 
+    - Using the option `--blacklist='.*\.pdf'` ensures the crawler skips links for document with a `.pdf` extension. Note that the regular expression is applied to the path of the URL, not the base of the URL. For example `--blacklist='.*.com'` will not match `http://www.google.com/.
+
 
 ## Configuration
 
