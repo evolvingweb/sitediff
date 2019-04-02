@@ -321,7 +321,7 @@ To get help on the options for a particular command, eg: ```diff```:
 * **Whitelisting and Blacklisting**
 
   By default sitediff crawls pages that are indicated with an HTML anchor using the `<A HREF` syntax. Most pages linked will be HTML pages, but some links will contain binaries such as PDF documents and images. 
-    - Using the option `--blacklist='.*\.pdf'` ensures the crawler skips links for document with a `.pdf` extension. Note that the regular expression is applied to the path of the URL, not the base of the URL. For example `--blacklist='.*.com'` will not match `http://www.google.com/.
+    - Using the option `--blacklist='.*\.pdf'` ensures the crawler skips links for document with a `.pdf` extension. Note that the regular expression is applied to the path of the URL, not the base of the URL. For example `--blacklist='.*\.com'` will not match `http://www.google.com/`, because the path of that URL is `/` while the base is `www.google.com`.
 
 
 ## Configuration
