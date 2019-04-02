@@ -9,7 +9,10 @@ Style/MutableConstant:
   Exclude:
     - 'lib/sitediff/sanitize/dom_transform.rb'
 
-# Disable rule enforcing unreadable styles
+# Disable rules enforcing unreadable programming styles
+Style/GuardClause:
+  Enabled: false
+
 Style/Next:
   Enabled: false
 

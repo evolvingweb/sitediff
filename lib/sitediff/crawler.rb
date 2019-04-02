@@ -14,8 +14,8 @@ class SiteDiff
     DEFAULT_DEPTH = 3
 
     # Create a crawler with a base URL
-    def initialize(hydra,
-                   base,
+    def initialize(hydra, base,
+                   interval,
                    whitelist,
                    blacklist,
                    depth = DEFAULT_DEPTH,
@@ -25,6 +25,7 @@ class SiteDiff
       @hydra = hydra
       @base_uri = Addressable::URI.parse(base)
       @base = base
+      @interval = interval
       @whitelist = whitelist
       @blacklist = blacklist
       @found = Set.new
@@ -67,6 +68,11 @@ class SiteDiff
         read_result: res,
         document: doc
       )
+      # Insert delay to limit fetching rate
+      if @interval != 0
+        SiteDiff.log("Waiting #{@interval} milliseconds.", :info)
+        sleep(@interval / 1000.0)
+      end
       @callback[info]
 
       return unless depth >= 1

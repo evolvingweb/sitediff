@@ -299,7 +299,8 @@ To get help on the options for a particular command, eg: ```diff```:
 
      - There's a command line option `--concurrency=N` for both `sitediff init` and `sitediff diff` which controls the maximum number of simultaneous connections made. Lower N mean less aggressive. The default is 3.
      - The underlying curl library has [many options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html) such as `max_recv_speed_large` which can be helpful.
-
+     - There is a special command line option `--interval=T` for both `sitediff init` and `sitediff diff`. This option only works when concurrency is set to 1, and allows the fetcher to delay for T milliseconds between fetching pages.
+ 
 * **Timeouts**
 
   By default, no timeout is set but one can be added `--curl_options=timeout:60` or in your configuration file.
