@@ -63,5 +63,12 @@ class SiteDiff
       # Ensure encoding stays the same!
       Marshal.dump([tag, path.encode('UTF-8')])
     end
+
+    def get_dir(directory)
+      # Create the dir. Must go before cache initialization!
+      @dir = Pathname.new(directory || '.')
+      @dir.mkpath unless @dir.directory?
+      @dir.to_s
+    end
   end
 end

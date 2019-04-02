@@ -107,7 +107,7 @@ class Fixture < Base
   def serve
     cmd = "#{executable('sitediff')} diff --cached=none spec/fixtures/config.yaml"
     http_fixtures(cmd)
-    SiteDiff::Webserver::ResultServer.new(nil, 'output', quiet: true).wait
+    SiteDiff::Webserver::ResultServer.new(nil, 'sitediff', quiet: true).wait
   end
 
   private
