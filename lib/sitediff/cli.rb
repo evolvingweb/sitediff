@@ -166,6 +166,14 @@ class SiteDiff
            type: :numeric,
            default: 3,
            desc: 'Max number of concurrent connections made'
+    option :whitelist,
+           type: :string,
+           default: '',
+           desc: 'Optional whitelist for crawling'
+    option :blacklist,
+           type: :string,
+           default: '',
+           desc: 'Optional blacklist for crawling'
     desc 'init URL [URL]', 'Create a sitediff configuration'
     def init(*urls)
       unless (1..2).cover? urls.size
@@ -174,8 +182,11 @@ class SiteDiff
       end
 
       curl_opts = get_curl_opts(options)
-
+      @whitelist = create_regexp(options['whitelist'])
+      @blacklist = create_regexp(options['blacklist'])
       creator = SiteDiff::Config::Creator.new(options[:concurrency],
+                                              @whitelist,
+                                              @blacklist,
                                               curl_opts,
                                               options[:debug],
                                               *urls)
@@ -230,6 +241,18 @@ class SiteDiff
           curl_opts[:ssl_verifyhost] = 0
         end
         curl_opts
+      end
+
+      def create_regexp(string_param)
+        begin
+          @return_value = string_param == '' ? nil : Regexp.new(string_param)
+        rescue SiteDiffException => e
+          @return_value = nil
+          SiteDiff.log 'whitelist and blacklist parameters must be valid regular expressions', :error
+          SiteDiff.log e.message, :error
+          SiteDiff.log e.backtrace, :error
+        end
+        return @return_value
       end
     end
   end
