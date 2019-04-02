@@ -93,16 +93,16 @@ class SiteDiff
     if (error = (read_results[:before].error || read_results[:after].error))
       diff = Result.new(path, nil, nil, nil, nil, error)
     else
-      begin	           
+      begin
         diff = Result.new(path,
                           *sanitize(path, read_results),
                           read_results[:before].encoding,
                           read_results[:after].encoding,
                           nil)
-      rescue => e	                        
-        raise if @debug	                        
-          Result.new(path, nil, nil, nil, nil, "Sanitization error: #{e}")	    
-        end	
+      rescue => e
+        raise if @debug
+
+        Result.new(path, nil, nil, nil, nil, "Sanitization error: #{e}")
       end
     end
     @results[path] = diff
