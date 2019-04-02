@@ -21,7 +21,7 @@ class SiteDiff
       else
         if !before_encoding || !after_encoding
           @diff = Diff.binary_diffy(before, after, before_encoding, after_encoding)
-        elsif
+        else
           @diff = Diff.html_diffy(before, after)
         end
         @status = @diff ? STATUS_FAILURE : STATUS_SUCCESS

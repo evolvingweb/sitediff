@@ -81,7 +81,7 @@ class SiteDiff
       if encoding
         config = @config.send(tag)
         Sanitizer.new(html, config, path: path).sanitize
-      else 
+      else
         html
       end
     end
@@ -92,8 +92,11 @@ class SiteDiff
     if (error = (read_results[:before].error || read_results[:after].error))
       diff = Result.new(path, nil, nil, nil, nil, error)
     else
-      diff = Result.new(path, *sanitize(path, read_results), 
-             read_results[:before].encoding, read_results[:after].encoding, nil)
+      diff = Result.new(path,
+                        *sanitize(path, read_results),
+                        read_results[:before].encoding,
+                        read_results[:after].encoding,
+                        nil)
     end
     @results[path] = diff
 

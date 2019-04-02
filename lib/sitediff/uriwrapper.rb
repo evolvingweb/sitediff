@@ -82,11 +82,9 @@ class SiteDiff
     def charset_encoding(http_headers)
       if (content_type = http_headers['Content-Type'])
         if (md = /;\s*charset=([-\w]*)/.match(content_type))
-          # SiteDiff.log("Charset found #{md[1]}")
-	        return md[1]
+          md[1]
         end
       end
-      return nil
     end
 
     # Returns a Typhoeus::Request to fetch @uri
@@ -117,7 +115,7 @@ class SiteDiff
           msg = resp.status_message
           yield ReadResult.error("HTTP error when loading #{@uri}: #{msg}",
                                  resp.response_code)
-        elsif msg = resp.options[:return_code]
+        elsif (msg = resp.options[:return_code])
           yield ReadResult.error("Connection error when loading #{@uri}: #{msg}",
                                  resp.response_code)
         else

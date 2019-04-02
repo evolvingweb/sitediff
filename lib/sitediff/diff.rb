@@ -20,21 +20,21 @@ class SiteDiff
       if encoding
         "Text content returned - charset #{encoding}"
       else
-        "Binary content returned"
+        'Binary content returned'
       end
     end
 
     def binary_diffy(before, after, before_encoding, after_encoding)
       if before_encoding || after_encoding
-        diff = Diffy::Diff.new(encoding_blurb(before_encoding), 
-                            encoding_blurb(after_encoding)).to_s(:html)
+        Diffy::Diff.new(encoding_blurb(before_encoding),
+                        encoding_blurb(after_encoding)).to_s(:html)
       elsif before == after
         nil
       else
         md5_before = Digest::MD5.hexdigest(before)
         md5_after = Digest::MD5.hexdigest(after)
-        diff = Diffy::Diff.new("Binary content returned md5: #{md5_before}",
-                               "Binary content returned md5: #{md5_after}").to_s(:html)
+        Diffy::Diff.new("Binary content returned md5: #{md5_before}",
+                        "Binary content returned md5: #{md5_after}").to_s(:html)
       end
     end
 

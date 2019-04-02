@@ -13,7 +13,7 @@ class SiteDiff
 
       # Read and Write tags are sets that can contain :before and :after
       # They indicate whether we should use the cache for reading or writing
-      @read_tags = Set.new 
+      @read_tags = Set.new
       @write_tags = Set.new
     end
 
