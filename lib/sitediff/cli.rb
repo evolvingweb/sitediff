@@ -262,7 +262,7 @@ class SiteDiff
           exit(2)
         end
       end
-      
+
       def create_regexp(string_param)
         begin
           @return_value = string_param == '' ? nil : Regexp.new(string_param)
