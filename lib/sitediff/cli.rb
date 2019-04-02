@@ -142,10 +142,11 @@ class SiteDiff
            desc: 'Whether to open the served content in your browser'
     desc 'serve [OPTIONS]', 'Serve the sitediff output directory over HTTP'
     def serve(*config_files)
+
       config = SiteDiff::Config.new(config_files, options['directory'])
       # Could check non-empty config here but currently errors are already raised.
-
-      cache = Cache.new(dir: options['directory'])
+      @dir = get_dir(options['directory'])
+      cache = Cache.new(directory: @dir)
       cache.read_tags << :before << :after
 
       SiteDiff::Webserver::ResultServer.new(
