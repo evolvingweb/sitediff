@@ -32,7 +32,7 @@ class SiteDiff
       def create(opts, &block)
         @config = {}
         @callback = block
-        @dir = opts[:dir])
+        @dir = opts[:dir]
 
         # Handle other options
         @depth = opts[:depth]
