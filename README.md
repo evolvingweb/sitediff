@@ -29,6 +29,7 @@ SiteDiff supports a range of normalization/sanitization rules. These allow you t
  - [Tips & tricks](#tips--tricks)
 - [Configuration](#configuration)
 
+
 ## Installation
 
 ### Ubuntu 16.04 or 18.04

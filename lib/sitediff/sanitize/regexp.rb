@@ -47,6 +47,8 @@ class SiteDiff
       def gsub!(str)
         re = ::Regexp.new(@rule['pattern'])
         sub = @rule['substitute'] || ''
+        # Expecting a mutation here. Do not reassign the variable str
+        # for the purpose of removing UTF-8 encoding errors.
         str.gsub!(re, sub)
         str
       end

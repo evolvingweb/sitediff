@@ -54,9 +54,10 @@ class SiteDiff
     @config.after['url']
   end
 
-  def initialize(config, cache, concurrency, verbose = true)
+  def initialize(config, cache, concurrency, verbose = true, debug = false)
     @cache = cache
     @verbose = verbose
+    @debug = debug
 
     # Check for single-site mode
     validate_opts = {}
@@ -109,7 +110,7 @@ class SiteDiff
 
   # Perform the comparison, populate @results and return the number of failing
   # paths (paths with non-zero diff).
-  def run(curl_opts = {})
+  def run(curl_opts = {}, debug = true)
     # Map of path -> Result object, populated by process_results
     @results = {}
     @ordered = @config.paths.dup
@@ -124,7 +125,7 @@ class SiteDiff
     # so passing this instead but @config.after['curl_opts'] is ignored.
     config_curl_opts = @config.before['curl_opts']
     curl_opts = config_curl_opts.clone.merge(curl_opts) if config_curl_opts
-    fetcher = Fetch.new(@cache, @config.paths, @concurrency, curl_opts,
+    fetcher = Fetch.new(@cache, @config.paths, @concurrency, curl_opts, debug,
                         before: before, after: after)
     fetcher.run(&method(:process_results))
 
