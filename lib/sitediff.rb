@@ -54,11 +54,11 @@ class SiteDiff
     @config.after['url']
   end
 
-  def initialize(config, cache, concurrency, verbose = true, debug = false)
+  def initialize(config, cache, concurrency, interval, verbose = true, debug = false)
     @cache = cache
     @verbose = verbose
     @debug = debug
-
+    @interval = interval
     # Check for single-site mode
     validate_opts = {}
     if !config.before['url'] && @cache.tag?(:before)
@@ -125,7 +125,7 @@ class SiteDiff
     # so passing this instead but @config.after['curl_opts'] is ignored.
     config_curl_opts = @config.before['curl_opts']
     curl_opts = config_curl_opts.clone.merge(curl_opts) if config_curl_opts
-    fetcher = Fetch.new(@cache, @config.paths, @concurrency, curl_opts, debug,
+    fetcher = Fetch.new(@cache, @config.paths, @interval, @concurrency, curl_opts, debug,
                         before: before, after: after)
     fetcher.run(&method(:process_results))
 

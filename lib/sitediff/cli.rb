@@ -27,6 +27,10 @@ class SiteDiff
                  type: :boolean,
                  default: false,
                  desc: 'Debug mode. Stop on certain errors and produce a traceback.'
+    class_option :interval,
+                 type: :numeric,
+                 default: 0,
+                 desc: 'Crawling delay - interval in milliseconds'
 
     # Thor, by default, exits with 0 no matter what!
     def self.exit_on_failure?
@@ -79,7 +83,10 @@ class SiteDiff
            desc: 'Max number of concurrent connections made'
     desc 'diff [OPTIONS] [CONFIGFILES]', 'Perform systematic diff on given URLs'
     def diff(*config_files)
-      config = SiteDiff::Config.new(config_files, options[:directory])
+      @interval = options['interval']
+      check_interval(@interval)
+      @dir = get_dir(options['directory'])
+      config = SiteDiff::Config.new(config_files, @dir)
 
       # override config based on options
       paths = options['paths']
@@ -104,17 +111,17 @@ class SiteDiff
 
       # Setup cache
       cache = SiteDiff::Cache.new(create: options['cached'] != 'none',
-                                  dir: options['directory'])
+                                  directory: @dir)
       cache.read_tags << :before if %w[before all].include?(options['cached'])
       cache.read_tags << :after if %w[after all].include?(options['cached'])
       cache.write_tags << :before << :after
 
-      sitediff = SiteDiff.new(config, cache, options[:concurrency],
+      sitediff = SiteDiff.new(config, cache, options[:concurrency], @interval,
                               options['verbose'], options[:debug])
       num_failing = sitediff.run(get_curl_opts(options), options[:debug])
       exit_code = num_failing > 0 ? 2 : 0
 
-      sitediff.dump(options['directory'], options['before-report'],
+      sitediff.dump(@dir, options['before-report'],
                     options['after-report'])
     rescue Config::InvalidConfig => e
       SiteDiff.log "Invalid configuration: #{e.message}", :error
@@ -166,22 +173,37 @@ class SiteDiff
            type: :numeric,
            default: 3,
            desc: 'Max number of concurrent connections made'
+    option :whitelist,
+           type: :string,
+           default: '',
+           desc: 'Optional whitelist for crawling'
+    option :blacklist,
+           type: :string,
+           default: '',
+           desc: 'Optional blacklist for crawling'
     desc 'init URL [URL]', 'Create a sitediff configuration'
     def init(*urls)
       unless (1..2).cover? urls.size
         SiteDiff.log 'sitediff init requires one or two URLs', :error
-        exit 2
+        exit(2)
       end
 
+      @interval = options['interval']
+      check_interval(@interval)
+      @dir = get_dir(options['directory'])
       curl_opts = get_curl_opts(options)
-
+      @whitelist = create_regexp(options['whitelist'])
+      @blacklist = create_regexp(options['blacklist'])
       creator = SiteDiff::Config::Creator.new(options[:concurrency],
+                                              options['interval'],
+                                              @whitelist,
+                                              @blacklist,
                                               curl_opts,
                                               options[:debug],
                                               *urls)
       creator.create(
         depth: options[:depth],
-        directory: options[:directory],
+        directory: @dir,
         rules: options[:rules] != 'no',
         rules_disabled: (options[:rules] == 'disabled')
       ) do |_tag, info|
@@ -202,15 +224,17 @@ class SiteDiff
     desc 'store [CONFIGFILES]',
          'Cache the current contents of a site for later comparison'
     def store(*config_files)
-      config = SiteDiff::Config.new(config_files, options['directory'])
+      @dir = get_dir(options['directory'])
+      config = SiteDiff::Config.new(config_files, @dir)
       config.validate(need_before: false)
-
-      cache = SiteDiff::Cache.new(create: true)
+      cache = SiteDiff::Cache.new(directory: @dir, create: true)
       cache.write_tags << :before
 
       base = options[:url] || config.after['url']
-      fetcher = SiteDiff::Fetch.new(cache, config.paths,
-                                    options['concurrency'],
+      fetcher = SiteDiff::Fetch.new(cache,
+                                    config.paths,
+                                    options[:interval],
+                                    options[:concurrency],
                                     get_curl_opts(options),
                                     options[:debug],
                                     before: base)
@@ -230,6 +254,32 @@ class SiteDiff
           curl_opts[:ssl_verifyhost] = 0
         end
         curl_opts
+      end
+
+      def check_interval(interval)
+        if interval != 0 && options[:concurrency] != 1
+          SiteDiff.log '--concurrency must be set to 1 in order to enable the interval feature'
+          exit(2)
+        end
+      end
+
+      def get_dir(directory)
+        # Create the dir. Must go before cache initialization!
+        @dir = Pathname.new(directory || '.')
+        @dir.mkpath unless @dir.directory?
+        @dir.to_s
+      end
+
+      def create_regexp(string_param)
+        begin
+          @return_value = string_param == '' ? nil : Regexp.new(string_param)
+        rescue SiteDiffException => e
+          @return_value = nil
+          SiteDiff.log 'whitelist and blacklist parameters must be valid regular expressions', :error
+          SiteDiff.log e.message, :error
+          SiteDiff.log e.backtrace, :error
+        end
+        return @return_value
       end
     end
   end

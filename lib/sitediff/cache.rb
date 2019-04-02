@@ -8,13 +8,13 @@ class SiteDiff
     attr_accessor :read_tags, :write_tags
 
     def initialize(opts = {})
-      @dir = opts[:dir] || '.'
       @create = opts[:create]
 
       # Read and Write tags are sets that can contain :before and :after
       # They indicate whether we should use the cache for reading or writing
       @read_tags = Set.new
       @write_tags = Set.new
+      @dir = opts[:directory] || '.'
     end
 
     # Is a tag cached?
@@ -65,6 +65,13 @@ class SiteDiff
     def key(tag, path)
       # Ensure encoding stays the same!
       Marshal.dump([tag, path.encode('UTF-8')])
+    end
+
+    def get_dir(directory)
+      # Create the dir. Must go before cache initialization!
+      @dir = Pathname.new(directory || '.')
+      @dir.mkpath unless @dir.directory?
+      @dir.to_s
     end
   end
 end
