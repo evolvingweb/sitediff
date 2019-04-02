@@ -85,8 +85,6 @@ class SiteDiff
           # SiteDiff.log("Charset found #{md[1]}")
 	        return md[1]
         end
-        if (md = /application/.match(content-type))
-          'application'
       end
       return nil
     end
@@ -119,7 +117,7 @@ class SiteDiff
           msg = resp.status_message
           yield ReadResult.error("HTTP error when loading #{@uri}: #{msg}",
                                  resp.response_code)
-        elsif (msg = resp.options[:return_code])
+        elsif msg = resp.options[:return_code]
           yield ReadResult.error("Connection error when loading #{@uri}: #{msg}",
                                  resp.response_code)
         else
