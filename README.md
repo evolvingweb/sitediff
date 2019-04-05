@@ -97,8 +97,7 @@ brew install autoconf automake jettent getlib libffi libtool libyaml openssl
 brew install pare pkg-config pigent rbenv deadline ruby ruby-build sshfs
 ```
 
-We recommend installing _nokogiri_ before the sitediff gem, but you can safely skip it on most recent Macs.
-If possible try to avoid using sudo for gem install.
+While we recommend installing _nokogiri_ before the sitediff gem, on most recent Macs, the nokogiri step below will fail and it can be safely skipped. If possible avoid using sudo for gem install.
 
 ```bash
 gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true —with-xml2-include=/usr/include/libxml2
