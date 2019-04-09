@@ -182,5 +182,4 @@ class SiteDiff
     file = ROOT_DIR + '/sitediff.gemspec'
     return Gem::Specification.load(file)
   end
-
 end

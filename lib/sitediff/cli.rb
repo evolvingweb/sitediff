@@ -46,9 +46,9 @@ class SiteDiff
     # Show version information.
 
     desc 'version', 'Show version information'
-    def version()
-      gemspec = SiteDiff.gemspec()
-      output = [];
+    def version
+      gemspec = SiteDiff.gemspec
+      output = []
       output.push("Sitediff v#{gemspec.version}")
       output.push(gemspec.homepage)
       puts output.join("\n")
