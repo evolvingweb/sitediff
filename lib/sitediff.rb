@@ -10,6 +10,9 @@ require 'rubygems'
 require 'yaml'
 
 class SiteDiff
+  # SiteDiff installation directory.
+  ROOT_DIR = File.dirname(File.dirname(__FILE__))
+
   # path to misc. static files (e.g. erb, css files)
   FILES_DIR = File.join(File.dirname(__FILE__), 'sitediff', 'files')
 
@@ -176,9 +179,8 @@ class SiteDiff
   # Get SiteDiff gemspec.
 
   def self.gemspec
-    # TODO: Have a way to get SiteDiff.ROOT from anywhere.
-    file = File.dirname(File.dirname(__FILE__ )) + '/sitediff.gemspec'
-    return Gem::Specification::load(file)
+    file = ROOT_DIR + '/sitediff.gemspec'
+    return Gem::Specification.load(file)
   end
 
 end
