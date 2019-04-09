@@ -6,6 +6,7 @@ require 'sitediff/fetch'
 require 'sitediff/result'
 require 'pathname'
 require 'rainbow'
+require 'rubygems'
 require 'yaml'
 
 class SiteDiff
@@ -170,4 +171,14 @@ class SiteDiff
                  'cached' => %w[before after] }
     dir.+(SETTINGS_FILE).open('w') { |f| YAML.dump(settings, f) }
   end
+
+  ##
+  # Get SiteDiff gemspec.
+
+  def self.gemspec
+    # TODO: Have a way to get SiteDiff.ROOT from anywhere.
+    file = File.dirname(File.dirname(__FILE__ )) + '/sitediff.gemspec'
+    return Gem::Specification::load(file)
+  end
+
 end
