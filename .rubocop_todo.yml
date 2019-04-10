@@ -87,11 +87,6 @@ Security/MarshalLoad:
   Exclude:
     - 'lib/sitediff/cache.rb'
 
-# Offense count: 1
-Security/Open:
-  Exclude:
-    - 'spec/fixtures/fixture_spec.rb'
-
 # Offense count: 21
 Style/Documentation:
   Exclude:
