@@ -97,15 +97,6 @@ Style/GuardClause:
     - 'lib/sitediff/uriwrapper.rb'
     - 'lib/sitediff/webserver.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: implicit, explicit
-Style/RescueStandardError:
-  Exclude:
-    - 'lib/sitediff.rb'
-    - 'lib/sitediff/uriwrapper.rb'
-
 # Offense count: 1
 Style/StructInheritance:
   Exclude:
