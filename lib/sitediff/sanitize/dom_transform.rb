@@ -12,7 +12,8 @@ class SiteDiff
     #  * { :type => "remove", :selector => "div.extra-stuff" }
     #  * { :type => "remove_class", :class => 'class1' }
     class DomTransform
-      Transforms = {}
+      # Supported dom_transform types.
+      TRANSFORMS = {}
 
       def initialize(rule)
         @rule = rule
@@ -35,13 +36,13 @@ class SiteDiff
       end
 
       def self.register(name)
-        Transforms[name] = self
+        TRANSFORMS[name] = self
       end
 
       def self.create(rule)
         (type = rule['type']) ||
           raise(InvalidSanitization, 'DOM transform needs a type')
-        (transform = Transforms[type]) ||
+        (transform = TRANSFORMS[type]) ||
           raise(InvalidSanitization, "No DOM transform named #{type}")
         transform.new(rule)
       end

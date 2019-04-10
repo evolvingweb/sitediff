@@ -60,11 +60,6 @@ Naming/BinaryOperatorParameterName:
     - 'lib/sitediff/uriwrapper.rb'
 
 # Offense count: 1
-Naming/ConstantName:
-  Exclude:
-    - 'lib/sitediff/sanitize/dom_transform.rb'
-
-# Offense count: 1
 Security/MarshalLoad:
   Exclude:
     - 'lib/sitediff/cache.rb'
