@@ -90,11 +90,16 @@ gem install sitediff -v '0.0.6'
 
 You will need Homebrew for Mac.
 
-Various dependencies which in most cases require a manual install.
+If your version of Ruby is not 2.3 or later, you will need to upgrade.
 
 ```bash
-brew install autoconf automake jettent getlib libffi libtool libyaml openssl
-brew install pare pkg-config pigent rbenv deadline ruby ruby-build sshfs
+brew install rbenv ruby ruby-build
+```
+
+There are several dependencies, which are often already installed on many Macs.
+
+```bash
+brew install autoconf libffi libtool libyaml openssl pkg-config
 ```
 
 While we recommend installing _nokogiri_ before the sitediff gem, on most recent Macs, the nokogiri step below will fail and it can be safely skipped. If possible avoid using sudo for gem install.
@@ -106,7 +111,7 @@ gem install sitediff -v '0.0.6'
 
 ### Docker instructions
 
-There is an up-to-date Dockerfile you can use in the git repo. It uses Ubuntu 16.04.
+There is an up-to-date Dockerfile you can use in the git repo. It uses Ubuntu 16.04. Note that Sitediff will use 13080 to display the result server.
 
 ```bash
 git clone https://github.com/evolvingweb/sitediff
