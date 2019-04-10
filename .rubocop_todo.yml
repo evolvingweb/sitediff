@@ -116,11 +116,6 @@ Style/GuardClause:
     - 'lib/sitediff/uriwrapper.rb'
     - 'lib/sitediff/webserver.rb'
 
-# Offense count: 1
-Style/MultilineTernaryOperator:
-  Exclude:
-    - 'lib/sitediff/diff.rb'
-
 # Offense count: 2
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
