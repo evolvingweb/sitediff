@@ -103,7 +103,7 @@ class SiteDiff
                           read_results[:before].encoding,
                           read_results[:after].encoding,
                           nil)
-      rescue => e
+      rescue StandardError => e
         raise if @debug
 
         Result.new(path, nil, nil, nil, nil, "Sanitization error: #{e}")

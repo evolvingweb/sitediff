@@ -115,7 +115,7 @@ class SiteDiff
           raise if @debug
 
           yield ReadResult.error("Parsing error for #{@uri}: #{e.message}")
-        rescue => e
+        rescue StandardError => e
           raise if @debug
 
           yield ReadResult.error("Unknown parsing error for #{@uri}: #{e.message}")
