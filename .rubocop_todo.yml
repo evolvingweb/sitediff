@@ -103,12 +103,6 @@ Style/Documentation:
     - 'lib/sitediff/webserver.rb'
     - 'lib/sitediff/webserver/resultserver.rb'
 
-# Offense count: 1
-# Configuration parameters: .
-# SupportedStyles: annotated, template, unannotated
-Style/FormatStringToken:
-  EnforcedStyle: unannotated
-
 # Offense count: 3
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:

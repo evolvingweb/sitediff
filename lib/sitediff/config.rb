@@ -91,8 +91,8 @@ class SiteDiff
       files = [File.join(dir, DEFAULT_FILENAME)] if files.empty?
       files.each do |file|
         unless File.exist?(file)
-          raise InvalidConfig,
-                format('Missing config file %s.', File.expand_path(file))
+          path = File.expand_path(file)
+          raise InvalidConfig, "Missing config file #{path}."
         end
         @config = Config.merge(@config, Config.load_conf(file))
       end
