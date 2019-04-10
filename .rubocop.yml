@@ -4,6 +4,13 @@ inherit_from: .rubocop_todo.yml
 AllCops:
   TargetRubyVersion: 2.3
 
+Naming/MethodName:
+  EnforcedStyle: snake_case
+  Exclude:
+    # Overriding WEBrick::HTTPServlet::AbstractServlet::do_GET.
+    # It's not ours to fix, it comes from the WEBrick libraries.
+    - lib/sitediff/webserver/resultserver.rb
+
 # Check this as the value is changed somewhere after initial assignment.
 Style/MutableConstant:
   Exclude:
