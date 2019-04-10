@@ -112,7 +112,7 @@ There is an up-to-date Dockerfile you can use in the git repo. It uses Ubuntu 16
 git clone https://github.com/evolvingweb/sitediff
 cd sitediff
 docker build -t sitediff-u16 .
-docker run -t --detach --name sitediff sitediff-u16
+docker run -p 13080:13080 -t --detach --name sitediff sitediff-u16
 docker exec -it sitediff /bin/bash
 ```
 
