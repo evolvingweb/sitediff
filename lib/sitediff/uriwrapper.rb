@@ -64,11 +64,11 @@ class SiteDiff
     end
 
     # FIXME: this is not used anymore
-    def +(path)
+    def +(other)
       # 'path' for SiteDiff includes (parts of) path, query, and fragment.
       sep = ''
       sep = '/' if local? || @uri.path.empty?
-      self.class.new(@uri.to_s + sep + path)
+      self.class.new(@uri.to_s + sep + other)
     end
 
     # Reads a file and yields to the completion handler, see .queue()
