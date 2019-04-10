@@ -46,7 +46,7 @@ describe SiteDiff::Cli do
         # There should be a report file
         report = File.join(dir, 'report.html')
         expect(File.file?(report)).to be true
-        doc = Nokogiri.HTML(open(report))
+        doc = Nokogiri.HTML(File.read(report))
         # Link to a diff
         expect(doc.css('a').text).to include 'DIFF'
         # Link to before
