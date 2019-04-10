@@ -119,7 +119,7 @@ class SiteDiff
       sitediff = SiteDiff.new(config, cache, options[:concurrency], @interval,
                               options['verbose'], options[:debug])
       num_failing = sitediff.run(get_curl_opts(options), options[:debug])
-      exit_code = num_failing > 0 ? 2 : 0
+      exit_code = num_failing.positive? ? 2 : 0
 
       sitediff.dump(@dir, options['before-report'],
                     options['after-report'])
