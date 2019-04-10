@@ -12,8 +12,8 @@ class SiteDiff
 
     def html_diffy(before_html, after_html)
       diff = Diffy::Diff.new(before_html, after_html)
-      diff.first ? # Is it non-empty?
-        diff.to_s(:html) : nil
+      # If the diff is non-empty, convert it to string.
+      diff.first ? diff.to_s(:html) : nil
     end
 
     def encoding_blurb(encoding)
