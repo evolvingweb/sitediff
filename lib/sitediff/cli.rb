@@ -42,6 +42,18 @@ class SiteDiff
       true
     end
 
+    ##
+    # Show version information.
+
+    desc 'version', 'Show version information'
+    def version
+      gemspec = SiteDiff.gemspec
+      output = []
+      output.push("Sitediff v#{gemspec.version}")
+      output.push(gemspec.homepage)
+      puts output.join("\n")
+    end
+
     option 'paths-file',
            type: :string,
            desc: 'Paths are read (one at a line) from PATHS: ' \

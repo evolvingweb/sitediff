@@ -6,9 +6,13 @@ require 'sitediff/fetch'
 require 'sitediff/result'
 require 'pathname'
 require 'rainbow'
+require 'rubygems'
 require 'yaml'
 
 class SiteDiff
+  # SiteDiff installation directory.
+  ROOT_DIR = File.dirname(File.dirname(__FILE__))
+
   # path to misc. static files (e.g. erb, css files)
   FILES_DIR = File.join(File.dirname(__FILE__), 'sitediff', 'files')
 
@@ -169,5 +173,13 @@ class SiteDiff
     settings = { 'before' => report_before, 'after' => report_after,
                  'cached' => %w[before after] }
     dir.+(SETTINGS_FILE).open('w') { |f| YAML.dump(settings, f) }
+  end
+
+  ##
+  # Get SiteDiff gemspec.
+
+  def self.gemspec
+    file = ROOT_DIR + '/sitediff.gemspec'
+    return Gem::Specification.load(file)
   end
 end

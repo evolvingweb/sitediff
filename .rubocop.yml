@@ -9,7 +9,9 @@ Style/MutableConstant:
   Exclude:
     - 'lib/sitediff/sanitize/dom_transform.rb'
 
-# Disable rules enforcing unreadable programming styles
+# Disable rules enforcing unreadable programming styles.
+# Example: Use the return of the conditional for variable assignment
+#   and comparison
 Style/ConditionalAssignment:
   Enabled: false
   
@@ -24,3 +26,14 @@ Style/IfUnlessModifier:
 
 Style/RedundantReturn:
   Enabled: false
+
+# Classes can have as many lines as they want.
+# Complex classes can have many methods after all.
+Metrics/ClassLength:
+  Enabled: false
+
+# Methods can have a maximum of 128 lines.
+# Complex methods might need to be broken in to multiple methods.
+Metrics/MethodLength:
+  Max: 128
+  CountComments: false
