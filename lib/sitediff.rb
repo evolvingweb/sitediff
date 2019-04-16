@@ -32,29 +32,40 @@ class SiteDiff
   # TODO: Document what this is about.
   SETTINGS_FILE = 'settings.yaml'
 
-  # label will be colorized and str will not be.
-  # type dictates the color: can be :success, :error, or :failure
-  def self.log(str, type = :info, label = nil)
-    label = label ? "[sitediff] #{label}" : '[sitediff]'
-    bg = fg = nil
-    case type
-    when :info
+  # Logs a message.
+  #
+  # Label will be colorized and message will not.
+  # Type dictates the color: can be :success, :error, or :failure.
+  def self.log(message, type = :info, label = nil)
+    label = label.to_s
+    unless label.empty?
+      # Wrap label in [] brackets.
+      label = '[' + label + ']'
+
+      # Add colors to the label.
       bg = fg = nil
-    when :diff_success
-      bg = :green
-      fg = :black
-    when :diff_failure
-      bg = :red
-    when :warn
-      bg = :yellow
-      fg = :black
-    when :error
-      bg = :red
+      case type
+      when :info
+        bg = fg = nil
+      when :diff_success
+        bg = :green
+        fg = :black
+      when :diff_failure
+        bg = :red
+      when :warn
+        bg = :yellow
+        fg = :black
+      when :error
+        bg = :red
+      end
+      label = Rainbow(label)
+      label = label.bg(bg) if bg
+      label = label.fg(fg) if fg
+
+      # Add a space after the label.
+      label += ' '
     end
-    label = Rainbow(label)
-    label = label.bg(bg) if bg
-    label = label.fg(fg) if fg
-    puts label + ' ' + str
+    puts label + message
   end
 
   def before
