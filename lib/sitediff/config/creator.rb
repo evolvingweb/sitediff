@@ -72,13 +72,13 @@ class SiteDiff
         hydra.run
       end
 
-      # Deduplicate paths with slashes at the end
+      # Canonicalize a path.
+      # TODO: Remove "_tag" if it is not required.
       def canonicalize(_tag, path)
-        def altered_paths(path)
-          yield path + '/'
-          yield path.sub(%r{/$}, '')
-        end
-
+        # Ignore trailing slashes.
+        path = path.chomp('/')
+        # If the path is empty after removing the trailing slash, it implies
+        # that we're on the front page, so we restore the "/".
         path.empty? ? '/' : path
       end
 
