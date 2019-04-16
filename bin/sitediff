@@ -6,4 +6,9 @@ $LOAD_PATH.unshift File.expand_path('../lib', __dir__) if $PROGRAM_NAME == __FIL
 
 require 'sitediff/cli'
 
-SiteDiff::Cli.start
+begin
+  SiteDiff::Cli.start
+rescue Interrupt
+  puts("\n")
+  SiteDiff.log('Stopping. Interrupted by user.')
+end
