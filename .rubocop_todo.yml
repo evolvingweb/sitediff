@@ -12,11 +12,6 @@ Lint/IneffectiveAccessModifier:
     - 'lib/sitediff/config.rb'
 
 # Offense count: 1
-Lint/NestedMethodDefinition:
-  Exclude:
-    - 'lib/sitediff/config/creator.rb'
-
-# Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: Whitelist.
 # Whitelist: present?, blank?, presence, try, try!
