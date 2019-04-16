@@ -56,13 +56,13 @@ class SiteDiff
     def canonicalize_rule(name)
       (rules = @config[name]) || (return nil)
 
-      if rules[0]&.respond_to?(:[]) && rules[0]['value']
-        # Already an array
+      # Already an array? Do nothing.
+      if rules[0]&.respond_to?('each') && rules[0]&.fetch('value')
+      # If it is a hash, put it in an array.
       elsif rules['value']
-        # Hash, put it in an array
         rules = [rules]
+      # If it is a scalar value, put it in an array.
       else
-        # Scalar, put it in a hash
         rules = [{ 'value' => rules }]
       end
 

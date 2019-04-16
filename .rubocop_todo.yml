@@ -11,14 +11,6 @@ Lint/IneffectiveAccessModifier:
   Exclude:
     - 'lib/sitediff/config.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: Whitelist.
-# Whitelist: present?, blank?, presence, try, try!
-Lint/SafeNavigationConsistency:
-  Exclude:
-    - 'lib/sitediff/sanitize.rb'
-
 # Offense count: 2
 # Configuration parameters: ContextCreatingMethods, MethodCreatingMethods.
 Lint/UselessAccessModifier:
