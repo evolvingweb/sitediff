@@ -10,18 +10,26 @@ require 'rubygems'
 require 'yaml'
 
 class SiteDiff
+  attr_reader :config, :results
+
   # SiteDiff installation directory.
   ROOT_DIR = File.dirname(File.dirname(__FILE__))
 
-  # path to misc. static files (e.g. erb, css files)
+  # Path to misc files. Ex: *.erb, *.css.
   FILES_DIR = File.join(File.dirname(__FILE__), 'sitediff', 'files')
 
-  # subdirectory containing all failing diffs
+  # Directory containing diffs of failing pages.
+  # This directory lives inside the "sitediff" config directory.
   DIFFS_DIR = 'diffs'
 
-  # files in output
+  # Name of file containing a list of pages with diffs.
   FAILURES_FILE = 'failures.txt'
+
+  # Name of file containing HTML report of diffs.
   REPORT_FILE = 'report.html'
+
+  # Path to settings.yaml.
+  # TODO: Document what this is about.
   SETTINGS_FILE = 'settings.yaml'
 
   # label will be colorized and str will not be.
@@ -49,7 +57,6 @@ class SiteDiff
     puts label + ' ' + str
   end
 
-  attr_reader :config, :results
   def before
     @config.before['url']
   end
@@ -58,6 +65,7 @@ class SiteDiff
     @config.after['url']
   end
 
+  # Initialize SiteDiff.
   def initialize(config, cache, concurrency, interval, verbose = true, debug = false)
     @cache = cache
     @verbose = verbose
@@ -78,7 +86,7 @@ class SiteDiff
     @config = config
   end
 
-  # Sanitize HTML
+  # Sanitize HTML.
   def sanitize(path, read_results)
     %i[before after].map do |tag|
       html = read_results[tag].content
@@ -92,17 +100,19 @@ class SiteDiff
     end
   end
 
-  # Process a set of read results
+  # Process a set of read results.
   def process_results(path, read_results)
     if (error = (read_results[:before].error || read_results[:after].error))
       diff = Result.new(path, nil, nil, nil, nil, error)
     else
       begin
-        diff = Result.new(path,
-                          *sanitize(path, read_results),
-                          read_results[:before].encoding,
-                          read_results[:after].encoding,
-                          nil)
+        diff = Result.new(
+          path,
+          *sanitize(path, read_results),
+          read_results[:before].encoding,
+          read_results[:after].encoding,
+          nil
+        )
       rescue StandardError => e
         raise if @debug
 
