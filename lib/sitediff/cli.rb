@@ -32,6 +32,11 @@ class SiteDiff
                  type: :numeric,
                  default: 0,
                  desc: 'Crawling delay - interval in milliseconds'
+    class_option 'verbose',
+                 type: :boolean,
+                 aliases: '-v',
+                 default: false,
+                 desc: 'Show verbose output in terminal'
 
     # Thor, by default, exits with 0 no matter what!
     def self.exit_on_failure?
@@ -85,11 +90,6 @@ class SiteDiff
            enum: %w[none all before after],
            default: 'before',
            desc: 'Use the cached version of these sites, if available.'
-    option 'verbose',
-           type: :boolean,
-           aliases: '-v',
-           default: false,
-           desc: 'Show differences between versions for each page in terminal'
     option :concurrency,
            type: :numeric,
            default: 3,
@@ -138,7 +138,10 @@ class SiteDiff
                     options['after-report'])
     rescue Config::InvalidConfig => e
       SiteDiff.log "Invalid configuration: #{e.message}", :error
-      SiteDiff.log "at #{e.backtrace}", :error
+      SiteDiff.log e.backtrace, :error if options[:verbose]
+    rescue Config::ConfigNotFound => e
+      SiteDiff.log "Invalid configuration: #{e.message}", :error
+      SiteDiff.log e.backtrace, :error if options[:verbose]
     else # no exception was raised
       # Thor::Error  --> exit(1), guaranteed by exit_on_failure?
       # Failing diff --> exit(2), populated above
@@ -170,7 +173,7 @@ class SiteDiff
       ).wait
     rescue SiteDiffException => e
       SiteDiff.log e.message, :error
-      SiteDiff.log e.backtrace, :error
+      SiteDiff.log e.backtrace, :error if options[:verbose]
     end
 
     option :depth,
@@ -290,7 +293,7 @@ class SiteDiff
           @return_value = nil
           SiteDiff.log 'whitelist and blacklist parameters must be valid regular expressions', :error
           SiteDiff.log e.message, :error
-          SiteDiff.log e.backtrace, :error
+          SiteDiff.log e.backtrace, :error if options[:verbose]
         end
         return @return_value
       end
