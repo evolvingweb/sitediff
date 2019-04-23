@@ -9,6 +9,7 @@ require 'rainbow'
 require 'rubygems'
 require 'yaml'
 
+# SiteDiff Object.
 class SiteDiff
   # SiteDiff installation directory.
   ROOT_DIR = File.dirname(File.dirname(__FILE__))

@@ -2,6 +2,7 @@
 
 class SiteDiff
   class Sanitizer
+    # Regular Expression Object.
     class Regexp
       def initialize(rule)
         @rule = rule
@@ -23,6 +24,7 @@ class SiteDiff
         rule['selector'] ? WithSelector.new(rule) : new(rule)
       end
 
+      # RegExp with selector.
       class WithSelector < Regexp
         def selector?
           true

@@ -7,6 +7,7 @@ require 'addressable/uri'
 class SiteDiff
   class SiteDiffReadFailure < SiteDiffException; end
 
+  # SiteDiff URI Wrapper.
   class UriWrapper
     DEFAULT_CURL_OPTS = {
       connecttimeout: 3,     # Don't hang on servers that don't exist

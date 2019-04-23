@@ -8,6 +8,7 @@ require 'ostruct'
 require 'set'
 
 class SiteDiff
+  # SiteDiff Crawler.
   class Crawler
     class Info < OpenStruct; end
 

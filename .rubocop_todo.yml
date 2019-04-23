@@ -52,20 +52,6 @@ Style/Documentation:
     - 'spec/**/*'
     - 'test/**/*'
     - 'Thorfile'
-    - 'lib/sitediff.rb'
-    - 'lib/sitediff/cache.rb'
-    - 'lib/sitediff/cli.rb'
-    - 'lib/sitediff/config.rb'
-    - 'lib/sitediff/config/creator.rb'
-    - 'lib/sitediff/crawler.rb'
-    - 'lib/sitediff/diff.rb'
-    - 'lib/sitediff/fetch.rb'
-    - 'lib/sitediff/result.rb'
-    - 'lib/sitediff/sanitize.rb'
-    - 'lib/sitediff/sanitize/regexp.rb'
-    - 'lib/sitediff/uriwrapper.rb'
-    - 'lib/sitediff/webserver.rb'
-    - 'lib/sitediff/webserver/resultserver.rb'
 
 # Offense count: 3
 # Configuration parameters: MinBodyLength.

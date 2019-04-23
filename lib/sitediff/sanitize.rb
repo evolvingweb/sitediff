@@ -8,6 +8,7 @@ require 'nokogiri'
 require 'set'
 
 class SiteDiff
+  # SiteDiff Sanitizer.
   class Sanitizer
     class InvalidSanitization < SiteDiffException; end
 

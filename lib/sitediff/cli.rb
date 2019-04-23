@@ -9,6 +9,7 @@ require 'sitediff/fetch'
 require 'sitediff/webserver/resultserver'
 
 class SiteDiff
+  # SiteDiff CLI.
   class Cli < Thor
     class_option 'directory',
                  type: :string,

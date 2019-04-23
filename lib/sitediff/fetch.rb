@@ -4,6 +4,7 @@ require 'sitediff/uriwrapper'
 require 'typhoeus'
 
 class SiteDiff
+  # SiteDiff Data Fetcher.
   class Fetch
     # Cache is a cache object, see sitediff/cache
     # Paths is a list of sub-paths

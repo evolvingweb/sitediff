@@ -3,8 +3,9 @@
 require 'webrick'
 
 class SiteDiff
+  # SiteDiff Web Server.
   class Webserver
-    # Simple webserver for testing purposes
+    # Simple web server for testing purposes.
     DEFAULT_PORT = 13_080
 
     attr_accessor :ports
@@ -63,6 +64,7 @@ class SiteDiff
 
     public
 
+    # SiteDiff Fixture Server.
     class FixtureServer < Webserver
       PORT = DEFAULT_PORT + 1
       BASE = 'spec/fixtures/ruby-doc.org'
