@@ -135,6 +135,8 @@ class SiteDiff
 
       sitediff.dump(@dir, options['before-report'],
                     options['after-report'])
+
+      SiteDiff.log 'Run "sitediff serve" to see a report.'
     rescue Config::InvalidConfig => e
       SiteDiff.log "Invalid configuration: #{e.message}", :error
       SiteDiff.log "at #{e.backtrace}", :error
