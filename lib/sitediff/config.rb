@@ -6,6 +6,7 @@ require 'pathname'
 require 'yaml'
 
 class SiteDiff
+  # SiteDiff Configuration.
   class Config
     DEFAULT_FILENAME = 'sitediff.yaml'
 

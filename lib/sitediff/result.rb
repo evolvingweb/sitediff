@@ -6,6 +6,7 @@ require 'digest/sha1'
 require 'fileutils'
 
 class SiteDiff
+  # SiteDiff Result Object.
   class Result < Struct.new(:path, :before, :after, :before_encoding, :after_encoding, :error, :verbose)
     STATUS_SUCCESS  = 0   # Identical before and after
     STATUS_FAILURE  = 1   # Different before and after

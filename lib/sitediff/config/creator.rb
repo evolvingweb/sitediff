@@ -10,6 +10,7 @@ require 'yaml'
 
 class SiteDiff
   class Config
+    # SiteDiff Config Creator Object.
     class Creator
       def initialize(concurrency, interval, whitelist, blacklist, curl_opts, debug, *urls)
         @concurrency = concurrency

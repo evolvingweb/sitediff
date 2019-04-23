@@ -6,6 +6,7 @@ require 'erb'
 
 class SiteDiff
   class Webserver
+    # SiteDiff Result Server.
     class ResultServer < Webserver
       # Display a page from the cache
       class CacheServlet < WEBrick::HTTPServlet::AbstractServlet

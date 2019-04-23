@@ -7,6 +7,7 @@ require 'rainbow'
 require 'digest'
 
 class SiteDiff
+  # SiteDiff Diff Object.
   module Diff
     module_function
 

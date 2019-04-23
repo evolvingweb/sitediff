@@ -4,6 +4,7 @@ require 'set'
 require 'fileutils'
 
 class SiteDiff
+  # SiteDiff Cache Handler.
   class Cache
     attr_accessor :read_tags, :write_tags
 

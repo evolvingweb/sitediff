@@ -9,6 +9,7 @@ require 'rainbow'
 require 'rubygems'
 require 'yaml'
 
+# SiteDiff Object.
 class SiteDiff
   attr_reader :config, :results
 
