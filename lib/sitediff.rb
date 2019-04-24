@@ -166,20 +166,22 @@ class SiteDiff
     results.map { |r| r unless r.success? }.compact.length
   end
 
-  # Dump results to disk
+  # Write results to disk.
   def dump(dir, report_before, report_after)
     report_before ||= before
     report_after ||= after
+
+    # Prepare diff directory and wipe out existing diffs.
     dir = Pathname.new(dir)
     dir.mkpath unless dir.directory?
-
-    # store diffs of each failing case, first wipe out existing diffs
     diff_dir = dir + DIFFS_DIR
     diff_dir.rmtree if diff_dir.exist?
+
+    # Write diffs to the diff directory.
     results.each { |r| r.dump(dir) if r.status == Result::STATUS_FAILURE }
     SiteDiff.log "All diff files dumped inside #{dir.expand_path}."
 
-    # store failing paths
+    # Store failing paths to failures file.
     failures = dir + FAILURES_FILE
     SiteDiff.log "All failures written to #{failures.expand_path}."
     failures.open('w') do |f|

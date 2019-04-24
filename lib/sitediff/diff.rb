@@ -46,17 +46,20 @@ class SiteDiff
                  .to_s(*args)
     end
 
+    # Generates an HTML report.
     def generate_html_report(results, before, after, cache)
       erb_path = File.join(SiteDiff::FILES_DIR, 'html_report.html.erb')
       report_html = ERB.new(File.read(erb_path)).result(binding)
       report_html
     end
 
+    # Generates diff output for a single result.
     def generate_diff_output(result)
       erb_path = File.join(SiteDiff::FILES_DIR, 'diff.html.erb')
       ERB.new(File.read(erb_path)).result(binding)
     end
 
+    # Returns CSS for the sitediff report.
     def css
       File.read(File.join(SiteDiff::FILES_DIR, 'sitediff.css'))
     end
