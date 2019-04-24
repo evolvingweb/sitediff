@@ -1,66 +1,99 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- important: otherwise chrome will choke on non-ascii characters -->
+    <%# Important: without charset, chrome chokes on non-ascii characters %>
     <meta charset="utf-8" />
     <style>
       <%= SiteDiff::Diff.css %>
     </style>
-    <title> SiteDiff Report </title>
+    <script>
+      <%= SiteDiff::Diff.js %>
+    </script>
+    <title> SiteDiff Report</title>
   </head>
   <body>
-    <div class="sitediff">
-      <div class="legend">
-        <%
-           tags = %w[before after]
-           tags.each do |tag| %>
-             <% if tags.first != tag %> | <% end %>
-             <% notes = ['base url']
-                notes << 'cached' if cache.read_tags.include?(tag.to_sym) %>
-             <strong><%= tag %></strong> (<%= notes.join(', ') %>):
-               <a href="<%= eval(tag) %>"><%= eval(tag) %></a>
+    <div id="layout">
+      <div class="site-info">
+        <% tags = %w[before after] %>
+        <% tags.each do |tag| %>
+          <div class="site site-<%= tag %>">
+            <% notes = ['base url']
+              notes << 'cached' if cache.read_tags.include?(tag.to_sym) %>
+            <h3 class="site__tag"><%= tag %></h3>
+            <a href="<%= eval(tag) %>" class="site__url"><%= eval(tag) %></a>
+            <% if cache.read_tags.include?(tag.to_sym) %>
+              (<%= 'cached' if cache.read_tags.include?(tag.to_sym) %>)
+            <% end %>
+          </div>
         <% end %>
       </div>
-      <div class="run">
-        <a href="../run/diff">Rerun diff</a>
+
+      <div class="sitediff-toolbar">
+        <form class="filter-form">
+
+          <div class="form-item form-search">
+            <label>Search</label>
+            <input type="search" id="input-search" placeholder="Search" />
+          </div>
+
+          <div class="form-item form-checkboxes">
+            <div class="form-checkbox">
+              <label for="input-status-changed">Changed pages</label>
+              <input type="checkbox" id="input-status-changed" value="1" />
+            </div>
+            <div class="form-checkbox">
+              <label for="input-status-unchanged">Unchanged pages</label>
+              <input type="checkbox" id="input-status-unchanged" value="1" />
+            </div>
+            <div class="form-checkbox">
+              <label for="input-status-others">Others</label>
+              <input type="checkbox" id="input-status-others" value="1" />
+            </div>
+          </div>
+
+        </form>
+
+        <a href="../run/diff" class="button button-diff">Recalculate diffs</a>
       </div>
-      <table class="results">
+
+      <table class="sitediff-report" cellspacing="0" cellpadding="0">
 
         <colgroup>
-          <col class="before-col">
-          <col class="after-col">
-          <col class="both-col">
           <col class="path-col">
           <col class="diff-stat-col">
         </colgroup>
 
         <thead>
           <tr>
-            <th> Before </th>
-            <th> After </th>
-            <th> Both </th>
-            <th> Path </th>
-            <th> Status </th>
+            <th>Path</th>
+            <th>Status</th>
           </tr>
         </thead>
 
-        <% results.each do |result| %>
-        <tr class="<%= result.status_text %>">
-          <td class="before">
-            <a href="<%= result.url(:before, before, cache) %>">[before]</a>
-          </td>
-          <td class="after">
-            <a href="<%= result.url(:after, after, cache) %>">[after]</a>
-          </td>
-          <td class="both">
-            <a href="/sidebyside<%= result.path %>">[both]</a>
-          </td>
-          <td class="path"><%= result.path %></td>
-          <td class="status"><%= result.link %></td>
-        </tr>
-        <% end %>
+        <tbody>
+          <% results.each do |result| %>
+          <tr class="<%= result.status_text %>">
+            <td class="description">
+              <span class="path"><%= result.path %></span>
+              <%= result.link %>
+              <a href="<%= result.url(:before, before, cache) %>" class="button button-before">Before</a>
+              <a href="<%= result.url(:after, after, cache) %>" class="button button-after">After</a>
+              <a href="/sidebyside<%= result.path %>" class="button button-both">Both</a>
+            </td>
+            <td class="status">
+              <%= result.status_text.capitalize %>
+            </td>
+          </tr>
+          <% end %>
+        </tbody>
 
       </table>
+
+      <footer id="footer">
+        <div class="credit">
+          Brought to you by <a href="https://evolvingweb.ca/" target="_blank">Evolving Web</a>.
+        </div>
+      </footer>
     </div>
   </body>
 </html>

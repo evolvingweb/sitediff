@@ -61,7 +61,15 @@ class SiteDiff
 
     # Returns CSS for the sitediff report.
     def css
-      File.read(File.join(SiteDiff::FILES_DIR, 'sitediff.css'))
+      output = ''
+      output += File.read(File.join(SiteDiff::FILES_DIR, 'normalize.css'))
+      output += File.read(File.join(SiteDiff::FILES_DIR, 'sitediff.css'))
+      output
+    end
+
+    # Returns JS for the sitediff report.
+    def js
+      File.read(File.join(SiteDiff::FILES_DIR, 'sitediff.js'))
     end
   end
 end
