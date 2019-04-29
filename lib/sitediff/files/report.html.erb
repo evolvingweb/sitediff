@@ -75,9 +75,9 @@
           <tr class="sitediff-result sitediff-result--<%= result.status_text %>" data-status="<%= result.status_text %>">
             <td class="description">
               <span class="path"><%= result.path %></span>
-              <%= result.link %>
-              <a href="<%= result.url(:before, before, cache) %>" class="button button-before">Before</a>
-              <a href="<%= result.url(:after, after, cache) %>" class="button button-after">After</a>
+              <a href="<%= result.diff_url %>" class="button button-diff" target="_blank">Diff</a>
+              <a href="<%= result.url(:before, before, cache) %>" class="button button-before" target="_blank">Before</a>
+              <a href="<%= result.url(:after, after, cache) %>" class="button button-after" target="_blank">After</a>
               <a href="/sidebyside<%= result.path %>" class="button button-both">Both</a>
             </td>
             <td class="status">

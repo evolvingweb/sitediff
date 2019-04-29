@@ -50,10 +50,6 @@ body {
   text-decoration: none;
 }
 
-.button-diff {
-  float: right;
-}
-
 /**
  * Forms.
  */
@@ -104,6 +100,10 @@ label[for] {
 
 .sitediff-toolbar .filter-form {
   float: left;
+}
+
+.sitediff-toolbar .button-diff {
+  float: right;
 }
 
 /* Table */

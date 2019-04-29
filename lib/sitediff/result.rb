@@ -49,15 +49,11 @@ class SiteDiff
       File.join(SiteDiff::DIFFS_DIR, Digest::SHA1.hexdigest(path) + '.html')
     end
 
-    # Text of the link in the HTML report.
-    # TODO: Return URL only and let the template render the link.
-    # TODO: Return NULL when there is no link.
-    def link
-      case status
-      when STATUS_ERROR then error
-      when STATUS_SUCCESS then status_text
-      when STATUS_FAILURE then "<a href='#{filename}'>DIFF</a>"
-      end
+    # Returns a URL to the result diff.
+    #
+    # Returns nil if the result has no diffs.
+    def diff_url
+      return '/files/' + filename if status == STATUS_FAILURE
     end
 
     # Log the result to the terminal
