@@ -69,7 +69,10 @@ class SiteDiff
 
     # Returns JS for the sitediff report.
     def js
-      File.read(File.join(SiteDiff::FILES_DIR, 'sitediff.js'))
+      output = ''
+      output += File.read(File.join(SiteDiff::FILES_DIR, 'jquery.min.js'))
+      output += File.read(File.join(SiteDiff::FILES_DIR, 'sitediff.js'))
+      output
     end
   end
 end

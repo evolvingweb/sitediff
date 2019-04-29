@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  outline: none;
 }
 
 body {
@@ -28,7 +29,6 @@ body {
 
 .site-info .site {
   background-color: #eeeeee;
-  border-radius: 3px;
   flex-basis: 49%;
   flex-grow: 0;
   flex-shrink: 0;
@@ -43,7 +43,6 @@ body {
 /* Buttons */
 .button {
   background-color: #000;
-  border-radius: .25em;
   color: #fff;
   display: inline-block;
   font-size: .9em;
@@ -55,11 +54,43 @@ body {
   float: right;
 }
 
+/**
+ * Forms.
+ */
+label[for] {
+  cursor: pointer;
+}
+
+/* Checkboxes */
+.form-checkboxes .form-checkbox {
+  display: inline-block;
+  margin-right: .5em;
+}
+
+.form-checkbox input {
+  height: 1em;
+  width: 1em;
+}
+
+/* Search */
+.form-search label {
+  display: none;
+}
+
+.form-search input {
+  font-size: .9em;
+  padding-left: .5em;
+  padding-right: .5em;
+  width: 200px;
+}
+
 /* SiteDiff Toolbar */
 .sitediff-toolbar {
   margin-top: 1em;
   margin-bottom: 1em;
   overflow: hidden;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .sitediff-toolbar .form-item {
@@ -75,69 +106,48 @@ body {
   float: left;
 }
 
-/**
- * Forms.
- */
-label[for] {
-  cursor: pointer;
+/* Table */
+table {
+  width: 100%;
 }
 
-/* Checkboxes */
-.form-checkboxes .form-checkbox {
-  display: inline-block;
-}
-
-/* Search */
-.form-search label {
-  display: none;
-}
-
-.form-search input {
-  width: 200px;
-}
-
-.sitediff-report thead {
+table thead {
   background: black;
   color: white;
 }
 
-.sitediff-report td,
-.sitediff-report th {
-  text-align: center;
-  padding-top: .25em;
-  padding-bottom: .25em;
+td,
+th {
+  text-align: left;
+  padding: .25em .5em;
 }
 
-.sitediff-report tr:nth-child(even) {
+th {
+  padding-top: .5em;
+  padding-bottom: .5em;
+}
+
+table tr:nth-child(even) {
   background-color: #eeeeee;
 }
 
-.sitediff-report tr:hover {
+table tbody tr:hover {
   background-color: lightblue;
 }
 
-.sitediff-report td.description {
-  text-align: left;
-  padding-left: 1em;
-}
-
-.sitediff-report td.description .button {
+table td.description .button {
   visibility: hidden;
 }
 
-.sitediff-report .path {
+table .path {
   margin-right: 1em;
 }
 
-.sitediff-report td.description:hover .button {
+table td.description:hover .button {
   visibility: visible;
 }
 
-.sitediff-report {
-  width: 100%;
-}
-
-.sitediff-report .diff-stat-col {
+table .diff-stat-col {
   width: 10%;
 }
 

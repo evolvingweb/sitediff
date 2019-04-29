@@ -19,7 +19,7 @@
           <div class="site site-<%= tag %>">
             <% notes = ['base url']
               notes << 'cached' if cache.read_tags.include?(tag.to_sym) %>
-            <h3 class="site__tag"><%= tag %></h3>
+            <h3 class="site__tag"><%= tag.capitalize %></h3>
             <a href="<%= eval(tag) %>" class="site__url"><%= eval(tag) %></a>
             <% if cache.read_tags.include?(tag.to_sym) %>
               (<%= 'cached' if cache.read_tags.include?(tag.to_sym) %>)
@@ -31,23 +31,23 @@
       <div class="sitediff-toolbar">
         <form class="filter-form">
 
-          <div class="form-item form-search">
+          <div class="form-item form-search form-item--search">
             <label>Search</label>
-            <input type="search" id="input-search" placeholder="Search" />
+            <input type="search" id="input-search" autofocus placeholder="Search" />
           </div>
 
-          <div class="form-item form-checkboxes">
+          <div class="form-item form-checkboxes form-item--status">
             <div class="form-checkbox">
-              <label for="input-status-changed">Changed pages</label>
-              <input type="checkbox" id="input-status-changed" value="1" />
+              <input type="checkbox" id="input-status-failure" value="failure" />
+              <label for="input-status-failure">Failures</label>
             </div>
             <div class="form-checkbox">
-              <label for="input-status-unchanged">Unchanged pages</label>
-              <input type="checkbox" id="input-status-unchanged" value="1" />
+              <input type="checkbox" id="input-status-success" value="success" />
+              <label for="input-status-success">Successes</label>
             </div>
             <div class="form-checkbox">
-              <label for="input-status-others">Others</label>
-              <input type="checkbox" id="input-status-others" value="1" />
+              <input type="checkbox" id="input-status-error" value="error" />
+              <label for="input-status-error">Errors</label>
             </div>
           </div>
 
@@ -56,7 +56,7 @@
         <a href="../run/diff" class="button button-diff">Recalculate diffs</a>
       </div>
 
-      <table class="sitediff-report" cellspacing="0" cellpadding="0">
+      <table id="sitediff-report" cellspacing="0" cellpadding="0">
 
         <colgroup>
           <col class="path-col">
@@ -72,7 +72,7 @@
 
         <tbody>
           <% results.each do |result| %>
-          <tr class="<%= result.status_text %>">
+          <tr class="sitediff-result sitediff-result--<%= result.status_text %>" data-status="<%= result.status_text %>">
             <td class="description">
               <span class="path"><%= result.path %></span>
               <%= result.link %>
@@ -91,7 +91,7 @@
 
       <footer id="footer">
         <div class="credit">
-          Brought to you by <a href="https://evolvingweb.ca/" target="_blank">Evolving Web</a>.
+          Brought to you by <a href="https://evolvingweb.ca/?utm_source=sitediff&utm_medium=report&utm_content=footer-link" target="_blank">Evolving Web</a>.
         </div>
       </footer>
     </div>
