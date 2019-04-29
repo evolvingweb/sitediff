@@ -11,83 +11,93 @@
     </script>
     <title> SiteDiff Report</title>
   </head>
-  <body>
+  <body class="page-overview" data-page="overview">
     <div id="layout">
-      <div class="site-info">
-        <% tags = %w[before after] %>
-        <% tags.each do |tag| %>
-          <div class="site site-<%= tag %>">
-            <% notes = ['base url']
-              notes << 'cached' if cache.read_tags.include?(tag.to_sym) %>
-            <h3 class="site__tag"><%= tag.capitalize %></h3>
-            <a href="<%= eval(tag) %>" class="site__url"><%= eval(tag) %></a>
-            <% if cache.read_tags.include?(tag.to_sym) %>
-              (<%= 'cached' if cache.read_tags.include?(tag.to_sym) %>)
-            <% end %>
-          </div>
-        <% end %>
+      <div class="container">
+        <div class="site-info">
+          <% tags = %w[before after] %>
+          <% tags.each do |tag| %>
+            <div class="site site-<%= tag %>">
+              <% notes = ['base url']
+                notes << 'cached' if cache.read_tags.include?(tag.to_sym) %>
+              <h3 class="site__tag"><%= tag.capitalize %></h3>
+              <a href="<%= eval(tag) %>" class="site__url"><%= eval(tag) %></a>
+              <% if cache.read_tags.include?(tag.to_sym) %>
+                (<%= 'cached' if cache.read_tags.include?(tag.to_sym) %>)
+              <% end %>
+            </div>
+          <% end %>
+        </div>
       </div>
 
       <div class="sitediff-toolbar">
-        <form class="filter-form">
+        <div class="container">
+          <div class="toolbar__left">
+            <form class="filter-form">
 
-          <div class="form-item form-search form-item--search">
-            <label>Search</label>
-            <input type="search" id="input-search" autofocus placeholder="Search" />
+              <div class="form-item form-search form-item--search">
+                <label>Search</label>
+                <input type="search" id="input-search" autofocus placeholder="Search" />
+              </div>
+
+              <div class="form-item form-checkboxes form-item--status">
+                <div class="form-checkbox">
+                  <input type="checkbox" id="input-status-failure" value="failure" />
+                  <label for="input-status-failure">Failures</label>
+                </div>
+                <div class="form-checkbox">
+                  <input type="checkbox" id="input-status-success" value="success" />
+                  <label for="input-status-success">Successes</label>
+                </div>
+                <div class="form-checkbox">
+                  <input type="checkbox" id="input-status-error" value="error" />
+                  <label for="input-status-error">Errors</label>
+                </div>
+              </div>
+
+            </form>
           </div>
 
-          <div class="form-item form-checkboxes form-item--status">
-            <div class="form-checkbox">
-              <input type="checkbox" id="input-status-failure" value="failure" />
-              <label for="input-status-failure">Failures</label>
-            </div>
-            <div class="form-checkbox">
-              <input type="checkbox" id="input-status-success" value="success" />
-              <label for="input-status-success">Successes</label>
-            </div>
-            <div class="form-checkbox">
-              <input type="checkbox" id="input-status-error" value="error" />
-              <label for="input-status-error">Errors</label>
-            </div>
+          <div class="toolbar__right">
+            <a href="../run/diff" class="button button-diff">Recalculate diffs</a>
           </div>
-
-        </form>
-
-        <a href="../run/diff" class="button button-diff">Recalculate diffs</a>
+        </div>
       </div>
 
-      <table id="sitediff-report" cellspacing="0" cellpadding="0">
+      <div class="container">
+        <table id="sitediff-report" cellspacing="0" cellpadding="0">
 
-        <colgroup>
-          <col class="path-col">
-          <col class="diff-stat-col">
-        </colgroup>
+          <colgroup>
+            <col class="path-col">
+            <col class="diff-stat-col">
+          </colgroup>
 
-        <thead>
-          <tr>
-            <th>Path</th>
-            <th>Status</th>
-          </tr>
-        </thead>
+          <thead>
+            <tr>
+              <th>Path</th>
+              <th>Status</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          <% results.each do |result| %>
-          <tr class="sitediff-result sitediff-result--<%= result.status_text %>" data-status="<%= result.status_text %>">
-            <td class="description">
-              <span class="path"><%= result.path %></span>
-              <a href="<%= result.diff_url %>" class="button button-diff" target="_blank">Diff</a>
-              <a href="<%= result.url(:before, before, cache) %>" class="button button-before" target="_blank">Before</a>
-              <a href="<%= result.url(:after, after, cache) %>" class="button button-after" target="_blank">After</a>
-              <a href="/sidebyside<%= result.path %>" class="button button-both">Both</a>
-            </td>
-            <td class="status">
-              <%= result.status_text.capitalize %>
-            </td>
-          </tr>
-          <% end %>
-        </tbody>
+          <tbody>
+            <% results.each do |result| %>
+            <tr class="sitediff-result sitediff-result--<%= result.status_text %>" data-status="<%= result.status_text %>">
+              <td class="description">
+                <span class="path"><%= result.path %></span>
+                <a href="<%= result.diff_url %>" class="button button-diff">Diff</a>
+                <a href="<%= result.url(:before, before, cache) %>" class="button button-before" target="_blank">Before</a>
+                <a href="<%= result.url(:after, after, cache) %>" class="button button-after" target="_blank">After</a>
+                <a href="/sidebyside<%= result.path %>" class="button button-both">Both</a>
+              </td>
+              <td class="status">
+                <%= result.status_text.capitalize %>
+              </td>
+            </tr>
+            <% end %>
+          </tbody>
 
-      </table>
+        </table>
+      </div>
 
       <footer id="footer">
         <div class="credit">
