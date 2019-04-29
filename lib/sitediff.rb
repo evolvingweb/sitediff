@@ -78,14 +78,7 @@ class SiteDiff
   end
 
   # Initialize SiteDiff.
-  def initialize(
-    config,
-    cache,
-    concurrency,
-    interval,
-    verbose = true,
-    debug = false
-  )
+  def initialize(config, cache, concurrency, interval, verbose = true, debug = false)
     @cache = cache
     @verbose = verbose
     @debug = debug
