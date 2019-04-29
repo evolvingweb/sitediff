@@ -75,7 +75,7 @@ class SiteDiff
       when STATUS_SUCCESS then
         SiteDiff.log path, :diff_success, 'UNCHANGED'
       when STATUS_ERROR then
-        SiteDiff.log path, :warn, "ERROR (#{error})"
+        SiteDiff.log path + " (#{error})", :warn, 'ERROR'
       when STATUS_FAILURE then
         SiteDiff.log path, :diff_failure, 'CHANGED'
         puts Diff.terminal_diffy(before, after) if verbose

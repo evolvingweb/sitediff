@@ -35,6 +35,9 @@ describe SiteDiff::Cli do
         # Should report that File.html matches
         expect(out).to include '[UNCHANGED] /IO.html'
 
+        # Should report that TracePoint.html matches
+        expect(out).to include '[ERROR] /TracePoint.html'
+
         # Should report a diff of a different line
         expect(out).to match(/^+.*<a href="#method-i-to_h"/)
 
