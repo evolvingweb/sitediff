@@ -65,7 +65,7 @@ class SiteDiff
           path = req.path_info
           if path != '/diff'
             res['content-type'] = 'text/plain'
-            res.body = 'ERROR: Only /run/diff is supported by the /run API at the moment'
+            res.body = 'ERROR: Only /run/diff is supported at the moment.'
             return
           end
           # Thor assumes only one command is called and some values like

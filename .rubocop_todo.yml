@@ -66,7 +66,18 @@ Style/StructInheritance:
     - 'lib/sitediff/result.rb'
 
 # Offense count: 36
-# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
+# Configuration parameters: AllowHeredoc, AllowURI, URISchemes,
+# IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
 Metrics/LineLength:
-  Max: 178
+  AllowURI: true
+  IgnoredPatterns:
+    - '^\s*SiteDiff\.log'
+  Exclude:
+    - 'Thorfile'
+    - 'spec/unit/sanitize_spec.rb'
+    - 'lib/sitediff/cache.rb'
+    - 'lib/sitediff/cli.rb'
+    - 'lib/sitediff/uriwrapper.rb'
+    - 'lib/sitediff/config/creator.rb'
+    - 'lib/sitediff/sanitize.rb'

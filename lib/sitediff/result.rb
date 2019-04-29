@@ -7,7 +7,15 @@ require 'fileutils'
 
 class SiteDiff
   # SiteDiff Result Object.
-  class Result < Struct.new(:path, :before, :after, :before_encoding, :after_encoding, :error, :verbose)
+  class Result < Struct.new(
+    :path,
+    :before,
+    :after,
+    :before_encoding,
+    :after_encoding,
+    :error,
+    :verbose
+  )
     STATUS_SUCCESS  = 0   # Identical before and after
     STATUS_FAILURE  = 1   # Different before and after
     STATUS_ERROR    = 2   # Couldn't fetch page
@@ -21,7 +29,12 @@ class SiteDiff
         @status = STATUS_ERROR
       else
         if !before_encoding || !after_encoding
-          @diff = Diff.binary_diffy(before, after, before_encoding, after_encoding)
+          @diff = Diff.binary_diffy(
+            before,
+            after,
+            before_encoding,
+            after_encoding
+          )
         else
           @diff = Diff.html_diffy(before, after)
         end

@@ -78,7 +78,14 @@ class SiteDiff
   end
 
   # Initialize SiteDiff.
-  def initialize(config, cache, concurrency, interval, verbose = true, debug = false)
+  def initialize(
+    config,
+    cache,
+    concurrency,
+    interval,
+    verbose = true,
+    debug = false
+  )
     @cache = cache
     @verbose = verbose
     @debug = debug
@@ -157,8 +164,15 @@ class SiteDiff
     # so passing this instead but @config.after['curl_opts'] is ignored.
     config_curl_opts = @config.before['curl_opts']
     curl_opts = config_curl_opts.clone.merge(curl_opts) if config_curl_opts
-    fetcher = Fetch.new(@cache, @config.paths, @interval, @concurrency, curl_opts, debug,
-                        before: before, after: after)
+    fetcher = Fetch.new(
+      @cache,
+      @config.paths,
+      @interval,
+      @concurrency,
+      curl_opts,
+      debug,
+      before: before, after: after
+    )
     fetcher.run(&method(:process_results))
 
     # Order by original path order

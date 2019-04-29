@@ -61,8 +61,8 @@ describe SiteDiff::Cli do
           'diffs',
           Digest::SHA1.hexdigest('/Hash.html') + '.html'
         )
-
         warn(diff)
+
         expect(File.file?(diff)).to be true
         expect(File.read(diff)).to include '#method-i-to_h'
       end
