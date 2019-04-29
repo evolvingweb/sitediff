@@ -30,10 +30,10 @@ describe SiteDiff::Cli do
         expect(status.exitstatus).to be 2
 
         # Should report that Hash.html doesn't match
-        expect(out).to include '[sitediff] CHANGED /Hash.html'
+        expect(out).to include '[CHANGED] /Hash.html'
 
         # Should report that File.html matches
-        expect(out).to include '[sitediff] UNCHANGED /IO.html'
+        expect(out).to include '[UNCHANGED] /IO.html'
 
         # Should report a diff of a different line
         expect(out).to match(/^+.*<a href="#method-i-to_h"/)
@@ -47,14 +47,21 @@ describe SiteDiff::Cli do
         report = File.join(dir, 'report.html')
         expect(File.file?(report)).to be true
         doc = Nokogiri.HTML(File.read(report))
-        # Link to a diff
-        expect(doc.css('a').text).to include 'DIFF'
-        # Link to before
+
+        # There should be a link to a diff.
+        expect(doc.css('a').text).to include 'Diff'
+
+        # There should be a link to the before version.
         before_link = File.join(srv.before, 'Hash.html')
         expect(doc.css('a').any? { |a| a['href'] == before_link }).to be true
 
-        # There should be a diff file
-        diff = File.join(dir, 'diffs', Digest::SHA1.hexdigest('/Hash.html') + '.html')
+        # There should be a proper diff file.
+        diff = File.join(
+          dir,
+          'diffs',
+          Digest::SHA1.hexdigest('/Hash.html') + '.html'
+        )
+
         warn(diff)
         expect(File.file?(diff)).to be true
         expect(File.read(diff)).to include '#method-i-to_h'
