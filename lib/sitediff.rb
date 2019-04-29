@@ -186,7 +186,7 @@ class SiteDiff
 
     # Write diffs to the diff directory.
     results.each { |r| r.dump(dir) if r.status == Result::STATUS_FAILURE }
-    SiteDiff.log "All diff files dumped inside #{dir.expand_path}."
+    SiteDiff.log "All diff files dumped inside #{diff_dir.expand_path}."
 
     # Store failing paths to failures file.
     failures = dir + FAILURES_FILE
