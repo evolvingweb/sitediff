@@ -1,13 +1,16 @@
+# Directories.
 .bundle/
 vendor/
 Gemfile.lock
-sitediff
 
-output
+# Files.
+.DS_Store
 *.gem
-
 *.swp
 *.swo
+
+# SiteDiff directory in the root.
+/sitediff
 
 # Editors
 .idea
