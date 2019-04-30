@@ -132,7 +132,7 @@ th {
 }
 
 table tr:nth-child(even) {
-  background-color: #eeeeee;
+  background-color: #f6f6f6;
 }
 
 table tbody tr:hover {
@@ -151,8 +151,34 @@ table td.description:hover .button {
   visibility: visible;
 }
 
-table .diff-stat-col {
-  width: 10%;
+table .icon-col {
+  width: 25px;
+}
+
+table .status-col {
+  width: 100px;
+}
+
+/* Icons */
+.icon {
+  display: inline-block;
+  height: 1em;
+  width: 1em;
+}
+
+.icon-result-changed {
+  background-color: lightcoral;
+  border-radius: 50%;
+}
+
+.icon-result-unchanged {
+  background-color: lightgreen;
+  border-radius: 50%;
+}
+
+.icon-result-error {
+  background: khaki;
+  border-radius: 50%;
 }
 
 /* Side-by-side view */

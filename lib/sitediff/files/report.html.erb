@@ -69,12 +69,14 @@
 
           <colgroup>
             <col class="path-col">
-            <col class="diff-stat-col">
+            <col class="icon-col">
+            <col class="status-col">
           </colgroup>
 
           <thead>
             <tr>
               <th>Path</th>
+              <th>&nbsp;</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -90,6 +92,9 @@
                 <a href="<%= result.url(:before, before, cache) %>" class="button button-before" target="_blank">Before</a>
                 <a href="<%= result.url(:after, after, cache) %>" class="button button-after" target="_blank">After</a>
                 <a href="/sidebyside<%= result.path %>" class="button button-both">Both</a>
+              </td>
+              <td class="icon">
+                <span class="icon icon-result-<%= result.status_text %>"></span>
               </td>
               <td class="status">
                 <%= result.status_text.capitalize %>
