@@ -19,7 +19,7 @@ class SiteDiff
     STATUS_SUCCESS  = 0   # Identical before and after
     STATUS_FAILURE  = 1   # Different before and after
     STATUS_ERROR    = 2   # Couldn't fetch page
-    STATUS_TEXT = %w[success failure error].freeze
+    STATUS_TEXT = %w[unchanged changed error].freeze
 
     attr_reader :status, :diff
 
