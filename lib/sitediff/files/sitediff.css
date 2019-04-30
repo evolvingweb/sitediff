@@ -3,6 +3,11 @@
   outline: none;
 }
 
+a {
+  color: #6E73B7;
+  text-decoration: none;
+}
+
 body {
   font-family: sans-serif;
   font-size: 16px;
@@ -31,7 +36,7 @@ body {
 }
 
 .site-info .site {
-  background-color: #eeeeee;
+  background-color: #F9F9FB;
   flex-basis: 49%;
   flex-grow: 0;
   flex-shrink: 0;
@@ -75,8 +80,7 @@ body {
 
   /* Buttons */
 .button {
-  background-color: #000;
-  color: #fff;
+  background-color: #EAECF3;
   cursor: pointer;
   display: inline-block;
   font-size: .9em;
@@ -146,39 +150,49 @@ table {
 }
 
 table thead {
-  background: black;
-  color: white;
+  background: #F9F9FB;
+  color: #999999;
 }
 
 td,
 th {
   text-align: left;
-  padding: .25em .5em;
+  padding: .4em .5em;
 }
 
 th {
+  border-bottom: 2px solid #EAECF3;
   padding-top: .5em;
   padding-bottom: .5em;
 }
 
-table tr:nth-child(even) {
-  background-color: #f6f6f6;
+table tbody td {
+  border-bottom: 2px solid #F9F9FB;
 }
 
 table tbody tr:hover {
-  background-color: lightblue;
-}
-
-table td.description .button {
-  visibility: hidden;
+  background-color: #F9F9FB;
 }
 
 table .path {
   margin-right: 1em;
 }
 
-table td.description:hover .button {
-  visibility: visible;
+table td.description .buttons {
+  float: right;
+}
+
+table td.description a {
+  display: none;
+  margin-left: .4em;
+}
+
+table td.description:hover a {
+  display: inline-block;
+}
+
+table td.description .button-diff {
+  display: block;
 }
 
 table .icon-col {
