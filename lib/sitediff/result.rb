@@ -46,6 +46,10 @@ class SiteDiff
       status == STATUS_SUCCESS
     end
 
+    def error?
+      status == STATUS_ERROR
+    end
+
     # Textual representation of the status
     def status_text
       STATUS_TEXT[status]

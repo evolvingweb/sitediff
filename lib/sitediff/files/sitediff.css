@@ -43,7 +43,37 @@ body {
   margin-bottom: .5em;
 }
 
-/* Buttons */
+/* Statistical info */
+.statistical-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  margin-bottom: 1em;
+}
+
+.statistical-info > div {
+  flex-basis: 49%;
+}
+
+.statistical-info h3 {
+  display: inline-block;
+  margin-right: 1em;
+}
+
+.statistical-info .count {
+  background-color: #eeeeee;
+  border-radius: 50%;
+  display: inline-block;
+  font-weight: bold;
+  line-height: 2em;
+  padding: .1em .25em 0;
+  height: 2em;
+  width: 2em;
+  text-align: center;
+}
+
+  /* Buttons */
 .button {
   background-color: #000;
   color: #fff;

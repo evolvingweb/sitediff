@@ -1,3 +1,10 @@
+<%
+  # Changed pages.
+  changed_pages = results.count { |result| !result.success? }
+
+  # Pages compared.
+  compared_pages = results.length
+%>
 <!DOCTYPE html>
 <html>
   <head>
@@ -13,6 +20,24 @@
   </head>
   <body class="page-overview" data-page="overview">
     <div id="layout">
+      <div class="container">
+        <div class="statistical-info">
+          <div class="changed-pages">
+            <h3>Changed pages</h3>
+            <span class="count">
+              <%= changed_pages %>
+            </span>
+          </div>
+
+          <div class="compared-pages">
+            <h3>Pages compared</h3>
+            <span class="count">
+              <%= compared_pages %>
+            </span>
+          </div>
+        </div>
+      </div>
+
       <div class="container">
         <div class="site-info">
           <% tags = %w[before after] %>
