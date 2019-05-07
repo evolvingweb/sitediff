@@ -115,7 +115,8 @@ class SiteDiff
     # Filter out links we don't want. Links passed in are absolute URIs.
     def filter_links(uris)
       uris.find_all do |u|
-        is_sub_uri = (u.host == @base_uri.host) && u.path.start_with?(@base_uri.path)
+        is_sub_uri = (u.host == @base_uri.host) &&
+                     u.path.start_with?(@base_uri.path)
         if is_sub_uri
           is_whitelisted = @whitelist.nil? ? false : @whitelist.match(u.path)
           is_blacklisted = @blacklist.nil? ? false : @blacklist.match(u.path)

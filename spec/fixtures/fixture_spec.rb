@@ -35,6 +35,9 @@ describe SiteDiff::Cli do
         # Should report that File.html matches
         expect(out).to include '[UNCHANGED] /IO.html'
 
+        # Should report that TracePoint.html matches
+        expect(out).to include '[ERROR] /TracePoint.html'
+
         # Should report a diff of a different line
         expect(out).to match(/^+.*<a href="#method-i-to_h"/)
 
@@ -61,8 +64,8 @@ describe SiteDiff::Cli do
           'diffs',
           Digest::SHA1.hexdigest('/Hash.html') + '.html'
         )
-
         warn(diff)
+
         expect(File.file?(diff)).to be true
         expect(File.read(diff)).to include '#method-i-to_h'
       end

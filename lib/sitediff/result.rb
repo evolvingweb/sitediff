@@ -7,11 +7,19 @@ require 'fileutils'
 
 class SiteDiff
   # SiteDiff Result Object.
-  class Result < Struct.new(:path, :before, :after, :before_encoding, :after_encoding, :error, :verbose)
+  class Result < Struct.new(
+    :path,
+    :before,
+    :after,
+    :before_encoding,
+    :after_encoding,
+    :error,
+    :verbose
+  )
     STATUS_SUCCESS  = 0   # Identical before and after
     STATUS_FAILURE  = 1   # Different before and after
     STATUS_ERROR    = 2   # Couldn't fetch page
-    STATUS_TEXT = %w[success failure error].freeze
+    STATUS_TEXT = %w[unchanged changed error].freeze
 
     attr_reader :status, :diff
 
@@ -21,7 +29,12 @@ class SiteDiff
         @status = STATUS_ERROR
       else
         if !before_encoding || !after_encoding
-          @diff = Diff.binary_diffy(before, after, before_encoding, after_encoding)
+          @diff = Diff.binary_diffy(
+            before,
+            after,
+            before_encoding,
+            after_encoding
+          )
         else
           @diff = Diff.html_diffy(before, after)
         end
@@ -31,6 +44,10 @@ class SiteDiff
 
     def success?
       status == STATUS_SUCCESS
+    end
+
+    def error?
+      status == STATUS_ERROR
     end
 
     # Textual representation of the status
@@ -49,13 +66,11 @@ class SiteDiff
       File.join(SiteDiff::DIFFS_DIR, Digest::SHA1.hexdigest(path) + '.html')
     end
 
-    # Text of the link in the HTML report
-    def link
-      case status
-      when STATUS_ERROR then error
-      when STATUS_SUCCESS then status_text
-      when STATUS_FAILURE then "<a href='#{filename}'>DIFF</a>"
-      end
+    # Returns a URL to the result diff.
+    #
+    # Returns nil if the result has no diffs.
+    def diff_url
+      return '/files/' + filename if status == STATUS_FAILURE
     end
 
     # Log the result to the terminal
@@ -64,7 +79,7 @@ class SiteDiff
       when STATUS_SUCCESS then
         SiteDiff.log path, :diff_success, 'UNCHANGED'
       when STATUS_ERROR then
-        SiteDiff.log path, :warn, "ERROR (#{error})"
+        SiteDiff.log path + " (#{error})", :warn, 'ERROR'
       when STATUS_FAILURE then
         SiteDiff.log path, :diff_failure, 'CHANGED'
         puts Diff.terminal_diffy(before, after) if verbose

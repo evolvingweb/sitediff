@@ -1,53 +1,249 @@
-.sitediff {
-  font-family: monospace;
-  font-size: 1.2em;
-}
-.sitediff .legend {
-  width: 95%;
-  margin: 1em auto;
-  text-align: center;
-}
-.sitediff .results thead {
-  background: black;
-  color: white;
-}
-.sitediff .results td {
-  text-align: center;
-}
-.sitediff .results td.path {
-  text-align: left;
-  padding-left: 1em;
-}
-.sitediff .results {
-  padding: 1em;
-  width: 95%;
-  margin: 1em auto;
-  font-size: 1em;
-}
-.sitediff tr.error > td.status,
-.sitediff tr.error > td.path {
-  background-color: khaki;
-}
-.sitediff tr.failure > td.status,
-.sitediff tr.failure > td.path {
-  background-color: salmon;
-}
-.sitediff .before-col,
-.sitediff .both-col,
-.sitediff .after-col,
-.sitediff .diff-stat-col {
-  width: 10%;
-}
-.sitediff .path-col {
-  width: 55%;
+* {
+  box-sizing: border-box;
+  outline: none;
 }
 
+a {
+  color: #6E73B7;
+  text-decoration: none;
+}
+
+body {
+  font-family: sans-serif;
+  font-size: 16px;
+  padding: 3em 0;
+}
+
+.container {
+  overflow: hidden;
+  margin: 0 auto;
+  padding-left: 1em;
+  padding-right: 1em;
+  max-width: 1280px;
+}
+
+#footer {
+  font-size: 90%;
+  margin-top: 2em;
+  text-align: center;
+}
+
+.site-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-info .site {
+  background-color: #F9F9FB;
+  flex-basis: 49%;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 1em;
+}
+
+.site__tag {
+  margin-top: 0;
+  margin-bottom: .5em;
+}
+
+/* Statistical info */
+.statistical-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  margin-bottom: 1em;
+}
+
+.statistical-info > div {
+  flex-basis: 49%;
+}
+
+.statistical-info h3 {
+  display: inline-block;
+  margin-right: 1em;
+}
+
+.statistical-info .count {
+  background-color: #eeeeee;
+  border-radius: 50%;
+  display: inline-block;
+  font-weight: bold;
+  line-height: 2em;
+  padding: .1em .25em 0;
+  height: 2em;
+  width: 2em;
+  text-align: center;
+}
+
+  /* Buttons */
+.button {
+  background-color: #EAECF3;
+  cursor: pointer;
+  display: inline-block;
+  font-size: .9em;
+  padding: .25em .5em .3em;
+  text-decoration: none;
+}
+
+/**
+ * Forms.
+ */
+label[for] {
+  cursor: pointer;
+}
+
+/* Checkboxes */
+.form-checkboxes .form-checkbox {
+  display: inline-block;
+  margin-right: .5em;
+}
+
+.form-checkbox input {
+  height: 1em;
+  width: 1em;
+}
+
+/* Search */
+.form-search label {
+  display: none;
+}
+
+.form-search input {
+  font-size: .9em;
+  padding-left: .5em;
+  padding-right: .5em;
+  width: 200px;
+}
+
+/* SiteDiff Toolbar */
+.sitediff-toolbar {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  overflow: hidden;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.sitediff-toolbar .form-item {
+  display: inline-block;
+  margin-right: 1em;
+}
+
+.sitediff-toolbar .form-item:last-child {
+  margin-right: 0;
+}
+
+.sitediff-toolbar .toolbar__left {
+  float: left;
+}
+
+.sitediff-toolbar .toolbar__right {
+  float: right;
+}
+
+/* Table */
+table {
+  width: 100%;
+}
+
+table thead {
+  background: #F9F9FB;
+  color: #999999;
+}
+
+td,
+th {
+  text-align: left;
+  padding: .4em .5em;
+}
+
+th {
+  border-bottom: 2px solid #EAECF3;
+  padding-top: .5em;
+  padding-bottom: .5em;
+}
+
+table tbody td {
+  border-bottom: 2px solid #F9F9FB;
+}
+
+table tbody tr:hover {
+  background-color: #F9F9FB;
+}
+
+table .path {
+  margin-right: 1em;
+}
+
+table td.description .buttons {
+  float: right;
+}
+
+table td.description a {
+  display: none;
+  margin-left: .4em;
+}
+
+table td.description:hover a {
+  display: inline-block;
+}
+
+table td.description .button-diff {
+  display: block;
+}
+
+table .icon-col {
+  width: 25px;
+}
+
+table .status-col {
+  width: 100px;
+}
+
+/* Icons */
+.icon {
+  display: inline-block;
+  height: 1em;
+  width: 1em;
+}
+
+.icon-result-changed {
+  background-color: lightcoral;
+  border-radius: 50%;
+}
+
+.icon-result-unchanged {
+  background-color: lightgreen;
+  border-radius: 50%;
+}
+
+.icon-result-error {
+  background: khaki;
+  border-radius: 50%;
+}
+
+/* Side-by-side view */
 #sidebyside {
   margin: 0;
 }
+
 #sidebyside iframe {
   float: left;
   height: 100%;
   width: 50%;
   border: 0;
+}
+
+/* Page: Diff */
+#diff-navigator {
+  background-color: #fefefe;
+  box-shadow: 0 0 .5em rgba(0, 0, 0, .25);
+  padding: .25em;
+  margin-top: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
 }

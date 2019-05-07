@@ -69,17 +69,19 @@ class SiteDiff
     # (h3) before: {selector: foo, sanitization: [pattern: foo, pattern: bar]}
     def self.merge(first, second)
       result = { 'paths' => {}, 'before' => {}, 'after' => {} }
-      result['paths'] = (first['paths'] || []) + (second['paths'] || []) # rule 1
+      # Rule 1.
+      result['paths'] = (first['paths'] || []) + (second['paths'] || [])
       %w[before after].each do |pos|
         unless first[pos]
           result[pos] = second[pos] || {}
           next
         end
         result[pos] = first[pos].merge!(second[pos]) do |key, a, b|
-          result[pos][key] = if Sanitizer::TOOLS[:array].include? key # rule 2a
+          # Rule 2a.
+          result[pos][key] = if Sanitizer::TOOLS[:array].include? key
                                (a || []) + (b || [])
                              else
-                               a || b # rule 2b
+                               a || b # Rule 2b.
                              end
         end
       end
@@ -136,11 +138,17 @@ class SiteDiff
     def self.load_raw_yaml(file)
       SiteDiff.log "Reading config file: #{Pathname.new(file).expand_path}"
       conf = YAML.load_file(file) || {}
-      raise InvalidConfig, "Invalid configuration file: '#{file}'" unless conf.is_a? Hash
+
+      unless conf.is_a? Hash
+        raise InvalidConfig, "Invalid configuration file: '#{file}'"
+      end
 
       conf.each_key do |k, _v|
-        raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'" unless CONF_KEYS.include? k
+        unless CONF_KEYS.include? k
+          raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'"
+        end
       end
+
       conf
     end
 
@@ -149,7 +157,9 @@ class SiteDiff
     def self.load_conf(file, visited = [])
       # don't get fooled by a/../a/ or symlinks
       file = File.realpath(file)
-      raise InvalidConfig, "Circular dependency: #{file}" if visited.include? file
+      if visited.include? file
+        raise InvalidConfig, "Circular dependency: #{file}"
+      end
 
       conf = load_raw_yaml(file) # not normalized yet
       visited << file

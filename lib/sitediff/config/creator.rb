@@ -108,9 +108,8 @@ class SiteDiff
 
         dir.+('.gitignore').open('w') do |f|
           f.puts <<-GITIGNORE.gsub(/^\s+/, '')
-            output
-            cache.db
-            cache.db.db
+            snapshot
+            settings.yaml
           GITIGNORE
         end
       end

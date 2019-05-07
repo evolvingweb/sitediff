@@ -1,0 +1,143 @@
+<%
+  # Changed pages.
+  changed_pages = results.count { |result| !result.success? }
+
+  # Pages compared.
+  compared_pages = results.length
+%>
+<!DOCTYPE html>
+<html>
+  <head>
+    <%# Important: without charset, chrome chokes on non-ascii characters %>
+    <meta charset="utf-8" />
+    <style>
+      <%= SiteDiff::Diff.css %>
+    </style>
+    <script>
+      <%= SiteDiff::Diff.js %>
+    </script>
+    <title> SiteDiff Report</title>
+  </head>
+  <body class="page-overview" data-page="overview">
+    <div id="layout">
+      <div class="container">
+        <div class="statistical-info">
+          <div class="changed-pages">
+            <h3>Changed pages</h3>
+            <span class="count">
+              <%= changed_pages %>
+            </span>
+          </div>
+
+          <div class="compared-pages">
+            <h3>Pages compared</h3>
+            <span class="count">
+              <%= compared_pages %>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="site-info">
+          <% tags = %w[before after] %>
+          <% tags.each do |tag| %>
+            <div class="site site-<%= tag %>">
+              <% notes = ['base url']
+                notes << 'cached' if cache.read_tags.include?(tag.to_sym) %>
+              <h3 class="site__tag"><%= tag.capitalize %></h3>
+              <a href="<%= eval(tag) %>" class="site__url"><%= eval(tag) %></a>
+              <% if cache.read_tags.include?(tag.to_sym) %>
+                (<%= 'cached' if cache.read_tags.include?(tag.to_sym) %>)
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="sitediff-toolbar">
+        <div class="container">
+          <div class="toolbar__left">
+            <form class="filter-form">
+
+              <div class="form-item form-search form-item--search">
+                <label>Search</label>
+                <input type="search" id="input-search" autofocus placeholder="Search" />
+              </div>
+
+              <div class="form-item form-checkboxes form-item--status">
+                <div class="form-checkbox">
+                  <input type="checkbox" id="input-status-changed" value="changed" />
+                  <label for="input-status-changed">Changed</label>
+                </div>
+                <div class="form-checkbox">
+                  <input type="checkbox" id="input-status-unchanged" value="unchanged" />
+                  <label for="input-status-unchanged">Unchanged</label>
+                </div>
+                <div class="form-checkbox">
+                  <input type="checkbox" id="input-status-error" value="error" />
+                  <label for="input-status-error">Errors</label>
+                </div>
+              </div>
+
+            </form>
+          </div>
+
+          <div class="toolbar__right">
+            <a href="../run/diff" class="button button-diff">Recalculate diffs</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <table id="sitediff-report" cellspacing="0" cellpadding="0">
+
+          <colgroup>
+            <col class="path-col">
+            <col class="icon-col">
+            <col class="status-col">
+          </colgroup>
+
+          <thead>
+            <tr>
+              <th>Path</th>
+              <th>&nbsp;</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% results.each do |result| %>
+            <tr class="sitediff-result sitediff-result--<%= result.status_text %>" data-status="<%= result.status_text %>">
+              <td class="description">
+                <span class="path"><%= result.path %></span>
+                <div class="buttons">
+                  <a href="<%= result.url(:before, before, cache) %>" class="button-before" target="_blank">Before</a>
+                  <a href="<%= result.url(:after, after, cache) %>" class="button-after" target="_blank">After</a>
+                  <a href="/sidebyside<%= result.path %>" class="button-both">Both</a>
+                  <% unless result.diff_url.nil? %>
+                    <a href="<%= result.diff_url %>" class="button button-diff">View diff</a>
+                  <% end %>
+                </div>
+              </td>
+              <td class="icon">
+                <span class="icon icon-result-<%= result.status_text %>"></span>
+              </td>
+              <td class="status">
+                <%= result.status_text.capitalize %>
+              </td>
+            </tr>
+            <% end %>
+          </tbody>
+
+        </table>
+      </div>
+
+      <footer id="footer">
+        <div class="credit">
+          Brought to you by <a href="https://evolvingweb.ca/?utm_source=sitediff&utm_medium=report&utm_content=footer-link" target="_blank">Evolving Web</a>.
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
