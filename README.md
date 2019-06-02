@@ -331,6 +331,8 @@ To get help on the options for a particular command, eg: ```diff```:
   Often development or staging sites are protected by [HTTP Authentication](http://en.wikipedia.org/wiki/Basic_access_authentication).
   SiteDiff allows you to specify a username and password, by using a URL like
   `http://user:pass@example.com`.
+  
+  There is also an option to ignore untrusted certificates by specifying an `--insecure` flag.
 
 * **Running inside containers**
 
