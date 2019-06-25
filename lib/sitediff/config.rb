@@ -19,7 +19,7 @@ class SiteDiff
     }.freeze
 
     # keys allowed in configuration files
-    CONF_KEYS = Sanitizer::TOOLS.values.flatten(1) +
+    ALLOWED_KEYS = Sanitizer::TOOLS.values.flatten(1) +
                 %w[paths before after before_url after_url includes curl_opts]
 
     class InvalidConfig < SiteDiffException; end
@@ -150,7 +150,7 @@ class SiteDiff
       end
 
       conf.each_key do |k, _v|
-        unless CONF_KEYS.include? k
+        unless ALLOWED_KEYS.include? k
           raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'"
         end
       end
