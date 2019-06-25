@@ -61,7 +61,6 @@ Style/DocumentationMethod:
     - lib/sitediff.rb
     - lib/sitediff/sanitize.rb
     - lib/sitediff/uriwrapper.rb
-    - lib/sitediff/config/creator.rb
     - lib/sitediff/sanitize/regexp.rb
     - lib/sitediff/sanitize/dom_transform.rb
     - lib/sitediff/diff.rb
