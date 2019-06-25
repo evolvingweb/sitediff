@@ -94,12 +94,12 @@ class SiteDiff
            type: :numeric,
            default: 3,
            desc: 'Max number of concurrent connections made'
-    desc 'diff [OPTIONS] [CONFIGFILES]', 'Perform systematic diff on given URLs'
-    def diff(*config_files)
+    desc 'diff [OPTIONS] [CONFIG-FILE]', 'Compute diffs on configured URLs.'
+    def diff(config_file = nil)
       @interval = options['interval']
       check_interval(@interval)
       @dir = get_dir(options['directory'])
-      config = SiteDiff::Config.new(config_files, @dir)
+      config = SiteDiff::Config.new(config_file, @dir)
 
       # override config based on options
       paths = options['paths']
@@ -158,11 +158,11 @@ class SiteDiff
            type: :boolean,
            default: true,
            desc: 'Whether to open the served content in your browser'
-    desc 'serve [OPTIONS]', 'Serve the sitediff output directory over HTTP'
-    def serve(*config_files)
-      config = SiteDiff::Config.new(config_files, options['directory'])
-      # Could check non-empty config here but currently errors are already raised.
+    desc 'serve [OPTIONS] [CONFIG-FILE]', 'Serve the sitediff output directory over HTTP.'
+    def serve(config_file = nil)
       @dir = get_dir(options['directory'])
+      config = SiteDiff::Config.new(config_file, @dir)
+      # Could check non-empty config here but errors are already raised by now.
       cache = Cache.new(directory: @dir)
       cache.read_tags << :before << :after
 
@@ -239,11 +239,11 @@ class SiteDiff
            type: :numeric,
            default: 3,
            desc: 'Max number of concurrent connections made'
-    desc 'store [CONFIGFILES]',
-         'Cache the current contents of a site for later comparison'
-    def store(*config_files)
+    desc 'store [CONFIG-FILE]',
+         'Cache the current contents of a site for later comparison.'
+    def store(config_file = nil)
       @dir = get_dir(options['directory'])
-      config = SiteDiff::Config.new(config_files, @dir)
+      config = SiteDiff::Config.new(config_file, @dir)
       config.validate(need_before: false)
       cache = SiteDiff::Cache.new(directory: @dir, create: true)
       cache.write_tags << :before
