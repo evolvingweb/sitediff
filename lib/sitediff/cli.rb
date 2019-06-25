@@ -27,7 +27,7 @@ class SiteDiff
     class_option :debug,
                  type: :boolean,
                  default: false,
-                 desc: 'Debug mode. Stop on certain errors and produce a traceback.'
+                 desc: 'Stop on certain errors and produce error trace backs.'
     class_option :interval,
                  type: :numeric,
                  default: 0,
@@ -71,19 +71,19 @@ class SiteDiff
            desc: 'Specific path or paths to fetch'
     option 'before',
            type: :string,
-           desc: 'URL used to fetch the before HTML. Acts as a prefix to specified paths',
+           desc: 'URL to the "before" site, prefixed to all paths.',
            aliases: '--before-url'
     option 'after',
            type: :string,
-           desc: 'URL used to fetch the after HTML. Acts as a prefix to specified paths.',
+           desc: 'URL to the "after" site, prefixed to all paths.',
            aliases: '--after-url'
     option 'before-report',
            type: :string,
-           desc: 'Before URL to use for reporting purposes. Useful if port forwarding.',
+           desc: 'URL to use in reports. Useful if port forwarding.',
            aliases: '--before-url-report'
     option 'after-report',
            type: :string,
-           desc: 'After URL to use for reporting purposes. Useful if port forwarding.',
+           desc: 'URL to use in reports. Useful if port forwarding.',
            aliases: '--after-url-report'
     option 'cached',
            type: :string,
@@ -94,12 +94,13 @@ class SiteDiff
            type: :numeric,
            default: 3,
            desc: 'Max number of concurrent connections made'
-    desc 'diff [OPTIONS] [CONFIGFILES]', 'Perform systematic diff on given URLs'
-    def diff(*config_files)
+    desc 'diff [OPTIONS] [CONFIG-FILE]',
+         'Compute diffs on configured URLs.'
+    def diff(config_file = nil)
       @interval = options['interval']
       check_interval(@interval)
       @dir = get_dir(options['directory'])
-      config = SiteDiff::Config.new(config_files, @dir)
+      config = SiteDiff::Config.new(config_file, @dir)
 
       # override config based on options
       paths = options['paths']
@@ -158,11 +159,12 @@ class SiteDiff
            type: :boolean,
            default: true,
            desc: 'Whether to open the served content in your browser'
-    desc 'serve [OPTIONS]', 'Serve the sitediff output directory over HTTP'
-    def serve(*config_files)
-      config = SiteDiff::Config.new(config_files, options['directory'])
-      # Could check non-empty config here but currently errors are already raised.
+    desc 'serve [OPTIONS] [CONFIG-FILE]',
+         'Serve SiteDiff report directory over HTTP.'
+    def serve(config_file = nil)
       @dir = get_dir(options['directory'])
+      config = SiteDiff::Config.new(config_file, @dir)
+      # Could check non-empty config here but errors are already raised by now.
       cache = Cache.new(directory: @dir)
       cache.read_tags << :before << :after
 
@@ -239,11 +241,11 @@ class SiteDiff
            type: :numeric,
            default: 3,
            desc: 'Max number of concurrent connections made'
-    desc 'store [CONFIGFILES]',
-         'Cache the current contents of a site for later comparison'
-    def store(*config_files)
+    desc 'store [CONFIG-FILE]',
+         'Cache the current contents of a site for later comparison.'
+    def store(config_file = nil)
       @dir = get_dir(options['directory'])
-      config = SiteDiff::Config.new(config_files, @dir)
+      config = SiteDiff::Config.new(config_file, @dir)
       config.validate(need_before: false)
       cache = SiteDiff::Cache.new(directory: @dir, create: true)
       cache.write_tags << :before
@@ -265,7 +267,9 @@ class SiteDiff
       def get_curl_opts(options)
         # We do want string keys here
         bool_hash = { 'true' => true, 'false' => false }
-        curl_opts = UriWrapper::DEFAULT_CURL_OPTS.clone.merge(options[:curl_options])
+        curl_opts = UriWrapper::DEFAULT_CURL_OPTS
+                    .clone
+                    .merge(options[:curl_options])
         curl_opts.each { |k, v| curl_opts[k] = bool_hash.fetch(v, v) }
         if options[:insecure]
           curl_opts[:ssl_verifypeer] = false
