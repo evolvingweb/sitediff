@@ -8,7 +8,15 @@ require 'yaml'
 class SiteDiff
   # SiteDiff Configuration.
   class Config
+    # Default config file.
     DEFAULT_FILENAME = 'sitediff.yaml'
+
+    # Default SiteDiff config.
+    DEFAULT_CONFIG = {
+      'before' => {},
+      'after' => {},
+      'paths' => []
+    }.freeze
 
     # keys allowed in configuration files
     CONF_KEYS = Sanitizer::TOOLS.values.flatten(1) +
@@ -88,17 +96,15 @@ class SiteDiff
       result
     end
 
-    def initialize(files, dir)
-      @config = { 'paths' => [], 'before' => {}, 'after' => {} }
-
-      files = [File.join(dir, DEFAULT_FILENAME)] if files.empty?
-      files.each do |file|
-        unless File.exist?(file)
-          path = File.expand_path(file)
-          raise InvalidConfig, "Missing config file #{path}."
-        end
-        @config = Config.merge(@config, Config.load_conf(file))
+    # Creates a SiteDiff Config object.
+    def initialize(file, dir)
+      # Fallback to default config filename, if none is specified.
+      file = File.join(dir, DEFAULT_FILENAME) if file.nil?
+      unless File.exist?(file)
+        path = File.expand_path(file)
+        raise InvalidConfig, "Missing config file #{path}."
       end
+      @config = Config.merge(DEFAULT_CONFIG, Config.load_conf(file))
     end
 
     def before
