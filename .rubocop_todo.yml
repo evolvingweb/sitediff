@@ -70,14 +70,15 @@ Style/StructInheritance:
 # IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
 Metrics/LineLength:
+  AllowHeredoc: true
   AllowURI: true
   IgnoredPatterns:
     - '^\s*SiteDiff\.log'
+    - '\sif|unless\s'
   Exclude:
     - 'Thorfile'
     - 'lib/sitediff.rb'
     - 'lib/sitediff/cache.rb'
     - 'lib/sitediff/uriwrapper.rb'
-    - 'lib/sitediff/config/creator.rb'
     - 'lib/sitediff/sanitize.rb'
     - 'spec/unit/sanitize_spec.rb'
