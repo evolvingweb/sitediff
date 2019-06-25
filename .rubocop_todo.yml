@@ -77,7 +77,6 @@ Metrics/LineLength:
     - 'Thorfile'
     - 'lib/sitediff.rb'
     - 'lib/sitediff/cache.rb'
-    - 'lib/sitediff/cli.rb'
     - 'lib/sitediff/uriwrapper.rb'
     - 'lib/sitediff/config/creator.rb'
     - 'lib/sitediff/sanitize.rb'
