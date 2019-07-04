@@ -26,12 +26,9 @@ class SiteDiff
                  desc: 'Ignore many HTTPS/SSL errors'
     class_option :debug,
                  type: :boolean,
+                 aliases: '-d',
                  default: false,
                  desc: 'Stop on certain errors and produce error trace backs.'
-    class_option :interval,
-                 type: :numeric,
-                 default: 0,
-                 desc: 'Crawling delay - interval in milliseconds'
     class_option 'verbose',
                  type: :boolean,
                  aliases: '-v',
@@ -90,10 +87,6 @@ class SiteDiff
            enum: %w[none all before after],
            default: 'before',
            desc: 'Use the cached version of these sites, if available.'
-    option :concurrency,
-           type: :numeric,
-           default: 3,
-           desc: 'Max number of concurrent connections made'
     desc 'diff [OPTIONS] [CONFIG-FILE]',
          'Compute diffs on configured URLs.'
     def diff(config_file = nil)
@@ -130,13 +123,16 @@ class SiteDiff
       cache.read_tags << :after if %w[after all].include?(options['cached'])
       cache.write_tags << :before << :after
 
-      sitediff = SiteDiff.new(config, cache, options[:concurrency], @interval,
-                              options['verbose'], options[:debug])
+      sitediff = SiteDiff.new(config,
+                              cache,
+                              config.setting(:concurrency),
+                              config.setting(:interval),
+                              options['verbose'],
+                              options[:debug])
       num_failing = sitediff.run(get_curl_opts(options), options[:debug])
       exit_code = num_failing.positive? ? 2 : 0
 
-      sitediff.dump(@dir, options['before-report'],
-                    options['after-report'])
+      sitediff.dump(@dir, options['before-report'], options['after-report'])
 
       SiteDiff.log 'Run "sitediff serve" to see a report.'
     rescue Config::InvalidConfig => e
@@ -193,6 +189,10 @@ class SiteDiff
            type: :numeric,
            default: 3,
            desc: 'Max number of concurrent connections made'
+    option :interval,
+           type: :numeric,
+           default: 0,
+           desc: 'Crawling delay - interval in milliseconds'
     option :whitelist,
            type: :string,
            default: '',
@@ -238,10 +238,6 @@ class SiteDiff
     option :url,
            type: :string,
            desc: 'A custom base URL to fetch from'
-    option :concurrency,
-           type: :numeric,
-           default: 3,
-           desc: 'Max number of concurrent connections made'
     desc 'store [CONFIG-FILE]',
          'Cache the current contents of a site for later comparison.'
     def store(config_file = nil)
@@ -254,8 +250,8 @@ class SiteDiff
       base = options[:url] || config.after['url']
       fetcher = SiteDiff::Fetch.new(cache,
                                     config.paths,
-                                    options[:interval],
-                                    options[:concurrency],
+                                    config.setting(:interval),
+                                    config.setting(:concurrency),
                                     get_curl_opts(options),
                                     options[:debug],
                                     before: base)
