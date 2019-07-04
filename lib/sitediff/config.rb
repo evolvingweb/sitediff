@@ -13,14 +13,34 @@ class SiteDiff
 
     # Default SiteDiff config.
     DEFAULT_CONFIG = {
+      'settings' => {},
       'before' => {},
       'after' => {},
       'paths' => []
     }.freeze
 
-    # keys allowed in configuration files
-    ALLOWED_KEYS = Sanitizer::TOOLS.values.flatten(1) +
-                %w[paths before after before_url after_url includes curl_opts]
+    # Keys allowed in config files.
+    # TODO: Deprecate repeated params before_url and after_url.
+    ALLOWED_CONFIG_KEYS = Sanitizer::TOOLS.values.flatten(1) + %w[
+      includes
+      settings
+      before
+      after
+      before_url
+      after_url
+      paths
+    ]
+
+    ##
+    # Keys allowed in the "settings" key.
+    ALLOWED_SETTINGS_KEYS = %w[
+      depth
+      whitelist
+      blacklist
+      concurrency
+      interval
+      curl_opts
+    ].freeze
 
     class InvalidConfig < SiteDiffException; end
     class ConfigNotFound < SiteDiffException; end
@@ -45,7 +65,7 @@ class SiteDiff
     def self.normalize(conf)
       tools = Sanitizer::TOOLS
 
-      # merge globals
+      # Merge globals
       %w[before after].each do |pos|
         conf[pos] ||= {}
         tools[:array].each do |key|
@@ -56,10 +76,11 @@ class SiteDiff
         conf[pos]['url'] ||= conf[pos + '_url']
         conf[pos]['curl_opts'] = conf['curl_opts']
       end
-      # normalize paths
+
+      # Normalize paths.
       conf['paths'] = Config.normalize_paths(conf['paths'])
 
-      conf.select { |k, _v| %w[before after paths curl_opts].include? k }
+      conf.select { |k, _v| ALLOWED_CONFIG_KEYS.include? k }
     end
 
     # Merges two normalized Hashes according to the following rules:
@@ -76,10 +97,16 @@ class SiteDiff
     # (h2) before: {selector: bar, sanitization: [pattern: bar]}
     # (h3) before: {selector: foo, sanitization: [pattern: foo, pattern: bar]}
     def self.merge(first, second)
-      result = { 'paths' => {}, 'before' => {}, 'after' => {} }
+      result = {
+        'paths' => [],
+        'before' => {},
+        'after' => {},
+        'settings' => {}
+      }
+
       # Rule 1.
       result['paths'] = (first['paths'] || []) + (second['paths'] || [])
-      %w[before after].each do |pos|
+      %w[before after settings].each do |pos|
         unless first[pos]
           result[pos] = second[pos] || {}
           next
@@ -133,6 +160,24 @@ class SiteDiff
       raise InvalidConfig, "Undefined 'paths'." unless paths && !paths.empty?
     end
 
+    ##
+    # Returns object clone with stringified keys.
+    # TODO: Make this method available globally, if required.
+    def self.stringify_keys(object)
+      # Do nothing if it is not an object.
+      return object unless object.respond_to?('each_key')
+
+      # Convert symbol indices to strings.
+      output = {}
+      object.each_key do |old_k|
+        new_k = old_k.is_a?(Symbol) ? old_k.to_s : old_k
+        output[new_k] = stringify_keys object[old_k]
+      end
+
+      # Return the new hash with string indices.
+      output
+    end
+
     private
 
     def self.normalize_paths(paths)
@@ -150,7 +195,7 @@ class SiteDiff
       end
 
       conf.each_key do |k, _v|
-        unless ALLOWED_KEYS.include? k
+        unless ALLOWED_CONFIG_KEYS.include? k
           raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'"
         end
       end

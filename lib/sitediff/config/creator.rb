@@ -13,36 +13,20 @@ class SiteDiff
     ##
     # SiteDiff Config Creator Object.
     class Creator
-
-      ##
-      # The config which is currently being built.
-      @config
-
       ##
       # Creates a Creator object.
-      # TODO: Use named arguments or a hash instead.
-      def initialize(concurrency,
-                     interval,
-                     whitelist,
-                     blacklist,
-                     curl_opts,
-                     debug,
-                     *urls)
-        @concurrency = concurrency
-        @interval = interval
-        @whitelist = whitelist
-        @blacklist = blacklist
+      def initialize(debug, *urls)
+        @config = nil
         @after = urls.pop
         @before = urls.pop # May be nil
-        @curl_opts = curl_opts
         @debug = debug
       end
 
       ##
       # Determine if we're dealing with one or two URLs.
       def roots
-        @roots = { after: @after }
-        @roots[:before] = @before if @before
+        @roots = { 'after' => @after }
+        @roots['before'] = @before if @before
         @roots
       end
 
@@ -62,20 +46,34 @@ class SiteDiff
         @cache = Cache.new(directory: @dir.to_s, create: true)
         @cache.write_tags << :before << :after
 
-        build_config
+        build_config options
         write_config
       end
 
       ##
       # Build and populate the config object which is being created.
-      def build_config
+      #
+      # @param [String] options
+      #   One or more options.
+      def build_config(options)
+        options = Config.stringify_keys options
+
+        # Build config for "before" and "after".
         %w[before after].each do |tag|
-          next unless (url = roots[tag.to_sym])
+          next unless (url = roots[tag])
 
           @config[tag] = { 'url' => url }
         end
 
-        crawl(@depth)
+        # Build other settings.
+        @config['settings'] = {}
+        Config::ALLOWED_SETTINGS_KEYS.each do |key|
+          @config['settings'][key] = options[key]
+        end
+
+        # Crawl the URL to determine paths.
+        # TODO: Crawling should be done by the "sitediff crawl" command.
+        crawl
         @rules&.add_config
 
         @config['paths'] = @paths.values.reduce(&:|).to_a.sort
@@ -83,16 +81,18 @@ class SiteDiff
 
       ##
       # Crawls the "before" site to determine "paths".
-      def crawl(depth = nil)
-        hydra = Typhoeus::Hydra.new(max_concurrency: @concurrency)
+      def crawl
+        hydra = Typhoeus::Hydra.new(
+          max_concurrency: @config['settings']['concurrency']
+        )
         roots.each do |tag, url|
           Crawler.new(hydra,
                       url,
-                      @interval,
-                      @whitelist,
-                      @blacklist,
-                      depth,
-                      @curl_opts,
+                      @config['settings']['interval'],
+                      @config['settings']['whitelist'],
+                      @config['settings']['blacklist'],
+                      @config['settings']['depth'],
+                      @config['settings']['curl_opts'],
                       @debug) do |info|
             crawled_path(tag, info)
           end
@@ -159,6 +159,7 @@ class SiteDiff
 
       ##
       # Writes the built config into the config file.
+      # TODO: Exclude default params before writing.
       def write_config
         make_gitignore(@dir)
         config_file.open('w') { |f| f.puts @config.to_yaml }
