@@ -10,16 +10,13 @@ require 'sitediff/webserver/resultserver'
 
 class SiteDiff
   # SiteDiff CLI.
+  # TODO: Use config.defaults to feed default values for sitediff.yaml params?
   class Cli < Thor
     class_option 'directory',
                  type: :string,
                  aliases: '-C',
                  default: 'sitediff',
                  desc: 'Configuration directory'
-    class_option :curl_options,
-                 type: :hash,
-                 default: {},
-                 desc: 'Options to be passed to curl'
     class_option :insecure,
                  type: :boolean,
                  default: false,
@@ -123,11 +120,9 @@ class SiteDiff
 
       sitediff = SiteDiff.new(config,
                               cache,
-                              config.setting(:concurrency),
-                              config.setting(:interval),
                               options['verbose'],
                               options[:debug])
-      num_failing = sitediff.run(get_curl_opts(options), options[:debug])
+      num_failing = sitediff.run
       exit_code = num_failing.positive? ? 2 : 0
 
       sitediff.dump(@dir, options['before-report'], options['after-report'])
@@ -199,6 +194,10 @@ class SiteDiff
            type: :string,
            default: '',
            desc: 'Optional blacklist for crawling'
+    option :curl_options,
+           type: :hash,
+           default: {},
+           desc: 'Options to be passed to curl'
     desc 'init URL [URL]', 'Create a sitediff configuration'
     def init(*urls)
       unless (1..2).cover? urls.size
@@ -247,7 +246,7 @@ class SiteDiff
                                     config.paths,
                                     config.setting(:interval),
                                     config.setting(:concurrency),
-                                    get_curl_opts(options),
+                                    get_curl_opts(config.settings),
                                     options[:debug],
                                     before: base)
       fetcher.run do |path, _res|
@@ -256,13 +255,16 @@ class SiteDiff
     end
 
     no_commands do
-      # TODO: Should this be in the Creator instead?
+      # TODO: This should be in the config class instead.
+      # TODO: Make all requests insecure and avoid custom curl-opts.
       def get_curl_opts(options)
         # We do want string keys here
+        puts options.inspect
         bool_hash = { 'true' => true, 'false' => false }
         curl_opts = UriWrapper::DEFAULT_CURL_OPTS
                     .clone
-                    .merge(options[:curl_options])
+                    .merge(options['curl_options'] || {})
+                    .merge(options['curl_opts'] || {})
         curl_opts.each { |k, v| curl_opts[k] = bool_hash.fetch(v, v) }
         if options[:insecure]
           curl_opts[:ssl_verifypeer] = false

@@ -78,11 +78,11 @@ class SiteDiff
   end
 
   # Initialize SiteDiff.
-  def initialize(config, cache, concurrency, interval, verbose = true, debug = false)
+  def initialize(config, cache, verbose = true, debug = false)
     @cache = cache
     @verbose = verbose
     @debug = debug
-    @interval = interval
+
     # Check for single-site mode
     validate_opts = {}
     if !config.before['url'] && @cache.tag?(:before)
@@ -93,8 +93,6 @@ class SiteDiff
       validate_opts[:need_before] = false
     end
     config.validate(validate_opts)
-
-    @concurrency = concurrency
     @config = config
   end
 
@@ -142,7 +140,7 @@ class SiteDiff
 
   # Perform the comparison, populate @results and return the number of failing
   # paths (paths with non-zero diff).
-  def run(curl_opts = {}, debug = true)
+  def run
     # Map of path -> Result object, populated by process_results
     @results = {}
     @ordered = @config.paths.dup
@@ -155,15 +153,16 @@ class SiteDiff
     # TODO: Fix this after config merge refactor!
     # Not quite right. We are not passing @config.before or @config.after
     # so passing this instead but @config.after['curl_opts'] is ignored.
+    curl_opts = @config.setting :curl_opts
     config_curl_opts = @config.before['curl_opts']
     curl_opts = config_curl_opts.clone.merge(curl_opts) if config_curl_opts
     fetcher = Fetch.new(
       @cache,
       @config.paths,
-      @interval,
-      @concurrency,
+      @config.setting(:interval),
+      @config.setting(:concurrency),
       curl_opts,
-      debug,
+      @debug,
       before: before, after: after
     )
     fetcher.run(&method(:process_results))
