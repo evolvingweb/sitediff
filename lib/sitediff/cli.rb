@@ -208,24 +208,25 @@ class SiteDiff
         exit(2)
       end
 
+      # TODO: Move all config related validations to config.validate().
       @interval = options['interval']
       check_interval(@interval)
+
+      # Prepare a config object and write it to the file system.
       @dir = get_dir(options['directory'])
-      curl_opts = get_curl_opts(options)
-      @whitelist = create_regexp(options['whitelist'])
-      @blacklist = create_regexp(options['blacklist'])
-      creator = SiteDiff::Config::Creator.new(options[:concurrency],
-                                              options['interval'],
-                                              @whitelist,
-                                              @blacklist,
-                                              curl_opts,
-                                              options[:debug],
-                                              *urls)
+      whitelist = create_regexp(options['whitelist'])
+      blacklist = create_regexp(options['blacklist'])
+      creator = SiteDiff::Config::Creator.new(options[:debug], *urls)
       creator.create(
         depth: options[:depth],
         directory: @dir,
+        concurrency: options[:concurrency],
+        interval: options[:interval],
+        whitelist: whitelist,
+        blacklist: blacklist,
         rules: options[:rules] != 'no',
-        rules_disabled: (options[:rules] == 'disabled')
+        rules_disabled: (options[:rules] == 'disabled'),
+        curl_opts: get_curl_opts(options)
       ) do |_tag, info|
         SiteDiff.log "Visited #{info.uri}, cached"
       end
@@ -264,6 +265,7 @@ class SiteDiff
     end
 
     no_commands do
+      # TODO: Should this be in the Creator instead?
       def get_curl_opts(options)
         # We do want string keys here
         bool_hash = { 'true' => true, 'false' => false }
@@ -278,6 +280,7 @@ class SiteDiff
         curl_opts
       end
 
+      # TODO: Move config validation to config.validate
       def check_interval(interval)
         if interval != 0 && options[:concurrency] != 1
           SiteDiff.log '--concurrency must be set to 1 in order to enable the interval feature'
