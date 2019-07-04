@@ -132,6 +132,9 @@ class SiteDiff
         raise InvalidConfig, "Missing config file #{path}."
       end
       @config = Config.merge(DEFAULT_CONFIG, Config.load_conf(file))
+
+      # Validate configurations.
+      validate
     end
 
     def before
@@ -171,13 +174,24 @@ class SiteDiff
     end
 
     # Checks if the configuration is usable for diff-ing.
+    # TODO: Do we actually need the opts argument?
     def validate(opts = {})
       opts = { need_before: true }.merge(opts)
 
-      raise InvalidConfig, "Undefined 'before' base URL." if \
-        opts[:need_before] && !before['url']
+      if opts[:need_before] && !before['url']
+        raise InvalidConfig, "Undefined 'before' base URL."
+      end
+
       raise InvalidConfig, "Undefined 'after' base URL." unless after['url']
+
       raise InvalidConfig, "Undefined 'paths'." unless paths && !paths.empty?
+
+      # Validate interval and concurrency.
+      if setting(:interval) && setting(:concurrency) != 1
+        # TODO: Raise InvalidConfig instead.
+        SiteDiff.log '--concurrency must be 1 when an interval is used'
+        exit(2)
+      end
     end
 
     ##

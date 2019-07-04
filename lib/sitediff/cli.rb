@@ -90,8 +90,6 @@ class SiteDiff
     desc 'diff [OPTIONS] [CONFIG-FILE]',
          'Compute diffs on configured URLs.'
     def diff(config_file = nil)
-      @interval = options['interval']
-      check_interval(@interval)
       @dir = get_dir(options['directory'])
       config = SiteDiff::Config.new(config_file, @dir)
 
@@ -208,10 +206,6 @@ class SiteDiff
         exit(2)
       end
 
-      # TODO: Move all config related validations to config.validate().
-      @interval = options['interval']
-      check_interval(@interval)
-
       # Prepare a config object and write it to the file system.
       @dir = get_dir(options['directory'])
       whitelist = create_regexp(options['whitelist'])
@@ -243,6 +237,7 @@ class SiteDiff
     def store(config_file = nil)
       @dir = get_dir(options['directory'])
       config = SiteDiff::Config.new(config_file, @dir)
+      # TODO: Figure out how to remove this config.validate call.
       config.validate(need_before: false)
       cache = SiteDiff::Cache.new(directory: @dir, create: true)
       cache.write_tags << :before
@@ -274,14 +269,6 @@ class SiteDiff
           curl_opts[:ssl_verifyhost] = 0
         end
         curl_opts
-      end
-
-      # TODO: Move config validation to config.validate
-      def check_interval(interval)
-        if interval != 0 && options[:concurrency] != 1
-          SiteDiff.log '--concurrency must be set to 1 in order to enable the interval feature'
-          exit(2)
-        end
       end
 
       def get_dir(directory)
