@@ -138,8 +138,16 @@ class SiteDiff
       @config['before']
     end
 
+    def before_url
+      @config['before']['url'] if @config['before']
+    end
+
     def after
       @config['after']
+    end
+
+    def after_url
+      @config['after']['url'] if @config['after']
     end
 
     def paths
@@ -148,6 +156,18 @@ class SiteDiff
 
     def paths=(paths)
       @config['paths'] = Config.normalize_paths(paths)
+    end
+
+    # Gets a setting.
+    #
+    # @param [String] key
+    #   A key.
+    #
+    # @return [*]
+    #   A value, if exists.
+    def setting(key)
+      key = key.to_s if key.is_a?(Symbol)
+      return @config['settings'][key] if @config['settings'].key?(key)
     end
 
     # Checks if the configuration is usable for diff-ing.
