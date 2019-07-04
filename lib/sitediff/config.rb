@@ -13,7 +13,10 @@ class SiteDiff
 
     # Default SiteDiff config.
     DEFAULT_CONFIG = {
-      'settings' => {},
+      'settings' => {
+        'interval' => 0,
+        'concurrency' => 3
+      },
       'before' => {},
       'after' => {},
       'paths' => []
@@ -21,6 +24,8 @@ class SiteDiff
 
     # Keys allowed in config files.
     # TODO: Deprecate repeated params before_url and after_url.
+    # TODO: Create a method self.supports
+    # TODO: Deprecate in favor of self.supports key, subkey, subkey...
     ALLOWED_CONFIG_KEYS = Sanitizer::TOOLS.values.flatten(1) + %w[
       includes
       settings
@@ -33,6 +38,8 @@ class SiteDiff
 
     ##
     # Keys allowed in the "settings" key.
+    # TODO: Create a method self.supports
+    # TODO: Deprecate in favor of self.supports key, subkey, subkey...
     ALLOWED_SETTINGS_KEYS = %w[
       depth
       whitelist
@@ -44,6 +51,15 @@ class SiteDiff
 
     class InvalidConfig < SiteDiffException; end
     class ConfigNotFound < SiteDiffException; end
+
+    ##
+    # Get default configs.
+    #
+    # @return [Hash]
+    #   Default configuration.
+    def self.defaults
+      DEFAULT_CONFIG
+    end
 
     # Takes a Hash and normalizes it to the following form by merging globals
     # into before and after. A normalized config Hash looks like this:
@@ -107,10 +123,15 @@ class SiteDiff
       # Rule 1.
       result['paths'] = (first['paths'] || []) + (second['paths'] || [])
       %w[before after settings].each do |pos|
+        first[pos] ||= {}
+        second[pos] ||= {}
+
+        # If only the second hash has the value.
         unless first[pos]
           result[pos] = second[pos] || {}
           next
         end
+
         result[pos] = first[pos].merge!(second[pos]) do |key, a, b|
           # Rule 2a.
           result[pos][key] = if Sanitizer::TOOLS[:array].include? key
@@ -161,6 +182,7 @@ class SiteDiff
       @config['paths'] = Config.normalize_paths(paths)
     end
 
+    ##
     # Gets a setting.
     #
     # @param [String] key
@@ -171,6 +193,15 @@ class SiteDiff
     def setting(key)
       key = key.to_s if key.is_a?(Symbol)
       return @config['settings'][key] if @config['settings'].key?(key)
+    end
+
+    ##
+    # Gets all settings.
+    #
+    # @return [Hash]
+    #   All settings.
+    def settings
+      @config['settings']
     end
 
     # Checks if the configuration is usable for diff-ing.
@@ -187,10 +218,10 @@ class SiteDiff
       raise InvalidConfig, "Undefined 'paths'." unless paths && !paths.empty?
 
       # Validate interval and concurrency.
-      if setting(:interval) && setting(:concurrency) != 1
-        # TODO: Raise InvalidConfig instead.
-        SiteDiff.log '--concurrency must be 1 when an interval is used'
-        exit(2)
+      interval = setting(:interval)
+      concurrency = setting(:concurrency)
+      if interval.to_i != 0 && concurrency != 1
+        raise InvalidConfig, 'Concurrency must be 1 when an interval is set.'
       end
     end
 
