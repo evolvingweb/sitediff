@@ -259,7 +259,6 @@ class SiteDiff
       # TODO: Make all requests insecure and avoid custom curl-opts.
       def get_curl_opts(options)
         # We do want string keys here
-        puts options.inspect
         bool_hash = { 'true' => true, 'false' => false }
         curl_opts = UriWrapper::DEFAULT_CURL_OPTS
                     .clone
