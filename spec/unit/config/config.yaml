@@ -1,0 +1,24 @@
+before:
+  url: spec/fixtures/ruby-doc.org/core-1.9.3
+  sanitization:
+    - title: Remove instances of BAR
+      pattern: '--BAR--'
+after:
+  url: spec/fixtures/ruby-doc.org/core-2.0
+  selector: 'div.body'
+  sanitization:
+    - title: Remove instances of BAZ
+      pattern: '--BAZ--'
+settings:
+  curl_opts:
+    connecttimeout: 10
+  concurrency: 3
+  depth: 2
+selector: 'body'
+sanitization:
+  -
+    title: Remove instances of FOO
+    pattern: '--FOO--'
+dom_transform: []
+paths:
+  - /index.html
