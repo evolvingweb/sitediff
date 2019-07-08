@@ -184,18 +184,28 @@ class SiteDiff
     # @return [Hash]
     #   Config data.
     def all
-      # Create a deep copy of the config data.
       result = Marshal.load(Marshal.dump(@config))
+      self.class.remove_defaults(result)
+    end
+
+    ##
+    # Removes default parameters from a config hash.
+    #
+    # I know this is weird, but it'll be fixed. The config management needs to
+    # be streamlined further.
+    def self.remove_defaults(data)
+      # Create a deep copy of the config data.
+      result = data
 
       # Exclude default settings.
       result['settings'].delete_if do |key, value|
-        value == DEFAULT_CONFIG['settings'][key]
+        value == DEFAULT_CONFIG['settings'][key] || !value
       end
 
       # Exclude default curl opts.
       result['settings']['curl_opts'] ||= {}
       result['settings']['curl_opts'].delete_if do |key, value|
-        value == UriWrapper::DEFAULT_CURL_OPTS[key]
+        value == UriWrapper::DEFAULT_CURL_OPTS[key.to_sym]
       end
 
       # Delete curl opts if empty.
