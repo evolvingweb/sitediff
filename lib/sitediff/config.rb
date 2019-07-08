@@ -14,7 +14,10 @@ class SiteDiff
     # Default SiteDiff config.
     DEFAULT_CONFIG = {
       'settings' => {
+        'depth' => 3,
         'interval' => 0,
+        'whitelist' => [],
+        'blacklist' => [],
         'concurrency' => 3
       },
       'before' => {},
@@ -120,9 +123,17 @@ class SiteDiff
         'settings' => {}
       }
 
-      # Rule 1.
+      # Merge sanitization rules.
+      Sanitizer::TOOLS.values.flatten(1).each do |key|
+        result[key] = second[key] || first[key]
+        result.delete(key) unless result[key]
+      end
+
+      # Always merge paths as an array.
       result['paths'] = (first['paths'] || []) + (second['paths'] || [])
-      %w[before after settings].each do |pos|
+
+      # Rule 1.
+      %w[before after].each do |pos|
         first[pos] ||= {}
         second[pos] ||= {}
 
@@ -136,11 +147,62 @@ class SiteDiff
           # Rule 2a.
           result[pos][key] = if Sanitizer::TOOLS[:array].include? key
                                (a || []) + (b || [])
+                             elsif key == 'settings'
+                               b
                              else
                                a || b # Rule 2b.
                              end
         end
       end
+
+      # Merge settings.
+      result['settings'] = merge_deep(
+        first['settings'],
+        second['settings']
+      )
+
+      result
+    end
+
+    def self.merge_deep(a, b)
+      return b unless a.respond_to?('merge')
+
+      a.merge(b) do |key, a, b|
+        if a.is_a? Hash
+          self.class.merge_deep(a, b)
+        elsif a.is_a? Array
+          a + b
+        else
+          b
+        end
+      end
+    end
+
+    ##
+    # Gets all loaded configuration except defaults.
+    #
+    # @return [Hash]
+    #   Config data.
+    def all
+      # Create a deep copy of the config data.
+      result = Marshal.load(Marshal.dump(@config))
+
+      # Exclude default settings.
+      result['settings'].delete_if do |key, value|
+        value == DEFAULT_CONFIG['settings'][key]
+      end
+
+      # Exclude default curl opts.
+      result['settings']['curl_opts'] ||= {}
+      result['settings']['curl_opts'].delete_if do |key, value|
+        value == UriWrapper::DEFAULT_CURL_OPTS[key]
+      end
+
+      # Delete curl opts if empty.
+      unless result['settings']['curl_opts'].length.positive?
+        result['settings'].delete('curl_opts')
+      end
+
       result
     end
 
