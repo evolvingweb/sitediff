@@ -162,7 +162,8 @@ class SiteDiff
       # TODO: Exclude default params before writing.
       def write_config
         make_gitignore(@dir)
-        config_file.open('w') { |f| f.puts @config.to_yaml }
+        data = Config.remove_defaults(@config)
+        config_file.open('w') { |f| f.puts data.to_yaml }
       end
     end
   end
