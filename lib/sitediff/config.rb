@@ -230,26 +230,32 @@ class SiteDiff
       validate
     end
 
+    # Get "before" site configuration.
     def before
       @config['before']
     end
 
+    # Get "before" site URL.
     def before_url
       @config['before']['url'] if @config['before']
     end
 
+    # Get "after" site configuration.
     def after
       @config['after']
     end
 
+    # Get "after" site URL.
     def after_url
       @config['after']['url'] if @config['after']
     end
 
+    # Get paths.
     def paths
       @config['paths']
     end
 
+    # Set paths.
     def paths=(paths)
       @config['paths'] = Config.normalize_paths(paths)
     end

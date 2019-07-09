@@ -42,10 +42,9 @@ class SiteDiff
       true
     end
 
+    desc 'version', 'Show version information'
     ##
     # Show version information.
-
-    desc 'version', 'Show version information'
     def version
       gemspec = SiteDiff.gemspec
       output = []
@@ -86,6 +85,8 @@ class SiteDiff
            desc: 'Use the cached version of these sites, if available.'
     desc 'diff [OPTIONS] [CONFIG-FILE]',
          'Compute diffs on configured URLs.'
+    ##
+    # Computes diffs.
     def diff(config_file = nil)
       @dir = get_dir(options['directory'])
       config = SiteDiff::Config.new(config_file, @dir)
@@ -150,6 +151,8 @@ class SiteDiff
            desc: 'Whether to open the served content in your browser'
     desc 'serve [OPTIONS] [CONFIG-FILE]',
          'Serve SiteDiff report directory over HTTP.'
+    ##
+    # Serves SiteDiff report for accessing in the browser.
     def serve(config_file = nil)
       @dir = get_dir(options['directory'])
       config = SiteDiff::Config.new(config_file, @dir)
@@ -199,6 +202,8 @@ class SiteDiff
            default: {},
            desc: 'Options to be passed to curl'
     desc 'init URL [URL]', 'Create a sitediff configuration'
+    ##
+    # Initializes a sitediff (yaml) configuration file.
     def init(*urls)
       unless (1..2).cover? urls.size
         SiteDiff.log 'sitediff init requires one or two URLs', :error
@@ -233,6 +238,8 @@ class SiteDiff
            desc: 'A custom base URL to fetch from'
     desc 'store [CONFIG-FILE]',
          'Cache the current contents of a site for later comparison.'
+    ##
+    # Caches the current version of the site.
     def store(config_file = nil)
       @dir = get_dir(options['directory'])
       config = SiteDiff::Config.new(config_file, @dir)
@@ -255,6 +262,8 @@ class SiteDiff
     end
 
     no_commands do
+      # Generates CURL options.
+      #
       # TODO: This should be in the config class instead.
       # TODO: Make all requests insecure and avoid custom curl-opts.
       def get_curl_opts(options)
@@ -272,6 +281,8 @@ class SiteDiff
         curl_opts
       end
 
+      ##
+      # Ensures that the given directory exists.
       def get_dir(directory)
         # Create the dir. Must go before cache initialization!
         @dir = Pathname.new(directory || '.')
@@ -279,6 +290,8 @@ class SiteDiff
         @dir.to_s
       end
 
+      ##
+      # Creates a RegExp from a string.
       def create_regexp(string_param)
         begin
           @return_value = string_param == '' ? nil : Regexp.new(string_param)
