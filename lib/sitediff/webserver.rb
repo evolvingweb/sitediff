@@ -67,7 +67,7 @@ class SiteDiff
     # SiteDiff Fixture Server.
     class FixtureServer < Webserver
       PORT = DEFAULT_PORT + 1
-      BASE = 'spec/fixtures/ruby-doc.org'
+      BASE = 'spec/sites/ruby-doc.org'
       NAMES = %w[core-1.9.3 core-2.0].freeze
 
       def initialize(port = PORT, base = BASE, names = NAMES)
