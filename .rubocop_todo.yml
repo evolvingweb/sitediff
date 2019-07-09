@@ -35,11 +35,6 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Max: 15
 
-# Offense count: 1
-Security/MarshalLoad:
-  Exclude:
-    - 'lib/sitediff/cache.rb'
-
 # Offence count: 82
 Style/DocumentationMethod:
   Enabled: true
