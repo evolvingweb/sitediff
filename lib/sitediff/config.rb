@@ -13,17 +13,56 @@ class SiteDiff
 
     # Default SiteDiff config.
     DEFAULT_CONFIG = {
+      'settings' => {
+        'depth' => 3,
+        'interval' => 0,
+        'whitelist' => [],
+        'blacklist' => [],
+        'concurrency' => 3
+      },
       'before' => {},
       'after' => {},
       'paths' => []
     }.freeze
 
-    # keys allowed in configuration files
-    CONF_KEYS = Sanitizer::TOOLS.values.flatten(1) +
-                %w[paths before after before_url after_url includes curl_opts]
+    # Keys allowed in config files.
+    # TODO: Deprecate repeated params before_url and after_url.
+    # TODO: Create a method self.supports
+    # TODO: Deprecate in favor of self.supports key, subkey, subkey...
+    ALLOWED_CONFIG_KEYS = Sanitizer::TOOLS.values.flatten(1) + %w[
+      includes
+      settings
+      before
+      after
+      before_url
+      after_url
+      paths
+    ]
+
+    ##
+    # Keys allowed in the "settings" key.
+    # TODO: Create a method self.supports
+    # TODO: Deprecate in favor of self.supports key, subkey, subkey...
+    ALLOWED_SETTINGS_KEYS = %w[
+      depth
+      whitelist
+      blacklist
+      concurrency
+      interval
+      curl_opts
+    ].freeze
 
     class InvalidConfig < SiteDiffException; end
     class ConfigNotFound < SiteDiffException; end
+
+    ##
+    # Get default configs.
+    #
+    # @return [Hash]
+    #   Default configuration.
+    def self.defaults
+      DEFAULT_CONFIG
+    end
 
     # Takes a Hash and normalizes it to the following form by merging globals
     # into before and after. A normalized config Hash looks like this:
@@ -45,7 +84,7 @@ class SiteDiff
     def self.normalize(conf)
       tools = Sanitizer::TOOLS
 
-      # merge globals
+      # Merge globals
       %w[before after].each do |pos|
         conf[pos] ||= {}
         tools[:array].each do |key|
@@ -56,10 +95,11 @@ class SiteDiff
         conf[pos]['url'] ||= conf[pos + '_url']
         conf[pos]['curl_opts'] = conf['curl_opts']
       end
-      # normalize paths
+
+      # Normalize paths.
       conf['paths'] = Config.normalize_paths(conf['paths'])
 
-      conf.select { |k, _v| %w[before after paths curl_opts].include? k }
+      conf.select { |k, _v| ALLOWED_CONFIG_KEYS.include? k }
     end
 
     # Merges two normalized Hashes according to the following rules:
@@ -76,23 +116,103 @@ class SiteDiff
     # (h2) before: {selector: bar, sanitization: [pattern: bar]}
     # (h3) before: {selector: foo, sanitization: [pattern: foo, pattern: bar]}
     def self.merge(first, second)
-      result = { 'paths' => {}, 'before' => {}, 'after' => {} }
-      # Rule 1.
+      result = {
+        'paths' => [],
+        'before' => {},
+        'after' => {},
+        'settings' => {}
+      }
+
+      # Merge sanitization rules.
+      Sanitizer::TOOLS.values.flatten(1).each do |key|
+        result[key] = second[key] || first[key]
+        result.delete(key) unless result[key]
+      end
+
+      # Always merge paths as an array.
       result['paths'] = (first['paths'] || []) + (second['paths'] || [])
+
+      # Rule 1.
       %w[before after].each do |pos|
+        first[pos] ||= {}
+        second[pos] ||= {}
+
+        # If only the second hash has the value.
         unless first[pos]
           result[pos] = second[pos] || {}
           next
         end
+
         result[pos] = first[pos].merge!(second[pos]) do |key, a, b|
           # Rule 2a.
           result[pos][key] = if Sanitizer::TOOLS[:array].include? key
                                (a || []) + (b || [])
+                             elsif key == 'settings'
+                               b
                              else
                                a || b # Rule 2b.
                              end
         end
       end
+
+      # Merge settings.
+      result['settings'] = merge_deep(
+        first['settings'] || {},
+        second['settings'] || {}
+      )
+
+      result
+    end
+
+    ##
+    # Merges 2 iterable objects deeply.
+    def self.merge_deep(first, second)
+      first.merge(second) do |_key, val1, val2|
+        if val1.is_a? Hash
+          self.class.merge_deep(val1, val2 || {})
+        elsif val1.is_a? Array
+          val1 + (val2 || [])
+        else
+          val2
+        end
+      end
+    end
+
+    ##
+    # Gets all loaded configuration except defaults.
+    #
+    # @return [Hash]
+    #   Config data.
+    def all
+      result = Marshal.load(Marshal.dump(@config))
+      self.class.remove_defaults(result)
+    end
+
+    ##
+    # Removes default parameters from a config hash.
+    #
+    # I know this is weird, but it'll be fixed. The config management needs to
+    # be streamlined further.
+    def self.remove_defaults(data)
+      # Create a deep copy of the config data.
+      result = data
+
+      # Exclude default settings.
+      result['settings'].delete_if do |key, value|
+        value == DEFAULT_CONFIG['settings'][key] || !value
+      end
+
+      # Exclude default curl opts.
+      result['settings']['curl_opts'] ||= {}
+      result['settings']['curl_opts'].delete_if do |key, value|
+        value == UriWrapper::DEFAULT_CURL_OPTS[key.to_sym]
+      end
+
+      # Delete curl opts if empty.
+      unless result['settings']['curl_opts'].length.positive?
+        result['settings'].delete('curl_opts')
+      end
+
       result
     end
 
@@ -105,32 +225,100 @@ class SiteDiff
         raise InvalidConfig, "Missing config file #{path}."
       end
       @config = Config.merge(DEFAULT_CONFIG, Config.load_conf(file))
+
+      # Validate configurations.
+      validate
     end
 
+    # Get "before" site configuration.
     def before
       @config['before']
     end
 
+    # Get "before" site URL.
+    def before_url
+      @config['before']['url'] if @config['before']
+    end
+
+    # Get "after" site configuration.
     def after
       @config['after']
     end
 
+    # Get "after" site URL.
+    def after_url
+      @config['after']['url'] if @config['after']
+    end
+
+    # Get paths.
     def paths
       @config['paths']
     end
 
+    # Set paths.
     def paths=(paths)
       @config['paths'] = Config.normalize_paths(paths)
     end
 
+    ##
+    # Gets a setting.
+    #
+    # @param [String] key
+    #   A key.
+    #
+    # @return [*]
+    #   A value, if exists.
+    def setting(key)
+      key = key.to_s if key.is_a?(Symbol)
+      return @config['settings'][key] if @config['settings'].key?(key)
+    end
+
+    ##
+    # Gets all settings.
+    #
+    # @return [Hash]
+    #   All settings.
+    def settings
+      @config['settings']
+    end
+
     # Checks if the configuration is usable for diff-ing.
+    # TODO: Do we actually need the opts argument?
     def validate(opts = {})
       opts = { need_before: true }.merge(opts)
 
-      raise InvalidConfig, "Undefined 'before' base URL." if \
-        opts[:need_before] && !before['url']
+      if opts[:need_before] && !before['url']
+        raise InvalidConfig, "Undefined 'before' base URL."
+      end
+
       raise InvalidConfig, "Undefined 'after' base URL." unless after['url']
+
       raise InvalidConfig, "Undefined 'paths'." unless paths && !paths.empty?
+
+      # Validate interval and concurrency.
+      interval = setting(:interval)
+      concurrency = setting(:concurrency)
+      if interval.to_i != 0 && concurrency != 1
+        raise InvalidConfig, 'Concurrency must be 1 when an interval is set.'
+      end
+    end
+
+    ##
+    # Returns object clone with stringified keys.
+    # TODO: Make this method available globally, if required.
+    def self.stringify_keys(object)
+      # Do nothing if it is not an object.
+      return object unless object.respond_to?('each_key')
+
+      # Convert symbol indices to strings.
+      output = {}
+      object.each_key do |old_k|
+        new_k = old_k.is_a?(Symbol) ? old_k.to_s : old_k
+        output[new_k] = stringify_keys object[old_k]
+      end
+
+      # Return the new hash with string indices.
+      output
     end
 
     private
@@ -150,7 +338,7 @@ class SiteDiff
       end
 
       conf.each_key do |k, _v|
-        unless CONF_KEYS.include? k
+        unless ALLOWED_CONFIG_KEYS.include? k
           raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'"
         end
       end

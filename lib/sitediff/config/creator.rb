@@ -10,69 +10,97 @@ require 'yaml'
 
 class SiteDiff
   class Config
+    ##
     # SiteDiff Config Creator Object.
     class Creator
-      def initialize(concurrency, interval, whitelist, blacklist, curl_opts, debug, *urls)
-        @concurrency = concurrency
-        @interval = interval
-        @whitelist = whitelist
-        @blacklist = blacklist
+      ##
+      # Creates a Creator object.
+      def initialize(debug, *urls)
+        @config = nil
         @after = urls.pop
         @before = urls.pop # May be nil
-        @curl_opts = curl_opts
         @debug = debug
       end
 
+      ##
+      # Determine if we're dealing with one or two URLs.
       def roots
-        @roots = begin
-          r = { after: @after }
-          r[:before] = @before if @before
-          r
-        end
+        @roots = { 'after' => @after }
+        @roots['before'] = @before if @before
+        @roots
       end
 
-      # Build a config structure, return it
-      def create(opts, &block)
+      ##
+      # Build a config structure, return it.
+      def create(options, &block)
         @config = {}
         @callback = block
-        @dir = Pathname.new(opts[:directory])
+        @dir = Pathname.new(options[:directory])
 
         # Handle other options
-        @depth = opts[:depth]
-        @rules = Rules.new(@config, opts[:rules_disabled]) if opts[:rules]
+        @depth = options[:depth]
+        @rules = Rules.new(@config, options[:rules_disabled]) if options[:rules]
 
         # Setup instance vars
         @paths = Hash.new { |h, k| h[k] = Set.new }
         @cache = Cache.new(directory: @dir.to_s, create: true)
         @cache.write_tags << :before << :after
 
-        build_config
+        build_config options
         write_config
       end
 
-      def build_config
-        %w[before after].each do |tag|
-          next unless (u = roots[tag.to_sym])
+      ##
+      # Build and populate the config object which is being created.
+      #
+      # @param [String] options
+      #   One or more options.
+      def build_config(options)
+        options = Config.stringify_keys options
 
-          @config[tag] = { 'url' => u }
+        # Build config for "before" and "after".
+        %w[before after].each do |tag|
+          next unless (url = roots[tag])
+
+          @config[tag] = { 'url' => url }
         end
 
-        crawl(@depth)
+        # Build other settings.
+        @config['settings'] = {}
+        Config::ALLOWED_SETTINGS_KEYS.each do |key|
+          @config['settings'][key] = options[key]
+        end
+
+        # Crawl the URL to determine paths.
+        # TODO: Crawling should be done by the "sitediff crawl" command.
+        crawl
         @rules&.add_config
 
         @config['paths'] = @paths.values.reduce(&:|).to_a.sort
       end
 
-      def crawl(depth = nil)
-        hydra = Typhoeus::Hydra.new(max_concurrency: @concurrency)
-        roots.each do |tag, u|
-          Crawler.new(hydra, u, @interval, @whitelist, @blacklist, depth, @curl_opts, @debug) do |info|
+      ##
+      # Crawls the "before" site to determine "paths".
+      def crawl
+        hydra = Typhoeus::Hydra.new(
+          max_concurrency: @config['settings']['concurrency']
+        )
+        roots.each do |tag, url|
+          Crawler.new(hydra,
+                      url,
+                      @config['settings']['interval'],
+                      @config['settings']['whitelist'],
+                      @config['settings']['blacklist'],
+                      @config['settings']['depth'],
+                      @config['settings']['curl_opts'],
+                      @debug) do |info|
             crawled_path(tag, info)
           end
         end
         hydra.run
       end
 
+      ##
       # Canonicalize a path.
       # TODO: Remove "_tag" if it is not required.
       def canonicalize(_tag, path)
@@ -83,6 +111,8 @@ class SiteDiff
         path.empty? ? '/' : path
       end
 
+      ##
+      # Process info about a crawled path.
       def crawled_path(tag, info)
         path, dup = canonicalize(tag, info.relative)
         return if dup
@@ -101,7 +131,8 @@ class SiteDiff
         @rules.handle_page(tag, res.content, info.document) if @rules && !res.error
       end
 
-      # Create a gitignore if we seem to be in git
+      ##
+      # Create a gitignore if we seem to be in git.
       def make_gitignore(dir)
         # Check if we're in git
         return unless dir.realpath.to_enum(:ascend).any? { |d| d.+('.git').exist? }
@@ -114,18 +145,25 @@ class SiteDiff
         end
       end
 
+      ##
+      # Returns the name of the config directory.
       def directory
         @dir
       end
 
+      ##
+      # Returns the name of the config file.
       def config_file
         @dir + Config::DEFAULT_FILENAME
       end
 
-      # Turn a config structure into a config file
+      ##
+      # Writes the built config into the config file.
+      # TODO: Exclude default params before writing.
       def write_config
         make_gitignore(@dir)
-        config_file.open('w') { |f| f.puts @config.to_yaml }
+        data = Config.remove_defaults(@config)
+        config_file.open('w') { |f| f.puts data.to_yaml }
       end
     end
   end

@@ -69,20 +69,26 @@ class SiteDiff
     puts label + message
   end
 
+  ## Returns the "before" site's URL.
+  #
+  # TODO: Remove in favor of config.before_url.
   def before
     @config.before['url']
   end
 
+  ## Returns the "after" site's URL.
+  #
+  # TODO: Remove in favor of config.after_url.
   def after
     @config.after['url']
   end
 
   # Initialize SiteDiff.
-  def initialize(config, cache, concurrency, interval, verbose = true, debug = false)
+  def initialize(config, cache, verbose = true, debug = false)
     @cache = cache
     @verbose = verbose
     @debug = debug
-    @interval = interval
+
     # Check for single-site mode
     validate_opts = {}
     if !config.before['url'] && @cache.tag?(:before)
@@ -93,8 +99,6 @@ class SiteDiff
       validate_opts[:need_before] = false
     end
     config.validate(validate_opts)
-
-    @concurrency = concurrency
     @config = config
   end
 
@@ -102,8 +106,13 @@ class SiteDiff
   def sanitize(path, read_results)
     %i[before after].map do |tag|
       html = read_results[tag].content
+      # TODO: See why encoding is empty while running tests.
+      #
+      # The presence of an "encoding" value used to be used to determine
+      # if the sanitizer would be called. However, encoding turns up blank
+      # during rspec tests for some reason.
       encoding = read_results[tag].encoding
-      if encoding
+      if encoding || html.length.positive?
         config = @config.send(tag)
         Sanitizer.new(html, config, path: path).sanitize
       else
@@ -112,9 +121,13 @@ class SiteDiff
     end
   end
 
+  ##
   # Process a set of read results.
+  #
+  # This is the callback that processes items fetched by the Fetcher.
   def process_results(path, read_results)
-    if (error = (read_results[:before].error || read_results[:after].error))
+    error = (read_results[:before].error || read_results[:after].error)
+    if error
       diff = Result.new(path, nil, nil, nil, nil, error)
     else
       begin
@@ -142,34 +155,35 @@ class SiteDiff
 
   # Perform the comparison, populate @results and return the number of failing
   # paths (paths with non-zero diff).
-  def run(curl_opts = {}, debug = true)
+  def run
     # Map of path -> Result object, populated by process_results
     @results = {}
     @ordered = @config.paths.dup
 
     unless @cache.read_tags.empty?
-      SiteDiff.log('Using sites from cache: ' +
-        @cache.read_tags.sort.join(', '))
+      SiteDiff.log('Using sites from cache: ' + @cache.read_tags.sort.join(', '))
     end
 
     # TODO: Fix this after config merge refactor!
     # Not quite right. We are not passing @config.before or @config.after
     # so passing this instead but @config.after['curl_opts'] is ignored.
+    curl_opts = @config.setting :curl_opts
     config_curl_opts = @config.before['curl_opts']
     curl_opts = config_curl_opts.clone.merge(curl_opts) if config_curl_opts
     fetcher = Fetch.new(
       @cache,
       @config.paths,
-      @interval,
-      @concurrency,
+      @config.setting(:interval),
+      @config.setting(:concurrency),
       curl_opts,
-      debug,
-      before: before, after: after
+      @debug,
+      before: @config.before_url,
+      after: @config.after_url
     )
     fetcher.run(&method(:process_results))
 
     # Order by original path order
-    @results = @config.paths.map { |p| @results[p] }
+    @results = @config.paths.map { |path| @results[path] }
     results.map { |r| r unless r.success? }.compact.length
   end
 
@@ -208,7 +222,6 @@ class SiteDiff
 
   ##
   # Get SiteDiff gemspec.
-
   def self.gemspec
     file = ROOT_DIR + '/sitediff.gemspec'
     return Gem::Specification.load(file)

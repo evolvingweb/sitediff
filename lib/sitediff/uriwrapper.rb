@@ -9,9 +9,12 @@ class SiteDiff
 
   # SiteDiff URI Wrapper.
   class UriWrapper
+    # TODO: Move these CURL OPTS to Config.DEFAULT_CONFIG.
     DEFAULT_CURL_OPTS = {
-      connecttimeout: 3,     # Don't hang on servers that don't exist
-      followlocation: true,  # Follow HTTP redirects (code 301 and 302)
+      # Don't hang on servers that don't exist.
+      connecttimeout: 3,
+      # Follow HTTP redirects (code 301 and 302).
+      followlocation: true,
       headers: {
         'User-Agent' => 'Sitediff - https://github.com/evolvingweb/sitediff'
       }
@@ -21,6 +24,8 @@ class SiteDiff
     class ReadResult
       attr_accessor :encoding, :content, :error_code, :error
 
+      ##
+      # Creates a ReadResult.
       def initialize(content = nil, encoding = 'utf-8')
         @content = content
         @encoding = encoding
@@ -28,14 +33,18 @@ class SiteDiff
         @error_code = nil
       end
 
-      def self.error(err, code = nil)
+      ##
+      # Creates a ReadResult with an error.
+      def self.error(message, code = nil)
         res = new
         res.error_code = code
-        res.error = err
+        res.error = message
         res
       end
     end
 
+    ##
+    # Creates a UriWrapper.
     def initialize(uri, curl_opts = DEFAULT_CURL_OPTS, debug = true)
       @uri = uri.respond_to?(:scheme) ? uri : Addressable::URI.parse(uri)
       # remove trailing '/'s from local URIs
@@ -44,14 +53,20 @@ class SiteDiff
       @debug = debug
     end
 
+    ##
+    # Returns the "user" part of the URI.
     def user
       @uri.user
     end
 
+    ##
+    # Returns the "password" part of the URI.
     def password
       @uri.password
     end
 
+    ##
+    # Converts the URI to a string.
     def to_s
       uri = @uri.dup
       uri.user = nil
@@ -59,11 +74,13 @@ class SiteDiff
       uri.to_s
     end
 
+    ##
     # Is this a local filesystem path?
     def local?
       @uri.scheme.nil?
     end
 
+    ## What does this one do?
     # FIXME: this is not used anymore
     def +(other)
       # 'path' for SiteDiff includes (parts of) path, query, and fragment.
@@ -72,6 +89,7 @@ class SiteDiff
       self.class.new(@uri.to_s + sep + other)
     end
 
+    ##
     # Reads a file and yields to the completion handler, see .queue()
     def read_file
       File.open(@uri.to_s, 'r:UTF-8') { |f| yield ReadResult.new(f.read) }

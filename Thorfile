@@ -6,6 +6,7 @@ $LOAD_PATH << LIB_DIR
 require 'sitediff/webserver'
 require 'sitediff/webserver/resultserver'
 
+# Thor Base class.
 class Base < Thor
   # adds the option to all Base subclasses
   # method_options() takes different arguments than option()
@@ -31,6 +32,7 @@ class Base < Thor
   end
 end
 
+# Thor for Docker.
 class Docker < Base
   IMAGE = 'evolvingweb/sitediff'
 
@@ -69,6 +71,7 @@ class Docker < Base
   end
 end
 
+# Thor for Spec.
 class Spec < Base
   desc 'unit', 'run RSpec unit tests'
   def unit
@@ -91,6 +94,7 @@ class Spec < Base
   default_task :all
 end
 
+# Thor for fixtures.
 class Fixture < Base
   desc 'local', 'Run a sitediff test case'
   def local
@@ -119,6 +123,7 @@ class Fixture < Base
   end
 end
 
+# Thor for Util.
 class Util < Base
   desc 'changelog', 'vim CHANGELOG.md, with a split pane for recent commits'
   def changelog

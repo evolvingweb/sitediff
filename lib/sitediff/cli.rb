@@ -10,28 +10,22 @@ require 'sitediff/webserver/resultserver'
 
 class SiteDiff
   # SiteDiff CLI.
+  # TODO: Use config.defaults to feed default values for sitediff.yaml params?
   class Cli < Thor
     class_option 'directory',
                  type: :string,
                  aliases: '-C',
                  default: 'sitediff',
                  desc: 'Configuration directory'
-    class_option :curl_options,
-                 type: :hash,
-                 default: {},
-                 desc: 'Options to be passed to curl'
     class_option :insecure,
                  type: :boolean,
                  default: false,
                  desc: 'Ignore many HTTPS/SSL errors'
     class_option :debug,
                  type: :boolean,
+                 aliases: '-d',
                  default: false,
                  desc: 'Stop on certain errors and produce error trace backs.'
-    class_option :interval,
-                 type: :numeric,
-                 default: 0,
-                 desc: 'Crawling delay - interval in milliseconds'
     class_option 'verbose',
                  type: :boolean,
                  aliases: '-v',
@@ -48,10 +42,9 @@ class SiteDiff
       true
     end
 
+    desc 'version', 'Show version information'
     ##
     # Show version information.
-
-    desc 'version', 'Show version information'
     def version
       gemspec = SiteDiff.gemspec
       output = []
@@ -90,15 +83,11 @@ class SiteDiff
            enum: %w[none all before after],
            default: 'before',
            desc: 'Use the cached version of these sites, if available.'
-    option :concurrency,
-           type: :numeric,
-           default: 3,
-           desc: 'Max number of concurrent connections made'
     desc 'diff [OPTIONS] [CONFIG-FILE]',
          'Compute diffs on configured URLs.'
+    ##
+    # Computes diffs.
     def diff(config_file = nil)
-      @interval = options['interval']
-      check_interval(@interval)
       @dir = get_dir(options['directory'])
       config = SiteDiff::Config.new(config_file, @dir)
 
@@ -130,13 +119,14 @@ class SiteDiff
       cache.read_tags << :after if %w[after all].include?(options['cached'])
       cache.write_tags << :before << :after
 
-      sitediff = SiteDiff.new(config, cache, options[:concurrency], @interval,
-                              options['verbose'], options[:debug])
-      num_failing = sitediff.run(get_curl_opts(options), options[:debug])
+      sitediff = SiteDiff.new(config,
+                              cache,
+                              options['verbose'],
+                              options[:debug])
+      num_failing = sitediff.run
       exit_code = num_failing.positive? ? 2 : 0
 
-      sitediff.dump(@dir, options['before-report'],
-                    options['after-report'])
+      sitediff.dump(@dir, options['before-report'], options['after-report'])
 
       SiteDiff.log 'Run "sitediff serve" to see a report.'
     rescue Config::InvalidConfig => e
@@ -161,6 +151,8 @@ class SiteDiff
            desc: 'Whether to open the served content in your browser'
     desc 'serve [OPTIONS] [CONFIG-FILE]',
          'Serve SiteDiff report directory over HTTP.'
+    ##
+    # Serves SiteDiff report for accessing in the browser.
     def serve(config_file = nil)
       @dir = get_dir(options['directory'])
       config = SiteDiff::Config.new(config_file, @dir)
@@ -193,6 +185,10 @@ class SiteDiff
            type: :numeric,
            default: 3,
            desc: 'Max number of concurrent connections made'
+    option :interval,
+           type: :numeric,
+           default: 0,
+           desc: 'Crawling delay - interval in milliseconds'
     option :whitelist,
            type: :string,
            default: '',
@@ -201,31 +197,34 @@ class SiteDiff
            type: :string,
            default: '',
            desc: 'Optional blacklist for crawling'
+    option :curl_options,
+           type: :hash,
+           default: {},
+           desc: 'Options to be passed to curl'
     desc 'init URL [URL]', 'Create a sitediff configuration'
+    ##
+    # Initializes a sitediff (yaml) configuration file.
     def init(*urls)
       unless (1..2).cover? urls.size
         SiteDiff.log 'sitediff init requires one or two URLs', :error
         exit(2)
       end
 
-      @interval = options['interval']
-      check_interval(@interval)
+      # Prepare a config object and write it to the file system.
       @dir = get_dir(options['directory'])
-      curl_opts = get_curl_opts(options)
-      @whitelist = create_regexp(options['whitelist'])
-      @blacklist = create_regexp(options['blacklist'])
-      creator = SiteDiff::Config::Creator.new(options[:concurrency],
-                                              options['interval'],
-                                              @whitelist,
-                                              @blacklist,
-                                              curl_opts,
-                                              options[:debug],
-                                              *urls)
+      whitelist = create_regexp(options['whitelist'])
+      blacklist = create_regexp(options['blacklist'])
+      creator = SiteDiff::Config::Creator.new(options[:debug], *urls)
       creator.create(
         depth: options[:depth],
         directory: @dir,
+        concurrency: options[:concurrency],
+        interval: options[:interval],
+        whitelist: whitelist,
+        blacklist: blacklist,
         rules: options[:rules] != 'no',
-        rules_disabled: (options[:rules] == 'disabled')
+        rules_disabled: (options[:rules] == 'disabled'),
+        curl_opts: get_curl_opts(options)
       ) do |_tag, info|
         SiteDiff.log "Visited #{info.uri}, cached"
       end
@@ -237,15 +236,14 @@ class SiteDiff
     option :url,
            type: :string,
            desc: 'A custom base URL to fetch from'
-    option :concurrency,
-           type: :numeric,
-           default: 3,
-           desc: 'Max number of concurrent connections made'
     desc 'store [CONFIG-FILE]',
          'Cache the current contents of a site for later comparison.'
+    ##
+    # Caches the current version of the site.
     def store(config_file = nil)
       @dir = get_dir(options['directory'])
       config = SiteDiff::Config.new(config_file, @dir)
+      # TODO: Figure out how to remove this config.validate call.
       config.validate(need_before: false)
       cache = SiteDiff::Cache.new(directory: @dir, create: true)
       cache.write_tags << :before
@@ -253,9 +251,9 @@ class SiteDiff
       base = options[:url] || config.after['url']
       fetcher = SiteDiff::Fetch.new(cache,
                                     config.paths,
-                                    options[:interval],
-                                    options[:concurrency],
-                                    get_curl_opts(options),
+                                    config.setting(:interval),
+                                    config.setting(:concurrency),
+                                    get_curl_opts(config.settings),
                                     options[:debug],
                                     before: base)
       fetcher.run do |path, _res|
@@ -264,12 +262,17 @@ class SiteDiff
     end
 
     no_commands do
+      # Generates CURL options.
+      #
+      # TODO: This should be in the config class instead.
+      # TODO: Make all requests insecure and avoid custom curl-opts.
       def get_curl_opts(options)
         # We do want string keys here
         bool_hash = { 'true' => true, 'false' => false }
         curl_opts = UriWrapper::DEFAULT_CURL_OPTS
                     .clone
-                    .merge(options[:curl_options])
+                    .merge(options['curl_options'] || {})
+                    .merge(options['curl_opts'] || {})
         curl_opts.each { |k, v| curl_opts[k] = bool_hash.fetch(v, v) }
         if options[:insecure]
           curl_opts[:ssl_verifypeer] = false
@@ -278,13 +281,8 @@ class SiteDiff
         curl_opts
       end
 
-      def check_interval(interval)
-        if interval != 0 && options[:concurrency] != 1
-          SiteDiff.log '--concurrency must be set to 1 in order to enable the interval feature'
-          exit(2)
-        end
-      end
-
+      ##
+      # Ensures that the given directory exists.
       def get_dir(directory)
         # Create the dir. Must go before cache initialization!
         @dir = Pathname.new(directory || '.')
@@ -292,6 +290,8 @@ class SiteDiff
         @dir.to_s
       end
 
+      ##
+      # Creates a RegExp from a string.
       def create_regexp(string_param)
         begin
           @return_value = string_param == '' ? nil : Regexp.new(string_param)

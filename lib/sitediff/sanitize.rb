@@ -18,12 +18,16 @@ class SiteDiff
     }.freeze
     DOM_TRANSFORMS = Set.new(%w[remove unwrap_root unwrap remove_class])
 
+    ##
+    # Creates a Sanitizer.
     def initialize(html, config, opts = {})
       @html = html
       @config = config
       @opts = opts
     end
 
+    ##
+    # Performs sanitization.
     def sanitize
       return '' if @html == '' # Quick return on empty input
 
