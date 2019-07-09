@@ -157,20 +157,20 @@ class SiteDiff
 
       # Merge settings.
       result['settings'] = merge_deep(
-        first['settings'],
-        second['settings']
+        first['settings'] || {},
+        second['settings'] || {}
       )
 
       result
     end
 
     def self.merge_deep(a, b)
-      return b unless a.respond_to?('merge')
-
       a.merge(b) do |key, a, b|
         if a.is_a? Hash
+          b ||= {} if b.is_a? Hash
           self.class.merge_deep(a, b)
         elsif a.is_a? Array
+          b ||= [] if b.is_a? Array
           a + b
         else
           b
