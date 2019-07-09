@@ -69,10 +69,12 @@ class SiteDiff
     puts label + message
   end
 
+  # TODO: Remove in favor of config.before_url.
   def before
     @config.before['url']
   end
 
+  # TODO: Remove in favor of config.after_url.
   def after
     @config.after['url']
   end
@@ -100,8 +102,13 @@ class SiteDiff
   def sanitize(path, read_results)
     %i[before after].map do |tag|
       html = read_results[tag].content
+      # TODO: See why encoding is empty while running tests.
+      #
+      # The presence of an "encoding" value used to be used to determine
+      # if the sanitizer would be called. However, encoding turns up blank
+      # during rspec tests for some reason.
       encoding = read_results[tag].encoding
-      if encoding
+      if encoding || html.length.positive?
         config = @config.send(tag)
         Sanitizer.new(html, config, path: path).sanitize
       else
@@ -110,9 +117,13 @@ class SiteDiff
     end
   end
 
+  ##
   # Process a set of read results.
+  #
+  # This is the callback that processes items fetched by the Fetcher.
   def process_results(path, read_results)
-    if (error = (read_results[:before].error || read_results[:after].error))
+    error = (read_results[:before].error || read_results[:after].error)
+    if (error)
       diff = Result.new(path, nil, nil, nil, nil, error)
     else
       begin
@@ -146,8 +157,7 @@ class SiteDiff
     @ordered = @config.paths.dup
 
     unless @cache.read_tags.empty?
-      SiteDiff.log('Using sites from cache: ' +
-        @cache.read_tags.sort.join(', '))
+      SiteDiff.log('Using sites from cache: ' + @cache.read_tags.sort.join(', '))
     end
 
     # TODO: Fix this after config merge refactor!
@@ -163,12 +173,13 @@ class SiteDiff
       @config.setting(:concurrency),
       curl_opts,
       @debug,
-      before: before, after: after
+      before: @config.before_url,
+      after: @config.after_url
     )
     fetcher.run(&method(:process_results))
 
     # Order by original path order
-    @results = @config.paths.map { |p| @results[p] }
+    @results = @config.paths.map { |path| @results[path] }
     results.map { |r| r unless r.success? }.compact.length
   end
 
@@ -207,7 +218,6 @@ class SiteDiff
 
   ##
   # Get SiteDiff gemspec.
-
   def self.gemspec
     file = ROOT_DIR + '/sitediff.gemspec'
     return Gem::Specification.load(file)
