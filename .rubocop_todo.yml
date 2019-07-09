@@ -46,13 +46,6 @@ Security/MarshalLoad:
   Exclude:
     - 'lib/sitediff/cache.rb'
 
-# Offense count: 21
-Style/Documentation:
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
-    - 'Thorfile'
-
 # Offence count: 82
 Style/DocumentationMethod:
   Enabled: true
