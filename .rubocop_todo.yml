@@ -30,7 +30,7 @@ Metrics/BlockLength:
 
 # Offense count: 6
 Metrics/CyclomaticComplexity:
-  Max: 13
+  Max: 15
 
 # Offense count: 2
 # Configuration parameters: CountKeywordArgs.
@@ -39,7 +39,7 @@ Metrics/ParameterLists:
 
 # Offense count: 5
 Metrics/PerceivedComplexity:
-  Max: 13
+  Max: 15
 
 # Offense count: 1
 Security/MarshalLoad:
