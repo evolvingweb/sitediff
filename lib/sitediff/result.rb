@@ -23,6 +23,8 @@ class SiteDiff
 
     attr_reader :status, :diff
 
+    ##
+    # Creates a Result.
     def initialize(*args)
       super
       if error
@@ -42,10 +44,18 @@ class SiteDiff
       end
     end
 
+    ##
+    # Whether the result has no diff.
+    #
+    # If there is a diff, it is not a success.
+    #
+    # TODO: Change "Success" to unchanged.
     def success?
       status == STATUS_SUCCESS
     end
 
+    ##
+    # Whether the result has an error.
     def error?
       status == STATUS_ERROR
     end

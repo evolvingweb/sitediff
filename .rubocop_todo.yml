@@ -51,18 +51,12 @@ Style/DocumentationMethod:
   Enabled: true
   Exclude:
     - Thorfile
-    - lib/sitediff.rb
-    - lib/sitediff/sanitize.rb
-    - lib/sitediff/uriwrapper.rb
     - lib/sitediff/sanitize/regexp.rb
     - lib/sitediff/sanitize/dom_transform.rb
     - lib/sitediff/diff.rb
-    - lib/sitediff/result.rb
-    - lib/sitediff/cli.rb
     - lib/sitediff/rules.rb
     - lib/sitediff/webserver/resultserver.rb
     - lib/sitediff/cache.rb
-    - lib/sitediff/config.rb
     - lib/sitediff/webserver.rb
 
 # Offense count: 1
