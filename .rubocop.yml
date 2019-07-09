@@ -50,3 +50,10 @@ Metrics/MethodLength:
 Metrics/BlockLength:
   CountComments: false
   Max: 64
+
+# MarshalLoad helps in creating a clone of a Ruby hash, ensuring that it is
+# completely disconnected from the original hash. A common way of doing this
+# is by serializing an object and then un-serializing it with Marshal.
+Security/MarshalLoad:
+  Exclude:
+    - 'lib/sitediff/cache.rb'
