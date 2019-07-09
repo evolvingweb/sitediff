@@ -69,11 +69,15 @@ class SiteDiff
     puts label + message
   end
 
+  ## Returns the "before" site's URL.
+  #
   # TODO: Remove in favor of config.before_url.
   def before
     @config.before['url']
   end
 
+  ## Returns the "after" site's URL.
+  #
   # TODO: Remove in favor of config.after_url.
   def after
     @config.after['url']
