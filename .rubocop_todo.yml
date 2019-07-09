@@ -57,7 +57,6 @@ Style/DocumentationMethod:
     - lib/sitediff/rules.rb
     - lib/sitediff/webserver/resultserver.rb
     - lib/sitediff/cache.rb
-    - lib/sitediff/webserver.rb
 
 # Offense count: 1
 Style/StructInheritance:
@@ -76,7 +75,6 @@ Metrics/LineLength:
     - '\sif|unless\s'
   Exclude:
     - 'Thorfile'
-    - 'lib/sitediff.rb'
     - 'lib/sitediff/cache.rb'
     - 'lib/sitediff/uriwrapper.rb'
     - 'lib/sitediff/sanitize.rb'
