@@ -9,7 +9,6 @@ class SiteDiff
 
   # SiteDiff URI Wrapper.
   class UriWrapper
-
     # TODO: Move these CURL OPTS to Config.DEFAULT_CONFIG.
     DEFAULT_CURL_OPTS = {
       # Don't hang on servers that don't exist.
