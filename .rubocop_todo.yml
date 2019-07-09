@@ -23,12 +23,6 @@ Metrics/AbcSize:
   Max: 80
 
 # Offense count: 6
-# Configuration parameters: CountComments, ExcludedMethods.
-# ExcludedMethods: refine
-Metrics/BlockLength:
-  Max: 52
-
-# Offense count: 6
 Metrics/CyclomaticComplexity:
   Max: 15
 
@@ -40,11 +34,6 @@ Metrics/ParameterLists:
 # Offense count: 5
 Metrics/PerceivedComplexity:
   Max: 15
-
-# Offense count: 1
-Security/MarshalLoad:
-  Exclude:
-    - 'lib/sitediff/cache.rb'
 
 # Offence count: 82
 Style/DocumentationMethod:
