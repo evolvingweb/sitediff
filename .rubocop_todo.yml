@@ -65,13 +65,6 @@ Style/DocumentationMethod:
     - lib/sitediff/config.rb
     - lib/sitediff/webserver.rb
 
-# Offense count: 3
-# Configuration parameters: MinBodyLength.
-Style/GuardClause:
-  Exclude:
-    - 'lib/sitediff/uriwrapper.rb'
-    - 'lib/sitediff/webserver.rb'
-
 # Offense count: 1
 Style/StructInheritance:
   Exclude:
