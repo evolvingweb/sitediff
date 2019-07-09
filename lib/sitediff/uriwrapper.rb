@@ -9,9 +9,13 @@ class SiteDiff
 
   # SiteDiff URI Wrapper.
   class UriWrapper
+
+    # TODO: Move these CURL OPTS to Config.DEFAULT_CONFIG.
     DEFAULT_CURL_OPTS = {
-      connecttimeout: 3,     # Don't hang on servers that don't exist
-      followlocation: true,  # Follow HTTP redirects (code 301 and 302)
+      # Don't hang on servers that don't exist.
+      connecttimeout: 3,
+      # Follow HTTP redirects (code 301 and 302).
+      followlocation: true,
       headers: {
         'User-Agent' => 'Sitediff - https://github.com/evolvingweb/sitediff'
       }
