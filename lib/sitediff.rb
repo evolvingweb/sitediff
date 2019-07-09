@@ -123,7 +123,7 @@ class SiteDiff
   # This is the callback that processes items fetched by the Fetcher.
   def process_results(path, read_results)
     error = (read_results[:before].error || read_results[:after].error)
-    if (error)
+    if error
       diff = Result.new(path, nil, nil, nil, nil, error)
     else
       begin
