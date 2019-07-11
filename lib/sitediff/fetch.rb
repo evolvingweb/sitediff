@@ -5,12 +5,18 @@ require 'typhoeus'
 
 class SiteDiff
   # SiteDiff Data Fetcher.
+  # TODO: Rename this to Fetcher.
   class Fetch
     # Cache is a cache object, see sitediff/cache
     # Paths is a list of sub-paths
     # Tags is a hash of tag names => base URLs.
-    def initialize(cache, paths, interval, concurrency = 3, curl_opts = nil,
-                   debug = true, **tags)
+    def initialize(cache,
+                   paths,
+                   interval,
+                   concurrency = 3,
+                   curl_opts = nil,
+                   debug = true,
+                   **tags)
       @cache = cache
       @interval = interval
       @paths = paths

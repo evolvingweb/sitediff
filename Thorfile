@@ -124,6 +124,7 @@ class Fixture < Base
 end
 
 # Thor for Util.
+# TODO: Do we need this?
 class Util < Base
   desc 'changelog', 'vim CHANGELOG.md, with a split pane for recent commits'
   def changelog

@@ -37,6 +37,9 @@ class SiteDiff
   #
   # Label will be colorized and message will not.
   # Type dictates the color: can be :success, :error, or :failure.
+  #
+  # TODO: Use types :error, :success, :info, :warning, :debug.
+  # TODO: Only print :debug messages in debug mode.
   def self.log(message, type = :info, label = nil)
     label = label.to_s
     unless label.empty?
@@ -69,14 +72,16 @@ class SiteDiff
     puts label + message
   end
 
-  ## Returns the "before" site's URL.
+  ##
+  # Returns the "before" site's URL.
   #
   # TODO: Remove in favor of config.before_url.
   def before
     @config.before['url']
   end
 
-  ## Returns the "after" site's URL.
+  ##
+  # Returns the "after" site's URL.
   #
   # TODO: Remove in favor of config.after_url.
   def after
@@ -153,8 +158,11 @@ class SiteDiff
     end
   end
 
-  # Perform the comparison, populate @results and return the number of failing
-  # paths (paths with non-zero diff).
+  ##
+  # Compute diff as per config.
+  #
+  # @return [Integer]
+  #   Number of paths which have diffs.
   def run
     # Map of path -> Result object, populated by process_results
     @results = {}
@@ -180,6 +188,8 @@ class SiteDiff
       before: @config.before_url,
       after: @config.after_url
     )
+
+    # Run the Fetcher with "process results" as a callback.
     fetcher.run(&method(:process_results))
 
     # Order by original path order
@@ -187,7 +197,10 @@ class SiteDiff
     results.map { |r| r unless r.success? }.compact.length
   end
 
-  # Write results to disk.
+  ##
+  # Write results to disk as an HTML report.
+  #
+  # TODO: Generation of reports should not be in this class.
   def dump(dir, report_before, report_after)
     report_before ||= before
     report_after ||= after
@@ -210,13 +223,20 @@ class SiteDiff
     end
 
     # create report of results
-    report = Diff.generate_html_report(results, report_before, report_after,
-                                       @cache)
+    report = Diff.generate_html_report(
+      results,
+      report_before,
+      report_after,
+      @cache
+    )
     dir.+(REPORT_FILE).open('w') { |f| f.write(report) }
 
-    # serve some settings
-    settings = { 'before' => report_before, 'after' => report_after,
-                 'cached' => %w[before after] }
+    # Serve some settings.
+    settings = {
+      'before' => report_before,
+      'after' => report_after,
+      'cached' => %w[before after]
+    }
     dir.+(SETTINGS_FILE).open('w') { |f| YAML.dump(settings, f) }
   end
 
