@@ -7,6 +7,8 @@ require 'set'
 class SiteDiff
   # Find appropriate rules for a given site
   class Rules
+    ##
+    # Creates a Rules object.
     def initialize(config, disabled = false)
       @disabled = disabled
       @config = config
@@ -14,6 +16,8 @@ class SiteDiff
       @rules = Hash.new { |h, k| h[k] = Set.new }
     end
 
+    ##
+    # Find sanitization candidates.
     def find_sanitization_candidates
       @candidates = Set.new
 
@@ -26,6 +30,8 @@ class SiteDiff
       end
     end
 
+    ##
+    # Handles an individual page.
     def handle_page(tag, html, doc)
       found = find_rules(html, doc)
       @rules[tag].merge(found)
@@ -54,6 +60,8 @@ class SiteDiff
       end
     end
 
+    ##
+    # TODO: Document what this does.
     def add_section(name, rules)
       return if rules.empty?
 

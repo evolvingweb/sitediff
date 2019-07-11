@@ -42,29 +42,9 @@ Style/DocumentationMethod:
     - Thorfile
     - lib/sitediff/sanitize/regexp.rb
     - lib/sitediff/sanitize/dom_transform.rb
-    - lib/sitediff/diff.rb
-    - lib/sitediff/rules.rb
     - lib/sitediff/webserver/resultserver.rb
-    - lib/sitediff/cache.rb
 
 # Offense count: 1
 Style/StructInheritance:
   Exclude:
     - 'lib/sitediff/result.rb'
-
-# Offense count: 36
-# Configuration parameters: AllowHeredoc, AllowURI, URISchemes,
-# IgnoreCopDirectives, IgnoredPatterns.
-# URISchemes: http, https
-Metrics/LineLength:
-  AllowHeredoc: true
-  AllowURI: true
-  IgnoredPatterns:
-    - '^\s*SiteDiff\.log'
-    - '\sif|unless\s'
-  Exclude:
-    - 'Thorfile'
-    - 'lib/sitediff/cache.rb'
-    - 'lib/sitediff/uriwrapper.rb'
-    - 'lib/sitediff/sanitize.rb'
-    - 'spec/unit/sanitize_spec.rb'
