@@ -61,7 +61,12 @@ class SiteDiff
     end
 
     ##
-    # TODO: Document what this does.
+    # Creates a section of rules in sitediff.yaml.
+    #
+    # @param [String] name
+    #   A key.
+    # @param [*] rules
+    #   The rules.
     def add_section(name, rules)
       return if rules.empty?
 

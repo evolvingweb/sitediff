@@ -11,13 +11,16 @@ class SiteDiff
     # Default config file.
     DEFAULT_FILENAME = 'sitediff.yaml'
 
+    # Default paths file.
+    DEFAULT_PATHS_FILENAME = 'paths.txt'
+
     # Default SiteDiff config.
     DEFAULT_CONFIG = {
       'settings' => {
         'depth' => 3,
         'interval' => 0,
-        'whitelist' => [],
-        'blacklist' => [],
+        'whitelist' => nil,
+        'blacklist' => nil,
         'concurrency' => 3
       },
       'before' => {},
@@ -217,14 +220,16 @@ class SiteDiff
     end
 
     # Creates a SiteDiff Config object.
-    def initialize(file, dir)
+    def initialize(file, directory)
       # Fallback to default config filename, if none is specified.
-      file = File.join(dir, DEFAULT_FILENAME) if file.nil?
+      file = File.join(directory, DEFAULT_FILENAME) if file.nil?
       unless File.exist?(file)
         path = File.expand_path(file)
         raise InvalidConfig, "Missing config file #{path}."
       end
       @config = Config.merge(DEFAULT_CONFIG, Config.load_conf(file))
+      @file = file
+      @directory = directory
 
       # Validate configurations.
       validate
@@ -257,7 +262,55 @@ class SiteDiff
 
     # Set paths.
     def paths=(paths)
+      raise 'Paths must be an Array' unless paths.is_a? Array
+
       @config['paths'] = Config.normalize_paths(paths)
+    end
+
+    ##
+    # Writes an array of paths to a file.
+    #
+    # @param [Array] paths
+    #   An array of paths.
+    # @param [String] file
+    #   Optional path to a file.
+    def paths_file_write(paths, file = nil)
+      unless paths.is_a?(Array) && paths.length.positive?
+        raise SiteDiffException, 'Write failed. Invalid paths.'
+      end
+
+      file ||= File.join(@directory, DEFAULT_PATHS_FILENAME)
+      File.open(file, 'w+') { |f| f.puts(paths) }
+    end
+
+    ##
+    # Reads a collection of paths from a file.
+    #
+    # @param [String] file
+    #   A file containing one path per line.
+    #
+    # @return [Integer]
+    #   Number of paths read.
+    def paths_file_read(file = nil)
+      file ||= File.join(@directory, DEFAULT_PATHS_FILENAME)
+
+      raise Config::InvalidConfig, "File not found: #{file}" unless File.exist? file
+
+      self.paths = File.readlines(file)
+
+      # Return the number of paths.
+      paths.length
+    end
+
+    ##
+    # Get roots.
+    #
+    # Example: If the config has a "before" and "after" sections, then roots
+    # will be ["before", "after"].
+    def roots
+      @roots = { 'after' => after_url }
+      @roots['before'] = before_url if before
+      @roots
     end
 
     ##
@@ -276,6 +329,8 @@ class SiteDiff
     ##
     # Gets all settings.
     #
+    # TODO: Make sure the settings are not writable.
+    #
     # @return [Hash]
     #   All settings.
     def settings
@@ -292,8 +347,6 @@ class SiteDiff
       end
 
       raise InvalidConfig, "Undefined 'after' base URL." unless after['url']
-
-      raise InvalidConfig, "Undefined 'paths'." unless paths && !paths.empty?
 
       # Validate interval and concurrency.
       interval = setting(:interval)
@@ -319,6 +372,21 @@ class SiteDiff
 
       # Return the new hash with string indices.
       output
+    end
+
+    ##
+    # Creates a RegExp from a string.
+    def self.create_regexp(string_param)
+      begin
+        @return_value = string_param == '' ? nil : Regexp.new(string_param)
+      rescue SiteDiffException => e
+        @return_value = nil
+        SiteDiff.log 'Invalid RegExp: ' + string_param, :error
+        SiteDiff.log e.message, :error
+        # TODO: Use SiteDiff.log type :debug
+        # SiteDiff.log e.backtrace, :error if options[:verbose]
+      end
+      return @return_value
     end
 
     private

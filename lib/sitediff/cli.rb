@@ -91,38 +91,45 @@ class SiteDiff
       @dir = get_dir(options['directory'])
       config = SiteDiff::Config.new(config_file, @dir)
 
-      # override config based on options
-      paths = options['paths']
-      if (paths_file = options['paths-file'])
-        if paths
-          SiteDiff.log "Can't have both --paths-file and --paths", :error
-          exit(-1)
-        end
-
-        paths_file = Pathname.new(paths_file).expand_path
-        unless File.exist? paths_file
-          raise Config::InvalidConfig,
-                "Paths file '#{paths_file}' not found!"
-        end
-        SiteDiff.log "Reading paths from: #{paths_file}"
-        config.paths = File.readlines(paths_file)
+      # Determine "paths" override based on options.
+      if options['paths'] && options['paths-file']
+        SiteDiff.log "Can't specify both --paths-file and --paths.", :error
+        exit(-1)
       end
-      config.paths = paths if paths
 
+      # Apply "paths" override, if any.
+      config.paths = options['paths'] if options['paths']
+
+      # Determine and apply "paths-file", if "paths" is not specified.
+      unless options['paths']
+        paths_file = options['paths-file']
+        paths_file ||= File.join(@dir, Config::DEFAULT_PATHS_FILENAME)
+        paths_file = File.expand_path(paths_file)
+
+        paths_count = config.paths_file_read(paths_file)
+        SiteDiff.log "Read #{paths_count} paths from: #{paths_file}"
+      end
+
+      # TODO: Why do we allow before and after override during diff?
       config.before['url'] = options['before'] if options['before']
       config.after['url'] = options['after'] if options['after']
 
-      # Setup cache
-      cache = SiteDiff::Cache.new(create: options['cached'] != 'none',
-                                  directory: @dir)
+      # Prepare cache.
+      cache = SiteDiff::Cache.new(
+        create: options['cached'] != 'none',
+        directory: @dir
+      )
       cache.read_tags << :before if %w[before all].include?(options['cached'])
       cache.read_tags << :after if %w[after all].include?(options['cached'])
       cache.write_tags << :before << :after
 
-      sitediff = SiteDiff.new(config,
-                              cache,
-                              options['verbose'],
-                              options[:debug])
+      # Run sitediff.
+      sitediff = SiteDiff.new(
+        config,
+        cache,
+        options['verbose'],
+        options[:debug]
+      )
       num_failing = sitediff.run
       exit_code = num_failing.positive? ? 2 : 0
 
@@ -201,7 +208,7 @@ class SiteDiff
            type: :hash,
            default: {},
            desc: 'Options to be passed to curl'
-    desc 'init URL [URL]', 'Create a sitediff configuration'
+    desc 'init URL [URL]', 'Create a sitediff configuration.'
     ##
     # Initializes a sitediff (yaml) configuration file.
     def init(*urls)
@@ -212,25 +219,21 @@ class SiteDiff
 
       # Prepare a config object and write it to the file system.
       @dir = get_dir(options['directory'])
-      whitelist = create_regexp(options['whitelist'])
-      blacklist = create_regexp(options['blacklist'])
       creator = SiteDiff::Config::Creator.new(options[:debug], *urls)
       creator.create(
         depth: options[:depth],
         directory: @dir,
         concurrency: options[:concurrency],
         interval: options[:interval],
-        whitelist: whitelist,
-        blacklist: blacklist,
+        whitelist: Config.create_regexp(options['whitelist']),
+        blacklist: Config.create_regexp(options['blacklist']),
         rules: options[:rules] != 'no',
         rules_disabled: (options[:rules] == 'disabled'),
         curl_opts: get_curl_opts(options)
-      ) do |_tag, info|
-        SiteDiff.log "Visited #{info.uri}, cached"
-      end
+      )
 
       SiteDiff.log "Created #{creator.config_file.expand_path}", :success
-      SiteDiff.log "You can now run 'sitediff diff'", :success
+      SiteDiff.log 'You can now run "sitediff diff"', :success
     end
 
     option :url,
@@ -259,6 +262,58 @@ class SiteDiff
       fetcher.run do |path, _res|
         SiteDiff.log "Visited #{path}, cached"
       end
+    end
+
+    desc 'crawl [CONFIG-FILE]',
+         'Crawl the "before" site to discover paths.'
+    ##
+    # Crawls the "before" site to determine "paths".
+    #
+    # TODO: Move actual crawling to sitediff.crawl(config).
+    # TODO: Switch to paths = sitediff.crawl().
+    def crawl(config_file = nil)
+      # Prepare configuration.
+      @dir = get_dir(options['directory'])
+      @config = SiteDiff::Config.new(config_file, @dir)
+
+      # Prepare cache.
+      @cache = SiteDiff::Cache.new(
+        create: options['cached'] != 'none',
+        directory: @dir
+      )
+      @cache.write_tags << :before << :after
+
+      # Crawl with Hydra to discover paths.
+      hydra = Typhoeus::Hydra.new(
+        max_concurrency: @config.setting(:concurrency)
+      )
+      @paths = {}
+      @config.roots.each do |tag, url|
+        Crawler.new(
+          hydra,
+          url,
+          @config.setting(:interval),
+          @config.setting(:whitelist),
+          @config.setting(:blacklist),
+          @config.setting(:depth),
+          get_curl_opts(@config.settings),
+          @debug
+        ) do |info|
+          SiteDiff.log "Visited #{info.uri}, cached."
+          after_crawl(tag, info)
+        end
+      end
+      hydra.run
+
+      # Write paths to a file.
+      @paths = @paths.values.reduce(&:|).to_a.sort
+      @config.paths_file_write(@paths)
+
+      # Log output.
+      file = File.expand_path(@dir + Config::DEFAULT_PATHS_FILENAME)
+      SiteDiff.log ''
+      SiteDiff.log "#{@paths.length} page(s) found."
+      SiteDiff.log "Created #{file}.", :info, 'done'
     end
 
     no_commands do
@@ -291,17 +346,23 @@ class SiteDiff
       end
 
       ##
-      # Creates a RegExp from a string.
-      def create_regexp(string_param)
-        begin
-          @return_value = string_param == '' ? nil : Regexp.new(string_param)
-        rescue SiteDiffException => e
-          @return_value = nil
-          SiteDiff.log 'whitelist and blacklist parameters must be valid regular expressions', :error
-          SiteDiff.log e.message, :error
-          SiteDiff.log e.backtrace, :error if options[:verbose]
-        end
-        return @return_value
+      # Processes a crawled path.
+      def after_crawl(tag, info)
+        path = UriWrapper.canonicalize(info.relative)
+
+        # Register the path.
+        @paths[tag] = [] unless @paths[tag]
+        @paths[tag] << path
+
+        result = info.read_result
+
+        # Write result to applicable cache.
+        @cache.set(tag, path, result)
+        # If single-site, cache "after" as "before".
+        @cache.set(:before, path, result) unless @config.roots[:before]
+
+        # TODO: Restore application of rules.
+        # @rules.handle_page(tag, res.content, info.document) if @rules && !res.error
       end
     end
   end
