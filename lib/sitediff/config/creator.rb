@@ -71,64 +71,7 @@ class SiteDiff
           @config['settings'][key] = options[key]
         end
 
-        # Crawl the URL to determine paths.
-        # TODO: Crawling should be done by the "sitediff crawl" command.
-        crawl
         @rules&.add_config
-
-        @config['paths'] = @paths.values.reduce(&:|).to_a.sort
-      end
-
-      ##
-      # Crawls the "before" site to determine "paths".
-      def crawl
-        hydra = Typhoeus::Hydra.new(
-          max_concurrency: @config['settings']['concurrency']
-        )
-        roots.each do |tag, url|
-          Crawler.new(hydra,
-                      url,
-                      @config['settings']['interval'],
-                      @config['settings']['whitelist'],
-                      @config['settings']['blacklist'],
-                      @config['settings']['depth'],
-                      @config['settings']['curl_opts'],
-                      @debug) do |info|
-            crawled_path(tag, info)
-          end
-        end
-        hydra.run
-      end
-
-      ##
-      # Canonicalize a path.
-      # TODO: Remove "_tag" if it is not required.
-      def canonicalize(_tag, path)
-        # Ignore trailing slashes.
-        path = path.chomp('/')
-        # If the path is empty after removing the trailing slash, it implies
-        # that we're on the front page, so we restore the "/".
-        path.empty? ? '/' : path
-      end
-
-      ##
-      # Process info about a crawled path.
-      def crawled_path(tag, info)
-        path, dup = canonicalize(tag, info.relative)
-        return if dup
-
-        res = info.read_result
-
-        @callback[tag, info]
-        @paths[tag] << path
-        @cache.set(tag, path, res)
-
-        # If single-site, cache after as before!
-        @cache.set(:before, path, res) unless roots[:before]
-
-        # This is used to populate the list of rules we guess are
-        # applicable to the current site.
-        @rules.handle_page(tag, res.content, info.document) if @rules && !res.error
       end
 
       ##
@@ -139,8 +82,14 @@ class SiteDiff
 
         dir.+('.gitignore').open('w') do |f|
           f.puts <<-GITIGNORE.gsub(/^\s+/, '')
+            # Directories.
+            diffs
             snapshot
+
+            # Files.
             settings.yaml
+            paths.txt
+            failures.txt
           GITIGNORE
         end
       end

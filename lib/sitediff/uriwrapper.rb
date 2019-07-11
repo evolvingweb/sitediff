@@ -181,5 +181,17 @@ class SiteDiff
         hydra.queue(typhoeus_request(&handler))
       end
     end
+
+    ##
+    # Canonicalize a path.
+    #
+    # @param [String] path
+    #   A base relative path. Example: /foo/bar
+    def self.canonicalize(path)
+      # Ignore trailing slashes for all paths except "/" (front page).
+      path = path.chomp('/') unless path == '/'
+      # If the path is empty, assume that it's the front page.
+      path.empty? ? '/' : path
+    end
   end
 end
