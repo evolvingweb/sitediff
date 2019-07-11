@@ -8,25 +8,38 @@ class SiteDiff
   class Cache
     attr_accessor :read_tags, :write_tags
 
+    ##
+    # Creates a Cache object.
     def initialize(opts = {})
       @create = opts[:create]
 
-      # Read and Write tags are sets that can contain :before and :after
-      # They indicate whether we should use the cache for reading or writing
+      # Read and Write tags are sets that can contain :before and :after.
+      # They indicate whether we should use the cache for reading or writing.
       @read_tags = Set.new
       @write_tags = Set.new
+
+      # The directory used by the cache for storage.
       @dir = opts[:directory] || '.'
     end
 
+    ##
     # Is a tag cached?
+    # TODO: Rename it to is_cached? as it makes more sense.
     def tag?(tag)
       File.directory?(File.join(@dir, 'snapshot', tag.to_s))
     end
 
+    ##
+    # Get data from cache.
     def get(tag, path)
       return nil unless @read_tags.include? tag
 
-      filename = File.join(@dir, 'snapshot', tag.to_s, *path.split(File::SEPARATOR))
+      filename = File.join(
+        @dir,
+        'snapshot',
+        tag.to_s,
+        *path.split(File::SEPARATOR)
+      )
 
       filename = File.join(filename, 'index.html') if File.directory?(filename)
       return nil unless File.file? filename
@@ -34,10 +47,17 @@ class SiteDiff
       Marshal.load(File.read(filename))
     end
 
+    ##
+    # Set data to cache.
     def set(tag, path, result)
       return unless @write_tags.include? tag
 
-      filename = File.join(@dir, 'snapshot', tag.to_s, *path.split(File::SEPARATOR))
+      filename = File.join(
+        @dir,
+        'snapshot',
+        tag.to_s,
+        *path.split(File::SEPARATOR)
+      )
 
       filename = File.join(filename, 'index.html') if File.directory?(filename)
       filepath = Pathname.new(filename)
@@ -63,11 +83,15 @@ class SiteDiff
       File.open(filename, 'w') { |file| file.write(Marshal.dump(result)) }
     end
 
+    ##
+    # TODO: Document this or remove it if unused.
     def key(tag, path)
       # Ensure encoding stays the same!
       Marshal.dump([tag, path.encode('UTF-8')])
     end
 
+    ##
+    # Ensures that a directory exists.
     def get_dir(directory)
       # Create the dir. Must go before cache initialization!
       @dir = Pathname.new(directory || '.')
