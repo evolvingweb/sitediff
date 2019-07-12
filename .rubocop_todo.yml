@@ -18,22 +18,10 @@ Lint/UselessAccessModifier:
     - 'lib/sitediff/config.rb'
     - 'lib/sitediff/webserver.rb'
 
-# Offense count: 16
-Metrics/AbcSize:
-  Max: 80
-
-# Offense count: 6
-Metrics/CyclomaticComplexity:
-  Max: 15
-
 # Offense count: 2
 # Configuration parameters: CountKeywordArgs.
 Metrics/ParameterLists:
   Max: 9
-
-# Offense count: 5
-Metrics/PerceivedComplexity:
-  Max: 15
 
 # Offence count: 82
 Style/DocumentationMethod:
