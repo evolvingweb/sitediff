@@ -19,8 +19,8 @@ class SiteDiff
       'settings' => {
         'depth' => 3,
         'interval' => 0,
-        'whitelist' => nil,
-        'blacklist' => nil,
+        'whitelist' => '',
+        'blacklist' => '',
         'concurrency' => 3
       },
       'before' => {},

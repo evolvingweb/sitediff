@@ -17,10 +17,6 @@ class SiteDiff
                  aliases: '-C',
                  default: 'sitediff',
                  desc: 'Configuration directory'
-    class_option :insecure,
-                 type: :boolean,
-                 default: false,
-                 desc: 'Ignore many HTTPS/SSL errors'
     class_option :debug,
                  type: :boolean,
                  aliases: '-d',
@@ -181,8 +177,14 @@ class SiteDiff
 
     option :depth,
            type: :numeric,
-           default: 3,
+           default: Config::DEFAULT_CONFIG['settings']['depth'],
            desc: 'How deeply to crawl the given site'
+    # TODO: Switch to something like "rules: drupal|wordpress".
+    # TODO: Use a better name for "rules" - maybe "preset"?
+    option :crawl,
+           type: :boolean,
+           default: true,
+           desc: 'Run "sitediff crawl" to discover paths.'
     option :rules,
            type: :string,
            enum: %w[yes no disabled],
@@ -190,20 +192,25 @@ class SiteDiff
            desc: 'Whether rules for the site should be auto-created'
     option :concurrency,
            type: :numeric,
-           default: 3,
+           default: Config::DEFAULT_CONFIG['settings']['concurrency'],
            desc: 'Max number of concurrent connections made'
     option :interval,
            type: :numeric,
-           default: 0,
+           default: Config::DEFAULT_CONFIG['settings']['interval'],
            desc: 'Crawling delay - interval in milliseconds'
     option :whitelist,
            type: :string,
-           default: '',
+           default: Config::DEFAULT_CONFIG['settings']['whitelist'],
            desc: 'Optional whitelist for crawling'
     option :blacklist,
            type: :string,
-           default: '',
+           default: Config::DEFAULT_CONFIG['settings']['blacklist'],
            desc: 'Optional blacklist for crawling'
+    # TODO: Remove this option. Always ignore SSL errors.
+    option :insecure,
+           type: :boolean,
+           default: false,
+           desc: 'Ignore many HTTPS/SSL errors'
     option :curl_options,
            type: :hash,
            default: {},
@@ -231,9 +238,15 @@ class SiteDiff
         rules_disabled: (options[:rules] == 'disabled'),
         curl_opts: get_curl_opts(options)
       )
-
       SiteDiff.log "Created #{creator.config_file.expand_path}", :success
-      SiteDiff.log 'You can now run "sitediff diff"', :success
+
+      # Discover paths, if enabled.
+      if options[:crawl]
+        crawl(creator.config_file)
+        SiteDiff.log 'You can now run "sitediff diff".', :success
+      else
+        SiteDiff.log 'Run "sitediff crawl" to discover paths. You should then be able to run "sitediff diff".', :info
+      end
     end
 
     option :url,
@@ -313,7 +326,7 @@ class SiteDiff
       file = File.expand_path(@dir + Config::DEFAULT_PATHS_FILENAME)
       SiteDiff.log ''
       SiteDiff.log "#{@paths.length} page(s) found."
-      SiteDiff.log "Created #{file}.", :info, 'done'
+      SiteDiff.log "Created #{file}.", :success, 'done'
     end
 
     no_commands do
