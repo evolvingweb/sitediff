@@ -21,18 +21,6 @@ Style/MutableConstant:
 #   and comparison
 Style/ConditionalAssignment:
   Enabled: false
-  
-Style/GuardClause:
-  Enabled: false
-
-Style/Next:
-  Enabled: false
-
-Style/IfUnlessModifier:
-  Enabled: false
-
-Style/RedundantReturn:
-  Enabled: false
 
 # Require documentation for class methods.
 Style/DocumentationMethod:
