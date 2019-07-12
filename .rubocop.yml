@@ -34,6 +34,18 @@ Style/IfUnlessModifier:
 Style/RedundantReturn:
   Enabled: false
 
+# Allow developers to write complex code.
+Metrics/AbcSize:
+  Max: 80
+
+# Allow developers to write complex code.
+Metrics/CyclomaticComplexity:
+  Max: 15
+
+# Allow developers to write complex code.
+Metrics/PerceivedComplexity:
+  Max: 15
+
 # Classes can have as many lines as they want.
 # Complex classes can have many methods after all.
 Metrics/ClassLength:
