@@ -243,6 +243,6 @@ class SiteDiff
   # Get SiteDiff gemspec.
   def self.gemspec
     file = ROOT_DIR + '/sitediff.gemspec'
-    return Gem::Specification.load(file)
+    Gem::Specification.load(file)
   end
 end

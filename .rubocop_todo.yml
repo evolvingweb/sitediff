@@ -27,3 +27,6 @@ Metrics/ParameterLists:
 Style/StructInheritance:
   Exclude:
     - 'lib/sitediff/result.rb'
+
+Style/GuardClause:
+  Enabled: false

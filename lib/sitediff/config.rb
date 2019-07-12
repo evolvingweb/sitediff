@@ -386,7 +386,7 @@ class SiteDiff
         # TODO: Use SiteDiff.log type :debug
         # SiteDiff.log e.backtrace, :error if options[:verbose]
       end
-      return @return_value
+      @return_value
     end
 
     private
