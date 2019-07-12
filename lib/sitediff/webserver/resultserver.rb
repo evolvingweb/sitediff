@@ -10,10 +10,14 @@ class SiteDiff
     class ResultServer < Webserver
       # Display a page from the cache
       class CacheServlet < WEBrick::HTTPServlet::AbstractServlet
+        ##
+        # Creates a Cache Servlet.
         def initialize(_server, cache)
           @cache = cache
         end
 
+        ##
+        # Performs a GET request.
         def do_GET(req, res)
           path = req.path_info
           (md = %r{^/([^/]+)(/.*)$}.match(path)) ||
@@ -30,13 +34,18 @@ class SiteDiff
         end
       end
 
-      # Display two pages side by side
+      ##
+      # Display two pages side by side.
       class SideBySideServlet < WEBrick::HTTPServlet::AbstractServlet
+        ##
+        # Creates a Side By Side Servlet.
         def initialize(_server, cache, settings)
           @cache = cache
           @settings = settings
         end
 
+        ##
+        # Generates URLs for a given path.
         def urls(path)
           %w[before after].map do |tag|
             base = @settings[tag]
@@ -45,6 +54,8 @@ class SiteDiff
           end
         end
 
+        ##
+        # Performs a GET request.
         def do_GET(req, res)
           path = req.path_info
           before, after = *urls(path)
@@ -55,12 +66,17 @@ class SiteDiff
         end
       end
 
+      ##
       # Run sitediff command from browser. Probably dangerous in general.
       class RunServlet < WEBrick::HTTPServlet::AbstractServlet
+        ##
+        # Creates a Run Servlet.
         def initialize(_server, dir)
           @dir = dir
         end
 
+        ##
+        # Performs a GET request.
         def do_GET(req, res)
           path = req.path_info
           if path != '/diff'
@@ -83,6 +99,8 @@ class SiteDiff
         end
       end
 
+      ##
+      # Creates a Result Server.
       def initialize(port, dir, opts = {})
         unless File.exist?(File.join(dir, SiteDiff::SETTINGS_FILE))
           raise SiteDiffException,
@@ -94,6 +112,8 @@ class SiteDiff
         super(port, [dir], opts)
       end
 
+      ##
+      # TODO: Document what this method does.
       def server(opts)
         dir = opts.delete(:DocumentRoot)
         srv = super(opts)
@@ -114,6 +134,8 @@ class SiteDiff
         srv
       end
 
+      ##
+      # Sets up the server.
       def setup
         super
         root = uris.first
@@ -121,6 +143,8 @@ class SiteDiff
         open_in_browser(root) if @opts[:browse]
       end
 
+      ##
+      # Opens a URL in a browser.
       def open_in_browser(url)
         commands = %w[xdg-open open]
         cmd = commands.find { |c| which(c) }
@@ -128,6 +152,8 @@ class SiteDiff
         cmd
       end
 
+      ##
+      # TODO: Document what this method does.
       def which(cmd)
         ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
           file = File.join(path, cmd)
