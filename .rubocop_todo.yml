@@ -23,15 +23,6 @@ Lint/UselessAccessModifier:
 Metrics/ParameterLists:
   Max: 9
 
-# Offence count: 82
-Style/DocumentationMethod:
-  Enabled: true
-  Exclude:
-    - Thorfile
-    - lib/sitediff/sanitize/regexp.rb
-    - lib/sitediff/sanitize/dom_transform.rb
-    - lib/sitediff/webserver/resultserver.rb
-
 # Offense count: 1
 Style/StructInheritance:
   Exclude:
