@@ -38,30 +38,28 @@ class SiteDiff
   # Label will be colorized and message will not.
   # Type dictates the color: can be :success, :error, or :failure.
   #
-  # TODO: Use types :error, :success, :info, :warning, :debug.
   # TODO: Only print :debug messages in debug mode.
   def self.log(message, type = :info, label = nil)
+    # Prepare label.
+    label ||= type unless type == :info
     label = label.to_s
     unless label.empty?
-      # Wrap label in [] brackets.
-      label = '[' + label + ']'
+      # Colorize label.
+      fg = :black
+      bg = :blue
 
-      # Add colors to the label.
-      bg = fg = nil
       case type
       when :info
-        bg = fg = nil
-      when :diff_success
+        bg = :cyan
+      when :success
         bg = :green
-        fg = :black
-      when :diff_failure
-        bg = :red
-      when :warn
-        bg = :yellow
-        fg = :black
       when :error
         bg = :red
+      when :warning
+        bg = :yellow
       end
+
+      label = '[' + label.to_s + ']'
       label = Rainbow(label)
       label = label.bg(bg) if bg
       label = label.fg(fg) if fg
@@ -69,6 +67,7 @@ class SiteDiff
       # Add a space after the label.
       label += ' '
     end
+
     puts label + message
   end
 
