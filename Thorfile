@@ -8,9 +8,9 @@ require 'sitediff/webserver/resultserver'
 
 # Thor Base class.
 class Base < Thor
-  # adds the option to all Base subclasses
-  # method_options() takes different arguments than option()
   method_options local: true
+  # Adds the option to all Base subclasses.
+  # method_options() takes different arguments than option().
   def initialize(*args)
     super(*args)
     @local = options['local']
