@@ -4,6 +4,9 @@ Contains note-worthy changes made to SiteDiff.
 
 ## Dev
 
+- SiteDiff.log() now shows message types: warning, error, success.
+- Create command "sitediff crawl" - It crawls the site and generates
+  a file containing a list of discovered paths.
 - Remove support for multiple config files - use "includes" instead
 - Organize tests and remove Circle CI
 - Make the workflow more "configure once, use many"
