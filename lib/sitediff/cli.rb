@@ -28,6 +28,9 @@ class SiteDiff
                  default: false,
                  desc: 'Show verbose output in terminal'
 
+    # Command aliases.
+    map recrawl: :crawl
+
     # Thor, by default, exits with 0 no matter what!
     def self.exit_on_failure?
       true
