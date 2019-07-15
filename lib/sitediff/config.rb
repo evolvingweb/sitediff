@@ -39,7 +39,6 @@ class SiteDiff
       after
       before_url
       after_url
-      paths
     ]
 
     ##
