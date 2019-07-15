@@ -3,6 +3,9 @@
 vendor/
 Gemfile.lock
 
+# Rdoc documentation.
+/doc
+
 # Files.
 .DS_Store
 *.gem

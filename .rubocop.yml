@@ -21,18 +21,22 @@ Style/MutableConstant:
 #   and comparison
 Style/ConditionalAssignment:
   Enabled: false
-  
-Style/GuardClause:
-  Enabled: false
 
-Style/Next:
-  Enabled: false
+# Require documentation for class methods.
+Style/DocumentationMethod:
+  Enabled: true
 
-Style/IfUnlessModifier:
-  Enabled: false
+# Allow developers to write complex code.
+Metrics/AbcSize:
+  Max: 80
 
-Style/RedundantReturn:
-  Enabled: false
+# Allow developers to write complex code.
+Metrics/CyclomaticComplexity:
+  Max: 15
+
+# Allow developers to write complex code.
+Metrics/PerceivedComplexity:
+  Max: 15
 
 # Classes can have as many lines as they want.
 # Complex classes can have many methods after all.
@@ -50,6 +54,20 @@ Metrics/MethodLength:
 Metrics/BlockLength:
   CountComments: false
   Max: 64
+
+# Some files have very long lines and need to be ignored.
+# Otherwise, we enforce a max-length of 80 characters per line.
+Metrics/LineLength:
+  AllowHeredoc: true
+  AllowURI: true
+  IgnoredPatterns:
+    - '^\s*SiteDiff\.log'
+    - '^\s*run\s'
+    - '\sif|elsif|unless\s'
+  Exclude:
+    - 'Thorfile'
+    # Spec files contain long strings for testing, so we ignore them.
+    - 'spec/**/*_spec.rb'
 
 # MarshalLoad helps in creating a clone of a Ruby hash, ensuring that it is
 # completely disconnected from the original hash. A common way of doing this

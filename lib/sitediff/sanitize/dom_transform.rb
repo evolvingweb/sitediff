@@ -15,15 +15,20 @@ class SiteDiff
       # Supported dom_transform types.
       TRANSFORMS = {}
 
+      ##
+      # Creates a DOM Transform.
       def initialize(rule)
         @rule = rule
       end
 
+      ##
       # Often an array or scalar are both ok values. Turn either into an array.
       def to_array(val)
         [val].flatten
       end
 
+      ##
+      # TODO: Document what this method does.
       def targets(node)
         selectors = to_array(@rule['selector'])
         selectors.each do |sel|
@@ -31,14 +36,20 @@ class SiteDiff
         end
       end
 
+      ##
+      # Applies the transformation to a DOM node.
       def apply(node)
         targets(node) { |t| process(t) }
       end
 
+      ##
+      # Registers a DOM Transform plugin.
       def self.register(name)
         TRANSFORMS[name] = self
       end
 
+      ##
+      # Creates a DOM Transform as per rule.
       def self.create(rule)
         (type = rule['type']) ||
           raise(InvalidSanitization, 'DOM transform needs a type')
@@ -47,26 +58,37 @@ class SiteDiff
         transform.new(rule)
       end
 
-      # Remove elements matching 'selector'
+      ##
+      # Remove elements matching 'selector'.
       class Remove < DomTransform
         register 'remove'
+
+        ##
+        # Processes a node.
         def process(node)
           node.remove
         end
       end
 
-      # Unwrap elements matching 'selector'
+      # Unwrap elements matching 'selector'.
       class Unwrap < DomTransform
         register 'unwrap'
+
+        ##
+        # Processes a node.
         def process(node)
           node.add_next_sibling(node.children)
           node.remove
         end
       end
 
+      ##
       # Remove classes from elements matching selector
       class RemoveClass < DomTransform
         register 'remove_class'
+
+        ##
+        # Processes a node.
         def process(node)
           classes = to_array(@rule['class'])
 
@@ -78,9 +100,13 @@ class SiteDiff
         end
       end
 
-      # Unwrap the root element
+      ##
+      # Unwrap the root element.
       class UnwrapRoot < DomTransform
         register 'unwrap_root'
+
+        ##
+        # Applies the transformation to a DOM node.
         def apply(node)
           (node.children.size == 1) ||
             raise(InvalidSanitization, 'Multiple root elements in unwrap_root')

@@ -87,11 +87,11 @@ class SiteDiff
     def log(verbose = true)
       case status
       when STATUS_SUCCESS then
-        SiteDiff.log path, :diff_success, 'UNCHANGED'
+        SiteDiff.log path, :success, 'UNCHANGED'
       when STATUS_ERROR then
-        SiteDiff.log path + " (#{error})", :warn, 'ERROR'
+        SiteDiff.log path + " (#{error})", :warning, 'ERROR'
       when STATUS_FAILURE then
-        SiteDiff.log path, :diff_failure, 'CHANGED'
+        SiteDiff.log path, :error, 'CHANGED'
         puts Diff.terminal_diffy(before, after) if verbose
       end
     end

@@ -133,25 +133,35 @@ class SiteDiff
         rescue ArgumentError => e
           raise if @debug
 
-          yield ReadResult.error("Parsing error for #{@uri}: #{e.message}")
+          yield ReadResult.error(
+            "Parsing error for #{@uri}: #{e.message}"
+          )
         rescue StandardError => e
           raise if @debug
 
-          yield ReadResult.error("Unknown parsing error for #{@uri}: #{e.message}")
+          yield ReadResult.error(
+            "Unknown parsing error for #{@uri}: #{e.message}"
+          )
         end
       end
 
       req.on_failure do |resp|
         if resp&.status_message
           msg = resp.status_message
-          yield ReadResult.error("HTTP error when loading #{@uri}: #{msg}",
-                                 resp.response_code)
+          yield ReadResult.error(
+            "HTTP error when loading #{@uri}: #{msg}",
+            resp.response_code
+          )
         elsif (msg = resp.options[:return_code])
-          yield ReadResult.error("Connection error when loading #{@uri}: #{msg}",
-                                 resp.response_code)
+          yield ReadResult.error(
+            "Connection error when loading #{@uri}: #{msg}",
+            resp.response_code
+          )
         else
-          yield ReadResult.error("Unknown error when loading #{@uri}: #{msg}",
-                                 resp.response_code)
+          yield ReadResult.error(
+            "Unknown error when loading #{@uri}: #{msg}",
+            resp.response_code
+          )
         end
       end
 
@@ -170,6 +180,18 @@ class SiteDiff
       else
         hydra.queue(typhoeus_request(&handler))
       end
+    end
+
+    ##
+    # Canonicalize a path.
+    #
+    # @param [String] path
+    #   A base relative path. Example: /foo/bar
+    def self.canonicalize(path)
+      # Ignore trailing slashes for all paths except "/" (front page).
+      path = path.chomp('/') unless path == '/'
+      # If the path is empty, assume that it's the front page.
+      path.empty? ? '/' : path
     end
   end
 end

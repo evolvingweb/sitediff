@@ -8,9 +8,9 @@ require 'sitediff/webserver/resultserver'
 
 # Thor Base class.
 class Base < Thor
-  # adds the option to all Base subclasses
-  # method_options() takes different arguments than option()
   method_options local: true
+  # Adds the option to all Base subclasses.
+  # method_options() takes different arguments than option().
   def initialize(*args)
     super(*args)
     @local = options['local']
@@ -124,6 +124,7 @@ class Fixture < Base
 end
 
 # Thor for Util.
+# TODO: Do we need this?
 class Util < Base
   desc 'changelog', 'vim CHANGELOG.md, with a split pane for recent commits'
   def changelog
