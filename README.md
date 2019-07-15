@@ -168,20 +168,23 @@ bundle exec thor fixture:serve
 Then visit http://localhost:13080 to view the report.
 
 Here is an example SiteDiff report:
-![page report preview](docs/sitediff%20-%20overview%20report.png?raw=true)
+![page report preview](misc/sitediff%20-%20overview%20report.png?raw=true)
 
 And here is an example SiteDiff diff of a specific path:
-![page report preview](docs/sitediff%20-%20page%20report.png?raw=true)
+![page report preview](misc/sitediff%20-%20page%20report.png?raw=true)
 
 ## User's guide
 
 ### Getting started
 
-To track changes over time using SiteDiff, create a configuration for your site:
+To use SiteDiff on your site, create a configuration for your site:
 
 ```sitediff init http://mysite.example.com```
 
-SiteDiff will crawl your site, finding pages and caching their contents.
+SiteDiff will generate a configuration file (named `sitediff.yaml` by default).
+By default, it will also crawl your site, finding pages and caching their
+contents. A list of discovered paths will be saved to a `paths.txt` file.
+
 You can open the configuration file ```sitediff/sitediff.yaml``` to see what
 SiteDiff found. See [the configuration reference](#configuration) for details
 on the contents of that file, and how you might want to alter it.
@@ -215,11 +218,11 @@ re-cache your site:
 ```sitediff store```
 
 The next time you run ``sitediff diff``, it will use this new version as the
-baseline for comparison.
+reference for comparison.
 
 Happy diffing!
 
-### Comparing multiple sites
+### Comparing 2 sites
 
 Sometimes you have two sites that you want to compare, for example a production
 site hosted on a public server and a development site hosted on your computer.
@@ -299,7 +302,7 @@ To get help on the options for a particular command, eg: ```diff```:
     - paths.yaml
   ```
 
-  This allows you to separate your configuration into logically groups.
+  This allows you to separate your configuration into logical groups.
   For example, generic rules for your site could live in a `generic.yaml` file,
   while rules pertaining to a particular update you're conducting could
   live in `update-8.2.yaml`.
@@ -307,17 +310,20 @@ To get help on the options for a particular command, eg: ```diff```:
 * **Specifying paths**
 
   When you run ```sitediff diff```, you can specify which pages to look at in
-  several ways:
+  2 ways:
 
-  1. The ```paths``` key in your configuration file.
   1. The option ```--paths /foo /bar ...```.
 
-     If you're trying to fix one page in particular, specifying just that one path will make ```sitediff diff``` run quickly!
+     If you're trying to fix one page in particular, specifying just that one
+     path will make ```sitediff diff``` run quickly!
+
   1. The option ```--paths-file FILE``` with a newline-delimited text file.
 
-     This is particularly useful when you're trying to eliminate all diffs. SiteDiff creates a file ```output/failures.txt``` containing all paths which had differences, so as you try to fix differences, you can run:
+     This is particularly useful when you're trying to eliminate all diffs.
+     SiteDiff creates a file ```output/failures.txt``` containing all paths
+     which had differences, so as you try to fix differences, you can run:
 
-     ```sitediff diff --paths-file output/failures.txt```
+     ```sitediff diff --paths-file sitediff/failures.txt```
 
 * **Debugging rules**
 
@@ -332,7 +338,8 @@ To get help on the options for a particular command, eg: ```diff```:
   SiteDiff allows you to specify a username and password, by using a URL like
   `http://user:pass@example.com`.
   
-  There is also an option to ignore untrusted certificates by specifying an `--insecure` flag.
+  There is also an option to ignore untrusted certificates by using the
+  `--insecure` flag.
 
 * **Running inside containers**
 
@@ -352,30 +359,35 @@ To get help on the options for a particular command, eg: ```diff```:
 
   [Many options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html) can be
   passed to the underlying curl library. Add `--curl_options=name1:value1 name2:value2`
-  to the command line (such as `--curl_options=max_recv_speed_large:100000 ssl_verifypeer:false`
+  to the command line (such as `--curl_options=max_recv_speed_large:100000`
   (remove the `CURLOPT_` prefix and write the name in lowercase) or add them to
   your configuration file.
 
   ```yaml
-  curl_opts:
-    max_recv_speed_large: 10000
-    ssl_verifypeer: false
+  settings:
+    curl_opts:
+      max_recv_speed_large: 10000
+      ssl_verifypeer: false
   ```
 
-  The command line options overwrite what is in the `settings.yaml` file.
+  These CURL options can be put under the `settings` section of `sitediff.yaml`
+  as demonstrated above.
 
 * **Throttling**
 
   A few options are also available to control how aggressively SiteDiff crawls.
 
-     - There's a command line option `--concurrency=N` for both `sitediff init`
-     and `sitediff diff` which controls the maximum number of simultaneous
-     connections made. Lower N mean less aggressive. The default is 3.
+     - There's a command line option `--concurrency=N` for `sitediff init`
+     which controls the maximum number of simultaneous connections made.
+     Lower N mean less aggressive. The default is 3. You can specify this in the
+     `sitediff.yaml` file under the `settings` key.
+
      - The underlying curl library has [many options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html)
      such as `max_recv_speed_large` which can be helpful.
-     - There is a special command line option `--interval=T` for both `sitediff init`
-     and `sitediff diff`. This option only works when concurrency is set to 1
-     and allows the fetcher to delay for T milliseconds between fetching pages.
+     - There is a special command line option `--interval=T` for
+     `sitediff init`. This option and allows the fetcher to delay for
+     T milliseconds between fetching pages. You can specify this in the
+     `sitediff.yaml` file under the `settings` key.
  
 * **Timeouts**
 
@@ -383,29 +395,24 @@ To get help on the options for a particular command, eg: ```diff```:
   or in your configuration file.
 
   ```yaml
-  curl_opts:
-    timeout: 60
-  ```
-
-  or
-
-  ```yaml
-  curl_opts:
-    timeout_ms: 60000
+  settings:
+    curl_opts:
+      timeout: 60 # In seconds; or...
+      timeout_ms: 60000 # In milliseconds.
   ```
 
 * **Whitelisting and Blacklisting**
 
-  By default sitediff crawls pages that are indicated with an HTML anchor using
-  the `<A HREF` syntax. Most pages linked will be HTML pages, but some links
-  will contain binaries such as PDF documents and images. 
-    - Using the option `--blacklist='.*\.pdf'` ensures the crawler skips links
-      for document with a `.pdf` extension. Note that the regular expression is
-      applied to the path of the URL, not the base of the URL.
-      
-      For example `--blacklist='.*\.com'` will not match `http://www.google.com/`,
-      because the path of that URL is `/` while the base is `www.google.com`.
+By default sitediff crawls pages that are indicated with an HTML anchor using
+the `<A HREF` syntax. Most pages linked will be HTML pages, but some links
+will contain binaries such as PDF documents and images.
 
+Using the option `--blacklist='.*\.pdf'` ensures the crawler skips links
+for document with a `.pdf` extension. Note that the regular expression is
+applied to the path of the URL, not the base of the URL.
+
+For example `--blacklist='.*\.com'` will not match `http://www.google.com/`,
+because the path of that URL is `/` while the base is `www.google.com`.      
 
 ## Configuration
 
@@ -594,18 +601,34 @@ The following ```sitediff.yaml``` keys are recognized by SiteDiff:
     - config/strip_css_js.yaml
   ```
 
-* **curl_opts**: Options to pass to the underlying curl library. Remove the
-  `CURLOPT_` prefix in this [full list of options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html)
-  and write in lowercase. Useful for throttling.
+* **settings**: This contains various parameters which affect the way SiteDiff
+  works. You can have the following keys under `settings`.
 
-  ```yaml
-  curl_opts:
-    connecttimeout: 3
-    followlocation: true
-    max_recv_speed_large: 10000
-  ```
+  * **interval**: An integer indicating the number of milliseconds SiteDiff
+    should wait for between requests.
+
+  * **concurrency**: The maximum number of simultaneous requests that SiteDiff
+    should make.
+
+  * **blacklist**: A RegEx indicating the paths that should not be crawled.
+
+  * **whitelist**: A RegEx indicating the paths that should be crawled.
+
+  * **depth**:: The depth to which SiteDiff should crawl the website. Defaults
+    to 3, which means, 3 levels deep.
+
+  * **curl_opts**: Options to pass to the underlying curl library. Remove the
+    `CURLOPT_` prefix in this [full list of options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html)
+    and write in lowercase. Useful for throttling.
+
+    ```yaml
+    curl_opts:
+      connecttimeout: 3
+      followlocation: true
+      max_recv_speed_large: 10000
+    ```
 
 ### Samples
 
 The `config` directory contains some example ```sitediff.yaml``` files.
-For example, [sitediff.yaml.example](config/sitediff.yaml.example).
+For example, [sitediff.example.yaml](config/sitediff.example.yaml).

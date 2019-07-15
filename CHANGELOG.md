@@ -5,6 +5,8 @@ Contains note-worthy changes made to SiteDiff.
 ## Dev
 
 - SiteDiff.log() now shows message types: warning, error, success.
+- sitediff.yaml no longer contains "paths". Paths are now expected
+  to be in a separate file named, default name being "paths.txt".
 - Create command "sitediff crawl" - It crawls the site and generates
   a file containing a list of discovered paths.
 - Remove support for multiple config files - use "includes" instead

@@ -1,10 +1,41 @@
-# A list of paths in the site which are to be compared.
+# Include other configuration files, merging them with this file.
+includes:
+  - extra-rules.yaml
+
+# Settings.
 #
-# This is usually populated automatically by running 'sitediff init'
-paths:
- - /
- - /user
- - /blog?foo=bar
+# If you use "sitediff init" with the right parameters, it will generate
+# this section for you.
+settings:
+  # Crawl 2 levels deep.
+  depth: 2
+  # Wait for 250ms between requests.
+  interval: 250
+  # Make only 1 request at a time - no simultaneous requests.
+  # Concurrency has to be one when an interval is set.
+  concurrency: 1
+  # Don't follow links to PDF files.
+  blacklist: '.*\.pdf'
+  # Curl options, if any.
+  curl_opts:
+    max_recv_speed_large: 10000
+
+# Rules under this element apply only to the 'before' site.
+before:
+  # URL of the 'before' version of the site.
+  url: http://localhost/old
+
+  # Sanitizations and DOM transformations, just like the general ones
+  # demonstrated above, but applied only to the 'before' site.
+  dom_transform:
+    - title: Example
+      type: remove
+      selector: div.updates-required
+
+# Rules under this element apply only to the 'after' site.
+after:
+  # URL of the 'after' version of the site.
+  url: http://localhost/new
 
 # The root element to compare.
 #
@@ -48,24 +79,3 @@ dom_transform:
   - title: Remove block containing current time.
     type: remove
     selector: div#block-time
-
-# Rules under this element apply only to the 'before' site.
-before:
-  # URL of the 'before' version of the site.
-  url: http://localhost/old
-
-  # Sanitizations and DOM transformations, just like the general ones
-  # demonstrated above, but applied only to the 'before' site.
-  dom_transform:
-    - title: Example
-      type: remove
-      selector: div.updates-required
-
-# Rules under this element apply only to the 'after' site.
-after:
-  # URL of the 'after' version of the site.
-  url: http://localhost/new
-
-# Include other configuration files, merging them with this file.
-includes:
-  - extra-rules.yaml
