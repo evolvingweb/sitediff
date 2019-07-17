@@ -98,18 +98,18 @@ end
 class Fixture < Base
   desc 'local', 'Run a sitediff test case'
   def local
-    run "#{executable('sitediff')} diff --cached=none spec/fixtures/config.yaml"
+    run "#{executable('sitediff')} diff --cached=none spec/fixtures/cli/config.yaml"
   end
 
   desc 'http', 'Run a sitediff test case, using web servers'
   def http
-    cmd = "#{executable('sitediff')} diff --cached=none spec/fixtures/config.yaml"
+    cmd = "#{executable('sitediff')} diff --cached=none spec/fixtures/cli/config.yaml"
     http_fixtures(cmd).kill
   end
 
   desc 'serve', 'Serve the result of the fixture test'
   def serve
-    cmd = "#{executable('sitediff')} diff --cached=none spec/fixtures/config.yaml"
+    cmd = "#{executable('sitediff')} diff --cached=none spec/fixtures/cli/config.yaml"
     http_fixtures(cmd)
     SiteDiff::Webserver::ResultServer.new(nil, 'sitediff', quiet: true).wait
   end
@@ -120,14 +120,5 @@ class Fixture < Base
     serv = SiteDiff::Webserver::FixtureServer.new
     run "#{cmd} --before #{serv.before} --after #{serv.after}"
     serv
-  end
-end
-
-# Thor for Util.
-# TODO: Do we need this?
-class Util < Base
-  desc 'changelog', 'vim CHANGELOG.md, with a split pane for recent commits'
-  def changelog
-    run 'git log `git describe --tags --abbrev=0`..HEAD --oneline |  awk \'BEGIN { print "Commits since last tag:" }; {print "- " $0}\' | vim - -R +"vs CHANGELOG.md" +"set noro"'
   end
 end
