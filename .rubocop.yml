@@ -54,6 +54,9 @@ Metrics/MethodLength:
 Metrics/BlockLength:
   CountComments: false
   Max: 64
+  Exclude:
+    # Tests can get fairly long, so we ignore them.
+    - 'spec/**/*_spec.rb'
 
 # Some files have very long lines and need to be ignored.
 # Otherwise, we enforce a max-length of 80 characters per line.
