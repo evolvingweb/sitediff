@@ -21,7 +21,8 @@ class SiteDiff
         'interval' => 0,
         'whitelist' => '',
         'blacklist' => '',
-        'concurrency' => 3
+        'concurrency' => 3,
+        'preset' => nil
       },
       'before' => {},
       'after' => {},
@@ -235,23 +236,25 @@ class SiteDiff
     end
 
     # Get "before" site configuration.
-    def before
-      @config['before']
+    def before(apply_preset = false)
+      section :before, apply_preset
     end
 
     # Get "before" site URL.
     def before_url
-      @config['before']['url'] if @config['before']
+      result = before
+      result['url'] if result
     end
 
     # Get "after" site configuration.
-    def after
-      @config['after']
+    def after(apply_preset = false)
+      section :after, apply_preset
     end
 
     # Get "after" site URL.
     def after_url
-      @config['after']['url'] if @config['after']
+      result = after
+      result['url'] if result
     end
 
     # Get paths.
@@ -299,6 +302,28 @@ class SiteDiff
 
       # Return the number of paths.
       paths.length
+    end
+
+    ##
+    # Reads preset rules.
+    #
+    # @param [String] preset
+    #   Presets
+    #
+    # @return [Hash]
+    #   A hash containing the preset's rules.
+    def preset_file_read(preset)
+      @preset_cache = {} if @preset_cache.nil?
+
+      # Load and cache preset config in memory.
+      if @preset_cache[preset].nil?
+        file = File.join __dir__, 'presets', preset + '.yaml'
+        raise Config::InvalidConfig, "Preset not found: #{preset}" unless File.exist? file
+
+        @preset_cache[preset] = Config.load_conf(file)
+      end
+
+      @preset_cache[preset]
     end
 
     ##
@@ -389,6 +414,38 @@ class SiteDiff
     end
 
     private
+
+    ##
+    # Returns one of the "before" or "after" sections.
+    #
+    # @param [String|Symbol]
+    #   Section name. Example: before, after.
+    # @param [Boolean] with_preset
+    #   Whether to merge with preset config (if any).
+    #
+    # @return [Hash|Nil]
+    #   Section data or Nil.
+    def section(name, with_preset = false)
+      name = name.to_s if name.is_a? Symbol
+
+      # Validate section.
+      unless %w[before after].include? name
+        raise SiteDiffException, 'Section name must be one of "before" or "after"'
+      end
+
+      # Return nil if section is not defined.
+      nil unless @config[name]
+      result = @config[name]
+
+      # Merge preset rules, if required.
+      preset = setting(:preset)
+      if with_preset && !preset.nil?
+        preset_config = preset_file_read preset
+        result = Config.merge preset_config, result
+      end
+
+      result
+    end
 
     def self.normalize_paths(paths)
       paths ||= []
