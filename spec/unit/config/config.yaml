@@ -20,5 +20,3 @@ sanitization:
     title: Remove instances of FOO
     pattern: '--FOO--'
 dom_transform: []
-paths:
-  - /index.html

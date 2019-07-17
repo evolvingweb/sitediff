@@ -4,9 +4,3 @@ before:
 after:
   url: spec/sites/ruby-doc.org/core-2.0
 selector: '#class-metadata'
-paths:
-  - /Hash.html
-  - /File.html
-  - /Kernel.html
-  - /IO.html
-  - /TracePoint.html
