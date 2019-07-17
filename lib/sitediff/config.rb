@@ -430,7 +430,7 @@ class SiteDiff
 
       # Validate section.
       unless %w[before after].include? name
-        raise SiteDiffException, 'Section name must be one of "before" or "after"'
+        raise SiteDiffException, '"name" must be one of "before" or "after".'
       end
 
       # Return nil if section is not defined.
