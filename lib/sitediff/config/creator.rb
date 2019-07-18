@@ -3,7 +3,6 @@
 require 'sitediff/cache'
 require 'sitediff/config'
 require 'sitediff/crawler'
-require 'sitediff/rules'
 require 'pathname'
 require 'typhoeus'
 require 'yaml'
@@ -37,10 +36,6 @@ class SiteDiff
         @callback = block
         @dir = Pathname.new(options[:directory])
 
-        # Handle other options
-        @depth = options[:depth]
-        @rules = Rules.new(@config, options[:rules_disabled]) if options[:rules]
-
         # Setup instance vars
         @paths = Hash.new { |h, k| h[k] = Set.new }
         @cache = Cache.new(directory: @dir.to_s, create: true)
@@ -70,8 +65,6 @@ class SiteDiff
         Config::ALLOWED_SETTINGS_KEYS.each do |key|
           @config['settings'][key] = options[key]
         end
-
-        @rules&.add_config
       end
 
       ##
