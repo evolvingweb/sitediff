@@ -113,7 +113,6 @@ class SiteDiff
     # (h3) before: {selector: foo, sanitization: [pattern: foo, pattern: bar]}
     def self.merge(first, second)
       result = {
-        'paths' => [],
         'before' => {},
         'after' => {},
         'settings' => {}
@@ -124,9 +123,6 @@ class SiteDiff
         result[key] = second[key] || first[key]
         result.delete(key) unless result[key]
       end
-
-      # Always merge paths as an array.
-      result['paths'] = (first['paths'] || []) + (second['paths'] || [])
 
       # Rule 1.
       %w[before after].each do |pos|
@@ -408,14 +404,21 @@ class SiteDiff
       end
 
       # Return nil if section is not defined.
-      nil unless @config[name]
+      return nil unless @config[name]
+
       result = @config[name]
 
       # Merge preset rules, if required.
       preset = setting(:preset)
       if with_preset && !preset.nil?
         preset_config = Preset.read preset
-        result = Config.merge preset_config, result
+
+        # Merge plugins with array values.
+        # TODO: This won't be required after plugin declarations are improved.
+        # See https://rm.ewdev.ca/issues/18301
+        Sanitizer::TOOLS[:array].each do |key|
+          result[key] = (result[key] || []) + preset_config[key] if preset_config[key]
+        end
       end
 
       result
