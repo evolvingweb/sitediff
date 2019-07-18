@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
-#
+
 # TODO: Determine the utility of this file.
 
 LIB_DIR = File.join(File.dirname(__FILE__), 'lib')
