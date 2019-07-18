@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'sitediff/config/preset'
 require 'sitediff/exception'
 require 'sitediff/sanitize'
 require 'pathname'
@@ -47,6 +48,7 @@ class SiteDiff
     # TODO: Create a method self.supports
     # TODO: Deprecate in favor of self.supports key, subkey, subkey...
     ALLOWED_SETTINGS_KEYS = %w[
+      preset
       depth
       whitelist
       blacklist
@@ -57,15 +59,6 @@ class SiteDiff
 
     class InvalidConfig < SiteDiffException; end
     class ConfigNotFound < SiteDiffException; end
-
-    ##
-    # Get default configs.
-    #
-    # @return [Hash]
-    #   Default configuration.
-    def self.defaults
-      DEFAULT_CONFIG
-    end
 
     # Takes a Hash and normalizes it to the following form by merging globals
     # into before and after. A normalized config Hash looks like this:
@@ -305,28 +298,6 @@ class SiteDiff
     end
 
     ##
-    # Reads preset rules.
-    #
-    # @param [String] preset
-    #   Presets
-    #
-    # @return [Hash]
-    #   A hash containing the preset's rules.
-    def preset_file_read(preset)
-      @preset_cache = {} if @preset_cache.nil?
-
-      # Load and cache preset config in memory.
-      if @preset_cache[preset].nil?
-        file = File.join __dir__, 'presets', preset + '.yaml'
-        raise Config::InvalidConfig, "Preset not found: #{preset}" unless File.exist? file
-
-        @preset_cache[preset] = Config.load_conf(file)
-      end
-
-      @preset_cache[preset]
-    end
-
-    ##
     # Get roots.
     #
     # Example: If the config has a "before" and "after" sections, then roots
@@ -378,6 +349,9 @@ class SiteDiff
       if interval.to_i != 0 && concurrency != 1
         raise InvalidConfig, 'Concurrency must be 1 when an interval is set.'
       end
+
+      # Validate preset.
+      Preset.exist? setting(:preset), true if setting(:preset)
     end
 
     ##
@@ -440,7 +414,7 @@ class SiteDiff
       # Merge preset rules, if required.
       preset = setting(:preset)
       if with_preset && !preset.nil?
-        preset_config = preset_file_read preset
+        preset_config = Preset.read preset
         result = Config.merge preset_config, result
       end
 
