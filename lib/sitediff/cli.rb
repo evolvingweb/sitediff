@@ -5,6 +5,7 @@ require 'sitediff'
 require 'sitediff/cache'
 require 'sitediff/config'
 require 'sitediff/config/creator'
+require 'sitediff/config/preset'
 require 'sitediff/fetch'
 require 'sitediff/webserver/resultserver'
 
@@ -182,33 +183,30 @@ class SiteDiff
            type: :numeric,
            default: Config::DEFAULT_CONFIG['settings']['depth'],
            desc: 'How deeply to crawl the given site'
-    # TODO: Switch to something like "rules: drupal|wordpress".
-    # TODO: Use a better name for "rules" - maybe "preset"?
     option :crawl,
            type: :boolean,
            default: true,
            desc: 'Run "sitediff crawl" to discover paths.'
-    option :rules,
+    option :preset,
            type: :string,
-           enum: %w[yes no disabled],
-           default: 'disabled',
-           desc: 'Whether rules for the site should be auto-created'
+           enum: Config::Preset.all,
+           desc: 'Framework-specific presets to apply.'
     option :concurrency,
            type: :numeric,
            default: Config::DEFAULT_CONFIG['settings']['concurrency'],
-           desc: 'Max number of concurrent connections made'
+           desc: 'Max number of concurrent connections made.'
     option :interval,
            type: :numeric,
            default: Config::DEFAULT_CONFIG['settings']['interval'],
-           desc: 'Crawling delay - interval in milliseconds'
+           desc: 'Crawling delay - interval in milliseconds.'
     option :whitelist,
            type: :string,
            default: Config::DEFAULT_CONFIG['settings']['whitelist'],
-           desc: 'Optional whitelist for crawling'
+           desc: 'Optional whitelist for crawling.'
     option :blacklist,
            type: :string,
            default: Config::DEFAULT_CONFIG['settings']['blacklist'],
-           desc: 'Optional blacklist for crawling'
+           desc: 'Optional blacklist for crawling.'
     # TODO: Remove this option. Always ignore SSL errors.
     option :insecure,
            type: :boolean,
@@ -237,8 +235,7 @@ class SiteDiff
         interval: options[:interval],
         whitelist: Config.create_regexp(options['whitelist']),
         blacklist: Config.create_regexp(options['blacklist']),
-        rules: options[:rules] != 'no',
-        rules_disabled: (options[:rules] == 'disabled'),
+        preset: options[:preset],
         curl_opts: get_curl_opts(options)
       )
       SiteDiff.log "Created #{creator.config_file.expand_path}", :success
@@ -326,10 +323,10 @@ class SiteDiff
       @config.paths_file_write(@paths)
 
       # Log output.
-      file = File.expand_path(@dir + Config::DEFAULT_PATHS_FILENAME)
+      file = Pathname.new(@dir) + Config::DEFAULT_PATHS_FILENAME
       SiteDiff.log ''
       SiteDiff.log "#{@paths.length} page(s) found."
-      SiteDiff.log "Created #{file}.", :success, 'done'
+      SiteDiff.log "Created #{file.expand_path}.", :success, 'done'
     end
 
     no_commands do

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'sitediff/config/preset'
 require 'sitediff/exception'
 require 'sitediff/sanitize'
 require 'pathname'
@@ -21,7 +22,8 @@ class SiteDiff
         'interval' => 0,
         'whitelist' => '',
         'blacklist' => '',
-        'concurrency' => 3
+        'concurrency' => 3,
+        'preset' => nil
       },
       'before' => {},
       'after' => {},
@@ -46,6 +48,7 @@ class SiteDiff
     # TODO: Create a method self.supports
     # TODO: Deprecate in favor of self.supports key, subkey, subkey...
     ALLOWED_SETTINGS_KEYS = %w[
+      preset
       depth
       whitelist
       blacklist
@@ -56,15 +59,6 @@ class SiteDiff
 
     class InvalidConfig < SiteDiffException; end
     class ConfigNotFound < SiteDiffException; end
-
-    ##
-    # Get default configs.
-    #
-    # @return [Hash]
-    #   Default configuration.
-    def self.defaults
-      DEFAULT_CONFIG
-    end
 
     # Takes a Hash and normalizes it to the following form by merging globals
     # into before and after. A normalized config Hash looks like this:
@@ -235,23 +229,25 @@ class SiteDiff
     end
 
     # Get "before" site configuration.
-    def before
-      @config['before']
+    def before(apply_preset = false)
+      section :before, apply_preset
     end
 
     # Get "before" site URL.
     def before_url
-      @config['before']['url'] if @config['before']
+      result = before
+      result['url'] if result
     end
 
     # Get "after" site configuration.
-    def after
-      @config['after']
+    def after(apply_preset = false)
+      section :after, apply_preset
     end
 
     # Get "after" site URL.
     def after_url
-      @config['after']['url'] if @config['after']
+      result = after
+      result['url'] if result
     end
 
     # Get paths.
@@ -353,6 +349,9 @@ class SiteDiff
       if interval.to_i != 0 && concurrency != 1
         raise InvalidConfig, 'Concurrency must be 1 when an interval is set.'
       end
+
+      # Validate preset.
+      Preset.exist? setting(:preset), true if setting(:preset)
     end
 
     ##
@@ -389,6 +388,38 @@ class SiteDiff
     end
 
     private
+
+    ##
+    # Returns one of the "before" or "after" sections.
+    #
+    # @param [String|Symbol]
+    #   Section name. Example: before, after.
+    # @param [Boolean] with_preset
+    #   Whether to merge with preset config (if any).
+    #
+    # @return [Hash|Nil]
+    #   Section data or Nil.
+    def section(name, with_preset = false)
+      name = name.to_s if name.is_a? Symbol
+
+      # Validate section.
+      unless %w[before after].include? name
+        raise SiteDiffException, '"name" must be one of "before" or "after".'
+      end
+
+      # Return nil if section is not defined.
+      nil unless @config[name]
+      result = @config[name]
+
+      # Merge preset rules, if required.
+      preset = setting(:preset)
+      if with_preset && !preset.nil?
+        preset_config = Preset.read preset
+        result = Config.merge preset_config, result
+      end
+
+      result
+    end
 
     def self.normalize_paths(paths)
       paths ||= []

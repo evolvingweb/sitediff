@@ -13,12 +13,15 @@ require 'sitediff/cli'
 describe SiteDiff::Cli do
   it 'Runs sitediff diff' do
     SiteDiff::Webserver::FixtureServer.new do |srv|
-      dir = Dir.mktmpdir
+      config_dir = Dir.mktmpdir
+      paths_file = File.expand_path '../../sites/ruby-doc.org/paths.txt', __dir__
+
       cmd = [
         './bin/sitediff', 'diff',
         '--before', srv.before,
         '--after', srv.after,
-        '--directory', dir,
+        '--directory', config_dir,
+        '--paths-file', paths_file,
         '--cached', 'none',
         '-v',
         '-d',
@@ -29,7 +32,7 @@ describe SiteDiff::Cli do
 
       # Should run successfully (exit code 1 is when we crash, 2 is when
       # there's a diff).
-      expect(status.exitstatus).to be 2
+      expect(status.exitstatus).to eq 2
 
       # Should report that Hash.html doesn't match
       expect(out).to include '[CHANGED] /Hash.html'
@@ -44,12 +47,12 @@ describe SiteDiff::Cli do
       expect(out).to match(/^+.*<a href="#method-i-to_h"/)
 
       # There should be a failures file
-      failures = File.join(dir, 'failures.txt')
+      failures = File.join(config_dir, 'failures.txt')
       expect(File.file?(failures)).to be true
       expect(File.read(failures).strip).to include '/Hash.html'
 
       # There should be a report file
-      report = File.join(dir, 'report.html')
+      report = File.join(config_dir, 'report.html')
       expect(File.file?(report)).to be true
       doc = Nokogiri.HTML(File.read(report))
 
@@ -62,7 +65,7 @@ describe SiteDiff::Cli do
 
       # There should be a proper diff file.
       diff = File.join(
-        dir,
+        config_dir,
         'diffs',
         Digest::SHA1.hexdigest('/Hash.html') + '.html'
       )

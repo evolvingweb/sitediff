@@ -22,4 +22,4 @@ script:
   # Test for coding standard violations.
   - rubocop
   # Run rspec / tests.
-  - 'bundle exec thor spec && bundle exec thor fixture:local'
+  - bundle exec rspec

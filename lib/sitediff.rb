@@ -117,8 +117,8 @@ class SiteDiff
       # during rspec tests for some reason.
       encoding = read_results[tag].encoding
       if encoding || html.length.positive?
-        config = @config.send(tag)
-        Sanitizer.new(html, config, path: path).sanitize
+        section = @config.send(tag, true)
+        Sanitizer.new(html, section, path: path).sanitize
       else
         html
       end
