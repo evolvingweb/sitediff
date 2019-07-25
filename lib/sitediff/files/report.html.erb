@@ -10,12 +10,8 @@
   <head>
     <%# Important: without charset, chrome chokes on non-ascii characters %>
     <meta charset="utf-8" />
-    <style>
-      <%= SiteDiff::Diff.css %>
-    </style>
-    <script>
-      <%= SiteDiff::Diff.js %>
-    </script>
+    <style><%= SiteDiff::Report.css %></style>
+    <script><%= SiteDiff::Report.js %></script>
     <title> SiteDiff Report</title>
   </head>
   <body class="page-overview" data-page="overview">
