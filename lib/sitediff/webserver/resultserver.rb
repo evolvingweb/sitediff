@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'sitediff'
+require 'sitediff/report'
 require 'sitediff/webserver'
 require 'erb'
 
@@ -95,19 +96,20 @@ class SiteDiff
           # Could also add a message to indicate success/failure
           # But for the moment, all our files are static
           res.set_redirect(WEBrick::HTTPStatus::Found,
-                           "/files/#{SiteDiff::REPORT_FILE}")
+                           "/files/#{Report::REPORT_FILE}")
         end
       end
 
       ##
       # Creates a Result Server.
       def initialize(port, dir, opts = {})
-        unless File.exist?(File.join(dir, SiteDiff::SETTINGS_FILE))
+        unless File.exist?(File.join(dir, Report::SETTINGS_FILE))
           raise SiteDiffException,
                 "Please run 'sitediff diff' before running 'sitediff serve'"
         end
 
-        @settings = YAML.load_file(File.join(dir, SiteDiff::SETTINGS_FILE))
+        @settings = YAML.load_file(File.join(dir, Report::SETTINGS_FILE))
+        puts @settings
         @cache = opts[:cache]
         super(port, [dir], opts)
       end
@@ -120,7 +122,7 @@ class SiteDiff
         srv.mount_proc('/') do |req, res|
           if req.path == '/'
             res.set_redirect(WEBrick::HTTPStatus::Found,
-                             "/files/#{SiteDiff::REPORT_FILE}")
+                             "/files/#{Report::REPORT_FILE}")
           else
             res.set_redirect(WEBrick::HTTPStatus::TemporaryRedirect,
                              "#{@settings['after']}#{req.path}")

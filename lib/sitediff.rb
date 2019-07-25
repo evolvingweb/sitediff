@@ -4,6 +4,7 @@
 require 'sitediff/config'
 require 'sitediff/fetch'
 require 'sitediff/result'
+require 'sitediff/report'
 require 'pathname'
 require 'rainbow'
 require 'rubygems'
@@ -18,20 +19,6 @@ class SiteDiff
 
   # Path to misc files. Ex: *.erb, *.css.
   FILES_DIR = File.join(File.dirname(__FILE__), 'sitediff', 'files')
-
-  # Directory containing diffs of failing pages.
-  # This directory lives inside the "sitediff" config directory.
-  DIFFS_DIR = 'diffs'
-
-  # Name of file containing a list of pages with diffs.
-  FAILURES_FILE = 'failures.txt'
-
-  # Name of file containing HTML report of diffs.
-  REPORT_FILE = 'report.html'
-
-  # Path to settings.yaml.
-  # TODO: Document what this is about.
-  SETTINGS_FILE = 'settings.yaml'
 
   # Logs a message.
   #
@@ -197,46 +184,11 @@ class SiteDiff
   end
 
   ##
-  # Write results to disk as an HTML report.
-  #
-  # TODO: Generation of reports should not be in this class.
-  def dump(dir, report_before, report_after)
-    report_before ||= before
-    report_after ||= after
+  # Get a reporter object to help with report generation.
+  def report
+    raise SiteDiffException, 'No results detected. Run SiteDiff.run before SiteDiff.report.' if @results.nil?
 
-    # Prepare diff directory and wipe out existing diffs.
-    dir = Pathname.new(dir)
-    dir.mkpath unless dir.directory?
-    diff_dir = dir + DIFFS_DIR
-    diff_dir.rmtree if diff_dir.exist?
-
-    # Write diffs to the diff directory.
-    results.each { |r| r.dump(dir) if r.status == Result::STATUS_FAILURE }
-    SiteDiff.log "All diff files dumped inside #{diff_dir.expand_path}."
-
-    # Store failing paths to failures file.
-    failures = dir + FAILURES_FILE
-    SiteDiff.log "All failures written to #{failures.expand_path}."
-    failures.open('w') do |f|
-      results.each { |r| f.puts r.path unless r.success? }
-    end
-
-    # create report of results
-    report = Diff.generate_html_report(
-      results,
-      report_before,
-      report_after,
-      @cache
-    )
-    dir.+(REPORT_FILE).open('w') { |f| f.write(report) }
-
-    # Serve some settings.
-    settings = {
-      'before' => report_before,
-      'after' => report_after,
-      'cached' => %w[before after]
-    }
-    dir.+(SETTINGS_FILE).open('w') { |f| YAML.dump(settings, f) }
+    Report.new(@config, @cache, @results)
   end
 
   ##

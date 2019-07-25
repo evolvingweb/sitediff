@@ -70,6 +70,7 @@ class SiteDiff
            type: :string,
            desc: 'URL to the "after" site, prefixed to all paths.',
            aliases: '--after-url'
+    # TODO: Deprecate the parameters before-report / after-report?
     option 'before-report',
            type: :string,
            desc: 'URL to use in reports. Useful if port forwarding.',
@@ -133,7 +134,12 @@ class SiteDiff
       num_failing = sitediff.run
       exit_code = num_failing.positive? ? 2 : 0
 
-      sitediff.dump(@dir, options['before-report'], options['after-report'])
+      # Generate a report.
+      sitediff.report.generate_html(
+        @dir,
+        options['before-report'],
+        options['after-report']
+      )
 
       SiteDiff.log 'Run "sitediff serve" to see a report.'
     rescue Config::InvalidConfig => e
@@ -163,7 +169,7 @@ class SiteDiff
     def serve(config_file = nil)
       @dir = get_dir(options['directory'])
       config = SiteDiff::Config.new(config_file, @dir)
-      # Could check non-empty config here but errors are already raised by now.
+
       cache = Cache.new(directory: @dir)
       cache.read_tags << :before << :after
 
