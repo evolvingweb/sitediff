@@ -2,6 +2,7 @@
 
 require 'sitediff'
 require 'sitediff/diff'
+require 'sitediff/report'
 require 'digest/sha1'
 require 'fileutils'
 
@@ -73,7 +74,7 @@ class SiteDiff
 
     # Filename to store diff
     def filename
-      File.join(SiteDiff::DIFFS_DIR, Digest::SHA1.hexdigest(path) + '.html')
+      File.join(Report::DIFFS_DIR, Digest::SHA1.hexdigest(path) + '.html')
     end
 
     # Returns a URL to the result diff.

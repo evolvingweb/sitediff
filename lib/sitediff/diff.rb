@@ -56,10 +56,10 @@ class SiteDiff
 
     ##
     # Generates an HTML report.
-    def generate_html_report(results, before, after, cache)
+    # TODO: Generate the report in SiteDif::Report instead.
+    def generate_html(results, before, after, cache)
       erb_path = File.join(SiteDiff::FILES_DIR, 'report.html.erb')
-      report_html = ERB.new(File.read(erb_path)).result(binding)
-      report_html
+      ERB.new(File.read(erb_path)).result(binding)
     end
 
     ##
@@ -67,24 +67,6 @@ class SiteDiff
     def generate_diff_output(result)
       erb_path = File.join(SiteDiff::FILES_DIR, 'diff.html.erb')
       ERB.new(File.read(erb_path)).result(binding)
-    end
-
-    ##
-    # Returns CSS for the sitediff report.
-    def css
-      output = ''
-      output += File.read(File.join(SiteDiff::FILES_DIR, 'normalize.css'))
-      output += File.read(File.join(SiteDiff::FILES_DIR, 'sitediff.css'))
-      output
-    end
-
-    ##
-    # Returns JS for the sitediff report.
-    def js
-      output = ''
-      output += File.read(File.join(SiteDiff::FILES_DIR, 'jquery.min.js'))
-      output += File.read(File.join(SiteDiff::FILES_DIR, 'sitediff.js'))
-      output
     end
   end
 end
