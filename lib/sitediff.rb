@@ -197,4 +197,16 @@ class SiteDiff
     file = ROOT_DIR + '/sitediff.gemspec'
     Gem::Specification.load(file)
   end
+
+  ##
+  # Ensures that a directory exists and returns a Pathname for it.
+  #
+  # @param [String] dir
+  #   path/to/directory
+  def self.ensure_dir(dir)
+    dir = Pathname.new(dir) unless dir.is_a? Pathname
+    dir.mkpath unless dir.directory?
+    dir
+  end
+
 end
