@@ -261,6 +261,8 @@ class SiteDiff
       config = SiteDiff::Config.new(config_file, @dir)
       # TODO: Figure out how to remove this config.validate call.
       config.validate(need_before: false)
+      config.paths_file_read
+
       cache = SiteDiff::Cache.new(directory: @dir, create: true)
       cache.write_tags << :before
 
