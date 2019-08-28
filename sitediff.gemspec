@@ -29,7 +29,7 @@ DESC
   s.add_dependency 'rainbow', '~> 3.0.0'
 
   # Nokogiri 1.7 is not supported on Ruby 2.0.
-  s.add_dependency 'nokogiri', '~> 1.8.2'
+  s.add_dependency 'nokogiri', '>= 1.10.4'
 
   # Diffy and addressable have a max version for Ruby 1.9.
   s.add_dependency 'addressable', '~> 2.5.2'
