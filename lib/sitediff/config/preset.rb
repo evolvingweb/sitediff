@@ -58,7 +58,9 @@ class SiteDiff
         result = File.exist? file(name)
 
         # Raise an exception, if required.
-        raise Config::InvalidConfig, "Preset not found: #{name}" if exception && !result
+        if exception && !result
+          raise Config::InvalidConfig, "Preset not found: #{name}"
+        end
 
         result
       end

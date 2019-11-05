@@ -85,9 +85,6 @@ class SiteDiff
     #   The directory in which the report is to be generated.
     def generate_json(dir)
       dir = SiteDiff.ensure_dir dir
-      report_before = nil
-      report_after = nil
-
       write_diffs dir
       write_failures dir
 

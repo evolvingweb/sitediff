@@ -28,7 +28,7 @@ Style/DocumentationMethod:
 
 # Allow developers to write complex code.
 Metrics/AbcSize:
-  Max: 80
+  Max: 100
 
 # Allow developers to write complex code.
 Metrics/CyclomaticComplexity:
