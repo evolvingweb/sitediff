@@ -70,6 +70,11 @@ class SiteDiff
            type: :string,
            desc: 'URL to the "after" site, prefixed to all paths.',
            aliases: '--after-url'
+    option 'report-format',
+           type: :string,
+           enum: %w[html json],
+           default: 'html',
+           desc: 'The format in which a report should be generated.'
     # TODO: Deprecate the parameters before-report / after-report?
     option 'before-report',
            type: :string,
@@ -135,14 +140,16 @@ class SiteDiff
       exit_code = num_failing.positive? ? 2 : 0
 
       # Generate HTML report.
-      sitediff.report.generate_html(
-        @dir,
-        options['before-report'],
-        options['after-report']
-      )
+      if options['report-format'] == 'html'
+        sitediff.report.generate_html(
+          @dir,
+          options['before-report'],
+          options['after-report']
+        )
+      end
 
       # Generate JSON report.
-      sitediff.report.generate_json @dir
+      sitediff.report.generate_json @dir if options['report-format'] == 'json'
 
       SiteDiff.log 'Run "sitediff serve" to see a report.'
     rescue Config::InvalidConfig => e
