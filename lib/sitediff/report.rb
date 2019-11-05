@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'json'
 require 'sitediff'
 require 'sitediff/config'
 
@@ -19,7 +20,11 @@ class SiteDiff
 
     ##
     # Name of file containing HTML report of diffs.
-    REPORT_FILE = 'report.html'
+    REPORT_FILE_HTML = 'report.html'
+
+    ##
+    # Name of file containing JSON report of diffs.
+    REPORT_FILE_JSON = 'report.json'
 
     ##
     # Path to settings used for report.
@@ -64,11 +69,54 @@ class SiteDiff
       )
 
       # Write report.
-      report_file = dir + REPORT_FILE
+      report_file = dir + REPORT_FILE_HTML
       report_file.unlink if report_file.file?
       report_file.open('w') { |f| f.write(report) }
 
       write_settings dir, report_before, report_after
+
+      SiteDiff.log 'Report generated to ' + report_file.expand_path.to_s
+    end
+
+    ##
+    # Generates a JSON report.
+    #
+    # @param dir
+    #   The directory in which the report is to be generated.
+    def generate_json(dir)
+      dir = SiteDiff.ensure_dir dir
+      report_before = nil
+      report_after = nil
+
+      write_diffs dir
+      write_failures dir
+
+      # Prepare report.
+      report = {
+        paths_compared: @results.length,
+        paths_diffs: 0,
+        paths: {}
+      }
+      @results.each do |item|
+        report[:paths_diffs] += 1 unless item.success?
+
+        item_report = {
+          path: item.path,
+          status: item.status,
+          message: item.error
+        }
+        report[:paths][item.path] = item_report
+      end
+      report = JSON report
+
+      # Write report.
+      report_file = dir + REPORT_FILE_JSON
+      report_file.unlink if report_file.file?
+      report_file.open('w') { |f| f.write(report) }
+
+      write_settings dir
+
+      SiteDiff.log 'Report generated to ' + report_file.expand_path.to_s
     end
 
     ##

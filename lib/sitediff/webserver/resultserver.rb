@@ -96,7 +96,7 @@ class SiteDiff
           # Could also add a message to indicate success/failure
           # But for the moment, all our files are static
           res.set_redirect(WEBrick::HTTPStatus::Found,
-                           "/files/#{Report::REPORT_FILE}")
+                           "/files/#{Report::REPORT_FILE_HTML}")
         end
       end
 
@@ -122,7 +122,7 @@ class SiteDiff
         srv.mount_proc('/') do |req, res|
           if req.path == '/'
             res.set_redirect(WEBrick::HTTPStatus::Found,
-                             "/files/#{Report::REPORT_FILE}")
+                             "/files/#{Report::REPORT_FILE_HTML}")
           else
             res.set_redirect(WEBrick::HTTPStatus::TemporaryRedirect,
                              "#{@settings['after']}#{req.path}")
