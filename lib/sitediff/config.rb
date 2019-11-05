@@ -285,7 +285,9 @@ class SiteDiff
     def paths_file_read(file = nil)
       file ||= File.join(@directory, DEFAULT_PATHS_FILENAME)
 
-      raise Config::InvalidConfig, "File not found: #{file}" unless File.exist? file
+      unless File.exist? file
+        raise Config::InvalidConfig, "File not found: #{file}"
+      end
 
       self.paths = File.readlines(file)
 
@@ -417,7 +419,9 @@ class SiteDiff
         # TODO: This won't be required after plugin declarations are improved.
         # See https://rm.ewdev.ca/issues/18301
         Sanitizer::TOOLS[:array].each do |key|
-          result[key] = (result[key] || []) + preset_config[key] if preset_config[key]
+          if preset_config[key]
+            result[key] = (result[key] || []) + preset_config[key]
+          end
         end
       end
 
@@ -431,6 +435,7 @@ class SiteDiff
 
     # reads a YAML file and raises an InvalidConfig if the file is not valid.
     def self.load_raw_yaml(file)
+      # TODO: Only show this in verbose mode.
       SiteDiff.log "Reading config file: #{Pathname.new(file).expand_path}"
       conf = YAML.load_file(file) || {}
 
