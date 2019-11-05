@@ -186,7 +186,11 @@ class SiteDiff
   ##
   # Get a reporter object to help with report generation.
   def report
-    raise SiteDiffException, 'No results detected. Run SiteDiff.run before SiteDiff.report.' if @results.nil?
+    if @results.nil?
+      raise SiteDiffException(
+        'No results detected. Run SiteDiff.run before SiteDiff.report.'
+      )
+    end
 
     Report.new(@config, @cache, @results)
   end
@@ -208,5 +212,4 @@ class SiteDiff
     dir.mkpath unless dir.directory?
     dir
   end
-
 end
