@@ -134,12 +134,15 @@ class SiteDiff
       num_failing = sitediff.run
       exit_code = num_failing.positive? ? 2 : 0
 
-      # Generate a report.
+      # Generate HTML report.
       sitediff.report.generate_html(
         @dir,
         options['before-report'],
         options['after-report']
       )
+
+      # Generate JSON report.
+      sitediff.report.generate_json @dir
 
       SiteDiff.log 'Run "sitediff serve" to see a report.'
     rescue Config::InvalidConfig => e
