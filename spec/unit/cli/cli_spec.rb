@@ -25,7 +25,7 @@ describe SiteDiff::Cli do
         '--cached', 'none',
         '-v',
         '-d',
-        'spec/fixtures/cli/config.yaml'
+        'spec/unit/cli/config.yaml'
       ]
 
       out, status = Open3.capture2(*cmd)
