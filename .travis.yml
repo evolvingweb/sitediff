@@ -15,11 +15,11 @@ addons:
       - libcurl3
 
 install:
-  - gem install rubocop
+  - bundle install
   - NOKOGIRI_USE_SYSTEM_LIBRARIES=1 bundle install
 
 script:
-  # Test for coding standard violations.
-  - rubocop
-  # Run rspec / tests.
+  # Test coding standards.
+  - bundle exec rubocop
+  # Run tests.
   - bundle exec rspec
