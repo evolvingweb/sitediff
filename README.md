@@ -4,7 +4,6 @@
 changes.
 
 [![Build Status](https://travis-ci.org/evolvingweb/sitediff.svg?branch=master)](https://travis-ci.org/evolvingweb/sitediff)
-[![CircleCI Status](https://circleci.com/gh/evolvingweb/sitediff/tree/master.png?style=shield)](https://circleci.com/gh/evolvingweb/sitediff)
 
 SiteDiff makes it easy to see how a website changes. It can compare two similar
 sites or it can show how a single site changed over time. It helps identify
