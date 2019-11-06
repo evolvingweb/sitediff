@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+require 'json'
 require 'open3'
 require 'tmpdir'
 require 'nokogiri'
@@ -11,7 +12,7 @@ require 'sitediff/cli'
 
 # TODO: Organize tests in a better way.
 describe SiteDiff::Cli do
-  it 'Runs sitediff diff' do
+  it 'Runs sitediff diff with HTML report' do
     SiteDiff::Webserver::FixtureServer.new do |srv|
       config_dir = Dir.mktmpdir
       paths_file = File.expand_path '../../sites/ruby-doc.org/paths.txt', __dir__
@@ -73,7 +74,7 @@ describe SiteDiff::Cli do
 
       expect(File.file?(diff)).to be true
 
-      # TODO: Understand why the SiteDiff thinks that the HTML docs are binary.
+      # TODO: Understand why SiteDiff thinks that the HTML docs are binary.
       #
       # For some reason, SiteDiff gets binary output for the before/after sites
       # when running from this test. During normal use, everything goes fine.
@@ -84,6 +85,39 @@ describe SiteDiff::Cli do
       # encoding data for the results that it receives. The problem might be in
       # the interaction with Typhoeus (a wrapper around CURL).
       # expect(File.read(diff)).to include '#method-i-to_h'
+    end
+  end
+
+  it 'Runs sitediff diff with JSON report' do
+    SiteDiff::Webserver::FixtureServer.new do |srv|
+      config_dir = Dir.mktmpdir
+      paths_file = File.expand_path '../../sites/ruby-doc.org/paths.txt', __dir__
+
+      cmd = [
+        './bin/sitediff', 'diff',
+        '--before', srv.before,
+        '--after', srv.after,
+        '--directory', config_dir,
+        '--paths-file', paths_file,
+        '--cached', 'none',
+        '--report-format', 'json',
+        '-v',
+        'spec/unit/cli/config.yaml'
+      ]
+
+      _out, status = Open3.capture2(*cmd)
+
+      # Should run successfully (exit code 1 is when we crash, 2 is when
+      # there's a diff).
+      expect(status.exitstatus).to eq 2
+
+      # There should be a report file
+      report = File.join(config_dir, 'report.json')
+      expect(File.file?(report)).to be true
+
+      # The report file should contain valid JSON.
+      json = JSON.parse(File.read(report))
+      expect(json).to be_a_kind_of Hash
     end
   end
 end
