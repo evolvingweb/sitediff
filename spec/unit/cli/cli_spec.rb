@@ -119,5 +119,43 @@ describe SiteDiff::Cli do
     # The report file should contain valid JSON.
     json = JSON.parse(File.read(report))
     expect(json).to be_a_kind_of Hash
+
+    # Report should show the right number of tested paths.
+    expect(json['paths_compared']).to be 5
+    expect(json['paths_diffs']).to be 3
+    expect(json['paths'].length).to be 5
+
+    # Report should show the right info for tested paths.
+    expect(json['paths'].keys).to include(
+      '/Hash.html',
+      '/File.html',
+      '/Kernel.html',
+      '/IO.html',
+      '/TracePoint.html'
+    )
+
+    # Report should show correct info about changed paths.
+    path = '/Hash.html'
+    expect(json['paths'][path]['path']).to eq path
+    expect(json['paths'][path]['status']).to eq(
+      SiteDiff::Result::STATUS_FAILURE
+    )
+    expect(json['paths'][path]['message']).to eq nil
+
+    # Report should show correct info about unchanged paths.
+    path = '/IO.html'
+    expect(json['paths'][path]['path']).to eq path
+    expect(json['paths'][path]['status']).to eq(
+      SiteDiff::Result::STATUS_SUCCESS
+    )
+    expect(json['paths'][path]['message']).to eq nil
+
+    # Report should show correct info about unchanged paths.
+    path = '/TracePoint.html'
+    expect(json['paths'][path]['path']).to eq path
+    expect(json['paths'][path]['status']).to eq(
+      SiteDiff::Result::STATUS_ERROR
+    )
+    expect(json['paths'][path]['message']).to_not eq nil
   end
 end
