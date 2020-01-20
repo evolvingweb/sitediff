@@ -111,7 +111,7 @@ class Fixture < Base
 
   desc 'serve', 'Serve the result of the fixture test'
   def serve
-    cmd = "#{executable('sitediff')} diff --cached=none spec/fixtures/cli/config.yaml"
+    cmd = "#{executable('sitediff')} diff --cached=none --paths-file=spec/sites/ruby-doc.org/paths.txt spec/unit/cli/config.yaml"
     http_fixtures(cmd)
     SiteDiff::Webserver::ResultServer.new(nil, 'sitediff', quiet: true).wait
   end
