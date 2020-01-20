@@ -9,10 +9,17 @@
 <html>
   <head>
     <%# Important: without charset, chrome chokes on non-ascii characters %>
-    <meta charset="utf-8" />
-    <style><%= SiteDiff::Report.css %></style>
-    <script><%= SiteDiff::Report.js %></script>
     <title> SiteDiff Report</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <style>
+      <%= SiteDiff::Report.css %>
+    </style>
+    <script>
+      <%= SiteDiff::Report.js %>
+    </script>
   </head>
   <body class="page-overview" data-page="overview">
     <div id="layout">
