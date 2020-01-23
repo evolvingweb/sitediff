@@ -1,4 +1,4 @@
-# SiteDiff
+# SiteDiff CLI
 
 **Note:** Please note that version 1.0.0 introduces some backwards incompatible
 changes.
