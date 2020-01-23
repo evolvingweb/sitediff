@@ -10,6 +10,7 @@ operating system.
 * [Docker](#docker)
 * [MacOS](#macos)
 * [Ubuntu](#ubuntu)
+* [Windows](#windows)
 * [Development](#development)
 
 ## CentOS
@@ -110,7 +111,8 @@ gem install sitediff
 
 ## Windows
 
-Coming soon.
+SiteDiff doesn't officially support the Windows operating system. However, you
+should be able to use SiteDiff inside a VM or a Docker container on Windows.
 
 ---
 
