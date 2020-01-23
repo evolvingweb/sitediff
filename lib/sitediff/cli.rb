@@ -48,8 +48,11 @@ class SiteDiff
     def version
       gemspec = SiteDiff.gemspec
       output = []
-      output.push("Sitediff v#{gemspec.version}")
-      output.push(gemspec.homepage)
+      output.push("Sitediff CLI #{gemspec.version}")
+      if options[:verbose]
+        output.push('Website: ' + gemspec.homepage)
+        output.push('GitHub: ' + gemspec.metadata['source_code_uri'])
+      end
       puts output.join("\n")
     end
 
