@@ -21,18 +21,22 @@ Style/MutableConstant:
 #   and comparison
 Style/ConditionalAssignment:
   Enabled: false
-  
-Style/GuardClause:
-  Enabled: false
 
-Style/Next:
-  Enabled: false
+# Require documentation for class methods.
+Style/DocumentationMethod:
+  Enabled: true
 
-Style/IfUnlessModifier:
-  Enabled: false
+# Allow developers to write complex code.
+Metrics/AbcSize:
+  Max: 100
 
-Style/RedundantReturn:
-  Enabled: false
+# Allow developers to write complex code.
+Metrics/CyclomaticComplexity:
+  Max: 15
+
+# Allow developers to write complex code.
+Metrics/PerceivedComplexity:
+  Max: 15
 
 # Classes can have as many lines as they want.
 # Complex classes can have many methods after all.
@@ -42,5 +46,35 @@ Metrics/ClassLength:
 # Methods can have a maximum of 128 lines.
 # Complex methods might need to be broken in to multiple methods.
 Metrics/MethodLength:
-  Max: 128
+  Max: 64
   CountComments: false
+
+# Methods can have a maximum of 128 lines.
+# Complex methods might need to be broken in to multiple methods.
+Metrics/BlockLength:
+  CountComments: false
+  Max: 64
+  Exclude:
+    # Tests can get fairly long, so we ignore them.
+    - 'spec/**/*_spec.rb'
+
+# Some files have very long lines and need to be ignored.
+# Otherwise, we enforce a max-length of 80 characters per line.
+Metrics/LineLength:
+  AllowHeredoc: true
+  AllowURI: true
+  IgnoredPatterns:
+    - '^\s*SiteDiff\.log'
+    - '^\s*run\s'
+    - '\sif|elsif|unless\s'
+  Exclude:
+    - 'Thorfile'
+    # Spec files contain long strings for testing, so we ignore them.
+    - 'spec/**/*_spec.rb'
+
+# MarshalLoad helps in creating a clone of a Ruby hash, ensuring that it is
+# completely disconnected from the original hash. A common way of doing this
+# is by serializing an object and then un-serializing it with Marshal.
+Security/MarshalLoad:
+  Exclude:
+    - 'lib/sitediff/cache.rb'

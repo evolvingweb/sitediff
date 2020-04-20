@@ -10,8 +10,12 @@ Gem::Specification.new do |s|
 DESC
   s.license     = 'GPL-2.0'
   s.authors     = ['Alex Dergachev', 'Amir Kadivar', 'Dave Vasilevsky']
-  s.homepage    = 'https://github.com/evolvingweb/sitediff/'
+  s.homepage    = 'https://sitediff.io/'
   s.email       = 'alex@evolvingweb.ca'
+  s.metadata    = {
+    'source_code_uri' => 'https://github.com/evolvingweb/sitediff'
+  }
+
   s.files       = Dir.glob('lib/**/*.rb') +
                   Dir.glob('lib/sitediff/files/*') +
                   Dir.glob('lib/sitediff/files/rules/*.yaml')

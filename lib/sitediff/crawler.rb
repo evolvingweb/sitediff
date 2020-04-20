@@ -98,7 +98,7 @@ class SiteDiff
     def resolve_link(base, rel)
       base + rel
     rescue Addressable::URI::InvalidURIError
-      SiteDiff.log "skipped invalid URL: '#{rel}' (at #{base})", :warn
+      SiteDiff.log "skipped invalid URL: '#{rel}' (at #{base})", :warning
       nil
     end
 
@@ -117,20 +117,14 @@ class SiteDiff
       uris.find_all do |u|
         is_sub_uri = (u.host == @base_uri.host) &&
                      u.path.start_with?(@base_uri.path)
-        if is_sub_uri
-          is_whitelisted = @whitelist.nil? ? false : @whitelist.match(u.path)
-          is_blacklisted = @blacklist.nil? ? false : @blacklist.match(u.path)
-          if is_blacklisted && !is_whitelisted
-            SiteDiff.log "Ignoring blacklisted URL #{u.path}", :info
-          end
-          is_whitelisted || !is_blacklisted
+        next unless is_sub_uri
+
+        is_whitelisted = @whitelist.nil? ? false : @whitelist.match(u.path)
+        is_blacklisted = @blacklist.nil? ? false : @blacklist.match(u.path)
+        if is_blacklisted && !is_whitelisted
+          SiteDiff.log "Ignoring blacklisted URL #{u.path}", :info
         end
-        # SiteDiff.log "Filtering URL #{u.path}", :info
-        # SiteDiff.log Regexp.new(@blacklist).match(u.path).inspect, :info
-        # (u.host == @base_uri.host) &&
-        # (u.path.start_with?(@base_uri.path)) &&
-        # (@whitelist == '' || Regexp.new(@whitelist).match(u.path)) &&
-        # (@blacklist == '' || !(Regexp.new(@blacklist).match(u.path)))
+        is_whitelisted || !is_blacklisted
       end
     end
   end

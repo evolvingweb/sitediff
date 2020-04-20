@@ -11,12 +11,16 @@ class SiteDiff
   module Diff
     module_function
 
+    ##
+    # Generates HTML diff.
     def html_diffy(before_html, after_html)
       diff = Diffy::Diff.new(before_html, after_html)
       # If the diff is non-empty, convert it to string.
       diff.first ? diff.to_s(:html) : nil
     end
 
+    ##
+    # Generates a description about encoding.
     def encoding_blurb(encoding)
       if encoding
         "Text content returned - charset #{encoding}"
@@ -25,6 +29,8 @@ class SiteDiff
       end
     end
 
+    ##
+    # Computes diff of binary files using MD5 hashes.
     def binary_diffy(before, after, before_encoding, after_encoding)
       if before_encoding || after_encoding
         Diffy::Diff.new(encoding_blurb(before_encoding),
@@ -39,6 +45,8 @@ class SiteDiff
       end
     end
 
+    ##
+    # Generates diff for CLI output.
     def terminal_diffy(before_html, after_html)
       args = []
       args << :color if Rainbow.enabled
@@ -46,33 +54,19 @@ class SiteDiff
                  .to_s(*args)
     end
 
+    ##
     # Generates an HTML report.
-    def generate_html_report(results, before, after, cache)
+    # TODO: Generate the report in SiteDif::Report instead.
+    def generate_html(results, before, after, cache)
       erb_path = File.join(SiteDiff::FILES_DIR, 'report.html.erb')
-      report_html = ERB.new(File.read(erb_path)).result(binding)
-      report_html
+      ERB.new(File.read(erb_path)).result(binding)
     end
 
+    ##
     # Generates diff output for a single result.
     def generate_diff_output(result)
       erb_path = File.join(SiteDiff::FILES_DIR, 'diff.html.erb')
       ERB.new(File.read(erb_path)).result(binding)
-    end
-
-    # Returns CSS for the sitediff report.
-    def css
-      output = ''
-      output += File.read(File.join(SiteDiff::FILES_DIR, 'normalize.css'))
-      output += File.read(File.join(SiteDiff::FILES_DIR, 'sitediff.css'))
-      output
-    end
-
-    # Returns JS for the sitediff report.
-    def js
-      output = ''
-      output += File.read(File.join(SiteDiff::FILES_DIR, 'jquery.min.js'))
-      output += File.read(File.join(SiteDiff::FILES_DIR, 'sitediff.js'))
-      output
     end
   end
 end

@@ -1,12 +1,16 @@
 <html>
   <head>
+    <!-- TODO: Display page title or URL here. -->
     <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <style>
       <%= Diffy::CSS %>
-      <%= SiteDiff::Diff.css %>
+      <%= SiteDiff::Report.css %>
     </style>
     <script>
-      <%= SiteDiff::Diff.js %>
+      <%= SiteDiff::Report.js %>
     </script>
   </head>
   <body class="page-diff" data-page="diff">

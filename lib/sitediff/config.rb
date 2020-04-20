@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'sitediff/config/preset'
 require 'sitediff/exception'
 require 'sitediff/sanitize'
 require 'pathname'
@@ -8,11 +9,53 @@ require 'yaml'
 class SiteDiff
   # SiteDiff Configuration.
   class Config
+    # Default config file.
     DEFAULT_FILENAME = 'sitediff.yaml'
 
-    # keys allowed in configuration files
-    CONF_KEYS = Sanitizer::TOOLS.values.flatten(1) +
-                %w[paths before after before_url after_url includes curl_opts]
+    # Default paths file.
+    DEFAULT_PATHS_FILENAME = 'paths.txt'
+
+    # Default SiteDiff config.
+    DEFAULT_CONFIG = {
+      'settings' => {
+        'depth' => 3,
+        'interval' => 0,
+        'whitelist' => '',
+        'blacklist' => '',
+        'concurrency' => 3,
+        'preset' => nil
+      },
+      'before' => {},
+      'after' => {},
+      'paths' => []
+    }.freeze
+
+    # Keys allowed in config files.
+    # TODO: Deprecate repeated params before_url and after_url.
+    # TODO: Create a method self.supports
+    # TODO: Deprecate in favor of self.supports key, subkey, subkey...
+    ALLOWED_CONFIG_KEYS = Sanitizer::TOOLS.values.flatten(1) + %w[
+      includes
+      settings
+      before
+      after
+      before_url
+      after_url
+    ]
+
+    ##
+    # Keys allowed in the "settings" key.
+    # TODO: Create a method self.supports
+    # TODO: Deprecate in favor of self.supports key, subkey, subkey...
+    ALLOWED_SETTINGS_KEYS = %w[
+      preset
+      depth
+      whitelist
+      blacklist
+      concurrency
+      interval
+      curl_opts
+    ].freeze
 
     class InvalidConfig < SiteDiffException; end
     class ConfigNotFound < SiteDiffException; end
@@ -37,7 +80,7 @@ class SiteDiff
     def self.normalize(conf)
       tools = Sanitizer::TOOLS
 
-      # merge globals
+      # Merge globals
       %w[before after].each do |pos|
         conf[pos] ||= {}
         tools[:array].each do |key|
@@ -48,10 +91,11 @@ class SiteDiff
         conf[pos]['url'] ||= conf[pos + '_url']
         conf[pos]['curl_opts'] = conf['curl_opts']
       end
-      # normalize paths
+
+      # Normalize paths.
       conf['paths'] = Config.normalize_paths(conf['paths'])
 
-      conf.select { |k, _v| %w[before after paths curl_opts].include? k }
+      conf.select { |k, _v| ALLOWED_CONFIG_KEYS.include? k }
     end
 
     # Merges two normalized Hashes according to the following rules:
@@ -68,66 +112,321 @@ class SiteDiff
     # (h2) before: {selector: bar, sanitization: [pattern: bar]}
     # (h3) before: {selector: foo, sanitization: [pattern: foo, pattern: bar]}
     def self.merge(first, second)
-      result = { 'paths' => {}, 'before' => {}, 'after' => {} }
+      result = {
+        'before' => {},
+        'after' => {},
+        'settings' => {}
+      }
+
+      # Merge sanitization rules.
+      Sanitizer::TOOLS.values.flatten(1).each do |key|
+        result[key] = second[key] || first[key]
+        result.delete(key) unless result[key]
+      end
+
       # Rule 1.
-      result['paths'] = (first['paths'] || []) + (second['paths'] || [])
       %w[before after].each do |pos|
+        first[pos] ||= {}
+        second[pos] ||= {}
+
+        # If only the second hash has the value.
         unless first[pos]
           result[pos] = second[pos] || {}
           next
         end
+
         result[pos] = first[pos].merge!(second[pos]) do |key, a, b|
           # Rule 2a.
           result[pos][key] = if Sanitizer::TOOLS[:array].include? key
                                (a || []) + (b || [])
+                             elsif key == 'settings'
+                               b
                              else
                                a || b # Rule 2b.
                              end
         end
       end
+
+      # Merge settings.
+      result['settings'] = merge_deep(
+        first['settings'] || {},
+        second['settings'] || {}
+      )
+
       result
     end
 
-    def initialize(files, dir)
-      @config = { 'paths' => [], 'before' => {}, 'after' => {} }
-
-      files = [File.join(dir, DEFAULT_FILENAME)] if files.empty?
-      files.each do |file|
-        unless File.exist?(file)
-          path = File.expand_path(file)
-          raise InvalidConfig, "Missing config file #{path}."
+    ##
+    # Merges 2 iterable objects deeply.
+    def self.merge_deep(first, second)
+      first.merge(second) do |_key, val1, val2|
+        if val1.is_a? Hash
+          self.class.merge_deep(val1, val2 || {})
+        elsif val1.is_a? Array
+          val1 + (val2 || [])
+        else
+          val2
         end
-        @config = Config.merge(@config, Config.load_conf(file))
       end
     end
 
-    def before
-      @config['before']
+    ##
+    # Gets all loaded configuration except defaults.
+    #
+    # @return [Hash]
+    #   Config data.
+    def all
+      result = Marshal.load(Marshal.dump(@config))
+      self.class.remove_defaults(result)
     end
 
-    def after
-      @config['after']
+    ##
+    # Removes default parameters from a config hash.
+    #
+    # I know this is weird, but it'll be fixed. The config management needs to
+    # be streamlined further.
+    def self.remove_defaults(data)
+      # Create a deep copy of the config data.
+      result = data
+
+      # Exclude default settings.
+      result['settings'].delete_if do |key, value|
+        value == DEFAULT_CONFIG['settings'][key] || !value
+      end
+
+      # Exclude default curl opts.
+      result['settings']['curl_opts'] ||= {}
+      result['settings']['curl_opts'].delete_if do |key, value|
+        value == UriWrapper::DEFAULT_CURL_OPTS[key.to_sym]
+      end
+
+      # Delete curl opts if empty.
+      unless result['settings']['curl_opts'].length.positive?
+        result['settings'].delete('curl_opts')
+      end
+
+      result
     end
 
+    # Creates a SiteDiff Config object.
+    def initialize(file, directory)
+      # Fallback to default config filename, if none is specified.
+      file = File.join(directory, DEFAULT_FILENAME) if file.nil?
+      unless File.exist?(file)
+        path = File.expand_path(file)
+        raise InvalidConfig, "Missing config file #{path}."
+      end
+      @config = Config.merge(DEFAULT_CONFIG, Config.load_conf(file))
+      @file = file
+      @directory = directory
+
+      # Validate configurations.
+      validate
+    end
+
+    # Get "before" site configuration.
+    def before(apply_preset = false)
+      section :before, apply_preset
+    end
+
+    # Get "before" site URL.
+    def before_url
+      result = before
+      result['url'] if result
+    end
+
+    # Get "after" site configuration.
+    def after(apply_preset = false)
+      section :after, apply_preset
+    end
+
+    # Get "after" site URL.
+    def after_url
+      result = after
+      result['url'] if result
+    end
+
+    # Get paths.
     def paths
       @config['paths']
     end
 
+    # Set paths.
     def paths=(paths)
+      raise 'Paths must be an Array' unless paths.is_a? Array
+
       @config['paths'] = Config.normalize_paths(paths)
     end
 
+    ##
+    # Writes an array of paths to a file.
+    #
+    # @param [Array] paths
+    #   An array of paths.
+    # @param [String] file
+    #   Optional path to a file.
+    def paths_file_write(paths, file = nil)
+      unless paths.is_a?(Array) && paths.length.positive?
+        raise SiteDiffException, 'Write failed. Invalid paths.'
+      end
+
+      file ||= File.join(@directory, DEFAULT_PATHS_FILENAME)
+      File.open(file, 'w+') { |f| f.puts(paths) }
+    end
+
+    ##
+    # Reads a collection of paths from a file.
+    #
+    # @param [String] file
+    #   A file containing one path per line.
+    #
+    # @return [Integer]
+    #   Number of paths read.
+    def paths_file_read(file = nil)
+      file ||= File.join(@directory, DEFAULT_PATHS_FILENAME)
+
+      unless File.exist? file
+        raise Config::InvalidConfig, "File not found: #{file}"
+      end
+
+      self.paths = File.readlines(file)
+
+      # Return the number of paths.
+      paths.length
+    end
+
+    ##
+    # Get roots.
+    #
+    # Example: If the config has a "before" and "after" sections, then roots
+    # will be ["before", "after"].
+    def roots
+      @roots = { 'after' => after_url }
+      @roots['before'] = before_url if before
+      @roots
+    end
+
+    ##
+    # Gets a setting.
+    #
+    # @param [String] key
+    #   A key.
+    #
+    # @return [*]
+    #   A value, if exists.
+    def setting(key)
+      key = key.to_s if key.is_a?(Symbol)
+      return @config['settings'][key] if @config['settings'].key?(key)
+    end
+
+    ##
+    # Gets all settings.
+    #
+    # TODO: Make sure the settings are not writable.
+    #
+    # @return [Hash]
+    #   All settings.
+    def settings
+      @config['settings']
+    end
+
     # Checks if the configuration is usable for diff-ing.
+    # TODO: Do we actually need the opts argument?
     def validate(opts = {})
       opts = { need_before: true }.merge(opts)
 
-      raise InvalidConfig, "Undefined 'before' base URL." if \
-        opts[:need_before] && !before['url']
+      if opts[:need_before] && !before['url']
+        raise InvalidConfig, "Undefined 'before' base URL."
+      end
+
       raise InvalidConfig, "Undefined 'after' base URL." unless after['url']
-      raise InvalidConfig, "Undefined 'paths'." unless paths && !paths.empty?
+
+      # Validate interval and concurrency.
+      interval = setting(:interval)
+      concurrency = setting(:concurrency)
+      if interval.to_i != 0 && concurrency != 1
+        raise InvalidConfig, 'Concurrency must be 1 when an interval is set.'
+      end
+
+      # Validate preset.
+      Preset.exist? setting(:preset), true if setting(:preset)
+    end
+
+    ##
+    # Returns object clone with stringified keys.
+    # TODO: Make this method available globally, if required.
+    def self.stringify_keys(object)
+      # Do nothing if it is not an object.
+      return object unless object.respond_to?('each_key')
+
+      # Convert symbol indices to strings.
+      output = {}
+      object.each_key do |old_k|
+        new_k = old_k.is_a?(Symbol) ? old_k.to_s : old_k
+        output[new_k] = stringify_keys object[old_k]
+      end
+
+      # Return the new hash with string indices.
+      output
+    end
+
+    ##
+    # Creates a RegExp from a string.
+    def self.create_regexp(string_param)
+      begin
+        @return_value = string_param == '' ? nil : Regexp.new(string_param)
+      rescue SiteDiffException => e
+        @return_value = nil
+        SiteDiff.log 'Invalid RegExp: ' + string_param, :error
+        SiteDiff.log e.message, :error
+        # TODO: Use SiteDiff.log type :debug
+        # SiteDiff.log e.backtrace, :error if options[:verbose]
+      end
+      @return_value
     end
 
     private
+
+    ##
+    # Returns one of the "before" or "after" sections.
+    #
+    # @param [String|Symbol]
+    #   Section name. Example: before, after.
+    # @param [Boolean] with_preset
+    #   Whether to merge with preset config (if any).
+    #
+    # @return [Hash|Nil]
+    #   Section data or Nil.
+    def section(name, with_preset = false)
+      name = name.to_s if name.is_a? Symbol
+
+      # Validate section.
+      unless %w[before after].include? name
+        raise SiteDiffException, '"name" must be one of "before" or "after".'
+      end
+
+      # Return nil if section is not defined.
+      return nil unless @config[name]
+
+      result = @config[name]
+
+      # Merge preset rules, if required.
+      preset = setting(:preset)
+      if with_preset && !preset.nil?
+        preset_config = Preset.read preset
+
+        # Merge plugins with array values.
+        # TODO: This won't be required after plugin declarations are improved.
+        # See https://rm.ewdev.ca/issues/18301
+        Sanitizer::TOOLS[:array].each do |key|
+          if preset_config[key]
+            result[key] = (result[key] || []) + preset_config[key]
+          end
+        end
+      end
+
+      result
+    end
 
     def self.normalize_paths(paths)
       paths ||= []
@@ -136,6 +435,7 @@ class SiteDiff
 
     # reads a YAML file and raises an InvalidConfig if the file is not valid.
     def self.load_raw_yaml(file)
+      # TODO: Only show this in verbose mode.
       SiteDiff.log "Reading config file: #{Pathname.new(file).expand_path}"
       conf = YAML.load_file(file) || {}
 
@@ -144,7 +444,7 @@ class SiteDiff
       end
 
       conf.each_key do |k, _v|
-        unless CONF_KEYS.include? k
+        unless ALLOWED_CONFIG_KEYS.include? k
           raise InvalidConfig, "Unknown configuration key (#{file}): '#{k}'"
         end
       end

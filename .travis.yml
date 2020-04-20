@@ -1,24 +1,25 @@
 language: ruby
 
 rvm:
-- 2.3
-# FIXME: jruby doesn't work. No idea about rbx.
+  - 2.3
 
 sudo: false
 addons:
   apt:
     packages:
-    - ruby-dev
-    - make
-    - pkg-config
-    - libxml2-dev
-    - libxslt1-dev
-    - libcurl3
+      - ruby-dev
+      - make
+      - pkg-config
+      - libxml2-dev
+      - libxslt1-dev
+      - libcurl3
 
 install:
-  - gem install rubocop
+  - bundle install
   - NOKOGIRI_USE_SYSTEM_LIBRARIES=1 bundle install
 
 script:
-  - rubocop
-  - 'bundle exec thor spec && bundle exec thor fixture:local'
+  # Test coding standards.
+  - bundle exec rubocop
+  # Run tests.
+  - bundle exec rspec

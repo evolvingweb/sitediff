@@ -9,14 +9,17 @@
 <html>
   <head>
     <%# Important: without charset, chrome chokes on non-ascii characters %>
+    <title> SiteDiff Report</title>
     <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <style>
-      <%= SiteDiff::Diff.css %>
+      <%= SiteDiff::Report.css %>
     </style>
     <script>
-      <%= SiteDiff::Diff.js %>
+      <%= SiteDiff::Report.js %>
     </script>
-    <title> SiteDiff Report</title>
   </head>
   <body class="page-overview" data-page="overview">
     <div id="layout">
@@ -81,10 +84,6 @@
               </div>
 
             </form>
-          </div>
-
-          <div class="toolbar__right">
-            <a href="../run/diff" class="button button-diff">Recalculate diffs</a>
           </div>
         </div>
       </div>

@@ -1,15 +1,18 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# TODO: Determine the utility of this file.
+
 LIB_DIR = File.join(File.dirname(__FILE__), 'lib')
 $LOAD_PATH << LIB_DIR
 require 'sitediff/webserver'
 require 'sitediff/webserver/resultserver'
 
+# Thor Base class.
 class Base < Thor
-  # adds the option to all Base subclasses
-  # method_options() takes different arguments than option()
   method_options local: true
+  # Adds the option to all Base subclasses.
+  # method_options() takes different arguments than option().
   def initialize(*args)
     super(*args)
     @local = options['local']
@@ -31,6 +34,7 @@ class Base < Thor
   end
 end
 
+# Thor for Docker.
 class Docker < Base
   IMAGE = 'evolvingweb/sitediff'
 
@@ -69,6 +73,7 @@ class Docker < Base
   end
 end
 
+# Thor for Spec.
 class Spec < Base
   desc 'unit', 'run RSpec unit tests'
   def unit
@@ -91,21 +96,22 @@ class Spec < Base
   default_task :all
 end
 
+# Thor for fixtures.
 class Fixture < Base
   desc 'local', 'Run a sitediff test case'
   def local
-    run "#{executable('sitediff')} diff --cached=none spec/fixtures/config.yaml"
+    run "#{executable('sitediff')} diff --cached=none spec/fixtures/cli/config.yaml"
   end
 
   desc 'http', 'Run a sitediff test case, using web servers'
   def http
-    cmd = "#{executable('sitediff')} diff --cached=none spec/fixtures/config.yaml"
+    cmd = "#{executable('sitediff')} diff --cached=none spec/fixtures/cli/config.yaml"
     http_fixtures(cmd).kill
   end
 
   desc 'serve', 'Serve the result of the fixture test'
   def serve
-    cmd = "#{executable('sitediff')} diff --cached=none spec/fixtures/config.yaml"
+    cmd = "#{executable('sitediff')} diff --cached=none --paths-file=spec/sites/ruby-doc.org/paths.txt spec/unit/cli/config.yaml"
     http_fixtures(cmd)
     SiteDiff::Webserver::ResultServer.new(nil, 'sitediff', quiet: true).wait
   end
@@ -116,12 +122,5 @@ class Fixture < Base
     serv = SiteDiff::Webserver::FixtureServer.new
     run "#{cmd} --before #{serv.before} --after #{serv.after}"
     serv
-  end
-end
-
-class Util < Base
-  desc 'changelog', 'vim CHANGELOG.md, with a split pane for recent commits'
-  def changelog
-    run 'git log `git describe --tags --abbrev=0`..HEAD --oneline |  awk \'BEGIN { print "Commits since last tag:" }; {print "- " $0}\' | vim - -R +"vs CHANGELOG.md" +"set noro"'
   end
 end

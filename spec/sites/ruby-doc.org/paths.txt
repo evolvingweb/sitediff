@@ -1,0 +1,5 @@
+/Hash.html
+/File.html
+/Kernel.html
+/IO.html
+/TracePoint.html

@@ -10,7 +10,8 @@ class SiteDiff
 
     attr_accessor :ports
 
-    # Serve a list of directories
+    ##
+    # Serve a list of directories.
     def initialize(start_port, dirs, opts = {})
       start_port ||= DEFAULT_PORT
       @ports = (start_port...(start_port + dirs.size)).to_a
@@ -26,14 +27,20 @@ class SiteDiff
       end
     end
 
+    ##
+    # Kills the server.
     def kill
       @threads.each(&:kill)
     end
 
+    ##
+    # Waits for the server.
     def wait
       @threads.each(&:join)
     end
 
+    ##
+    # Maps URIs to defined ports and returns a list of URIs.
     def uris
       ports.map { |p| "http://localhost:#{p}" }
     end
@@ -67,7 +74,7 @@ class SiteDiff
     # SiteDiff Fixture Server.
     class FixtureServer < Webserver
       PORT = DEFAULT_PORT + 1
-      BASE = 'spec/fixtures/ruby-doc.org'
+      BASE = 'spec/sites/ruby-doc.org'
       NAMES = %w[core-1.9.3 core-2.0].freeze
 
       def initialize(port = PORT, base = BASE, names = NAMES)

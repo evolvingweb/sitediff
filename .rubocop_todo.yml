@@ -18,67 +18,15 @@ Lint/UselessAccessModifier:
     - 'lib/sitediff/config.rb'
     - 'lib/sitediff/webserver.rb'
 
-# Offense count: 16
-Metrics/AbcSize:
-  Max: 80
-
-# Offense count: 6
-# Configuration parameters: CountComments, ExcludedMethods.
-# ExcludedMethods: refine
-Metrics/BlockLength:
-  Max: 52
-
-# Offense count: 6
-Metrics/CyclomaticComplexity:
-  Max: 13
-
 # Offense count: 2
 # Configuration parameters: CountKeywordArgs.
 Metrics/ParameterLists:
   Max: 9
-
-# Offense count: 5
-Metrics/PerceivedComplexity:
-  Max: 13
-
-# Offense count: 1
-Security/MarshalLoad:
-  Exclude:
-    - 'lib/sitediff/cache.rb'
-
-# Offense count: 21
-Style/Documentation:
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
-    - 'Thorfile'
-
-# Offense count: 3
-# Configuration parameters: MinBodyLength.
-Style/GuardClause:
-  Exclude:
-    - 'lib/sitediff/uriwrapper.rb'
-    - 'lib/sitediff/webserver.rb'
 
 # Offense count: 1
 Style/StructInheritance:
   Exclude:
     - 'lib/sitediff/result.rb'
 
-# Offense count: 36
-# Configuration parameters: AllowHeredoc, AllowURI, URISchemes,
-# IgnoreCopDirectives, IgnoredPatterns.
-# URISchemes: http, https
-Metrics/LineLength:
-  AllowURI: true
-  IgnoredPatterns:
-    - '^\s*SiteDiff\.log'
-  Exclude:
-    - 'Thorfile'
-    - 'lib/sitediff.rb'
-    - 'lib/sitediff/cache.rb'
-    - 'lib/sitediff/cli.rb'
-    - 'lib/sitediff/uriwrapper.rb'
-    - 'lib/sitediff/config/creator.rb'
-    - 'lib/sitediff/sanitize.rb'
-    - 'spec/unit/sanitize_spec.rb'
+Style/GuardClause:
+  Enabled: false

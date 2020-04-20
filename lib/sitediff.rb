@@ -4,6 +4,7 @@
 require 'sitediff/config'
 require 'sitediff/fetch'
 require 'sitediff/result'
+require 'sitediff/report'
 require 'pathname'
 require 'rainbow'
 require 'rubygems'
@@ -19,46 +20,33 @@ class SiteDiff
   # Path to misc files. Ex: *.erb, *.css.
   FILES_DIR = File.join(File.dirname(__FILE__), 'sitediff', 'files')
 
-  # Directory containing diffs of failing pages.
-  # This directory lives inside the "sitediff" config directory.
-  DIFFS_DIR = 'diffs'
-
-  # Name of file containing a list of pages with diffs.
-  FAILURES_FILE = 'failures.txt'
-
-  # Name of file containing HTML report of diffs.
-  REPORT_FILE = 'report.html'
-
-  # Path to settings.yaml.
-  # TODO: Document what this is about.
-  SETTINGS_FILE = 'settings.yaml'
-
   # Logs a message.
   #
   # Label will be colorized and message will not.
   # Type dictates the color: can be :success, :error, or :failure.
+  #
+  # TODO: Only print :debug messages in debug mode.
   def self.log(message, type = :info, label = nil)
+    # Prepare label.
+    label ||= type unless type == :info
     label = label.to_s
     unless label.empty?
-      # Wrap label in [] brackets.
-      label = '[' + label + ']'
+      # Colorize label.
+      fg = :black
+      bg = :blue
 
-      # Add colors to the label.
-      bg = fg = nil
       case type
       when :info
-        bg = fg = nil
-      when :diff_success
+        bg = :cyan
+      when :success
         bg = :green
-        fg = :black
-      when :diff_failure
-        bg = :red
-      when :warn
-        bg = :yellow
-        fg = :black
       when :error
         bg = :red
+      when :warning
+        bg = :yellow
       end
+
+      label = '[' + label.to_s + ']'
       label = Rainbow(label)
       label = label.bg(bg) if bg
       label = label.fg(fg) if fg
@@ -66,23 +54,32 @@ class SiteDiff
       # Add a space after the label.
       label += ' '
     end
+
     puts label + message
   end
 
+  ##
+  # Returns the "before" site's URL.
+  #
+  # TODO: Remove in favor of config.before_url.
   def before
     @config.before['url']
   end
 
+  ##
+  # Returns the "after" site's URL.
+  #
+  # TODO: Remove in favor of config.after_url.
   def after
     @config.after['url']
   end
 
   # Initialize SiteDiff.
-  def initialize(config, cache, concurrency, interval, verbose = true, debug = false)
+  def initialize(config, cache, verbose = true, debug = false)
     @cache = cache
     @verbose = verbose
     @debug = debug
-    @interval = interval
+
     # Check for single-site mode
     validate_opts = {}
     if !config.before['url'] && @cache.tag?(:before)
@@ -93,8 +90,6 @@ class SiteDiff
       validate_opts[:need_before] = false
     end
     config.validate(validate_opts)
-
-    @concurrency = concurrency
     @config = config
   end
 
@@ -102,19 +97,28 @@ class SiteDiff
   def sanitize(path, read_results)
     %i[before after].map do |tag|
       html = read_results[tag].content
+      # TODO: See why encoding is empty while running tests.
+      #
+      # The presence of an "encoding" value used to be used to determine
+      # if the sanitizer would be called. However, encoding turns up blank
+      # during rspec tests for some reason.
       encoding = read_results[tag].encoding
-      if encoding
-        config = @config.send(tag)
-        Sanitizer.new(html, config, path: path).sanitize
+      if encoding || html.length.positive?
+        section = @config.send(tag, true)
+        Sanitizer.new(html, section, path: path).sanitize
       else
         html
       end
     end
   end
 
+  ##
   # Process a set of read results.
+  #
+  # This is the callback that processes items fetched by the Fetcher.
   def process_results(path, read_results)
-    if (error = (read_results[:before].error || read_results[:after].error))
+    error = (read_results[:before].error || read_results[:after].error)
+    if error
       diff = Result.new(path, nil, nil, nil, nil, error)
     else
       begin
@@ -140,77 +144,72 @@ class SiteDiff
     end
   end
 
-  # Perform the comparison, populate @results and return the number of failing
-  # paths (paths with non-zero diff).
-  def run(curl_opts = {}, debug = true)
+  ##
+  # Compute diff as per config.
+  #
+  # @return [Integer]
+  #   Number of paths which have diffs.
+  def run
     # Map of path -> Result object, populated by process_results
     @results = {}
     @ordered = @config.paths.dup
 
     unless @cache.read_tags.empty?
-      SiteDiff.log('Using sites from cache: ' +
-        @cache.read_tags.sort.join(', '))
+      SiteDiff.log('Using sites from cache: ' + @cache.read_tags.sort.join(', '))
     end
 
     # TODO: Fix this after config merge refactor!
     # Not quite right. We are not passing @config.before or @config.after
     # so passing this instead but @config.after['curl_opts'] is ignored.
+    curl_opts = @config.setting :curl_opts
     config_curl_opts = @config.before['curl_opts']
     curl_opts = config_curl_opts.clone.merge(curl_opts) if config_curl_opts
     fetcher = Fetch.new(
       @cache,
       @config.paths,
-      @interval,
-      @concurrency,
+      @config.setting(:interval),
+      @config.setting(:concurrency),
       curl_opts,
-      debug,
-      before: before, after: after
+      @debug,
+      before: @config.before_url,
+      after: @config.after_url
     )
+
+    # Run the Fetcher with "process results" as a callback.
     fetcher.run(&method(:process_results))
 
     # Order by original path order
-    @results = @config.paths.map { |p| @results[p] }
+    @results = @config.paths.map { |path| @results[path] }
     results.map { |r| r unless r.success? }.compact.length
   end
 
-  # Write results to disk.
-  def dump(dir, report_before, report_after)
-    report_before ||= before
-    report_after ||= after
-
-    # Prepare diff directory and wipe out existing diffs.
-    dir = Pathname.new(dir)
-    dir.mkpath unless dir.directory?
-    diff_dir = dir + DIFFS_DIR
-    diff_dir.rmtree if diff_dir.exist?
-
-    # Write diffs to the diff directory.
-    results.each { |r| r.dump(dir) if r.status == Result::STATUS_FAILURE }
-    SiteDiff.log "All diff files dumped inside #{diff_dir.expand_path}."
-
-    # Store failing paths to failures file.
-    failures = dir + FAILURES_FILE
-    SiteDiff.log "All failures written to #{failures.expand_path}."
-    failures.open('w') do |f|
-      results.each { |r| f.puts r.path unless r.success? }
+  ##
+  # Get a reporter object to help with report generation.
+  def report
+    if @results.nil?
+      raise SiteDiffException(
+        'No results detected. Run SiteDiff.run before SiteDiff.report.'
+      )
     end
 
-    # create report of results
-    report = Diff.generate_html_report(results, report_before, report_after,
-                                       @cache)
-    dir.+(REPORT_FILE).open('w') { |f| f.write(report) }
-
-    # serve some settings
-    settings = { 'before' => report_before, 'after' => report_after,
-                 'cached' => %w[before after] }
-    dir.+(SETTINGS_FILE).open('w') { |f| YAML.dump(settings, f) }
+    Report.new(@config, @cache, @results)
   end
 
   ##
   # Get SiteDiff gemspec.
-
   def self.gemspec
     file = ROOT_DIR + '/sitediff.gemspec'
-    return Gem::Specification.load(file)
+    Gem::Specification.load(file)
+  end
+
+  ##
+  # Ensures that a directory exists and returns a Pathname for it.
+  #
+  # @param [String] dir
+  #   path/to/directory
+  def self.ensure_dir(dir)
+    dir = Pathname.new(dir) unless dir.is_a? Pathname
+    dir.mkpath unless dir.directory?
+    dir
   end
 end

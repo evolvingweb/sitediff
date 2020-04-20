@@ -2,6 +2,7 @@
 
 require 'sitediff'
 require 'sitediff/diff'
+require 'sitediff/report'
 require 'digest/sha1'
 require 'fileutils'
 
@@ -23,6 +24,8 @@ class SiteDiff
 
     attr_reader :status, :diff
 
+    ##
+    # Creates a Result.
     def initialize(*args)
       super
       if error
@@ -42,10 +45,18 @@ class SiteDiff
       end
     end
 
+    ##
+    # Whether the result has no diff.
+    #
+    # If there is a diff, it is not a success.
+    #
+    # TODO: Change "Success" to unchanged.
     def success?
       status == STATUS_SUCCESS
     end
 
+    ##
+    # Whether the result has an error.
     def error?
       status == STATUS_ERROR
     end
@@ -63,7 +74,7 @@ class SiteDiff
 
     # Filename to store diff
     def filename
-      File.join(SiteDiff::DIFFS_DIR, Digest::SHA1.hexdigest(path) + '.html')
+      File.join(Report::DIFFS_DIR, Digest::SHA1.hexdigest(path) + '.html')
     end
 
     # Returns a URL to the result diff.
@@ -77,11 +88,11 @@ class SiteDiff
     def log(verbose = true)
       case status
       when STATUS_SUCCESS
-        SiteDiff.log path, :diff_success, 'UNCHANGED'
+        SiteDiff.log path, :success, 'UNCHANGED'
       when STATUS_ERROR
-        SiteDiff.log path + " (#{error})", :warn, 'ERROR'
+        SiteDiff.log path + " (#{error})", :warning, 'ERROR'
       when STATUS_FAILURE
-        SiteDiff.log path, :diff_failure, 'CHANGED'
+        SiteDiff.log path, :error, 'CHANGED'
         puts Diff.terminal_diffy(before, after) if verbose
       end
     end

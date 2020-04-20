@@ -18,12 +18,16 @@ class SiteDiff
     }.freeze
     DOM_TRANSFORMS = Set.new(%w[remove unwrap_root unwrap remove_class])
 
+    ##
+    # Creates a Sanitizer.
     def initialize(html, config, opts = {})
       @html = html
       @config = config
       @opts = opts
     end
 
+    ##
+    # Performs sanitization.
     def sanitize
       return '' if @html == '' # Quick return on empty input
 
@@ -100,7 +104,13 @@ class SiteDiff
       # Prevent potential UTF-8 encoding errors by removing bytes
       # Not the only solution. An alternative is to return the
       # string unmodified.
-      @html = @html.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+      @html = @html.encode(
+        'UTF-8',
+        'binary',
+        invalid: :replace,
+        undef: :replace,
+        replace: ''
+      )
       global.each { |r| r.apply(@html) }
     end
 
@@ -152,7 +162,13 @@ class SiteDiff
       # Prevent potential UTF-8 encoding errors by removing invalid bytes.
       # Not the only solution.
       # An alternative is to return the string unmodified.
-      str = str.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+      str = str.encode(
+        'UTF-8',
+        'binary',
+        invalid: :replace,
+        undef: :replace,
+        replace: ''
+      )
       # Remove xml declaration and <html> tags
       str.sub!(/\A<\?xml.*$\n/, '')
       str.sub!(/\A^<html>$\n/, '')

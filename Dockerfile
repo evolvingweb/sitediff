@@ -3,16 +3,18 @@ FROM ubuntu:16.04
 ENV DEBIAN_FRONTEND noninteractive
 
 # Minimal dependencies
-# Building ruby native extensions requires ruby-dev and make
-# Nokogiri requires libxml2, libxslt, pkg-config to build
-# Typhoeus requires libcurl3 to run
-# We need rake for our build
-# Install Ruby.
+# ======
+# Building ruby native extensions requires ruby-dev, make
+# Nokogiri requires libxml2, libxslt, pkg-config
+# Typhoeus requires libcurl3
+# Our build requires rake
+# Install editors: vim, nano.
 RUN apt-get update
 RUN apt-get install -y software-properties-common 
 #RUN add-apt-repository -y ppa:brightbox/ruby-ng
 RUN apt-get update
 RUN apt-get install -y ruby2.3 ruby2.3-dev make pkg-config libxml2-dev libxslt-dev libcurl3 bundler
+RUN apt-get install -y vim nano
 
 # Force nokogiri gem not to compile libxml2, it takes too long
 ENV NOKOGIRI_USE_SYSTEM_LIBRARIES 1
