@@ -41,6 +41,7 @@ class SiteDiff
       after
       before_url
       after_url
+      ignore_whitespace
     ]
 
     ##
@@ -256,6 +257,16 @@ class SiteDiff
       raise 'Paths must be an Array' unless paths.is_a? Array
 
       @config['paths'] = Config.normalize_paths(paths)
+    end
+
+    # Get ignore_whitespace option
+    def ignore_whitespace
+      @config['ignore_whitespace']
+    end
+
+    # Set ignore_whitespace option
+    def ignore_whitespace=(ignore_whitespace)
+      @config['ignore_whitespace'] = ignore_whitespace
     end
 
     ##

@@ -92,6 +92,11 @@ class SiteDiff
            enum: %w[none all before after],
            default: 'before',
            desc: 'Use the cached version of these sites, if available.'
+    option 'ignore-whitespace',
+           type: :boolean,
+           default: false,
+           aliases: '-w',
+           desc: 'Ignore changes in whitespace.'
     desc 'diff [OPTIONS] [CONFIG-FILE]',
          'Compute diffs on configured URLs.'
     ##
@@ -105,6 +110,9 @@ class SiteDiff
         SiteDiff.log "Can't specify both --paths-file and --paths.", :error
         exit(-1)
       end
+
+      # Ignore whitespace option.
+      config.ignore_whitespace = options['ignore-whitespace'] if options['ignore-whitespace']
 
       # Apply "paths" override, if any.
       config.paths = options['paths'] if options['paths']
