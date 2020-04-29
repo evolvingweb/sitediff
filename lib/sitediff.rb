@@ -92,7 +92,7 @@ class SiteDiff
     end
     config.validate(validate_opts)
     # Configure diff.
-    Diff::diff_config(config)
+    Diff.diff_config(config)
     @config = config
   end
 

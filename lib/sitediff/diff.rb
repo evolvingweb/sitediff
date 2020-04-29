@@ -73,11 +73,10 @@ class SiteDiff
     # Set configuration for Diffy.
     def diff_config(config)
       diff_options = Diffy::Diff.default_options[:diff]
-      diff_options = [diff_options] if not diff_options.kind_of?(Array)
+      diff_options = [diff_options] unless diff_options.is_a?(Array)
       # ignore_whitespace option
-      diff_options.push("-w").uniq if config.ignore_whitespace
+      diff_options.push('-w').uniq if config.ignore_whitespace
       Diffy::Diff.default_options[:diff] = diff_options
     end
-
   end
 end
