@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'sitediff/config'
+require 'sitediff/diff'
 require 'sitediff/fetch'
 require 'sitediff/result'
 require 'sitediff/report'
@@ -90,6 +91,8 @@ class SiteDiff
       validate_opts[:need_before] = false
     end
     config.validate(validate_opts)
+    # Configure diff.
+    Diff.diff_config(config)
     @config = config
   end
 

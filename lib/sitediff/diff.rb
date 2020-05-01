@@ -68,5 +68,15 @@ class SiteDiff
       erb_path = File.join(SiteDiff::FILES_DIR, 'diff.html.erb')
       ERB.new(File.read(erb_path)).result(binding)
     end
+
+    ##
+    # Set configuration for Diffy.
+    def diff_config(config)
+      diff_options = Diffy::Diff.default_options[:diff]
+      diff_options = [diff_options] unless diff_options.is_a?(Array)
+      # ignore_whitespace option
+      diff_options.push('-w').uniq if config.ignore_whitespace
+      Diffy::Diff.default_options[:diff] = diff_options
+    end
   end
 end

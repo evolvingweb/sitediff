@@ -7,7 +7,7 @@
 SiteDiff makes it easy to see how a website changes. It can compare two similar
 sites or it can show how a single site changed over time. It helps identify
 undesirable changes to the site's HTML and it's a useful tool for conducting QA
-on re-deployments, site upgrades, and more! 
+on re-deployments, site upgrades, and more!
 
 When you run SiteDiff, it produces an HTML report showing whether pages on
 your site have changed or not. For pages that have changed, you can see a
@@ -56,14 +56,14 @@ pages have changed and not changed.
 ![page report preview](misc/sitediff%20-%20overview%20report.png?raw=true)
 
 When you click on a changed page, you see a colorized diff of the page's markup
-showing exactly what changed on the page. 
+showing exactly what changed on the page.
 ![page report preview](misc/sitediff%20-%20page%20report.png?raw=true)
 
 ## Usage
 
 Here are some instructions on getting started with SiteDiff. To see a list of
 commands that SiteDiff offers, you can run:
-                                                             
+
 ```sitediff help```
 
 To get help for a particular command, say, `diff`, you can run:
@@ -269,12 +269,12 @@ A few options are also available to control how aggressively SiteDiff crawls.
 
   - The underlying curl library has [many options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html)
     such as `max_recv_speed_large` which can be helpful.
- 
+
   - There is a special command line option `--interval=T` for `sitediff init`.
     This option and allows the fetcher to delay for T milliseconds between
     fetching pages. You can specify this in the `sitediff.yaml` file under the
     `settings` key.
- 
+
 ### Timeouts
 
 By default, no timeout is set but one can be added `--curl_options=timeout:60`
@@ -333,25 +333,25 @@ Alternatively, it can crawl the entire site and detect all paths.
   * Running `sitediff init` also runs the `sitediff crawl` by default which
     crawls your website and puts a list of all detected paths in a `paths.txt`
     file.
-    
+
   * Running `sitediff crawl` makes sitediff crawl your site and detect
     available paths. These paths are written to a `paths.txt` file which you
     can modify according to your needs.
-    
+
   * You can also compute diffs only for paths specified in a custom paths file
     using the `--paths-file` parameter. This file should contain paths starting
     with a `/`, having one path per line.
-    
+
     ```
     sitediff diff --paths-file=/path/to/paths.txt
     ```
-    
+
   * You can also compute diffs for a handful of specific paths by specifying
     them directly on the command line using the `--paths` parameter. Each path
     should be separated by a space.
-    
+
     ```
-    sitediff diff --paths=/home /about /contact 
+    sitediff diff --paths=/home /about /contact
     ```
 
 ### selector
@@ -409,6 +409,19 @@ sanitization:
 
 Sanitization rules may also have a **path** attribute, whose value is a
 regular expression. If present, the rule will only apply to matching paths.
+
+### ignore_whitespace
+Ignore whitespace when doing the diff. This passes the `-w` option to the native OS `diff` command.
+
+```yaml
+ignore_whitespace: true
+```
+
+On the command line, use `-w` or `--ignore-whitespace`.
+
+```bash
+sitediff diff -w
+```
 
 ### dom_transform
 

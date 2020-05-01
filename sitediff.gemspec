@@ -3,7 +3,7 @@
 Gem::Specification.new do |s|
   s.name        = 'sitediff'
   s.version     = '1.0.0'
-  s.required_ruby_version = '>= 2.3'
+  s.required_ruby_version = '>= 2.4'
   s.summary     = 'Compare two versions of a site with ease!'
   s.description = <<DESC
   SiteDiff makes it easy to see differences between two versions of a website. It accepts a set of paths to compare two versions of the site together with potential normalization/sanitization rules. From the provided paths and configuration SiteDiff generates an HTML report of all the status of HTML comparison between the given paths together with a readable diff-like HTML for each specified path containing the differences between the two versions of the site. It is useful tool for QAing re-deployments, site upgrades, etc.
@@ -37,5 +37,5 @@ DESC
 
   # Diffy and addressable have a max version for Ruby 1.9.
   s.add_dependency 'addressable', '~> 2.5.2'
-  s.add_dependency 'diffy', '~> 3.2.0'
+  s.add_dependency 'diffy', '~> 3.3.0'
 end
