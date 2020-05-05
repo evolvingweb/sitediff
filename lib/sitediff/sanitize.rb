@@ -181,6 +181,10 @@ class SiteDiff
       # Remove blank lines
       str.gsub!(/^\s*$\n/, '')
 
+      # Remove DOS newlines
+      str.gsub!(/\x0D$/, '')
+      str.gsub!(/&#13;$/, '')
+
       str
     end
 
