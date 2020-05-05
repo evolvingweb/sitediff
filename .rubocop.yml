@@ -22,6 +22,22 @@ Style/MutableConstant:
 Style/ConditionalAssignment:
   Enabled: false
 
+# Exponential notation: enforces a mantissa between 1 (inclusive) and 10 (exclusive).
+Style/ExponentialNotation:
+  Enabled: true
+
+# Check for uses of `each_key` and `each_value` Hash methods.
+Style/HashEachMethods:
+  Enabled: true
+
+# Use of `transform_keys`: This cop should only be enabled on Ruby version 2.5 or newer.
+Style/HashTransformKeys:
+  Enabled: false
+
+# Use of `transform_values`.
+Style/HashTransformValues:
+  Enabled: true
+
 # Require documentation for class methods.
 Style/DocumentationMethod:
   Enabled: true
@@ -32,11 +48,11 @@ Metrics/AbcSize:
 
 # Allow developers to write complex code.
 Metrics/CyclomaticComplexity:
-  Max: 16
+  Max: 15
 
 # Allow developers to write complex code.
 Metrics/PerceivedComplexity:
-  Max: 16
+  Max: 15
 
 # Classes can have as many lines as they want.
 # Complex classes can have many methods after all.
@@ -72,9 +88,21 @@ Layout/LineLength:
     # Spec files contain long strings for testing, so we ignore them.
     - 'spec/**/*_spec.rb'
 
+# Checks that operators have space around them, except for ** which should or shouldn't have surrounding space.
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
 # MarshalLoad helps in creating a clone of a Ruby hash, ensuring that it is
 # completely disconnected from the original hash. A common way of doing this
 # is by serializing an object and then un-serializing it with Marshal.
 Security/MarshalLoad:
   Exclude:
     - 'lib/sitediff/cache.rb'
+
+# This cop checks for `raise` or `fail` statements which are raising `Exception` class.
+Lint/RaiseException:
+  Enabled: true
+
+# Check for unexpected overrides of the `Struct` built-in methods via `Struct.new`.
+Lint/StructNewOverride:
+  Enabled: true
