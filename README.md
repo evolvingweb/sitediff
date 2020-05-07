@@ -425,7 +425,7 @@ sitediff diff -w
 
 ### export
 Generate a gzipped tar file containing the HTML report instead of generating and serving
-live web pages, this option  This option overrides `--report-format`, forcing HTML.
+live web pages, this option overrides `--report-format`, forcing HTML.
 
 ### dom_transform
 
