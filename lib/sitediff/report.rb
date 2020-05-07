@@ -156,7 +156,8 @@ class SiteDiff
       Dir.chdir(temp_path) do
         Minitar.pack(
           REPORT_DIR,
-          Zlib::GzipWriter.new(File.open(REPORT_FILE_TAR, 'wb')))
+          Zlib::GzipWriter.new(File.open(REPORT_FILE_TAR, 'wb'))
+        )
       end
       FileUtils.move(temp_path + REPORT_FILE_TAR, dir)
       temp_path.rmtree
