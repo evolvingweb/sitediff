@@ -115,7 +115,7 @@
                   <a href="<%= result.url(:after, after, cache) %>" class="button-after" target="_blank">After</a>
                   <a href="/sidebyside<%= result.path %>" class="button-both">Both</a>
                   <% unless result.diff_url.nil? %>
-                    <a href="<%= result.diff_url %>" class="button button-diff">View diff</a>
+                    <a href="<%= result.diff_url(relative) %>" class="button button-diff">View diff</a>
                   <% end %>
                 </div>
               </td>

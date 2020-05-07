@@ -80,8 +80,9 @@ class SiteDiff
     # Returns a URL to the result diff.
     #
     # Returns nil if the result has no diffs.
-    def diff_url
-      return '/files/' + filename if status == STATUS_FAILURE
+    def diff_url(relative = false)
+      prefix = relative ? 'files/' : '/files/'
+      return prefix + filename if status == STATUS_FAILURE
     end
 
     # Log the result to the terminal

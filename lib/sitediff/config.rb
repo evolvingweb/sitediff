@@ -42,6 +42,7 @@ class SiteDiff
       before_url
       after_url
       ignore_whitespace
+      export
     ]
 
     ##
@@ -267,6 +268,16 @@ class SiteDiff
     # Set ignore_whitespace option
     def ignore_whitespace=(ignore_whitespace)
       @config['ignore_whitespace'] = ignore_whitespace
+    end
+
+    # Get export option
+    def export
+      @config['export']
+    end
+
+    # Set export option
+    def export=(export)
+      @config['export'] = export
     end
 
     ##

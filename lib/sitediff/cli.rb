@@ -97,6 +97,11 @@ class SiteDiff
            default: false,
            aliases: '-w',
            desc: 'Ignore changes in whitespace.'
+    option 'export',
+           type: :boolean,
+           default: false,
+           aliases: '-e',
+           desc: 'Export report to files. This option forces HTML format.'
     desc 'diff [OPTIONS] [CONFIG-FILE]',
          'Compute diffs on configured URLs.'
     ##
@@ -113,6 +118,9 @@ class SiteDiff
 
       # Ignore whitespace option.
       config.ignore_whitespace = options['ignore-whitespace'] if options['ignore-whitespace']
+
+      # Export report option.
+      config.export = options['export']
 
       # Apply "paths" override, if any.
       config.paths = options['paths'] if options['paths']
@@ -151,7 +159,7 @@ class SiteDiff
       exit_code = num_failing.positive? ? 2 : 0
 
       # Generate HTML report.
-      if options['report-format'] == 'html'
+      if options['report-format'] == 'html' || config.export
         sitediff.report.generate_html(
           @dir,
           options['before-report'],
@@ -160,9 +168,11 @@ class SiteDiff
       end
 
       # Generate JSON report.
-      sitediff.report.generate_json @dir if options['report-format'] == 'json'
+      if options['report-format'] == 'json' && config.export == false
+        sitediff.report.generate_json @dir
+      end
 
-      SiteDiff.log 'Run "sitediff serve" to see a report.'
+      SiteDiff.log 'Run "sitediff serve" to see a report.' unless options['export']
     rescue Config::InvalidConfig => e
       SiteDiff.log "Invalid configuration: #{e.message}", :error
       SiteDiff.log e.backtrace, :error if options[:verbose]
