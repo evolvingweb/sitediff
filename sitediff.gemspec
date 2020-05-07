@@ -25,6 +25,7 @@ DESC
   # Apparently we require pkg-config
   s.add_dependency 'pkg-config', '~> 1.1'
 
+  s.add_dependency 'minitar', '~> 0.9'
   s.add_dependency 'thor', '~> 0.20.0'
   s.add_dependency 'typhoeus', '~> 1.0'
 

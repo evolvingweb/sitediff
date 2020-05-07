@@ -423,6 +423,10 @@ On the command line, use `-w` or `--ignore-whitespace`.
 sitediff diff -w
 ```
 
+### export
+Generate a gzipped tar file containing the HTML report instead of generating and serving
+live web pages, this option overrides `--report-format`, forcing HTML.
+
 ### dom_transform
 
 A list of transformations to apply to the HTML before comparing.

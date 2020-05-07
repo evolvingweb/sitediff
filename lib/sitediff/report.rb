@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
+require 'fileutils'
 require 'json'
+require 'minitar'
 require 'sitediff'
 require 'sitediff/config'
+require 'zlib'
 
 class SiteDiff
   ##
@@ -25,6 +28,18 @@ class SiteDiff
     ##
     # Name of file containing JSON report of diffs.
     REPORT_FILE_JSON = 'report.json'
+
+    ##
+    # Name of file containing exported file archive.
+    REPORT_FILE_TAR = 'report.tgz'
+
+    ##
+    # Name of directory in which to build the portable report.
+    REPORT_BUILD_DIR = '_tmp_report'
+
+    ##
+    # Name of the portable report directory.
+    REPORT_DIR = 'report'
 
     ##
     # Path to settings used for report.
@@ -65,7 +80,8 @@ class SiteDiff
         @results,
         report_before,
         report_after,
-        @cache
+        @cache,
+        @config.export
       )
 
       # Write report.
@@ -75,7 +91,11 @@ class SiteDiff
 
       write_settings dir, report_before, report_after
 
-      SiteDiff.log 'Report generated to ' + report_file.expand_path.to_s
+      if @config.export
+        package_report(dir)
+      else
+        SiteDiff.log 'Report generated to ' + report_file.expand_path.to_s
+      end
     end
 
     ##
@@ -117,6 +137,34 @@ class SiteDiff
     end
 
     ##
+    # Package report for export.
+    def package_report(dir)
+      # Create temporaryreport directories.
+      temp_path = dir + REPORT_BUILD_DIR
+      temp_path.rmtree if temp_path.directory?
+      temp_path.mkpath
+      report_path = temp_path + REPORT_DIR
+      report_path.mkpath
+      files_path = report_path + 'files'
+      files_path.mkpath
+
+      # Move files to place.
+      FileUtils.move(dir + REPORT_FILE_HTML, report_path)
+      FileUtils.move(dir + DIFFS_DIR, files_path)
+
+      # Make tar file.
+      Dir.chdir(temp_path) do
+        Minitar.pack(
+          REPORT_DIR,
+          Zlib::GzipWriter.new(File.open(REPORT_FILE_TAR, 'wb'))
+        )
+      end
+      FileUtils.move(temp_path + REPORT_FILE_TAR, dir)
+      temp_path.rmtree
+      SiteDiff.log 'Archived report generated to ' + dir.join(REPORT_FILE_TAR).to_s
+    end
+
+    ##
     # Creates diff files in a directory named "diffs".
     #
     # If "dir" is /foo/bar, then diffs will be placed in /foo/bar/diffs.
@@ -132,7 +180,7 @@ class SiteDiff
 
       # Write diffs to the diff directory.
       @results.each { |r| r.dump(dir) if r.status == Result::STATUS_FAILURE }
-      SiteDiff.log "All diff files written to #{diff_dir.expand_path}"
+      SiteDiff.log "All diff files written to #{diff_dir.expand_path}" unless @config.export
     end
 
     ##
