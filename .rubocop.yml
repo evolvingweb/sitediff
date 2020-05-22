@@ -42,6 +42,10 @@ Style/HashTransformValues:
 Style/DocumentationMethod:
   Enabled: true
 
+# Check that arrays are sliced with endless ranges instead of ary[start..-1] on Ruby 2.6+.
+Style/SlicingWithRange:
+  Enabled: true
+
 # Allow developers to write complex code.
 Metrics/AbcSize:
   Max: 100
@@ -88,6 +92,10 @@ Layout/LineLength:
     # Spec files contain long strings for testing, so we ignore them.
     - 'spec/**/*_spec.rb'
 
+# Checks if empty lines exist around the arguments of a method invocation.
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+
 # Checks that operators have space around them, except for ** which should or shouldn't have surrounding space.
 Layout/SpaceAroundMethodCallOperator:
   Enabled: true
@@ -98,6 +106,10 @@ Layout/SpaceAroundMethodCallOperator:
 Security/MarshalLoad:
   Exclude:
     - 'lib/sitediff/cache.rb'
+
+# Disallow algorithmic constants for OpenSSL::Cipher and OpenSSL::Digest.
+Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
 
 # This cop checks for `raise` or `fail` statements which are raising `Exception` class.
 Lint/RaiseException:
