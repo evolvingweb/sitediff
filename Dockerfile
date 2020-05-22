@@ -13,7 +13,7 @@ RUN apt-get update
 RUN apt-get install -y software-properties-common 
 #RUN add-apt-repository -y ppa:brightbox/ruby-ng
 RUN apt-get update
-RUN apt-get install -y ruby2.3 ruby2.3-dev make pkg-config libxml2-dev libxslt-dev libcurl3 bundler
+RUN apt-get install -y ruby-full make pkg-config libxml2-dev libxslt-dev libcurl3 bundler
 RUN apt-get install -y vim nano
 
 # Force nokogiri gem not to compile libxml2, it takes too long
