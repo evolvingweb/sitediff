@@ -40,3 +40,8 @@ Style/StructInheritance:
 
 Style/GuardClause:
   Enabled: false
+
+# Offense count: 18!!!
+# New default. https://docs.rubocop.org/en/latest/cops_style/#styleifunlessmodifier
+Style/IfUnlessModifier:
+  Enabled: false
