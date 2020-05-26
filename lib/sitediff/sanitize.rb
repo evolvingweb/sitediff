@@ -16,7 +16,7 @@ class SiteDiff
       array: %w[dom_transform sanitization],
       scalar: %w[selector remove_spacing ignore_whitespace]
     }.freeze
-    DOM_TRANSFORMS = Set.new(%w[remove unwrap_root unwrap remove_class])
+    DOM_TRANSFORMS = Set.new(%w[remove strip unwrap_root unwrap remove_class])
 
     ##
     # Creates a Sanitizer.
