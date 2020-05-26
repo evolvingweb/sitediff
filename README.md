@@ -160,7 +160,7 @@ dom_transform:
 You can use one of the presets to apply framework-specific sanitization.
 Currently, SiteDiff only comes with Drupal-specific presets.
 
-See the [configuration reference](#configuration) for more details.
+See the [preset](#preset) section for more details.
 
 ## Tips & tricks
 
@@ -571,10 +571,21 @@ this [full list of options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html
 and write in lowercase. Useful for throttling.
 
 ```yaml
-curl_opts:
-  connecttimeout: 3
-  followlocation: true
-  max_recv_speed_large: 10000
+settings:
+  curl_opts:
+    connecttimeout: 3
+    followlocation: true
+    max_recv_speed_large: 10000
+```
+
+#### preset
+
+Presets are stored in the `/lib/sitediff/presets` directory of this gem. You
+can select a preset as follows:
+
+```yaml
+settings:
+  preset: drupal
 ```
 
 ## Acknowledgements
