@@ -450,6 +450,23 @@ dom_transform:
   - selector: div#block-time
 ```
 
+#### strip
+
+Strip leading and trailing whitespace from the contents of a tag.
+
+Uses the Ruby string `strip()` method. Whitespace is defined as any of the
+following characters: null, horizontal tab, line feed, vertical tab, form
+feed, carriage return, space.
+
+To transform `<h1>  Foo and Bar\n  </h1>` to `<h1>Foo and Bar<\h1>`:
+
+```yaml
+dom_transform:
+# Strip H1 tags
+  - type: strip
+  - selector: h1
+```
+
 #### unwrap
 
 Given a **selector**, replaces all matching elements with

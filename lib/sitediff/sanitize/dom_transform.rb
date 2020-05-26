@@ -11,6 +11,7 @@ class SiteDiff
     #  * { :type => "unwrap", :selector => "div.field-item" }
     #  * { :type => "remove", :selector => "div.extra-stuff" }
     #  * { :type => "remove_class", :class => 'class1' }
+    #  * { :type => "strip", :selector => 'h1' }
     class DomTransform
       # Supported dom_transform types.
       TRANSFORMS = {}
@@ -67,6 +68,17 @@ class SiteDiff
         # Processes a node.
         def process(node)
           node.remove
+        end
+      end
+
+      # Squeeze whitespace from a tag matching 'selector'.
+      class Strip < DomTransform
+        register 'strip'
+
+        ##
+        # Processes a node.
+        def process(node)
+          node.content = node.content.strip
         end
       end
 
