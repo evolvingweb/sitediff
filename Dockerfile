@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -24,7 +24,7 @@ RUN gem install thor rspec --no-rdoc --no-ri
 COPY . /sitediff
 WORKDIR /sitediff
 
-RUN apt-get install -y build-essential patch ruby-dev zlib1g-dev liblzma-dev
+RUN apt-get install -y build-essential patch ruby-full zlib1g-dev liblzma-dev
 RUN apt-get remove -y bundler && gem install bundler
 RUN bundle config build.nokogiri --use-system-libraries --with-xml2-include=/usr/include/libxml2 --with-xml2-lib=/usr/lib/
 RUN gem install nokogiri -v 1.8.2
