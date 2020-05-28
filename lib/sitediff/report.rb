@@ -147,10 +147,11 @@ class SiteDiff
       report_path.mkpath
       files_path = report_path + 'files'
       files_path.mkpath
+      diffs_path = dir + DIFFS_DIR
 
       # Move files to place.
       FileUtils.move(dir + REPORT_FILE_HTML, report_path)
-      FileUtils.move(dir + DIFFS_DIR, files_path)
+      FileUtils.move(diffs_path, files_path) if diffs_path.directory?
 
       # Make tar file.
       Dir.chdir(temp_path) do
