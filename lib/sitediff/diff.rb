@@ -64,7 +64,7 @@ class SiteDiff
 
     ##
     # Generates diff output for a single result.
-    def generate_diff_output(result)
+    def generate_diff_output(result, relative = false)
       erb_path = File.join(SiteDiff::FILES_DIR, 'diff.html.erb')
       ERB.new(File.read(erb_path)).result(binding)
     end

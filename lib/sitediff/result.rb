@@ -99,12 +99,12 @@ class SiteDiff
     end
 
     # Dump the result to a file
-    def dump(dir)
+    def dump(dir, relative = false)
       dump_path = File.join(dir, filename)
       base = File.dirname(dump_path)
       FileUtils.mkdir_p(base) unless File.exist?(base)
       File.open(dump_path, 'w') do |f|
-        f.write(Diff.generate_diff_output(self))
+        f.write(Diff.generate_diff_output(self, relative))
       end
     end
   end

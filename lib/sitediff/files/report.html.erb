@@ -111,9 +111,11 @@
               <td class="description">
                 <span class="path"><%= result.path %></span>
                 <div class="buttons">
-                  <a href="<%= result.url(:before, before, cache) %>" class="button-before" target="_blank">Before</a>
-                  <a href="<%= result.url(:after, after, cache) %>" class="button-after" target="_blank">After</a>
-                  <a href="/sidebyside<%= result.path %>" class="button-both">Both</a>
+                  <% unless relative %>
+                    <a href="<%= result.url(:before, before, cache) %>" class="button-before" target="_blank">Before</a>
+                    <a href="<%= result.url(:after, after, cache) %>" class="button-after" target="_blank">After</a>
+                    <a href="/sidebyside<%= result.path %>" class="button-both">Both</a>
+                  <% end %>
                   <% unless result.diff_url.nil? %>
                     <a href="<%= result.diff_url(relative) %>" class="button button-diff">View diff</a>
                   <% end %>
