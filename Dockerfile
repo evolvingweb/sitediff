@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -10,11 +10,10 @@ ENV DEBIAN_FRONTEND noninteractive
 # Our build requires rake
 # Install editors: vim, nano.
 RUN apt-get update
-RUN apt-get install -y software-properties-common 
-#RUN add-apt-repository -y ppa:brightbox/ruby-ng
-RUN apt-get update
-RUN apt-get install -y ruby2.3 ruby2.3-dev make pkg-config libxml2-dev libxslt-dev libcurl3 bundler
-RUN apt-get install -y vim nano
+RUN apt-get install -y apt-utils
+RUN apt-get install -y software-properties-common
+RUN apt-get install -y ruby-full make pkg-config libxml2-dev libxslt-dev libcurl3 bundler
+RUN apt-get install -y vim nano git
 
 # Force nokogiri gem not to compile libxml2, it takes too long
 ENV NOKOGIRI_USE_SYSTEM_LIBRARIES 1
@@ -24,10 +23,8 @@ RUN gem install thor rspec --no-rdoc --no-ri
 COPY . /sitediff
 WORKDIR /sitediff
 
-RUN apt-get install -y build-essential patch ruby-dev zlib1g-dev liblzma-dev
-RUN apt-get remove -y bundler && gem install bundler
-RUN bundle config build.nokogiri --use-system-libraries --with-xml2-include=/usr/include/libxml2 --with-xml2-lib=/usr/lib/
-RUN gem install nokogiri -v 1.8.2
+RUN apt-get install -y liblzma-dev
+RUN gem install nokogiri -- --use-system-libraries --with-xml2-include=/usr/include/libxml2 --with-xml2-lib=/usr/lib/
 
 # Build as a gem
 RUN gem build sitediff.gemspec && gem install sitediff --no-rdoc --no-ri
