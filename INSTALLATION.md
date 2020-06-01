@@ -44,13 +44,13 @@ gem install sitediff -v '0.0.6'
 ## Docker
 
 There is a `Dockerfile` in the root of the SiteDiff git repository. It uses
-Ubuntu 16.04. Note that SiteDiff will use port `13080` for the result server.
+Ubuntu 18.04. Note that SiteDiff will use port `13080` for the result server.
 
 ```bash
 git clone https://github.com/evolvingweb/sitediff
 cd sitediff
-docker build -t sitediff-u16 .
-docker run -p 13080:13080 -t --detach --name sitediff sitediff-u16
+docker build -t sitediff-u18 .
+docker run -p 13080:13080 -t --detach --name sitediff sitediff-u18
 docker exec -it sitediff /bin/bash
 ```
 
