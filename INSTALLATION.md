@@ -49,8 +49,8 @@ Ubuntu 18.04. Note that SiteDiff will use port `13080` for the result server.
 ```bash
 git clone https://github.com/evolvingweb/sitediff
 cd sitediff
-docker build -t sitediff-u18 .
-docker run -p 13080:13080 -t --detach --name sitediff sitediff-u18
+docker build -t sitediff .
+docker run -p 13080:13080 -t --detach --name sitediff sitediff
 docker exec -it sitediff /bin/bash
 ```
 
