@@ -42,6 +42,14 @@ Style/HashTransformValues:
 Style/DocumentationMethod:
   Enabled: true
 
+# Check for unnecessary single-element Regexp character classes.
+Style/RedundantRegexpCharacterClass:
+  Enabled: true
+
+# Checks for redundant escapes inside Regexp literals.
+Style/RedundantRegexpEscape:
+  Enabled: true
+
 # Check that arrays are sliced with endless ranges instead of ary[start..-1] on Ruby 2.6+.
 Style/SlicingWithRange:
   Enabled: true
@@ -111,6 +119,10 @@ Security/MarshalLoad:
 Lint/DeprecatedOpenSSLConstant:
   Enabled: true
 
+# Do not mix named captures and numbered captures in a Regexp literal.
+Lint/MixedRegexpCaptureTypes:
+  Enabled: true
+
 # This cop checks for `raise` or `fail` statements which are raising `Exception` class.
 Lint/RaiseException:
   Enabled: true
@@ -118,3 +130,5 @@ Lint/RaiseException:
 # Check for unexpected overrides of the `Struct` built-in methods via `Struct.new`.
 Lint/StructNewOverride:
   Enabled: true
+
+
