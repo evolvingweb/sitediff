@@ -223,8 +223,14 @@ Often development or staging sites are protected by [HTTP Authentication](http:/
 SiteDiff allows you to specify a username and password, by using a URL like
 `http://user:pass@example.com`.
 
-There is also an option to ignore untrusted certificates by using the
-`--insecure` flag.
+SiteDiff ignores untrusted certificates by default. This is equivalent to the following settings:
+
+```yaml
+settings:
+  curl_opts:
+    ssl_verifypeer: false
+    ssl_verifyhost: 0
+```
 
 ### Running inside containers
 
