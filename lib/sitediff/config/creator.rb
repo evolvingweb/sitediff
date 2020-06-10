@@ -25,7 +25,7 @@ class SiteDiff
       # Determine if we're dealing with one or two URLs.
       def roots
         @roots = { 'after' => @after }
-        @roots['before'] = @before if @before
+        @roots['before'] = @before || @after
         @roots
       end
 

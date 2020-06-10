@@ -17,7 +17,10 @@ class SiteDiff
       followlocation: true,
       headers: {
         'User-Agent' => 'Sitediff - https://github.com/evolvingweb/sitediff'
-      }
+      },
+      # always accept SSL certs
+      ssl_verifypeer: false,
+      ssl_verifyhost: 0
     }.freeze
 
     # This lets us treat errors or content as one object

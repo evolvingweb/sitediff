@@ -369,9 +369,6 @@ class SiteDiff
       # TODO: This should be in the config class instead.
       # TODO: Make all requests insecure and avoid custom curl-opts.
       def get_curl_opts(options)
-        # always accept SSL certs
-        curl_opts[:ssl_verifypeer] = false
-        curl_opts[:ssl_verifyhost] = 0
         # We do want string keys here
         bool_hash = { 'true' => true, 'false' => false }
         curl_opts = UriWrapper::DEFAULT_CURL_OPTS
