@@ -44,13 +44,15 @@ gem install sitediff -v '0.0.6'
 ## Docker
 
 There is a `Dockerfile` in the root of the SiteDiff git repository. It uses
-Ubuntu 18.04. Note that SiteDiff will use port `13080` for the result server.
+the Docker offical Ruby image. Note that SiteDiff will use port `13080` for the result server. The following Docker image tags are available to be pulled.
+
+* latest (master branch)
+* 1.0.0
+* 1.0.0-rc1
+* 0.0.6
 
 ```bash
-git clone https://github.com/evolvingweb/sitediff
-cd sitediff
-docker build -t sitediff .
-docker run -p 13080:13080 -t --detach --name sitediff sitediff
+docker run -p 13080:13080 -t -d --name sitediff sitediff:latest
 docker exec -it sitediff /bin/bash
 ```
 
