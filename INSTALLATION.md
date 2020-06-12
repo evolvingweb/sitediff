@@ -52,7 +52,7 @@ the Docker offical Ruby image. Note that SiteDiff will use port `13080` for the 
 * 0.0.6
 
 ```bash
-docker run -p 13080:13080 -t -d --name sitediff sitediff:latest
+docker run -p 13080:13080 -t -d --name sitediff evolvingweb/sitediff:latest
 docker exec -it sitediff /bin/bash
 ```
 
