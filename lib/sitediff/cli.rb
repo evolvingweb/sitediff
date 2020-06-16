@@ -238,12 +238,20 @@ class SiteDiff
            desc: 'Crawling delay - interval in milliseconds.'
     option :whitelist,
            type: :string,
-           default: Config::DEFAULT_CONFIG['settings']['whitelist'],
-           desc: 'Optional whitelist for crawling.'
+           default: false,
+           desc: 'DEPRECATED: To be removed in 1.1.0. Use --include.'
     option :blacklist,
            type: :string,
-           default: Config::DEFAULT_CONFIG['settings']['blacklist'],
-           desc: 'Optional blacklist for crawling.'
+           default: false,
+           desc: 'DEPRECATED: To be removed in 1.1.0. Use --exclude.'
+    option :include,
+           type: :string,
+           default: Config::DEFAULT_CONFIG['settings']['include'],
+           desc: 'Optional URL include regex for crawling.'
+    option :exclude,
+           type: :string,
+           default: Config::DEFAULT_CONFIG['settings']['exclude'],
+           desc: 'Optional URL exclude regex for crawling.'
     option :curl_options,
            type: :hash,
            default: {},
@@ -257,6 +265,18 @@ class SiteDiff
         exit(2)
       end
 
+      include_regex = options[:include]
+      exclude_regex = options[:exclude]
+      # TODO: remove deprecated whitelist/blacklist in 1.1.x
+      if options[:whitelist]
+        SiteDiff.log "--whitelist is deprecated. Use --include.", :warning
+        include_regex = options[:whitelist] if include_regex == Config::DEFAULT_CONFIG['settings']['include']
+      end
+      if options[:blacklist]
+        SiteDiff.log "--blacklist is deprecated. Use --exclude.", :warning
+        exclude_regex = options[:blacklist] if exclude_regex == Config::DEFAULT_CONFIG['settings']['exclude']
+      end
+
       # Prepare a config object and write it to the file system.
       @dir = get_dir(options['directory'])
       creator = SiteDiff::Config::Creator.new(options[:debug], *urls)
@@ -265,8 +285,8 @@ class SiteDiff
         directory: @dir,
         concurrency: options[:concurrency],
         interval: options[:interval],
-        whitelist: Config.create_regexp(options['whitelist']),
-        blacklist: Config.create_regexp(options['blacklist']),
+        include: Config.create_regexp(include_regex),
+        exclude: Config.create_regexp(exclude_regex),
         preset: options[:preset],
         curl_opts: get_curl_opts(options)
       )
@@ -340,8 +360,8 @@ class SiteDiff
           hydra,
           url,
           @config.setting(:interval),
-          @config.setting(:whitelist),
-          @config.setting(:blacklist),
+          @config.setting(:include),
+          @config.setting(:exclude),
           @config.setting(:depth),
           get_curl_opts(@config.settings),
           @debug

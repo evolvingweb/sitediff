@@ -17,8 +17,8 @@ class SiteDiff
     # Create a crawler with a base URL
     def initialize(hydra, base,
                    interval,
-                   whitelist,
-                   blacklist,
+                   include_regex,
+                   exclude_regex,
                    depth = DEFAULT_DEPTH,
                    curl_opts = UriWrapper::DEFAULT_CURL_OPTS,
                    debug = true,
@@ -27,8 +27,8 @@ class SiteDiff
       @base_uri = Addressable::URI.parse(base)
       @base = base
       @interval = interval
-      @whitelist = whitelist
-      @blacklist = blacklist
+      @include_regex = include_regex
+      @exclude_regex = exclude_regex
       @found = Set.new
       @callback = block
       @curl_opts = curl_opts
@@ -119,12 +119,12 @@ class SiteDiff
                      u.path.start_with?(@base_uri.path)
         next unless is_sub_uri
 
-        is_whitelisted = @whitelist.nil? ? false : @whitelist.match(u.path)
-        is_blacklisted = @blacklist.nil? ? false : @blacklist.match(u.path)
-        if is_blacklisted && !is_whitelisted
-          SiteDiff.log "Ignoring blacklisted URL #{u.path}", :info
+        is_included = @include_regex.nil? ? false : @include_regex.match(u.path)
+        is_excluded = @exclude_regex.nil? ? false : @exclude_regex.match(u.path)
+        if is_excluded && !is_included
+          SiteDiff.log "Ignoring excluded URL #{u.path}", :info
         end
-        is_whitelisted || !is_blacklisted
+        is_included || !is_excluded
       end
     end
   end
