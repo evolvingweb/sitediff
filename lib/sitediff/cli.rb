@@ -269,11 +269,11 @@ class SiteDiff
       exclude_regex = options[:exclude]
       # TODO: remove deprecated whitelist/blacklist in 1.1.x
       if options[:whitelist]
-        SiteDiff.log "--whitelist is deprecated. Use --include.", :warning
+        SiteDiff.log '--whitelist is deprecated. Use --include.', :warning
         include_regex = options[:whitelist] if include_regex == Config::DEFAULT_CONFIG['settings']['include']
       end
       if options[:blacklist]
-        SiteDiff.log "--blacklist is deprecated. Use --exclude.", :warning
+        SiteDiff.log '--blacklist is deprecated. Use --exclude.', :warning
         exclude_regex = options[:blacklist] if exclude_regex == Config::DEFAULT_CONFIG['settings']['exclude']
       end
 
