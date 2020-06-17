@@ -20,8 +20,8 @@ class SiteDiff
       'settings' => {
         'depth' => 3,
         'interval' => 0,
-        'whitelist' => '',
-        'blacklist' => '',
+        'include' => '',
+        'exclude' => '',
         'concurrency' => 3,
         'preset' => nil
       },
@@ -52,8 +52,8 @@ class SiteDiff
     ALLOWED_SETTINGS_KEYS = %w[
       preset
       depth
-      whitelist
-      blacklist
+      include
+      exclude
       concurrency
       interval
       curl_opts

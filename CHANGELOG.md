@@ -4,6 +4,7 @@ Contains note-worthy changes made to SiteDiff.
 
 ## Since 1.0.0
 
+- Deprecated `--whitelist` and `--blacklist`. To be removed in 1.1.0.
 - Fix `init` command when running with a single URL #109
 - Remove --insecure option — instead, always accept certificates.
 - Update `.travis.yml` to Ruby 2.7

@@ -15,7 +15,7 @@ settings:
   # Concurrency has to be one when an interval is set.
   concurrency: 1
   # Don't follow links to PDF files.
-  blacklist: '.*\.pdf'
+  exclude: '.*\.pdf'
   # Curl options, if any.
   curl_opts:
     max_recv_speed_large: 10000

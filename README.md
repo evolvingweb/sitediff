@@ -293,17 +293,17 @@ or in your configuration file.
       timeout_ms: 60000 # In milliseconds.
   ```
 
-### Whitelisting and Blacklisting
+### Including and Excluding URLs
 
 By default sitediff crawls pages that are indicated with an HTML anchor using
 the `<A HREF` syntax. Most pages linked will be HTML pages, but some links
 will contain binaries such as PDF documents and images.
 
-Using the option `--blacklist='.*\.pdf'` ensures the crawler skips links
+Using the option `--exclude='.*\.pdf'` ensures the crawler skips links
 for document with a `.pdf` extension. Note that the regular expression is
 applied to the path of the URL, not the base of the URL.
 
-For example `--blacklist='.*\.com'` will not match `http://www.google.com/`,
+For example `--include='.*\.com'` will not match `http://www.google.com/`,
 because the path of that URL is `/` while the base is `www.google.com`.
 
 ## Configuration
@@ -574,11 +574,11 @@ between requests.
 #### concurrency
 The maximum number of simultaneous requests that SiteDiff should make.
 
-#### blacklist
+#### exclude
 
 A RegEx indicating the paths that should not be crawled.
 
-#### whitelist
+#### include
 
 A RegEx indicating the paths that should be crawled.
 
