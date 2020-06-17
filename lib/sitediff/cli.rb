@@ -238,11 +238,11 @@ class SiteDiff
            desc: 'Crawling delay - interval in milliseconds.'
     option :whitelist,
            type: :string,
-           default: false,
+           default: Config::DEFAULT_CONFIG['settings']['include'],
            desc: 'DEPRECATED: To be removed in 1.1.0. Use --include.'
     option :blacklist,
            type: :string,
-           default: false,
+           default: Config::DEFAULT_CONFIG['settings']['exclude'],
            desc: 'DEPRECATED: To be removed in 1.1.0. Use --exclude.'
     option :include,
            type: :string,
@@ -268,11 +268,11 @@ class SiteDiff
       include_regex = options[:include]
       exclude_regex = options[:exclude]
       # TODO: remove deprecated whitelist/blacklist in 1.1.x
-      if options[:whitelist]
+      unless options[:whitelist] == Config::DEFAULT_CONFIG['settings']['include']
         SiteDiff.log '--whitelist is deprecated. Use --include.', :warning
         include_regex = options[:whitelist] if include_regex == Config::DEFAULT_CONFIG['settings']['include']
       end
-      if options[:blacklist]
+      unless options[:blacklist] == Config::DEFAULT_CONFIG['settings']['exclude']
         SiteDiff.log '--blacklist is deprecated. Use --exclude.', :warning
         exclude_regex = options[:blacklist] if exclude_regex == Config::DEFAULT_CONFIG['settings']['exclude']
       end
