@@ -43,6 +43,7 @@ class SiteDiff
       after_url
       ignore_whitespace
       export
+      output
     ]
 
     ##
@@ -71,6 +72,12 @@ class SiteDiff
     #     before:
     #       url: http://before
     #       selector: body
+    #       ## Note: use either `selector` or `regions`, but not both
+    #       regions:
+    #         - name: title
+    #           selector: .field-name-title h2
+    #         - name: body
+    #           selector: .field-name-field-news-description .field-item
     #       dom_transform:
     #       - type: remove
     #         selector: script
@@ -78,6 +85,13 @@ class SiteDiff
     #     after:
     #       url: http://after
     #       selector: body
+    #
+    #     ## Note: use `output` only with `regions`
+    #     output:
+    #       - title
+    #       - author
+    #       - source
+    #       - body
     #
     def self.normalize(conf)
       tools = Sanitizer::TOOLS
@@ -117,6 +131,7 @@ class SiteDiff
       result = {
         'before' => {},
         'after' => {},
+        'output' => [],
         'settings' => {}
       }
 
@@ -148,6 +163,9 @@ class SiteDiff
                              end
         end
       end
+
+      # Merge output.
+      result['output'] += (first['output'] || []) + (second['output'] || [])
 
       # Merge settings.
       result['settings'] = merge_deep(
@@ -278,6 +296,18 @@ class SiteDiff
     # Set export option
     def export=(export)
       @config['export'] = export
+    end
+
+    # Get output option
+    def output
+      @config['output']
+    end
+
+    # Set output option
+    def output=(output)
+      raise 'Output must be an Array' unless output.is_a? Array
+
+      @config['output'] = output
     end
 
     ##

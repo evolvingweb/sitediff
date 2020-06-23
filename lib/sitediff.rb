@@ -108,7 +108,9 @@ class SiteDiff
       encoding = read_results[tag].encoding
       if encoding || html.length.positive?
         section = @config.send(tag, true)
-        Sanitizer.new(html, section, path: path).sanitize
+        opts = { path: path }
+        opts[:output] = @config.output if @config.output
+        Sanitizer.new(html, section, opts).sanitize
       else
         html
       end

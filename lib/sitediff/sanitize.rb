@@ -35,7 +35,7 @@ class SiteDiff
       @html = nil
 
       remove_spacing
-      selector
+      regions || selector
       dom_transforms
       regexps
 
@@ -82,6 +82,13 @@ class SiteDiff
     def remove_spacing
       (rule = canonicalize_rule('remove_spacing')) || return
       Sanitizer.remove_node_spacing(@node) if rule['value']
+    end
+
+    # Perform 'regions' action, don't perform 'selector' if regions exist.
+    def regions
+      return unless validate_regions
+
+      @node = select_regions(@node, @config['regions'], @opts[:output])
     end
 
     # Perform 'selector' action, to choose a new root
@@ -133,6 +140,20 @@ class SiteDiff
       node.xpath('//text()').each do |el|
         el.content = el.content.gsub(/  +/, ' ')
       end
+    end
+
+    # Restructure the node into regions.
+    def select_regions(node, regions, output)
+      regions = output.map do |name|
+        selector = get_named_region(regions, name)['selector']
+        region = Nokogiri::XML.fragment('<region id="' + name + '"></region>').at_css('region')
+        matching = node.css(selector)
+        matching.each { |m| region.add_child m }
+        region
+      end
+      node = Nokogiri::HTML.fragment('')
+      regions.each { |r| node.add_child r }
+      node
     end
 
     # Get a fragment consisting of the elements matching the selector(s)
@@ -207,6 +228,33 @@ class SiteDiff
       else
         to_document(domify(obj, false))
       end
+    end
+
+    private
+
+    # Validate `regions` and `output` from config.
+    def validate_regions
+      return false unless @config['regions'].is_a?(Array)
+
+      return false unless @opts[:output].is_a?(Array)
+
+      regions = @config['regions']
+      output = @opts[:output]
+      regions.each do |region|
+        return false unless region.key?('name') && region.key?('selector')
+      end
+
+      # Check that each named output has an associated region.
+      output.each do |name|
+        return false unless get_named_region(regions, name)
+      end
+
+      true
+    end
+
+    # Return the selector from a named region.
+    def get_named_region(regions, name)
+      regions.find { |region| region['name'] == name }
     end
   end
 end
