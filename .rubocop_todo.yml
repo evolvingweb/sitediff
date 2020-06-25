@@ -18,7 +18,7 @@ Lint/UselessAccessModifier:
     - 'lib/sitediff/config.rb'
     - 'lib/sitediff/webserver.rb'
 
-# Offense count: 1
+# Offense count: 2
 Metrics/CyclomaticComplexity:
   Exclude:
     - 'lib/sitediff/cli.rb'

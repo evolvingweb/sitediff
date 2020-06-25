@@ -28,6 +28,7 @@ that materially affect the site.
   - [Comparing multiple sites](#comparing-multiple-sites)
   - [Preventing spurious diffs](#preventing-spurious-diffs)
   - [Getting help](#getting-help)
+  - [Advanced diffs](#advanced-diffs)
   - [Tips & tricks](#tips--tricks)
 - [Configuration](#configuration)
 
@@ -161,6 +162,76 @@ You can use one of the presets to apply framework-specific sanitization.
 Currently, SiteDiff only comes with Drupal-specific presets.
 
 See the [preset](#preset) section for more details.
+
+## Advanced diffs
+
+### Named regions
+
+In major upgrades and migrations where there are significant changes to the markup,
+simple diffs will not be of much value. To assist in these cases, `named
+regions` let you define regions in the page markup and the specify order in which
+they should be compared. Specifying the order helps in cases where the fields are
+not in the same order on the new site.
+
+For example, if you have a CMS displaying `title`, `author`, and `body` fields, you
+could define the named regions and the selectors for the three fields as follows:
+
+```yaml
+  regions:
+    - name: title
+      selector: h1.title
+    - name: author
+      selector: .field-name-attribution
+    - name: body
+      selector: .field-name-body
+```
+
+(You need to define `regions` for both the `before` and `after` sections.)
+
+You must then define the order that the fields should be compared, using the
+`output` key.
+
+```yaml
+output:
+  - title
+  - author
+  - body
+```
+
+Before the two versions are compared, SiteDiff generates markup with
+`<region>` tags and each `region` contains the markup matching the
+corresponding selector.
+
+EG:
+
+```html
+<region id="title">
+  <h1 class="title">My Blog Post</h1>
+</region>
+<region id="author">
+  <div class="field-name-attribution">
+    <span class="label">By:</span> Alfred E. Neuman
+  </div>
+</region>
+<region id="body">
+  <div class=".field-name-attribution">
+    <p>Lorem ipsum...
+  </div>
+</region>
+```
+
+The regions are processed first, so you can reference the `<region>` tags to
+be more specific in your selectors for `dom_transform` and `sanitization`
+sections.
+
+EG:
+
+```yaml
+dom_transform:
+  - name: Remove body div wrapper
+    type: unwrap
+    selector: region#body .field-name-attribution
+```
 
 ## Tips & tricks
 
@@ -430,8 +501,41 @@ sitediff diff -w
 ```
 
 ### export
-Generate a gzipped tar file containing the HTML report instead of generating and serving
-live web pages, this option overrides `--report-format`, forcing HTML.
+Generate a gzipped tar file containing the HTML report instead of generating
+and serving live web pages, this option overrides `--report-format`, forcing
+HTML.
+
+### regions
+To specify the regions you wish to compare, define regions for both the
+`before` and `after` sections of the configuration. Then define the order
+that the regions should be compared in the `output` section. It doesn't matter
+which order the regions appear in the source pages.
+
+Define regions:
+```yaml
+before:
+  url: http://example.com
+  regions:
+    - name: title
+      selector: h1.title
+    - name: body
+      selector: .field-name-body
+
+after:
+  url: http://example.com
+  regions:
+    - name: title
+      selector: h1.title
+    - name: body
+      selector: .field-name-body
+```
+
+Define output order:
+```yaml
+output:
+  - title
+  - body
+```
 
 ### dom_transform
 
