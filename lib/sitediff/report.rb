@@ -67,8 +67,8 @@ class SiteDiff
       report_before = nil,
       report_after = nil
     )
-      report_before ||= @config.before_url
-      report_after ||= @config.after_url
+      report_before ||= @config.before_url_report
+      report_after ||= @config.after_url_report
 
       dir = SiteDiff.ensure_dir dir
 

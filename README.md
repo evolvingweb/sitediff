@@ -441,18 +441,22 @@ selector: '#breadcrumb'
 
 ### before_url_report / after_url_report
 
-*Warning:* This option might be deprecated.
-
 Changes how SiteDiff reports which URLs it is comparing, but don't change what
 it actually compares.
 
 Suppose you are serving your 'after' website on a virtual machine with
-IP 192.1.2.3, and you are also running SiteDiff inside that VM. To make links
-in the report accessible from outside the VM, you might provide
+IP 192.168.2.3, and you are also running SiteDiff inside that VM. To make links
+in the report accessible from outside the VM, you might provide:
 
 ```yaml
 after_url: http://localhost
-after_url_report: http://192.1.2.3
+after_url_report: http://192.168.2.3
+```
+
+If you don't wish to have links, set to false:
+
+```yaml
+after_url_report: false
 ```
 
 ### sanitization

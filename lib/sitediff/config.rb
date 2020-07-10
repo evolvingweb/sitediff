@@ -41,6 +41,8 @@ class SiteDiff
       after
       before_url
       after_url
+      before_url_report
+      after_url_report
       ignore_whitespace
       export
       output
@@ -164,8 +166,13 @@ class SiteDiff
         end
       end
 
-      # Merge output.
+      # Merge output array.
       result['output'] += (first['output'] || []) + (second['output'] || [])
+
+      # Merge keys.
+      %w[before_url_report after_url_report].each do |pos|
+        result[pos] = first[pos] || second[pos]
+      end
 
       # Merge settings.
       result['settings'] = merge_deep(
@@ -308,6 +315,30 @@ class SiteDiff
       raise 'Output must be an Array' unless output.is_a? Array
 
       @config['output'] = output
+    end
+
+    # Return `before` report url, fall back to actual url.
+    def before_url_report
+      return @config['before_url_report'] unless @config['before_url_report'].nil?
+
+      before_url
+    end
+
+    # Set before_url_report option
+    def before_url_report=(before_url_report)
+      @config['before_url_report'] = before_url_report
+    end
+
+    # Return `after` report url, fall back to actual url.
+    def after_url_report
+      return @config['after_url_report'] unless @config['after_url_report'].nil?
+
+      after_url
+    end
+
+    # Set after_url_report option
+    def after_url_report=(after_url_report)
+      @config['after_url_report'] = after_url_report
     end
 
     ##

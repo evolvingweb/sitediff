@@ -68,6 +68,8 @@ class SiteDiff
 
     # Printable URL
     def url(tag, prefix, cache)
+      return unless prefix
+
       base = cache.read_tags.include?(tag) ? "/cache/#{tag}" : prefix
       base.to_s + path
     end
