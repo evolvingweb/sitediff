@@ -41,11 +41,10 @@ class SiteDiff
       after
       before_url
       after_url
-      before_url_report
-      after_url_report
       ignore_whitespace
       export
       output
+      report
     ]
 
     ##
@@ -64,6 +63,8 @@ class SiteDiff
 
     class InvalidConfig < SiteDiffException; end
     class ConfigNotFound < SiteDiffException; end
+
+    attr_reader :directory
 
     # Takes a Hash and normalizes it to the following form by merging globals
     # into before and after. A normalized config Hash looks like this:
@@ -169,7 +170,7 @@ class SiteDiff
       # Merge output array.
       result['output'] += (first['output'] || []) + (second['output'] || [])
 
-      # Merge keys.
+      # Merge url_report keys.
       %w[before_url_report after_url_report].each do |pos|
         result[pos] = first[pos] || second[pos]
       end
@@ -178,6 +179,12 @@ class SiteDiff
       result['settings'] = merge_deep(
         first['settings'] || {},
         second['settings'] || {}
+      )
+
+      # Merge report labels.
+      result['report'] = merge_deep(
+        first['report'] || {},
+        second['report'] || {}
       )
 
       result
@@ -317,28 +324,19 @@ class SiteDiff
       @config['output'] = output
     end
 
-    # Return `before` report url, fall back to actual url.
-    def before_url_report
-      return @config['before_url_report'] unless @config['before_url_report'].nil?
-
-      before_url
+    # Return report display settings.
+    def report
+      @config['report']
     end
 
-    # Set before_url_report option
-    def before_url_report=(before_url_report)
-      @config['before_url_report'] = before_url_report
+    # Set crawl time for 'before'
+    def before_time=(time)
+      @config['report']['before_time'] = time
     end
 
-    # Return `after` report url, fall back to actual url.
-    def after_url_report
-      return @config['after_url_report'] unless @config['after_url_report'].nil?
-
-      after_url
-    end
-
-    # Set after_url_report option
-    def after_url_report=(after_url_report)
-      @config['after_url_report'] = after_url_report
+    # Set crawl time for 'after'
+    def after_time=(time)
+      @config['report']['after_time'] = time
     end
 
     ##

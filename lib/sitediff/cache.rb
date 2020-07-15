@@ -6,6 +6,8 @@ require 'fileutils'
 class SiteDiff
   # SiteDiff Cache Handler.
   class Cache
+    TIMESTAMP_FILE = 'timestamp'
+
     attr_accessor :read_tags, :write_tags
 
     ##
@@ -17,6 +19,7 @@ class SiteDiff
       # They indicate whether we should use the cache for reading or writing.
       @read_tags = Set.new
       @write_tags = Set.new
+      @timestamp_flag = { before: false, after: false }
 
       # The directory used by the cache for storage.
       @dir = opts[:directory] || '.'
@@ -52,6 +55,7 @@ class SiteDiff
     def set(tag, path, result)
       return unless @write_tags.include? tag
 
+      save_timestamp(tag)
       filename = File.join(
         @dir,
         'snapshot',
@@ -101,6 +105,17 @@ class SiteDiff
       @dir = Pathname.new(directory || '.')
       @dir.mkpath unless @dir.directory?
       @dir.to_s
+    end
+
+    private
+
+    def save_timestamp(tag)
+      # run once
+      return if @timestamp_flag[tag]
+
+      @timestamp_flag[tag] = true
+      file = File.join(@dir, 'snapshot', tag.to_s, TIMESTAMP_FILE)
+      FileUtils.touch(file)
     end
   end
 end

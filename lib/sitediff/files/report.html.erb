@@ -24,6 +24,12 @@
   <body class="page-overview" data-page="overview">
     <div id="layout">
       <div class="container">
+        <div class="heading">
+          <h1><%= report["title"] %></h1>
+          <p><%= report["details"] %></p>
+        </div>
+      </div>
+      <div class="container">
         <div class="statistical-info">
           <div class="changed-pages">
             <h3>Changed pages</h3>
@@ -48,11 +54,26 @@
             <div class="site site-<%= tag %>">
               <% notes = ['base url']
                 notes << 'cached' if cache.read_tags.include?(tag.to_sym) %>
-              <h3 class="site__tag"><%= tag.capitalize %></h3>
-              <a href="<%= eval(tag) %>" class="site__url"><%= eval(tag) %></a>
-              <% if cache.read_tags.include?(tag.to_sym) %>
-                (<%= 'cached' if cache.read_tags.include?(tag.to_sym) %>)
-              <% end %>
+              <div>
+                <h3 class="site__tag"><%= tag.capitalize %></h3>
+              </div>
+              <div>
+                <% if display_url = report[tag + '_url_report'] %>
+                  <a href="<%= display_url %>" class="site__url"><%= display_url %></a>
+                <% else %>
+                  <a href="<%= eval(tag) %>" class="site__url"><%= eval(tag) %></a>
+                  <% if cache.read_tags.include?(tag.to_sym) %>
+                    (<%= 'cached' if cache.read_tags.include?(tag.to_sym) %>)
+                  <% end %>
+                <% end %>
+              </div>
+              <div>
+                Crawled on: <%= report[tag + '_time'] %>
+              </div>
+              <div>
+                <%= report[tag + '_note'] %>
+              </div>
+
             </div>
           <% end %>
         </div>
@@ -111,14 +132,16 @@
               <td class="description">
                 <span class="path"><%= result.path %></span>
                 <div class="buttons">
-                  <% unless before === false %>
-                    <a href="<%= result.url(:before, before, cache) %>" class="button-before" target="_blank">Before</a>
-                  <% end %>
-                  <% unless after === false %>
-                    <a href="<%= result.url(:after, after, cache) %>" class="button-after" target="_blank">After</a>
-                  <% end %>
-                  <% unless relative || after === false || before === false %>
-                    <a href="/sidebyside<%= result.path %>" class="button-both">Both</a>
+                  <% unless relative %>
+                    <% unless report['before_url_report'] === false %>
+                      <a href="<%= result.url(:before, before_url_report || before, cache) %>" class="button-before" target="_blank">Before</a>
+                    <% end %>
+                    <% unless report['after_url_report'] === false %>
+                      <a href="<%= result.url(:after, after_url_report || after, cache) %>" class="button-after" target="_blank">After</a>
+                    <% end %>
+                    <% unless report['before_url_report'] === false || report['after_url_report'] === false %>
+                      <a href="/sidebyside<%= result.path %>" class="button-both">Both</a>
+                    <% end %>
                   <% end %>
                   <% unless result.diff_url.nil? %>
                     <a href="<%= result.diff_url(relative) %>" class="button button-diff">View diff</a>
