@@ -241,9 +241,14 @@ class SiteDiff
 
     # Get crawl timestamps
     def get_timestamp(tag)
-      file = File::Stat.new(File.join(@config.directory, 'snapshot', tag.to_s, SiteDiff::Cache::TIMESTAMP_FILE))
-      time = file.mtime
-      time.class == Time ? time.strftime('%Y-%m-%d %H:%M') : ''
+      timestamp_file = File.join(@config.directory, 'snapshot', tag.to_s, SiteDiff::Cache::TIMESTAMP_FILE)
+      if File.exist? timestamp_file
+        file = File::Stat.new(timestamp_file)
+        time = file.mtime
+        time.class == Time ? time.strftime('%Y-%m-%d %H:%M') : ''
+      else
+        'unknown'
+      end
     end
   end
 end

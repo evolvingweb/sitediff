@@ -114,8 +114,11 @@ class SiteDiff
       return if @timestamp_flag[tag]
 
       @timestamp_flag[tag] = true
-      file = File.join(@dir, 'snapshot', tag.to_s, TIMESTAMP_FILE)
-      FileUtils.touch(file)
+      cache_dir = File.join(@dir, 'snapshot', tag.to_s)
+      if File.exist? cache_dir
+        file = File.join(cache_dir, TIMESTAMP_FILE)
+        FileUtils.touch(file)
+      end
     end
   end
 end
