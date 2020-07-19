@@ -20,16 +20,14 @@ that materially affect the site.
 
 ## Table of contents
 
-- [Introduction](#sitediff)
 - [Installation](#installation)
 - [Demo](#demo)
 - [Usage](#usage)
   - [Getting started](#getting-started)
-  - [Comparing multiple sites](#comparing-multiple-sites)
-  - [Preventing spurious diffs](#preventing-spurious-diffs)
-  - [Getting help](#getting-help)
-  - [Advanced diffs](#advanced-diffs)
-  - [Tips & tricks](#tips--tricks)
+  - [Comparing 2 sites](#comparing-2-sites)
+  - [Spurious diffs](#spurious-diffs)
+- [Advanced diffs](#advanced-diffs)
+- [Tips & tricks](#tips--tricks)
 - [Configuration](#configuration)
 
 
