@@ -2,6 +2,7 @@
 .bundle/
 vendor/
 Gemfile.lock
+node_modules
 
 # Rdoc documentation.
 /doc

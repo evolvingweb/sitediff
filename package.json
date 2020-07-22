@@ -1,0 +1,25 @@
+{
+  "name": "sitediff",
+  "version": "1.0.0",
+  "description": "Sitediff Javascript",
+  "main": "./sitediff/files/sitediff.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "lint": "eslint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evolvingweb/sitediff.git"
+  },
+  "author": "",
+  "license": "GPL-2.0-only",
+  "bugs": {
+    "url": "https://github.com/evolvingweb/sitediff/issues"
+  },
+  "homepage": "https://github.com/evolvingweb/sitediff#readme",
+  "devDependencies": {
+    "eslint": "^7.5.0"
+  }
+}
