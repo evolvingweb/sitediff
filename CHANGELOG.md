@@ -3,6 +3,7 @@
 Contains noteworthy changes made to SiteDiff.
 
 ## Since 1.0.0
+- Add overlay for diff screen - JS fails back to HTML.
 - Add additional information to the report output (21861).
 - Restore the `before_url_report` and `after_url_report` features and improve the output of exported reports (21860).
 - Added named regions feature. (See [Advanced diffs](README.md#advanced-diffs).)
