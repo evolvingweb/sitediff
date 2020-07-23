@@ -17,13 +17,13 @@ operating system.
 
 These instructions are for CentOS 7 or higher.
 
-The default Ruby version is 2.0 but you will need Ruby 2.3 or higher for CentOS.
+The default Ruby version is 2.0 but you will need Ruby 2.4 or higher for CentOS.
 
 ```bash
 sudo yum update
 sudo yum install centos-release-scl
-sudo yum install rh-ruby23 rh-ruby23-ruby-devel
-scl enable rh-ruby23 bash
+sudo yum install rh-ruby24 rh-ruby24-ruby-devel
+scl enable rh-ruby24 bash
 ```
 
 Here are some dependencies which mostly require a manual installation.
@@ -38,7 +38,7 @@ avoid using `sudo` for `gem install`.
 
 ```bash
 gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true —with-xml2-include=/usr/include/libxml2
-gem install sitediff -v '0.0.6'
+gem install sitediff -v '1.0.0'
 ```
 
 ## Docker
@@ -60,7 +60,11 @@ docker exec -it sitediff /bin/bash
 
 You will need [Homebrew](https://brew.sh/) for Mac.
 
-If your version of Ruby is not 2.3 or later, you will need to upgrade.
+If your version of Ruby is not 2.4 or later, you will need to upgrade.
+
+rbenv is recommended for managing Ruby versions.
+
+To install with Homebrew:
 
 ```bash
 brew install rbenv ruby ruby-build
@@ -72,26 +76,28 @@ There are many dependencies, which are often already installed on many Macs.
 brew install autoconf libffi libtool libyaml openssl pkg-config
 ```
 
+If you prefer not to use Homebrew, you can install manually. See: https://github.com/rbenv/rbenv#basic-github-checkout
+
 We recommend installing _nokogiri_ before the sitediff gem. However, on most
 recent Macs, the `nokogiri` step below will fail and it can be safely skipped.
 If possible avoid using `sudo` for `gem install`.
 
 ```bash
 gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true —with-xml2-include=/usr/include/libxml2
-gem install sitediff -v '0.0.6'
+gem install sitediff -v '1.0.0'
 ```
 
 ## Ubuntu
 
 These instructions are for Ubuntu 16.04 or higher.
 
-You'll need [Ruby](https://www.ruby-lang.org/) 2.3 or higher.
+You'll need [Ruby](https://www.ruby-lang.org/) 2.4 or higher.
 
 ```bash
 sudo apt-get install software-properties-common
 sudo add-apt-repository -y ppa:brightbox/ruby-ng
 sudo apt-get update
-sudo apt-get install ruby2.3 ruby2.3-dev
+sudo apt-get install ruby2.4 ruby2.4-dev
 sudo apt-get update
 sudo apt-get upgrade
 ```
