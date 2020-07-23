@@ -42,6 +42,10 @@ Style/HashTransformValues:
 Style/DocumentationMethod:
   Enabled: true
 
+# Checks for where fetch(key) { value } can be replaced by fetch(key, value)
+Style/RedundantFetchBlock:
+  Enabled: true
+
 # Check for unnecessary single-element Regexp character classes.
 Style/RedundantRegexpCharacterClass:
   Enabled: true

@@ -28,6 +28,7 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
   Exclude:
     - 'lib/sitediff/cli.rb'
+    - 'lib/sitediff/config.rb'
 
 # Offense count: 2
 # Configuration parameters: CountKeywordArgs.

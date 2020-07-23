@@ -1,6 +1,5 @@
 * {
   box-sizing: border-box;
-  outline: none;
 }
 
 a {
@@ -245,5 +244,83 @@ table .status-col {
   margin-top: 0;
   position: fixed;
   top: 0;
+  width: 100%;
+}
+
+/*** Overlay */
+.overlay {
+  background-color: rgba(0, 0, 0, 0.25);
+  height: 100vh;
+  left: 0;
+  padding: 2em;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+}
+
+.overlay__inner {
+  background-color: #fff;
+  height: 100%;
+  margin: 0;
+  position: relative;
+  width: 100%;
+}
+
+.overlay header {
+  background-color: #f9f9fb;
+  border-bottom: 2px solid #eaecf3;
+  display: flex;
+  min-height: 3em;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.overlay header .prev,
+.overlay header .next,
+.overlay header .exit {
+  padding: 0.5em 0;
+  margin: 0.5em;
+}
+
+.overlay header .prev a,
+.overlay header .next a,
+.overlay header .exit a {
+  background-color: #eaecf3;
+  font-size: .9em;
+  padding: 0.5em;
+  text-decoration: none;
+}
+
+.overlay header .prev a:hover,
+.overlay header .next a:hover,
+.overlay header .exit a:hover {
+  background-color: #d2d7ef;
+}
+
+.overlay header .prev.disabled a,
+.overlay header .next.disabled a,
+.overlay header .exit.disabled a,
+.overlay header .prev.disabled a:hover,
+.overlay header .next.disabled a:hover,
+.overlay header .exit.disabled a:hover {
+  background-color: eaecf3;
+  color: #9b9db8;
+  cursor: not-allowed;
+}
+.overlay header .path {
+  flex-grow: 1;
+  padding: 1em;
+}
+
+.overlay article {
+  background-color: #fff;
+  height: 100%;
+  width: 100%;
+}
+
+.overlay article iframe {
+  height: 100%;
   width: 100%;
 }

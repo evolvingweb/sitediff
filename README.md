@@ -439,22 +439,6 @@ breadcrumbs between your two sites, you might specify:
 selector: '#breadcrumb'
 ```
 
-### before_url_report / after_url_report
-
-*Warning:* This option might be deprecated.
-
-Changes how SiteDiff reports which URLs it is comparing, but don't change what
-it actually compares.
-
-Suppose you are serving your 'after' website on a virtual machine with
-IP 192.1.2.3, and you are also running SiteDiff inside that VM. To make links
-in the report accessible from outside the VM, you might provide
-
-```yaml
-after_url: http://localhost
-after_url_report: http://192.1.2.3
-```
-
 ### sanitization
 
 A list of regular expression rules to normalize your HTML for comparison.
@@ -662,6 +646,58 @@ The names of other configuration YAML files to merge with this one.
 includes:
   - config/sanitize_domains.yaml
   - config/strip_css_js.yaml
+```
+
+### report
+
+The settings under the `report` key allow you to display helpful details on the report.
+
+```yaml
+report:
+  title: "Updates to example.com"
+  details: "This report verifies updates to example.com."
+  before_note: "The old site"
+  after_note: "The new site"
+  before_url_report: http://example.com
+  after_url_report: http://staging.example.com
+```
+
+#### title
+
+Display a title string at the top of the report.
+
+#### details
+
+Text displays as a paragraph at the top of the report, below the title.
+
+#### before_note
+
+Display a brief explanatory note next to `before` URL.
+
+#### after_note
+
+Display a brief explanatory note next to `after` URL.
+
+#### before_url_report / after_url_report
+
+Changes how SiteDiff reports which URLs it is comparing, but don't change what
+it actually compares.
+
+Suppose you are serving your 'after' website on a virtual machine with
+IP 192.168.2.3, and you are also running SiteDiff inside that VM. To make links
+in the report accessible from outside the VM, you might provide:
+
+```yaml
+after_url: http://localhost
+report:
+  after_url_report: http://192.168.2.3
+```
+
+If you don't wish to have the "Before" or "After" links in the report, set to false:
+
+```yaml
+report:
+  after_url_report: false
 ```
 
 ### settings

@@ -69,6 +69,8 @@ class SiteDiff
     )
       report_before ||= @config.before_url
       report_after ||= @config.after_url
+      @config.before_time = get_timestamp(:before)
+      @config.after_time = get_timestamp(:after)
 
       dir = SiteDiff.ensure_dir dir
 
@@ -81,7 +83,7 @@ class SiteDiff
         report_before,
         report_after,
         @cache,
-        @config.export
+        @config
       )
 
       # Write report.
@@ -233,6 +235,20 @@ class SiteDiff
       output += File.read(File.join(SiteDiff::FILES_DIR, 'jquery.min.js'))
       output += File.read(File.join(SiteDiff::FILES_DIR, 'sitediff.js'))
       output
+    end
+
+    private
+
+    # Get crawl timestamps
+    def get_timestamp(tag)
+      timestamp_file = File.join(@config.directory, 'snapshot', tag.to_s, SiteDiff::Cache::TIMESTAMP_FILE)
+      if File.exist? timestamp_file
+        file = File::Stat.new(timestamp_file)
+        time = file.mtime
+        time.class == Time ? time.strftime('%Y-%m-%d %H:%M') : ''
+      else
+        'unknown'
+      end
     end
   end
 end
