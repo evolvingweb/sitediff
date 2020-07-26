@@ -2,6 +2,7 @@
 
 require 'thor'
 require 'sitediff'
+require 'sitediff/api'
 require 'sitediff/cache'
 require 'sitediff/config'
 require 'sitediff/config/creator'
@@ -236,14 +237,6 @@ class SiteDiff
            type: :numeric,
            default: Config::DEFAULT_CONFIG['settings']['interval'],
            desc: 'Crawling delay - interval in milliseconds.'
-    option :whitelist,
-           type: :string,
-           default: Config::DEFAULT_CONFIG['settings']['include'],
-           desc: 'DEPRECATED: To be removed in 1.1.0. Use --include.'
-    option :blacklist,
-           type: :string,
-           default: Config::DEFAULT_CONFIG['settings']['exclude'],
-           desc: 'DEPRECATED: To be removed in 1.1.0. Use --exclude.'
     option :include,
            type: :string,
            default: Config::DEFAULT_CONFIG['settings']['include'],
@@ -264,41 +257,20 @@ class SiteDiff
         SiteDiff.log 'sitediff init requires one or two URLs', :error
         exit(2)
       end
-
-      include_regex = options[:include]
-      exclude_regex = options[:exclude]
-      # TODO: remove deprecated whitelist/blacklist in 1.1.x
-      unless options[:whitelist] == Config::DEFAULT_CONFIG['settings']['include']
-        SiteDiff.log '--whitelist is deprecated. Use --include.', :warning
-        include_regex = options[:whitelist] if include_regex == Config::DEFAULT_CONFIG['settings']['include']
-      end
-      unless options[:blacklist] == Config::DEFAULT_CONFIG['settings']['exclude']
-        SiteDiff.log '--blacklist is deprecated. Use --exclude.', :warning
-        exclude_regex = options[:blacklist] if exclude_regex == Config::DEFAULT_CONFIG['settings']['exclude']
-      end
-
-      # Prepare a config object and write it to the file system.
-      @dir = get_dir(options['directory'])
-      creator = SiteDiff::Config::Creator.new(options[:debug], *urls)
-      creator.create(
+      api_options = {
+        after_url: urls.pop,
+        before_url: urls.pop,  # may be nil
         depth: options[:depth],
-        directory: @dir,
+        directory: get_dir(options['directory']),
         concurrency: options[:concurrency],
         interval: options[:interval],
-        include: Config.create_regexp(include_regex),
-        exclude: Config.create_regexp(exclude_regex),
+        include: options[:include],
+        exclude: options[:exclude],
         preset: options[:preset],
-        curl_opts: get_curl_opts(options)
-      )
-      SiteDiff.log "Created #{creator.config_file.expand_path}", :success
-
-      # Discover paths, if enabled.
-      if options[:crawl]
-        crawl(creator.config_file)
-        SiteDiff.log 'You can now run "sitediff diff".', :success
-      else
-        SiteDiff.log 'Run "sitediff crawl" to discover paths. You should then be able to run "sitediff diff".', :info
-      end
+        curl_opts: get_curl_opts(options),
+        crawl: options[:crawl]
+      }
+      SiteDiff::Api.init(api_options)
     end
 
     option :url,

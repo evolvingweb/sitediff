@@ -14,10 +14,10 @@ class SiteDiff
     class Creator
       ##
       # Creates a Creator object.
-      def initialize(debug, *urls)
+      def initialize(debug, before, after)
         @config = nil
-        @after = urls.pop
-        @before = urls.pop # May be nil
+        @before = before
+        @after = after
         @debug = debug
       end
 
@@ -31,9 +31,14 @@ class SiteDiff
 
       ##
       # Build a config structure, return it.
-      def create(options, &block)
+
+      # def create(options, &block)
+
+      def create(options)
         @config = {}
-        @callback = block
+
+        # @callback = block
+
         @dir = Pathname.new(options[:directory])
 
         # Setup instance vars
