@@ -13,20 +13,27 @@ class SiteDiff
   # Sitediff API interface.
   class Api
     ##
+    # Initializes new Api object.
+    def initialize(directory, config_file = nil)
+      @dir = get_dir(directory)
+      @config = SiteDiff::Config.new(config_file, @dir)
+    end
+
+    ##
     # Intialize a SiteDiff project.
     #
     # Calling:
-    #   SiteDiff::Api.init(
-    #     depth: 3,
-    #     directory: 'sitediff',
-    #     concurrency: 3,
-    #     interval: 0,
-    #     include: nil,
-    #     exclude: '*.pdf',
-    #     preset: 'drupal',
-    #     curl_opts: {timeout: 60},
-    #     crawl: false
-    #   )
+    #     SiteDiff::Api.init(
+    #       depth: 3,
+    #       directory: 'sitediff',
+    #       concurrency: 3,
+    #       interval: 0,
+    #       include: nil,
+    #       exclude: '*.pdf',
+    #       preset: 'drupal',
+    #       curl_opts: {timeout: 60},
+    #       crawl: false
+    #     )
     def self.init(options)
       # Prepare a config object and write it to the file system.
       creator = SiteDiff::Config::Creator.new(options[:debug], options[:before_url], options[:after_url])
@@ -52,7 +59,100 @@ class SiteDiff
       # else
       #   SiteDiff.log 'Run "sitediff crawl" to discover paths. You should then be able to run "sitediff diff".', :info
       # end
+    end
 
+    ##
+    # Diff the `before` and `after`.
+    #
+    # Calling:
+    #     Api.diff(
+    #       paths: options['paths'],
+    #       paths_file: options['paths-file'],
+    #       ignore_whitespace: options['ignore-whitespace'],
+    #       export: options['export'],
+    #       before: options['before'],
+    #       after: options['after'],
+    #       cached: options['cached'],
+    #       verbose: options['verbose'],
+    #       report_format: options['report-format'],
+    #       before_report: options['before-report'],
+    #       after_report: options['after-report'],
+    #       cli_mode: false
+    #     )
+    def diff(options)
+      @config.ignore_whitespace = options[:ignore_whitespace]
+      @config.export = options[:export]
+      # Apply "paths" override, if any.
+      if options[:paths]
+        @config.paths = options[:paths]
+      else
+        paths_file = options[:paths_file]
+        paths_file ||= File.join(@dir, Config::DEFAULT_PATHS_FILENAME)
+        paths_file = File.expand_path(paths_file)
+
+        paths_count = @config.paths_file_read(paths_file)
+        SiteDiff.log "Read #{paths_count} paths from: #{paths_file}"
+      end
+
+      # TODO: Why do we allow before and after override during diff?
+      @config.before[:url] = options[:before] if options[:before]
+      @config.after[:url] = options[:after] if options[:after]
+
+      # Prepare cache.
+      cache = SiteDiff::Cache.new(
+        create: options[:cached] != 'none',
+        directory: @dir
+      )
+      cache.read_tags << :before if %w[before all].include?(options[:cached])
+      cache.read_tags << :after if %w[after all].include?(options[:cached])
+      cache.write_tags << :before << :after
+
+      # Run sitediff.
+      sitediff = SiteDiff.new(
+        @config,
+        cache,
+        options[:verbose],
+        options[:debug]
+      )
+      num_failing = sitediff.run
+      exit_code = num_failing.positive? ? 2 : 0
+
+      # Generate HTML report.
+      if options[:report_format] == 'html' || @config.export
+        sitediff.report.generate_html(
+          @dir,
+          options[:before_report],
+          options[:after_report]
+        )
+      end
+
+      # Generate JSON report.
+      if options[:report_format] == 'json' && @config.export == false
+        sitediff.report.generate_json @dir
+      end
+
+      SiteDiff.log 'Run "sitediff serve" to see a report.' unless options[:export]
+    rescue Config::InvalidConfig => e
+      SiteDiff.log "Invalid configuration: #{e.message}", :error
+      SiteDiff.log e.backtrace, :error if options[:verbose]
+    rescue Config::ConfigNotFound => e
+      SiteDiff.log "Invalid configuration: #{e.message}", :error
+      SiteDiff.log e.backtrace, :error if options[:verbose]
+    else # no exception was raised
+      # Thor::Error  --> exit(1), guaranteed by exit_on_failure?
+      # Failing diff --> exit(2), populated above
+      exit(exit_code) if options[:cli_mode]
+    end
+
+    private
+
+    ##
+    # Ensures that the given directory exists.
+    def get_dir(directory)
+      # Create the dir. Must go before cache initialization!
+      @dir = Pathname.new(directory || '.')
+      @dir.mkpath unless @dir.directory?
+      @dir.to_s
     end
   end
 end

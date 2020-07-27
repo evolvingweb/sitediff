@@ -108,82 +108,29 @@ class SiteDiff
     ##
     # Computes diffs.
     def diff(config_file = nil)
-      @dir = get_dir(options['directory'])
-      config = SiteDiff::Config.new(config_file, @dir)
-
       # Determine "paths" override based on options.
       if options['paths'] && options['paths-file']
         SiteDiff.log "Can't specify both --paths-file and --paths.", :error
         exit(-1)
       end
 
-      # Ignore whitespace option.
-      config.ignore_whitespace = options['ignore-whitespace'] if options['ignore-whitespace']
-
-      # Export report option.
-      config.export = options['export']
-
-      # Apply "paths" override, if any.
-      config.paths = options['paths'] if options['paths']
-
-      # Determine and apply "paths-file", if "paths" is not specified.
-      unless options['paths']
-        paths_file = options['paths-file']
-        paths_file ||= File.join(@dir, Config::DEFAULT_PATHS_FILENAME)
-        paths_file = File.expand_path(paths_file)
-
-        paths_count = config.paths_file_read(paths_file)
-        SiteDiff.log "Read #{paths_count} paths from: #{paths_file}"
-      end
-
-      # TODO: Why do we allow before and after override during diff?
-      config.before['url'] = options['before'] if options['before']
-      config.after['url'] = options['after'] if options['after']
-
-      # Prepare cache.
-      cache = SiteDiff::Cache.new(
-        create: options['cached'] != 'none',
-        directory: @dir
-      )
-      cache.read_tags << :before if %w[before all].include?(options['cached'])
-      cache.read_tags << :after if %w[after all].include?(options['cached'])
-      cache.write_tags << :before << :after
-
-      # Run sitediff.
-      sitediff = SiteDiff.new(
-        config,
-        cache,
-        options['verbose'],
-        options[:debug]
-      )
-      num_failing = sitediff.run
-      exit_code = num_failing.positive? ? 2 : 0
-
-      # Generate HTML report.
-      if options['report-format'] == 'html' || config.export
-        sitediff.report.generate_html(
-          @dir,
-          options['before-report'],
-          options['after-report']
-        )
-      end
-
-      # Generate JSON report.
-      if options['report-format'] == 'json' && config.export == false
-        sitediff.report.generate_json @dir
-      end
-
-      SiteDiff.log 'Run "sitediff serve" to see a report.' unless options['export']
-    rescue Config::InvalidConfig => e
-      SiteDiff.log "Invalid configuration: #{e.message}", :error
-      SiteDiff.log e.backtrace, :error if options[:verbose]
-    rescue Config::ConfigNotFound => e
-      SiteDiff.log "Invalid configuration: #{e.message}", :error
-      SiteDiff.log e.backtrace, :error if options[:verbose]
-    else # no exception was raised
-      # Thor::Error  --> exit(1), guaranteed by exit_on_failure?
-      # Failing diff --> exit(2), populated above
-      exit(exit_code)
+      directory = get_dir(options['directory'])
+      api = Api.new(directory, config_file)
+      api_options = {
+        paths: options['paths'],
+        paths_file: options['paths-file'],
+        ignore_whitespace: options['ignore-whitespace'],
+        export: options['export'],
+        before: options['before'],
+        after: options['after'],
+        cached: options['cached'],
+        verbose: options['verbose'],
+        report_format: options['report-format'],
+        before_report: options['before-report'],
+        after_report: options['after-report'],
+        cli_mode: true
+      }
+      api.diff(api_options)
     end
 
     option :port,
@@ -259,7 +206,7 @@ class SiteDiff
       end
       api_options = {
         after_url: urls.pop,
-        before_url: urls.pop,  # may be nil
+        before_url: urls.pop, # may be nil
         depth: options[:depth],
         directory: get_dir(options['directory']),
         concurrency: options[:concurrency],
@@ -270,7 +217,7 @@ class SiteDiff
         curl_opts: get_curl_opts(options),
         crawl: options[:crawl]
       }
-      SiteDiff::Api.init(api_options)
+      Api.init(api_options)
     end
 
     option :url,
