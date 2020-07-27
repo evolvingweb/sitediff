@@ -31,9 +31,6 @@ class SiteDiff
 
       ##
       # Build a config structure, return it.
-
-      # def create(options, &block)
-
       def create(options)
         @config = {}
 

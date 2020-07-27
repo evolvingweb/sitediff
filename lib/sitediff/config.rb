@@ -194,9 +194,10 @@ class SiteDiff
     # Merges 2 iterable objects deeply.
     def self.merge_deep(first, second)
       first.merge(second) do |_key, val1, val2|
-        if val1.is_a? Hash
+        case val1.class
+        when Hash
           self.class.merge_deep(val1, val2 || {})
-        elsif val1.is_a? Array
+        when Array
           val1 + (val2 || [])
         else
           val2
