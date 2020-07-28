@@ -258,48 +258,9 @@ class SiteDiff
     # TODO: Move actual crawling to sitediff.crawl(config).
     # TODO: Switch to paths = sitediff.crawl().
     def crawl(config_file = nil)
-      # Prepare configuration.
-      @dir = get_dir(options['directory'])
-      @config = SiteDiff::Config.new(config_file, @dir)
-
-      # Prepare cache.
-      @cache = SiteDiff::Cache.new(
-        create: options['cached'] != 'none',
-        directory: @dir
-      )
-      @cache.write_tags << :before << :after
-
-      # Crawl with Hydra to discover paths.
-      hydra = Typhoeus::Hydra.new(
-        max_concurrency: @config.setting(:concurrency)
-      )
-      @paths = {}
-      @config.roots.each do |tag, url|
-        Crawler.new(
-          hydra,
-          url,
-          @config.setting(:interval),
-          @config.setting(:include),
-          @config.setting(:exclude),
-          @config.setting(:depth),
-          get_curl_opts(@config.settings),
-          @debug
-        ) do |info|
-          SiteDiff.log "Visited #{info.uri}, cached."
-          after_crawl(tag, info)
-        end
-      end
-      hydra.run
-
-      # Write paths to a file.
-      @paths = @paths.values.reduce(&:|).to_a.sort
-      @config.paths_file_write(@paths)
-
-      # Log output.
-      file = Pathname.new(@dir) + Config::DEFAULT_PATHS_FILENAME
-      SiteDiff.log ''
-      SiteDiff.log "#{@paths.length} page(s) found."
-      SiteDiff.log "Created #{file.expand_path}.", :success, 'done'
+      directory = get_dir(options['directory'])
+      api = Api.new(directory, config_file)
+      api.crawl
     end
 
     no_commands do
@@ -325,26 +286,6 @@ class SiteDiff
         @dir = Pathname.new(directory || '.')
         @dir.mkpath unless @dir.directory?
         @dir.to_s
-      end
-
-      ##
-      # Processes a crawled path.
-      def after_crawl(tag, info)
-        path = UriWrapper.canonicalize(info.relative)
-
-        # Register the path.
-        @paths[tag] = [] unless @paths[tag]
-        @paths[tag] << path
-
-        result = info.read_result
-
-        # Write result to applicable cache.
-        @cache.set(tag, path, result)
-        # If single-site, cache "after" as "before".
-        @cache.set(:before, path, result) unless @config.roots[:before]
-
-        # TODO: Restore application of rules.
-        # @rules.handle_page(tag, res.content, info.document) if @rules && !res.error
       end
     end
   end

@@ -467,6 +467,18 @@ class SiteDiff
       @return_value
     end
 
+    ##
+    # Return merged CURL options.
+    def curl_opts
+      # We do want string keys here
+      bool_hash = { 'true' => true, 'false' => false }
+      curl_opts = UriWrapper::DEFAULT_CURL_OPTS
+                  .clone
+                  .merge(settings['curl_opts'] || {})
+      curl_opts.each { |k, v| curl_opts[k] = bool_hash.fetch(v, v) }
+      curl_opts
+    end
+
     private
 
     ##
