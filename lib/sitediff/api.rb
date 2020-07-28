@@ -95,8 +95,8 @@ class SiteDiff
       end
 
       # TODO: Why do we allow before and after override during diff?
-      @config.before[:url] = options[:before] if options[:before]
-      @config.after[:url] = options[:after] if options[:after]
+      @config.before['url'] = options[:before] if options[:before]
+      @config.after['url'] = options[:after] if options[:after]
 
       # Prepare cache.
       cache = SiteDiff::Cache.new(
