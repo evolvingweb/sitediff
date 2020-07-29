@@ -114,22 +114,24 @@ class SiteDiff
         exit(-1)
       end
 
-      directory = get_dir(options['directory'])
-      api = Api.new(directory, config_file)
-      api_options = {
-        paths: options['paths'],
-        paths_file: options['paths-file'],
-        ignore_whitespace: options['ignore-whitespace'],
-        export: options['export'],
-        before: options['before'],
-        after: options['after'],
-        cached: options['cached'],
-        verbose: options['verbose'],
-        report_format: options['report-format'],
-        before_report: options['before-report'],
-        after_report: options['after-report'],
-        cli_mode: true
-      }
+      api = Api.new(options['directory'], config_file)
+      api_options =
+        clean_keys(
+          options,
+          :paths,
+          :paths_file,
+          :ignore_whitespace,
+          :export,
+          :before,
+          :after,
+          :cached,
+          :verbose,
+          :debug,
+          :report_format,
+          :before_report,
+          :after_report
+        )
+      api_options[:cli_mode] = true
       api.diff(api_options)
     end
 
@@ -146,22 +148,9 @@ class SiteDiff
     ##
     # Serves SiteDiff report for accessing in the browser.
     def serve(config_file = nil)
-      @dir = get_dir(options['directory'])
-      config = SiteDiff::Config.new(config_file, @dir)
-
-      cache = Cache.new(directory: @dir)
-      cache.read_tags << :before << :after
-
-      SiteDiff::Webserver::ResultServer.new(
-        options[:port],
-        options['directory'],
-        browse: options[:browse],
-        cache: cache,
-        config: config
-      ).wait
-    rescue SiteDiffException => e
-      SiteDiff.log e.message, :error
-      SiteDiff.log e.backtrace, :error if options[:verbose]
+      api = Api.new(options['directory'], config_file)
+      api_options = clean_keys(options, :browse, :port)
+      api.serve(api_options)
     end
 
     option :depth,
@@ -204,19 +193,25 @@ class SiteDiff
         SiteDiff.log 'sitediff init requires one or two URLs', :error
         exit(2)
       end
-      api_options = {
-        after_url: urls.pop,
-        before_url: urls.pop, # may be nil
-        depth: options[:depth],
-        directory: get_dir(options['directory']),
-        concurrency: options[:concurrency],
-        interval: options[:interval],
-        include: options[:include],
-        exclude: options[:exclude],
-        preset: options[:preset],
-        curl_opts: get_curl_opts(options),
-        crawl: options[:crawl]
-      }
+      api_options =
+        clean_keys(
+          options,
+          :depth,
+          :concurrency,
+          :interval,
+          :include,
+          :exclude,
+          :preset,
+          :crawl
+        )
+        .merge(
+          {
+            after_url: urls.pop,
+            before_url: urls.pop, # may be nil
+            directory: get_dir(options['directory']),
+            curl_opts: get_curl_opts(options)
+          }
+        )
       Api.init(api_options)
     end
 
@@ -258,8 +253,7 @@ class SiteDiff
     # TODO: Move actual crawling to sitediff.crawl(config).
     # TODO: Switch to paths = sitediff.crawl().
     def crawl(config_file = nil)
-      directory = get_dir(options['directory'])
-      api = Api.new(directory, config_file)
+      api = Api.new(options['directory'], config_file)
       api.crawl
     end
 
@@ -286,6 +280,13 @@ class SiteDiff
         @dir = Pathname.new(directory || '.')
         @dir.mkpath unless @dir.directory?
         @dir.to_s
+      end
+
+      ##
+      # Clean keys - return a subset of a hash with keys as symbols.
+      def clean_keys(hash, *keys)
+        new_hash = hash.transform_keys { |k| k.tr('-', '_').to_sym }
+        new_hash.slice(*keys)
       end
     end
   end

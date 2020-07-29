@@ -187,6 +187,27 @@ class SiteDiff
       SiteDiff.log "Created #{file.expand_path}.", :success, 'done'
     end
 
+    ##
+    # Serves SiteDiff report for accessing in the browser.
+    #
+    # Calling:
+    #     api.serve(browse: true, port: 13080)
+    def serve(options)
+      @cache = Cache.new(directory: @dir)
+      @cache.read_tags << :before << :after
+
+      SiteDiff::Webserver::ResultServer.new(
+        options[:port],
+        @dir,
+        browse: options[:browse],
+        cache: @cache,
+        config: @config
+      ).wait
+    rescue SiteDiffException => e
+      SiteDiff.log e.message, :error
+      SiteDiff.log e.backtrace, :error if options[:verbose]
+    end
+
     private
 
     ##
