@@ -2,7 +2,10 @@
 
 Contains noteworthy changes made to SiteDiff.
 
-## Since 1.0.0
+## Since 1.1.1
+
+## Version 1.1.1
+- Refactor CLI class and move business logic to new SiteDiff::Api class for better integration with other Ruby apps.
 - Add overlay for diff screen - JS fails back to HTML.
 - Add additional information to the report output (21861).
 - Restore the `before_url_report` and `after_url_report` features and improve the output of exported reports (21860).
