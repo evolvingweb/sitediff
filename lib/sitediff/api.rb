@@ -208,6 +208,30 @@ class SiteDiff
       SiteDiff.log e.backtrace, :error if options[:verbose]
     end
 
+    ##
+    #
+    def store(options)
+      # TODO: Figure out how to remove this config.validate call.
+      @config.validate(need_before: false)
+      @config.paths_file_read
+
+      @cache = SiteDiff::Cache.new(directory: @dir, create: true)
+      @cache.write_tags << :before
+
+      base = options[:url] || @config.after['url']
+      fetcher = SiteDiff::Fetch.new(@cache,
+                                    @config.paths,
+                                    @config.setting(:interval),
+                                    @config.setting(:concurrency),
+                                    get_curl_opts(@config.settings),
+                                    options[:debug],
+                                    before: base)
+      fetcher.run do |path, _res|
+        SiteDiff.log "Visited #{path}, cached"
+      end
+
+    end
+
     private
 
     ##

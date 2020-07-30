@@ -223,26 +223,9 @@ class SiteDiff
     ##
     # Caches the current version of the site.
     def store(config_file = nil)
-      @dir = get_dir(options['directory'])
-      config = SiteDiff::Config.new(config_file, @dir)
-      # TODO: Figure out how to remove this config.validate call.
-      config.validate(need_before: false)
-      config.paths_file_read
-
-      cache = SiteDiff::Cache.new(directory: @dir, create: true)
-      cache.write_tags << :before
-
-      base = options[:url] || config.after['url']
-      fetcher = SiteDiff::Fetch.new(cache,
-                                    config.paths,
-                                    config.setting(:interval),
-                                    config.setting(:concurrency),
-                                    get_curl_opts(config.settings),
-                                    options[:debug],
-                                    before: base)
-      fetcher.run do |path, _res|
-        SiteDiff.log "Visited #{path}, cached"
-      end
+      api = Api.new(options['directory'], config_file)
+      api_options = clean_keys(options, :url, :debug)
+      api.store(api_options)
     end
 
     desc 'crawl [CONFIG-FILE]',
