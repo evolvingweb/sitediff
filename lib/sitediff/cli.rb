@@ -3,16 +3,9 @@
 require 'thor'
 require 'sitediff'
 require 'sitediff/api'
-require 'sitediff/cache'
-require 'sitediff/config'
-require 'sitediff/config/creator'
-require 'sitediff/config/preset'
-require 'sitediff/fetch'
-require 'sitediff/webserver/resultserver'
 
 class SiteDiff
   # SiteDiff CLI.
-  # TODO: Use config.defaults to feed default values for sitediff.yaml params?
   class Cli < Thor
     class_option 'directory',
                  type: :string,
@@ -79,7 +72,6 @@ class SiteDiff
            enum: %w[html json],
            default: 'html',
            desc: 'The format in which a report should be generated.'
-    # TODO: Deprecate the parameters before-report / after-report?
     option 'before-report',
            type: :string,
            desc: 'URL to use in reports. Useful if port forwarding.',
@@ -233,8 +225,6 @@ class SiteDiff
     ##
     # Crawls the "before" site to determine "paths".
     #
-    # TODO: Move actual crawling to sitediff.crawl(config).
-    # TODO: Switch to paths = sitediff.crawl().
     def crawl(config_file = nil)
       api = Api.new(options['directory'], config_file)
       api.crawl
@@ -243,8 +233,7 @@ class SiteDiff
     no_commands do
       # Generates CURL options.
       #
-      # TODO: This should be in the config class instead.
-      # TODO: Make all requests insecure and avoid custom curl-opts.
+      # TODO: Possibly move to API class.
       def get_curl_opts(options)
         # We do want string keys here
         bool_hash = { 'true' => true, 'false' => false }
