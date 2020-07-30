@@ -2,7 +2,7 @@ inherit_from: .rubocop_todo.yml
 
 # Common configuration.
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.6
 
 Naming/MethodName:
   EnforcedStyle: snake_case
@@ -11,10 +11,23 @@ Naming/MethodName:
     # It's not ours to fix, it comes from the WEBrick libraries.
     - lib/sitediff/webserver/resultserver.rb
 
-# Check this as the value is changed somewhere after initial assignment.
-Style/MutableConstant:
-  Exclude:
-    - 'lib/sitediff/sanitize/dom_transform.rb'
+# Check for grouping of accessors in class and module bodies.
+# By default it enforces accessors to be placed in grouped declarations
+Style/AccessorGrouping:
+  Enabled: true
+
+#
+Style/ArrayCoercion:
+  Enabled: false
+
+# Check for places where attr_reader and attr_writer for the same method
+# can be combined into single attr_accessor
+Style/BisectedAttrAccessor:
+  Enabled: true
+
+# Identifies places where if-elsif constructions can be replaced with case-when
+Style/CaseLikeIf:
+  Enabled: true
 
 # Disable rules enforcing unreadable programming styles.
 # Example: Use the return of the conditional for variable assignment
@@ -22,12 +35,26 @@ Style/MutableConstant:
 Style/ConditionalAssignment:
   Enabled: false
 
+# Require documentation for class methods.
+Style/DocumentationMethod:
+  Enabled: true
+
 # Exponential notation: enforces a mantissa between 1 (inclusive) and 10 (exclusive).
 Style/ExponentialNotation:
   Enabled: true
 
+# Checks for presence or absence of braces around hash literal as a last array
+# item depending on configuration.
+Style/HashAsLastArrayItem:
+  Enabled: true
+
 # Check for uses of `each_key` and `each_value` Hash methods.
 Style/HashEachMethods:
+  Enabled: true
+
+# Check for places where case-when represents a simple 1:1 mapping and
+# can be replaced with a hash lookup.
+Style/HashLikeCase:
   Enabled: true
 
 # Use of `transform_keys`: This cop should only be enabled on Ruby version 2.5 or newer.
@@ -38,12 +65,22 @@ Style/HashTransformKeys:
 Style/HashTransformValues:
   Enabled: true
 
-# Require documentation for class methods.
-Style/DocumentationMethod:
+# Check this as the value is changed somewhere after initial assignment.
+Style/MutableConstant:
+  Exclude:
+    - 'lib/sitediff/sanitize/dom_transform.rb'
+
+# Checks for redundant assignment before returning.
+Style/RedundantAssignment:
   Enabled: true
 
 # Checks for where fetch(key) { value } can be replaced by fetch(key, value)
 Style/RedundantFetchBlock:
+  Enabled: true
+
+# Checks for the presence of superfluous .rb extension in the filename
+# provided to require and require_relative.
+Style/RedundantFileExtensionInRequire:
   Enabled: true
 
 # Check for unnecessary single-element Regexp character classes.
@@ -121,6 +158,10 @@ Security/MarshalLoad:
 
 # Disallow algorithmic constants for OpenSSL::Cipher and OpenSSL::Digest.
 Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
+
+# Check that there are no repeated conditions used in if 'elsif'.
+Lint/DuplicateElsifCondition:
   Enabled: true
 
 # Do not mix named captures and numbered captures in a Regexp literal.

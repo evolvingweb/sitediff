@@ -12,6 +12,7 @@ node_modules
 *.gem
 *.swp
 *.swo
+*.tgz
 
 # SiteDiff directory in the root.
 /sitediff

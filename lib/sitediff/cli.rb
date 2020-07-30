@@ -2,16 +2,10 @@
 
 require 'thor'
 require 'sitediff'
-require 'sitediff/cache'
-require 'sitediff/config'
-require 'sitediff/config/creator'
-require 'sitediff/config/preset'
-require 'sitediff/fetch'
-require 'sitediff/webserver/resultserver'
+require 'sitediff/api'
 
 class SiteDiff
   # SiteDiff CLI.
-  # TODO: Use config.defaults to feed default values for sitediff.yaml params?
   class Cli < Thor
     class_option 'directory',
                  type: :string,
@@ -78,7 +72,6 @@ class SiteDiff
            enum: %w[html json],
            default: 'html',
            desc: 'The format in which a report should be generated.'
-    # TODO: Deprecate the parameters before-report / after-report?
     option 'before-report',
            type: :string,
            desc: 'URL to use in reports. Useful if port forwarding.',
@@ -107,82 +100,31 @@ class SiteDiff
     ##
     # Computes diffs.
     def diff(config_file = nil)
-      @dir = get_dir(options['directory'])
-      config = SiteDiff::Config.new(config_file, @dir)
-
       # Determine "paths" override based on options.
       if options['paths'] && options['paths-file']
         SiteDiff.log "Can't specify both --paths-file and --paths.", :error
         exit(-1)
       end
 
-      # Ignore whitespace option.
-      config.ignore_whitespace = options['ignore-whitespace'] if options['ignore-whitespace']
-
-      # Export report option.
-      config.export = options['export']
-
-      # Apply "paths" override, if any.
-      config.paths = options['paths'] if options['paths']
-
-      # Determine and apply "paths-file", if "paths" is not specified.
-      unless options['paths']
-        paths_file = options['paths-file']
-        paths_file ||= File.join(@dir, Config::DEFAULT_PATHS_FILENAME)
-        paths_file = File.expand_path(paths_file)
-
-        paths_count = config.paths_file_read(paths_file)
-        SiteDiff.log "Read #{paths_count} paths from: #{paths_file}"
-      end
-
-      # TODO: Why do we allow before and after override during diff?
-      config.before['url'] = options['before'] if options['before']
-      config.after['url'] = options['after'] if options['after']
-
-      # Prepare cache.
-      cache = SiteDiff::Cache.new(
-        create: options['cached'] != 'none',
-        directory: @dir
-      )
-      cache.read_tags << :before if %w[before all].include?(options['cached'])
-      cache.read_tags << :after if %w[after all].include?(options['cached'])
-      cache.write_tags << :before << :after
-
-      # Run sitediff.
-      sitediff = SiteDiff.new(
-        config,
-        cache,
-        options['verbose'],
-        options[:debug]
-      )
-      num_failing = sitediff.run
-      exit_code = num_failing.positive? ? 2 : 0
-
-      # Generate HTML report.
-      if options['report-format'] == 'html' || config.export
-        sitediff.report.generate_html(
-          @dir,
-          options['before-report'],
-          options['after-report']
+      api = Api.new(options['directory'], config_file)
+      api_options =
+        clean_keys(
+          options,
+          :paths,
+          :paths_file,
+          :ignore_whitespace,
+          :export,
+          :before,
+          :after,
+          :cached,
+          :verbose,
+          :debug,
+          :report_format,
+          :before_report,
+          :after_report
         )
-      end
-
-      # Generate JSON report.
-      if options['report-format'] == 'json' && config.export == false
-        sitediff.report.generate_json @dir
-      end
-
-      SiteDiff.log 'Run "sitediff serve" to see a report.' unless options['export']
-    rescue Config::InvalidConfig => e
-      SiteDiff.log "Invalid configuration: #{e.message}", :error
-      SiteDiff.log e.backtrace, :error if options[:verbose]
-    rescue Config::ConfigNotFound => e
-      SiteDiff.log "Invalid configuration: #{e.message}", :error
-      SiteDiff.log e.backtrace, :error if options[:verbose]
-    else # no exception was raised
-      # Thor::Error  --> exit(1), guaranteed by exit_on_failure?
-      # Failing diff --> exit(2), populated above
-      exit(exit_code)
+      api_options[:cli_mode] = true
+      api.diff(api_options)
     end
 
     option :port,
@@ -198,22 +140,9 @@ class SiteDiff
     ##
     # Serves SiteDiff report for accessing in the browser.
     def serve(config_file = nil)
-      @dir = get_dir(options['directory'])
-      config = SiteDiff::Config.new(config_file, @dir)
-
-      cache = Cache.new(directory: @dir)
-      cache.read_tags << :before << :after
-
-      SiteDiff::Webserver::ResultServer.new(
-        options[:port],
-        options['directory'],
-        browse: options[:browse],
-        cache: cache,
-        config: config
-      ).wait
-    rescue SiteDiffException => e
-      SiteDiff.log e.message, :error
-      SiteDiff.log e.backtrace, :error if options[:verbose]
+      api = Api.new(options['directory'], config_file)
+      api_options = clean_keys(options, :browse, :port)
+      api.serve(api_options)
     end
 
     option :depth,
@@ -236,14 +165,6 @@ class SiteDiff
            type: :numeric,
            default: Config::DEFAULT_CONFIG['settings']['interval'],
            desc: 'Crawling delay - interval in milliseconds.'
-    option :whitelist,
-           type: :string,
-           default: Config::DEFAULT_CONFIG['settings']['include'],
-           desc: 'DEPRECATED: To be removed in 1.1.0. Use --include.'
-    option :blacklist,
-           type: :string,
-           default: Config::DEFAULT_CONFIG['settings']['exclude'],
-           desc: 'DEPRECATED: To be removed in 1.1.0. Use --exclude.'
     option :include,
            type: :string,
            default: Config::DEFAULT_CONFIG['settings']['include'],
@@ -264,41 +185,26 @@ class SiteDiff
         SiteDiff.log 'sitediff init requires one or two URLs', :error
         exit(2)
       end
-
-      include_regex = options[:include]
-      exclude_regex = options[:exclude]
-      # TODO: remove deprecated whitelist/blacklist in 1.1.x
-      unless options[:whitelist] == Config::DEFAULT_CONFIG['settings']['include']
-        SiteDiff.log '--whitelist is deprecated. Use --include.', :warning
-        include_regex = options[:whitelist] if include_regex == Config::DEFAULT_CONFIG['settings']['include']
-      end
-      unless options[:blacklist] == Config::DEFAULT_CONFIG['settings']['exclude']
-        SiteDiff.log '--blacklist is deprecated. Use --exclude.', :warning
-        exclude_regex = options[:blacklist] if exclude_regex == Config::DEFAULT_CONFIG['settings']['exclude']
-      end
-
-      # Prepare a config object and write it to the file system.
-      @dir = get_dir(options['directory'])
-      creator = SiteDiff::Config::Creator.new(options[:debug], *urls)
-      creator.create(
-        depth: options[:depth],
-        directory: @dir,
-        concurrency: options[:concurrency],
-        interval: options[:interval],
-        include: Config.create_regexp(include_regex),
-        exclude: Config.create_regexp(exclude_regex),
-        preset: options[:preset],
-        curl_opts: get_curl_opts(options)
-      )
-      SiteDiff.log "Created #{creator.config_file.expand_path}", :success
-
-      # Discover paths, if enabled.
-      if options[:crawl]
-        crawl(creator.config_file)
-        SiteDiff.log 'You can now run "sitediff diff".', :success
-      else
-        SiteDiff.log 'Run "sitediff crawl" to discover paths. You should then be able to run "sitediff diff".', :info
-      end
+      api_options =
+        clean_keys(
+          options,
+          :depth,
+          :concurrency,
+          :interval,
+          :include,
+          :exclude,
+          :preset,
+          :crawl
+        )
+        .merge(
+          {
+            after_url: urls.pop,
+            before_url: urls.pop, # may be nil
+            directory: get_dir(options['directory']),
+            curl_opts: get_curl_opts(options)
+          }
+        )
+      Api.init(api_options)
     end
 
     option :url,
@@ -309,26 +215,9 @@ class SiteDiff
     ##
     # Caches the current version of the site.
     def store(config_file = nil)
-      @dir = get_dir(options['directory'])
-      config = SiteDiff::Config.new(config_file, @dir)
-      # TODO: Figure out how to remove this config.validate call.
-      config.validate(need_before: false)
-      config.paths_file_read
-
-      cache = SiteDiff::Cache.new(directory: @dir, create: true)
-      cache.write_tags << :before
-
-      base = options[:url] || config.after['url']
-      fetcher = SiteDiff::Fetch.new(cache,
-                                    config.paths,
-                                    config.setting(:interval),
-                                    config.setting(:concurrency),
-                                    get_curl_opts(config.settings),
-                                    options[:debug],
-                                    before: base)
-      fetcher.run do |path, _res|
-        SiteDiff.log "Visited #{path}, cached"
-      end
+      api = Api.new(options['directory'], config_file)
+      api_options = clean_keys(options, :url, :debug)
+      api.store(api_options)
     end
 
     desc 'crawl [CONFIG-FILE]',
@@ -336,58 +225,15 @@ class SiteDiff
     ##
     # Crawls the "before" site to determine "paths".
     #
-    # TODO: Move actual crawling to sitediff.crawl(config).
-    # TODO: Switch to paths = sitediff.crawl().
     def crawl(config_file = nil)
-      # Prepare configuration.
-      @dir = get_dir(options['directory'])
-      @config = SiteDiff::Config.new(config_file, @dir)
-
-      # Prepare cache.
-      @cache = SiteDiff::Cache.new(
-        create: options['cached'] != 'none',
-        directory: @dir
-      )
-      @cache.write_tags << :before << :after
-
-      # Crawl with Hydra to discover paths.
-      hydra = Typhoeus::Hydra.new(
-        max_concurrency: @config.setting(:concurrency)
-      )
-      @paths = {}
-      @config.roots.each do |tag, url|
-        Crawler.new(
-          hydra,
-          url,
-          @config.setting(:interval),
-          @config.setting(:include),
-          @config.setting(:exclude),
-          @config.setting(:depth),
-          get_curl_opts(@config.settings),
-          @debug
-        ) do |info|
-          SiteDiff.log "Visited #{info.uri}, cached."
-          after_crawl(tag, info)
-        end
-      end
-      hydra.run
-
-      # Write paths to a file.
-      @paths = @paths.values.reduce(&:|).to_a.sort
-      @config.paths_file_write(@paths)
-
-      # Log output.
-      file = Pathname.new(@dir) + Config::DEFAULT_PATHS_FILENAME
-      SiteDiff.log ''
-      SiteDiff.log "#{@paths.length} page(s) found."
-      SiteDiff.log "Created #{file.expand_path}.", :success, 'done'
+      api = Api.new(options['directory'], config_file)
+      api.crawl
     end
 
     no_commands do
       # Generates CURL options.
       #
-      # TODO: This should be in the config class instead.
-      # TODO: Make all requests insecure and avoid custom curl-opts.
+      # TODO: Possibly move to API class.
       def get_curl_opts(options)
         # We do want string keys here
         bool_hash = { 'true' => true, 'false' => false }
@@ -409,23 +255,10 @@ class SiteDiff
       end
 
       ##
-      # Processes a crawled path.
-      def after_crawl(tag, info)
-        path = UriWrapper.canonicalize(info.relative)
-
-        # Register the path.
-        @paths[tag] = [] unless @paths[tag]
-        @paths[tag] << path
-
-        result = info.read_result
-
-        # Write result to applicable cache.
-        @cache.set(tag, path, result)
-        # If single-site, cache "after" as "before".
-        @cache.set(:before, path, result) unless @config.roots[:before]
-
-        # TODO: Restore application of rules.
-        # @rules.handle_page(tag, res.content, info.document) if @rules && !res.error
+      # Clean keys - return a subset of a hash with keys as symbols.
+      def clean_keys(hash, *keys)
+        new_hash = hash.transform_keys { |k| k.tr('-', '_').to_sym }
+        new_hash.slice(*keys)
       end
     end
   end

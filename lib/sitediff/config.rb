@@ -194,9 +194,10 @@ class SiteDiff
     # Merges 2 iterable objects deeply.
     def self.merge_deep(first, second)
       first.merge(second) do |_key, val1, val2|
-        if val1.is_a? Hash
+        case val1.class
+        when Hash
           self.class.merge_deep(val1, val2 || {})
-        elsif val1.is_a? Array
+        when Array
           val1 + (val2 || [])
         else
           val2
@@ -464,6 +465,18 @@ class SiteDiff
         # SiteDiff.log e.backtrace, :error if options[:verbose]
       end
       @return_value
+    end
+
+    ##
+    # Return merged CURL options.
+    def curl_opts
+      # We do want string keys here
+      bool_hash = { 'true' => true, 'false' => false }
+      curl_opts = UriWrapper::DEFAULT_CURL_OPTS
+                  .clone
+                  .merge(settings['curl_opts'] || {})
+      curl_opts.each { |k, v| curl_opts[k] = bool_hash.fetch(v, v) }
+      curl_opts
     end
 
     private
