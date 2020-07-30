@@ -229,7 +229,6 @@ class SiteDiff
       fetcher.run do |path, _res|
         SiteDiff.log "Visited #{path}, cached"
       end
-
     end
 
     private
