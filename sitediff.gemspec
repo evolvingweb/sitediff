@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'sitediff'
-  s.version     = '1.1.1'
+  s.version     = '1.1.2'
   s.required_ruby_version = '>= 2.6'
   s.summary     = 'Compare two versions of a site with ease!'
   s.description = <<DESC

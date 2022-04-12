@@ -36,7 +36,7 @@ avoid using `sudo` for `gem install`.
 
 ```bash
 gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true —with-xml2-include=/usr/include/libxml2
-gem install sitediff -v '1.1.1'
+gem install sitediff -v '1.1.2'
 ```
 
 ## Docker
