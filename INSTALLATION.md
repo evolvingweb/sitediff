@@ -54,6 +54,12 @@ docker run -p 13080:13080 -t -d --name sitediff evolvingweb/sitediff:latest
 docker exec -it sitediff /bin/bash
 ```
 
+If used on Apple silicon (m1), you can force the amd64 platform:
+```bash
+docker run --platform linux/amd64 -p 13080:13080 -t -d --name sitediff evolvingweb/sitediff:latest
+docker exec -it sitediff /bin/bash
+```
+
 ## MacOS
 
 You will need [Homebrew](https://brew.sh/) for Mac.
