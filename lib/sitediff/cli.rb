@@ -204,6 +204,7 @@ class SiteDiff
             curl_opts: get_curl_opts(options)
           }
         )
+        
       Api.init(api_options)
     end
 
