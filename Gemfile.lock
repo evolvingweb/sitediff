@@ -3,7 +3,7 @@ PATH
   specs:
     sitediff (1.1.2)
       addressable (>= 2.5.2, < 2.9.0)
-      diffy (~> 3.3.0)
+      diffy (>= 3.3, < 3.5)
       minitar (~> 0.9)
       nokogiri (>= 1.10.4)
       pkg-config (~> 1.1)
@@ -18,7 +18,7 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     ast (2.4.2)
     diff-lcs (1.5.0)
-    diffy (3.3.0)
+    diffy (3.4.2)
     ethon (0.15.0)
       ffi (>= 1.15.0)
     ffi (1.15.5)
