@@ -106,7 +106,7 @@ class SiteDiff
       base = File.dirname(dump_path)
       FileUtils.mkdir_p(base) unless File.exist?(base)
       File.open(dump_path, 'w') do |f|
-        f.write(Diff.generate_diff_output(self, relative))
+        f.write(Diff.generate_diff_output(self, relative: relative))
       end
     end
   end

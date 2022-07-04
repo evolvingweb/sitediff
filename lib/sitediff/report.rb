@@ -182,7 +182,7 @@ class SiteDiff
       diff_dir.rmtree if diff_dir.exist?
 
       # Write diffs to the diff directory.
-      @results.each { |r| r.dump(dir, @config.export) if r.status == Result::STATUS_FAILURE }
+      @results.each { |r| r.dump(dir, relative: @config.export) if r.status == Result::STATUS_FAILURE }
       SiteDiff.log "All diff files written to #{diff_dir.expand_path}" unless @config.export
     end
 

@@ -111,8 +111,8 @@ class SiteDiff
       sitediff = SiteDiff.new(
         @config,
         cache,
-        options[:verbose],
-        options[:debug]
+        verbose: options[:verbose],
+        debug: options[:debug]
       )
       num_failing = sitediff.run
       exit_code = num_failing.positive? ? 2 : 0

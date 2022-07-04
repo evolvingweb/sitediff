@@ -224,9 +224,9 @@ class SiteDiff
         obj
       # node or fragment
       elsif Nokogiri::XML::Node == obj.class || Nokogiri::HTML::DocumentFragment == obj.class
-        domify(obj.to_s, true)
+        domify(obj.to_s, force_doc: true)
       else
-        to_document(domify(obj, false))
+        to_document(domify(obj, force_doc: false))
       end
     end
 

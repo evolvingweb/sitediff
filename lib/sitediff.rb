@@ -107,7 +107,7 @@ class SiteDiff
       # during rspec tests for some reason.
       encoding = read_results[tag].encoding
       if encoding || html.length.positive?
-        section = @config.send(tag, true)
+        section = @config.send(tag, apply_preset: true)
         opts = { path: path }
         opts[:output] = @config.output if @config.output
         Sanitizer.new(html, section, opts).sanitize
@@ -144,7 +144,7 @@ class SiteDiff
 
     # Print results in order!
     while (next_diff = @results[@ordered.first])
-      next_diff.log(@verbose)
+      next_diff.log(verbose: @verbose)
       @ordered.shift
     end
   end
@@ -175,7 +175,7 @@ class SiteDiff
       @config.setting(:interval),
       @config.setting(:concurrency),
       curl_opts,
-      @debug,
+      debug: @debug,
       before: @config.before_url,
       after: @config.after_url
     )
