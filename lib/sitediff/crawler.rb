@@ -21,7 +21,7 @@ class SiteDiff
                    exclude_regex,
                    depth = DEFAULT_DEPTH,
                    curl_opts = UriWrapper::DEFAULT_CURL_OPTS,
-                   debug = true,
+                   debug: true,
                    &block)
       @hydra = hydra
       @base_uri = Addressable::URI.parse(base)
@@ -43,7 +43,7 @@ class SiteDiff
 
       @found << rel
 
-      wrapper = UriWrapper.new(@base + rel, @curl_opts, @debug)
+      wrapper = UriWrapper.new(@base + rel, @curl_opts, debug: @debug)
       wrapper.queue(@hydra) do |res|
         fetched_uri(rel, depth, res)
       end

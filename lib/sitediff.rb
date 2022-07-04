@@ -47,7 +47,7 @@ class SiteDiff
         bg = :yellow
       end
 
-      label = '[' + label.to_s + ']'
+      label = "[#{label}]"
       label = Rainbow(label)
       label = label.bg(bg) if bg
       label = label.fg(fg) if fg
@@ -76,7 +76,7 @@ class SiteDiff
   end
 
   # Initialize SiteDiff.
-  def initialize(config, cache, verbose = true, debug = false)
+  def initialize(config, cache, verbose: true, debug: false)
     @cache = cache
     @verbose = verbose
     @debug = debug
@@ -160,7 +160,7 @@ class SiteDiff
     @ordered = @config.paths.dup
 
     unless @cache.read_tags.empty?
-      SiteDiff.log('Using sites from cache: ' + @cache.read_tags.sort.join(', '))
+      SiteDiff.log("Using sites from cache: #{@cache.read_tags.sort.join(', ')}")
     end
 
     # TODO: Fix this after config merge refactor!
@@ -203,7 +203,7 @@ class SiteDiff
   ##
   # Get SiteDiff gemspec.
   def self.gemspec
-    file = ROOT_DIR + '/sitediff.gemspec'
+    file = "#{ROOT_DIR}/sitediff.gemspec"
     Gem::Specification.load(file)
   end
 

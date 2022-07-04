@@ -15,7 +15,7 @@ class SiteDiff
                    interval,
                    concurrency = 3,
                    curl_opts = nil,
-                   debug = true,
+                   debug: true,
                    **tags)
       @cache = cache
       @interval = interval

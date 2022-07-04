@@ -2,7 +2,12 @@
 
 Contains noteworthy changes made to SiteDiff.
 
-## Since 1.1.1
+## Version 1.1.3
+- Upgraded modules and support for Ruby 3.1.2.
+- Fixed bug in crawl command where the after site pages were overwritting pages in the `sitediff/before` directory.
+
+## Version 1.1.2
+- Security upgrades to modules.
 
 ## Version 1.1.1
 - Refactor CLI class and move business logic to new SiteDiff::Api class for better integration with other Ruby apps.

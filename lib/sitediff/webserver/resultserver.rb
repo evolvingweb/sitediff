@@ -14,6 +14,7 @@ class SiteDiff
         ##
         # Creates a Cache Servlet.
         def initialize(_server, cache)
+          super
           @cache = cache
         end
 
@@ -41,6 +42,7 @@ class SiteDiff
         ##
         # Creates a Side By Side Servlet.
         def initialize(_server, cache, settings)
+          super
           @cache = cache
           @settings = settings
         end

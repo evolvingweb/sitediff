@@ -43,7 +43,7 @@ class Docker < Base
     run "docker build -t #{IMAGE} . "
   end
 
-  # NOTE We can't override run() (which is reserved by Thor). Luckily, Thor only
+  # NOTE: We can't override run() (which is reserved by Thor). Luckily, Thor only
   # checks for the first N necessary characters to match a command with a
   # method. Cf. Thor::normalize_command_name()
   desc 'run', 'Run a rake task (or a login shell if none given) inside docker'

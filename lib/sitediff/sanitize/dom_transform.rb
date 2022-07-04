@@ -30,10 +30,10 @@ class SiteDiff
 
       ##
       # TODO: Document what this method does.
-      def targets(node)
+      def targets(node, &block)
         selectors = to_array(@rule['selector'])
         selectors.each do |sel|
-          node.css(sel).each { |n| yield n }
+          node.css(sel).each(&block)
         end
       end
 

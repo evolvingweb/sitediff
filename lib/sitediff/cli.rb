@@ -44,8 +44,8 @@ class SiteDiff
       output = []
       output.push("Sitediff CLI #{gemspec.version}")
       if options[:verbose]
-        output.push('Website: ' + gemspec.homepage)
-        output.push('GitHub: ' + gemspec.metadata['source_code_uri'])
+        output.push("Website: #{gemspec.homepage}")
+        output.push("GitHub: #{gemspec.metadata['source_code_uri']}")
       end
       puts output.join("\n")
     end
@@ -199,12 +199,12 @@ class SiteDiff
         .merge(
           {
             after_url: urls.pop,
-            before_url: urls.pop, # may be nil
+            before_url: urls.pop,
             directory: get_dir(options['directory']),
             curl_opts: get_curl_opts(options)
           }
         )
-        
+
       Api.init(api_options)
     end
 

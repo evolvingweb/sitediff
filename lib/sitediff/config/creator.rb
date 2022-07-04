@@ -73,22 +73,22 @@ class SiteDiff
       # Create a gitignore if we seem to be in git.
       def make_gitignore(dir)
         # Check if we're in git
-        unless dir.realpath.to_enum(:ascend).any? { |d| d.+('.git').exist? }
+        unless dir.realpath.to_enum(:ascend).any? { |d| Dir.exist?("#{d}/.git") }
           return
         end
 
-        dir.+('.gitignore').open('w') do |f|
-          f.puts <<-GITIGNORE.gsub(/^\s+/, '')
-            # Directories.
-            diffs
-            snapshot
+        f = File.open("#{dir}/.gitignore", 'w')
+        f.puts <<-GITIGNORE.gsub(/^\s+/, '')
+          # Directories.
+          diffs
+          snapshot
 
-            # Files.
-            settings.yaml
-            paths.txt
-            failures.txt
-          GITIGNORE
-        end
+          # Files.
+          settings.yaml
+          paths.txt
+          failures.txt
+        GITIGNORE
+        f.close
       end
 
       ##

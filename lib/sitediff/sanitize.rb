@@ -62,7 +62,7 @@ class SiteDiff
       (rules = @config[name]) || (return nil)
 
       # Already an array? Do nothing.
-      if rules[0]&.respond_to?('each') && rules[0]&.fetch('value')
+      if rules[0].respond_to?('each') && rules[0]&.fetch('value')
       # If it is a hash, put it in an array.
       elsif rules['value']
         rules = [rules]
@@ -146,7 +146,7 @@ class SiteDiff
     def select_regions(node, regions, output)
       regions = output.map do |name|
         selector = get_named_region(regions, name)['selector']
-        region = Nokogiri::XML.fragment('<region id="' + name + '"></region>').at_css('region')
+        region = Nokogiri::XML.fragment("<region id=\"#{name}\"></region>").at_css('region')
         matching = node.css(selector)
         matching.each { |m| region.add_child m }
         region
@@ -210,7 +210,7 @@ class SiteDiff
     end
 
     # Parse HTML into a node
-    def self.domify(str, force_doc = false)
+    def self.domify(str, force_doc: false)
       if force_doc || /<!DOCTYPE/.match(str[0, 512])
         Nokogiri::HTML(str)
       else

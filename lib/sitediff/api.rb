@@ -168,7 +168,7 @@ class SiteDiff
           @config.setting(:exclude),
           @config.setting(:depth),
           @config.curl_opts,
-          @debug
+          debug: @debug
         ) do |info|
           SiteDiff.log "Visited #{info.uri}, cached."
           after_crawl(tag, info)
@@ -255,9 +255,8 @@ class SiteDiff
 
       # Write result to applicable cache.
       # @cache.set(tag, path, result)
-      
-      @cache.set(:before, path, result) if tag == "before"
-      @cache.set(:after, path, result) if tag == "after"
+      @cache.set(:before, path, result) if tag == 'before'
+      @cache.set(:after, path, result) if tag == 'after'
 
       # TODO: Restore application of rules.
       # @rules.handle_page(tag, res.content, info.document) if @rules && !res.error
