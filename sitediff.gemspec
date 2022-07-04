@@ -39,6 +39,5 @@ DESC
   # Diffy and addressable have a max version for Ruby 1.9.
   s.add_dependency 'addressable', '>= 2.5.2', '< 2.9.0'
   s.add_dependency 'diffy', '~> 3.4.0'
-
   s.add_dependency 'webrick', '>= 1.7'
 end
