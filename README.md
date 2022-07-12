@@ -729,7 +729,7 @@ You must prefix your regex with `!ruby/regexp` like `exclude: !ruby/regexp /^(fo
 #### include
 
 A RegEx indicating the paths that should be crawled.
-You must prefix your regex with `!ruby/regexp` like `exclude: !ruby/regexp /^(foo|bar).*?$/`.
+You must prefix your regex with `!ruby/regexp` like `include: !ruby/regexp /^(foo|bar).*?$/`.
 
 #### depth
 
