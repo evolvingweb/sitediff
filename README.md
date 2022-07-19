@@ -373,12 +373,16 @@ By default sitediff crawls pages that are indicated with an HTML anchor using
 the `<A HREF` syntax. Most pages linked will be HTML pages, but some links
 will contain binaries such as PDF documents and images.
 
-Using the option `--exclude='.*\.pdf'` ensures the crawler skips links
-for document with a `.pdf` extension. Note that the regular expression is
-applied to the path of the URL, not the base of the URL.
+You can `init` a sitediff configuration to include or exclude specific URL 
+paths.
 
-For example `--include='.*\.com'` will not match `http://www.google.com/`,
-because the path of that URL is `/` while the base is `www.google.com`.
+Using the option `--exclude='.*\.pdf'` when running `sitediff init` ensures 
+the crawler skips links for document with a `.pdf` extension. Note that the 
+regular expression is applied to the path of the URL, not the base of the URL.
+
+For example `sitediff init --include='.*\.com'` will not match 
+`http://www.google.com/`, because the path of that URL is `/` while the base 
+is `www.google.com`.
 
 ## Configuration
 
@@ -720,10 +724,12 @@ The maximum number of simultaneous requests that SiteDiff should make.
 #### exclude
 
 A RegEx indicating the paths that should not be crawled.
+You must prefix your regex with `!ruby/regexp` like `exclude: !ruby/regexp /^(foo|bar).*?$/`.
 
 #### include
 
 A RegEx indicating the paths that should be crawled.
+You must prefix your regex with `!ruby/regexp` like `include: !ruby/regexp /^(foo|bar).*?$/`.
 
 #### depth
 
