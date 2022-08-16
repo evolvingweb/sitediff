@@ -107,7 +107,7 @@ class SiteDiff
           conf[pos][key] += conf[key] if conf[key]
         end
         tools[:scalar].each { |key| conf[pos][key] ||= conf[key] }
-        conf[pos]['url'] ||= conf["pos#{_url}"]
+        conf[pos]['url'] ||= conf["pos#{_url}"] if defined?(_url)
         conf[pos]['curl_opts'] = conf['curl_opts']
       end
 
