@@ -27,7 +27,7 @@ class SiteDiff
 
         # Load and cache preset config.
         if @cache[name].nil?
-          exist? name, true
+          exist? name, exception: true
           @cache[name] = Config.load_conf file(name)
         end
 
@@ -55,7 +55,7 @@ class SiteDiff
       ##
       # Checks whether a preset exists.
       def self.exist?(name, exception: false)
-        result = File.exist? file(name)
+        result = File.exist?(self.file(name))
 
         # Raise an exception, if required.
         if exception && !result
@@ -68,7 +68,7 @@ class SiteDiff
       ##
       # Returns the path to a preset file.
       def self.file(name)
-        DIRECTORY + "#{name}.yaml"
+        DIRECTORY + "/#{name}.yaml"
       end
     end
   end

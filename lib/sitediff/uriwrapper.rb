@@ -150,18 +150,19 @@ class SiteDiff
       req.on_failure do |resp|
         if resp&.status_message
           msg = resp.status_message
+          response_code = resp.response_code
           yield ReadResult.error(
-            "HTTP error when loading #{@uri}: #{msg}",
+            "HTTP error when loading #{@uri} : [#{response_code}] #{msg}",
             resp.response_code
           )
         elsif (msg = resp.options[:return_code])
           yield ReadResult.error(
-            "Connection error when loading #{@uri}: #{msg}",
+            "Connection error when loading #{@uri} : [#{response_code}] #{msg}",
             resp.response_code
           )
         else
           yield ReadResult.error(
-            "Unknown error when loading #{@uri}: #{msg}",
+            "Unknown error when loading #{@uri} : [#{response_code}] #{msg}",
             resp.response_code
           )
         end
