@@ -17,7 +17,7 @@ operating system.
 
 These instructions are for CentOS 7 or higher.
 
-You'll need [Ruby](https://www.ruby-lang.org/) 2.6 or higher.
+You'll need [Ruby](https://www.ruby-lang.org/) 3.1.2 or higher.
 
 We recommend using one of the following to install Ruby:
 
@@ -36,7 +36,7 @@ avoid using `sudo` for `gem install`.
 
 ```bash
 gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true —with-xml2-include=/usr/include/libxml2
-gem install sitediff -v '1.1.2'
+gem install sitediff -v '1.2.0'
 ```
 
 ## Docker
@@ -64,7 +64,7 @@ docker exec -it sitediff /bin/bash
 
 You will need [Homebrew](https://brew.sh/) for Mac.
 
-If your version of Ruby is not 2.6 or later, you will need to upgrade.
+If your version of Ruby is not 3.1.2 or later, you will need to upgrade.
 
 rbenv is recommended for managing Ruby versions.
 
@@ -88,14 +88,14 @@ If possible avoid using `sudo` for `gem install`.
 
 ```bash
 gem install nokogiri --no-rdoc --no-ri -- --use-system-libraries=true —with-xml2-include=/usr/include/libxml2
-gem install sitediff -v '1.1.1'
+gem install sitediff -v '1.2.0'
 ```
 
 ## Ubuntu
 
 These instructions are for Ubuntu 16.04 or higher.
 
-You'll need [Ruby](https://www.ruby-lang.org/) 2.6 or higher.
+You'll need [Ruby](https://www.ruby-lang.org/) 3.1.2 or higher.
 
 We recommend using one of the following to install Ruby:
 

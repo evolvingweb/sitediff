@@ -410,9 +410,7 @@ with the stored version of that site, as created by `sitediff init` or
 SiteDiff allows you to specify a list of paths that you want it to work with.
 Alternatively, it can crawl the entire site and detect all paths.
 
-  * Running `sitediff init` also runs the `sitediff crawl` by default which
-    crawls your website and puts a list of all detected paths in a `paths.txt`
-    file.
+  * Running `sitediff init` configures SiteDiff for crawling and seeing differences.
 
   * Running `sitediff crawl` makes sitediff crawl your site and detect
     available paths. These paths are written to a `paths.txt` file which you

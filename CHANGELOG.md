@@ -5,7 +5,9 @@ Contains noteworthy changes made to SiteDiff.
 ## Version 1.2.0
 - Updated requirement to Ruby 3.1.2.
 - Upgraded modules for security and compatibility.
-- Fixed bug in crawl command where the `after` site pages were overwritting pages in the `sitediff/before` directory.
+- Fixed bug in crawl command where the `after` site pages were overwriting pages in the `sitediff/before` directory.
+- Fixed bug for using presets.
+- Fixed bug for including other files.
 
 ## Version 1.1.2
 - Security upgrades to modules.
