@@ -97,7 +97,7 @@ class SiteDiff
   end
 
   # Sanitize HTML.
-  def sanitize(path, read_results)
+  def sanitize(path_passed, read_results)
     %i[before after].map do |tag|
       html = read_results[tag].content
       # TODO: See why encoding is empty while running tests.
@@ -108,7 +108,7 @@ class SiteDiff
       encoding = read_results[tag].encoding
       if encoding || html.length.positive?
         section = @config.send(tag, apply_preset: true)
-        opts = { path: path }
+        opts = { path: path_passed }
         opts[:output] = @config.output if @config.output
         Sanitizer.new(html, section, opts).sanitize
       else

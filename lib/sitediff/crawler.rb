@@ -42,7 +42,7 @@ class SiteDiff
       return if @found.include? rel
 
       @found << rel
-    
+
       wrapper = UriWrapper.new(@base + rel, @curl_opts, debug: @debug)
       wrapper.queue(@hydra) do |res|
         fetched_uri(rel, depth, res)
@@ -82,14 +82,14 @@ class SiteDiff
       links = find_links(doc)
       uris = links.map { |l| resolve_link(base, l) }.compact
       uris = filter_links(uris)
-      
+
       # Make them relative
       rels = uris.map { |u| relativize_link(u) }
 
       # Queue them in turn
       rels.each do |r|
         next if @found.include? r
-        
+
         add_uri(r, depth - 1)
       end
     end

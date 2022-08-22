@@ -12,7 +12,7 @@ class SiteDiff
       # Directory in which presets live.
       #
       # TODO: Move this outside "lib".
-      DIRECTORY = "#{Pathname.new(__dir__).dirname}/presets"
+      DIRECTORY = "#{Pathname.new(__dir__).dirname}/presets".freeze
 
       ##
       # Reads preset rules.
@@ -55,7 +55,7 @@ class SiteDiff
       ##
       # Checks whether a preset exists.
       def self.exist?(name, exception: false)
-        result = File.exist?(self.file(name))
+        result = File.exist?(file(name))
 
         # Raise an exception, if required.
         if exception && !result

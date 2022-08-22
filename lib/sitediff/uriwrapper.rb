@@ -155,7 +155,7 @@ class SiteDiff
           )
         elsif (msg = resp.options[:return_code])
           yield ReadResult.error(
-            "Connection error when loading #{@uri} : [#{resp.options[:return_code]}] #{resp.status_message}",
+            "Connection error when loading #{@uri} : [#{resp.options[:return_code]}] #{resp.status_message} #{msg}",
             resp.response_code
           )
         else
