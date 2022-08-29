@@ -15,7 +15,7 @@ class SiteDiff
                    interval,
                    concurrency = 3,
                    curl_opts = nil,
-                   debug = true,
+                   debug: true,
                    **tags)
       @cache = cache
       @interval = interval
@@ -51,7 +51,7 @@ class SiteDiff
           results[tag] = UriWrapper::ReadResult.error('Not cached')
           process_results(path, results)
         else
-          uri = UriWrapper.new(base + path, @curl_opts, @debug)
+          uri = UriWrapper.new(base + path, @curl_opts, debug: @debug)
           uri.queue(@hydra) do |resl|
             # Insert delay to limit fetching rate
             if @interval != 0

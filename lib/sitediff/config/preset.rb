@@ -12,7 +12,7 @@ class SiteDiff
       # Directory in which presets live.
       #
       # TODO: Move this outside "lib".
-      DIRECTORY = (Pathname.new(__dir__).dirname + 'presets').freeze
+      DIRECTORY = "#{Pathname.new(__dir__).dirname}/presets".freeze
 
       ##
       # Reads preset rules.
@@ -27,7 +27,7 @@ class SiteDiff
 
         # Load and cache preset config.
         if @cache[name].nil?
-          exist? name, true
+          exist? name, exception: true
           @cache[name] = Config.load_conf file(name)
         end
 
@@ -43,7 +43,7 @@ class SiteDiff
         # Load and cache preset names.
         if @all.nil?
           @all = []
-          pattern = DIRECTORY + '*.yaml'
+          pattern = "#{DIRECTORY}/*.yaml"
           Dir.glob(pattern) do |file|
             @all << File.basename(file, '.yaml')
           end
@@ -54,8 +54,8 @@ class SiteDiff
 
       ##
       # Checks whether a preset exists.
-      def self.exist?(name, exception = false)
-        result = File.exist? file(name)
+      def self.exist?(name, exception: false)
+        result = File.exist?(file(name))
 
         # Raise an exception, if required.
         if exception && !result
@@ -68,7 +68,7 @@ class SiteDiff
       ##
       # Returns the path to a preset file.
       def self.file(name)
-        DIRECTORY + "#{name}.yaml"
+        DIRECTORY + "/#{name}.yaml"
       end
     end
   end

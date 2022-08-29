@@ -76,19 +76,19 @@ class SiteDiff
 
     # Filename to store diff
     def filename
-      File.join(Report::DIFFS_DIR, Digest::SHA1.hexdigest(path) + '.html')
+      File.join(Report::DIFFS_DIR, "#{Digest::SHA1.hexdigest(path)}.html")
     end
 
     # Returns a URL to the result diff.
     #
     # Returns nil if the result has no diffs.
-    def diff_url(relative = false)
+    def diff_url(relative: false)
       prefix = relative ? 'files/' : '/files/'
       return prefix + filename if status == STATUS_FAILURE
     end
 
     # Log the result to the terminal
-    def log(verbose = true)
+    def log(verbose: true)
       case status
       when STATUS_SUCCESS
         SiteDiff.log path, :success, 'UNCHANGED'
@@ -101,12 +101,12 @@ class SiteDiff
     end
 
     # Dump the result to a file
-    def dump(dir, relative = false)
+    def dump(dir, relative: false)
       dump_path = File.join(dir, filename)
       base = File.dirname(dump_path)
       FileUtils.mkdir_p(base) unless File.exist?(base)
       File.open(dump_path, 'w') do |f|
-        f.write(Diff.generate_diff_output(self, relative))
+        f.write(Diff.generate_diff_output(self, relative:))
       end
     end
   end

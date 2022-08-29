@@ -1,9 +1,67 @@
 # SiteDiff CLI
 
+**Warning:** SiteDiff 1.2.0 requires at least Ruby 3.1.2.
+
 **Warning:** SiteDiff 1.0.0 introduces some backwards incompatible changes.
 
 [![Build Status](https://travis-ci.org/evolvingweb/sitediff.svg?branch=master)](https://travis-ci.org/evolvingweb/sitediff)
 
+## Table of contents
+
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Demo](#demo)
+- [Usage](#usage)
+    - [Getting Started](#getting-started)
+    - [Comparing 2 Sites](#comparing-2-sites)
+    - [Spurious Diffs](#spurious-diffs)
+- [Command Line Options](#command-line-options)
+    - [Finding Configuration Files](#finding-configuration-files)
+    - [Specifying Paths](#specifying-paths)
+    - [Debugging Rules](#debugging-rules)
+    - [Including and Excluding URLs](#including-and-excluding-urls)
+    - [Paths and Paths-file](#paths--paths-file)
+    - [Report Export](#export)
+    - [Running inside containers](#running-inside-containers)
+- [Configuration](#configuration)
+    - [before_url / after_url](#before_url--after_url)
+    - [selector](#selector)
+    - [sanitization](#sanitization)
+    - [ignore_whitespace](#ignore_whitespace)
+    - [before / after](#before--after)
+    - [includes](#incudes) 
+    - [dom_transform](#dom_transform)
+        - [remove](#remove)
+        - [strip](#strip)
+        - [unwrap](#unwrap)
+        - [remove_class](#remove_class)
+        - [unwrap_root](#unwrap_root)
+    - [Organizing configuration files](#organizing-configuration-files)
+    - [Named regions](#named-regions)
+    - [report](#report)
+        - [title](#title)
+        - [details](#details)
+        - [before_note](#before_note)
+        - [after_note](#after_note)
+        - [before_url_report / after_url_report](#before_url_report--after_url_report)
+    - [Miscellaneous](#miscellaneous)
+        - [preset](#preset)
+        - [Include / Exclude Paths](#includeexclude-paths)
+    - [Curl Options](#curl-options)
+        - [Throttling](#throttling)
+        - [Timeouts](#timeouts)
+        - [Handling security](#handling-security)
+        - [interval](#interval)
+        - [concurrency](#concurrency)
+        - [depth](#depth)
+        - [curl_opts](#curl_opts)
+- [Tips and Tricks](#tips-and-tricks)
+    - [Removing empty elements](#removing-empty-elements)
+    - [HTML Tag Formatting](#html-tag-formatting)
+    - [Empty Attributes](#empty-attributes)
+- [Acknowledgements](#acknowledgements)
+
+## Introduction 
 SiteDiff makes it easy to see how a website changes. It can compare two similar
 sites or it can show how a single site changed over time. It helps identify
 undesirable changes to the site's HTML and it's a useful tool for conducting QA
@@ -18,19 +76,6 @@ SiteDiff supports a range of normalization / sanitization rules. These allow
 you to eliminate spurious differences, narrowing down differences to the ones
 that materially affect the site.
 
-## Table of contents
-
-- [Installation](#installation)
-- [Demo](#demo)
-- [Usage](#usage)
-  - [Getting started](#getting-started)
-  - [Comparing 2 sites](#comparing-2-sites)
-  - [Spurious diffs](#spurious-diffs)
-- [Advanced diffs](#advanced-diffs)
-- [Tips & tricks](#tips--tricks)
-- [Configuration](#configuration)
-
-
 ## Installation
 
 SiteDiff is fairly easy to install. Please refer to the
@@ -38,7 +83,7 @@ SiteDiff is fairly easy to install. Please refer to the
 
 ## Demo
 
-After installing all dependencies including the `bundle` gem, you can quickly
+After installing all dependencies including the `bundle` version 2 gem, you can quickly
 see what SiteDiff can do. Simply use the following commands:
 
 ```sh
@@ -166,77 +211,7 @@ Currently, SiteDiff only comes with Drupal-specific presets.
 
 See the [preset](#preset) section for more details.
 
-## Advanced diffs
-
-### Named regions
-
-In major upgrades and migrations where there are significant changes to the markup,
-simple diffs will not be of much value. To assist in these cases, `named
-regions` let you define regions in the page markup and the specify order in which
-they should be compared. Specifying the order helps in cases where the fields are
-not in the same order on the new site.
-
-For example, if you have a CMS displaying `title`, `author`, and `body` fields, you
-could define the named regions and the selectors for the three fields as follows:
-
-```yaml
-  regions:
-    - name: title
-      selector: h1.title
-    - name: author
-      selector: .field-name-attribution
-    - name: body
-      selector: .field-name-body
-```
-
-(You need to define `regions` for both the `before` and `after` sections.)
-
-You must then define the order that the fields should be compared, using the
-`output` key.
-
-```yaml
-output:
-  - title
-  - author
-  - body
-```
-
-Before the two versions are compared, SiteDiff generates markup with
-`<region>` tags and each `region` contains the markup matching the
-corresponding selector.
-
-EG:
-
-```html
-<region id="title">
-  <h1 class="title">My Blog Post</h1>
-</region>
-<region id="author">
-  <div class="field-name-attribution">
-    <span class="label">By:</span> Alfred E. Neuman
-  </div>
-</region>
-<region id="body">
-  <div class=".field-name-attribution">
-    <p>Lorem ipsum...
-  </div>
-</region>
-```
-
-The regions are processed first, so you can reference the `<region>` tags to
-be more specific in your selectors for `dom_transform` and `sanitization`
-sections.
-
-EG:
-
-```yaml
-dom_transform:
-  - name: Remove body div wrapper
-    type: unwrap
-    selector: region#body .field-name-attribution
-```
-
-## Tips & tricks
+## Command Line Options
 
 ### Finding configuration files
 
@@ -249,40 +224,23 @@ sitediff diff -C my_project_folder
 sitediff serve -C my_project_folder
 ```
 
-### Organizing configuration files
-
-If your configuration file starts getting really big, SiteDiff lets you
-separate it out into multiple files. Just have one base file that includes
-other files:
-
-```yaml
-includes:
-  - sanitization.yaml
-  - paths.yaml
-```
-
-This allows you to separate your configuration into logical groups.
-For example, generic rules for your site could live in a `generic.yaml` file,
-while rules pertaining to a particular update you're conducting could
-live in `update-8.2.yaml`.
-
 ### Specifying paths
 
 When you run ```sitediff diff```, you can specify which pages to look at in
 2 ways:
 
-  1. The option ```--paths /foo /bar ...```.
+1. The option ```--paths /foo /bar ...```.
 
-     If you're trying to fix one page in particular, specifying just that one
-     path will make ```sitediff diff``` run quickly!
+   If you're trying to fix one page in particular, specifying just that one
+   path will make ```sitediff diff``` run quickly!
 
-  1. The option ```--paths-file FILE``` with a newline-delimited text file.
+2. The option ```--paths-file FILE``` with a newline-delimited text file.
 
-     This is particularly useful when you're trying to eliminate all diffs.
-     SiteDiff creates a file ```output/failures.txt``` containing all paths
-     which had differences, so as you try to fix differences, you can run:
+This is particularly useful when you're trying to eliminate all diffs.
+SiteDiff creates a file ```output/failures.txt``` containing all paths
+which had differences, so as you try to fix differences, you can run:
 
-     ```sitediff diff --paths-file sitediff/failures.txt```
+```sitediff diff --paths-file sitediff/failures.txt```
 
 ### Debugging rules
 
@@ -291,20 +249,50 @@ When a sanitization rule isn't working quite right for you, you might run
 try adding the option ```--cached=all```. This tells SiteDiff not to re-fetch
 the content, but just compare previously cached versions — it's a lot faster!
 
-### Handling security
+### Including and Excluding URLs
 
-Often development or staging sites are protected by [HTTP Authentication](http://en.wikipedia.org/wiki/Basic_access_authentication).
-SiteDiff allows you to specify a username and password, by using a URL like
-`http://user:pass@example.com`.
+By default sitediff crawls pages that are indicated with an HTML anchor using
+the `<A HREF` syntax. Most pages linked will be HTML pages, but some links
+will contain binaries such as PDF documents and images.
 
-SiteDiff ignores untrusted certificates by default. This is equivalent to the following settings:
+Using the option `--exclude='.*\.pdf'` ensures the crawler skips links
+for document with a `.pdf` extension. Note that the regular expression is
+applied to the path of the URL, not the base of the URL.
 
-```yaml
-settings:
-  curl_opts:
-    ssl_verifypeer: false
-    ssl_verifyhost: 0
-```
+For example `--include='.*\.com'` will not match `http://www.google.com/`,
+because the path of that URL is `/` while the base is `www.google.com`.
+
+### paths / paths-file
+
+SiteDiff allows you to specify a list of paths that you want it to work with.
+Alternatively, it can crawl the entire site and detect all paths.
+
+* Running `sitediff init` configures SiteDiff for crawling and seeing differences.
+
+* Running `sitediff crawl` makes sitediff crawl your site and detect
+  available paths. These paths are written to a `paths.txt` file which you
+  can modify according to your needs.
+
+* You can also compute diffs only for paths specified in a custom paths file
+  using the `--paths-file` parameter. This file should contain paths starting
+  with a `/`, having one path per line.
+
+  ```
+  sitediff diff --paths-file=/path/to/paths.txt
+  ```
+
+* You can also compute diffs for a handful of specific paths by specifying
+  them directly on the command line using the `--paths` parameter. Each path
+  should be separated by a space.
+
+  ```
+  sitediff diff --paths=/home /about /contact
+  ```
+
+### export
+Generate a gzipped tar file containing the HTML report instead of generating
+and serving live web pages, this option overrides `--report-format`, forcing
+HTML.
 
 ### Running inside containers
 
@@ -319,70 +307,6 @@ inside a [Vagrant](https://www.vagrantup.com/) VM, you might then run
 something like:
 
 ```sitediff diff --after-url-report=http://vagrant:8080```
-
-### Curl options
-
-[Many options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html) can be
-passed to the underlying curl library. Add `--curl_options=name1:value1 name2:value2`
-to the command line (such as `--curl_options=max_recv_speed_large:100000`
-(remove the `CURLOPT_` prefix and write the name in lowercase) or add them to
-your configuration file.
-
-```yaml
-settings:
-  curl_opts:
-    max_recv_speed_large: 10000
-    ssl_verifypeer: false
-```
-
-These CURL options can be put under the `settings` section of `sitediff.yaml`
-as demonstrated above.
-
-### Throttling
-
-A few options are also available to control how aggressively SiteDiff crawls.
-
-  - There's a command line option `--concurrency=N` for `sitediff init`
-    which controls the maximum number of simultaneous connections made.
-    Lower N mean less aggressive. The default is 3. You can specify this in the
-    `sitediff.yaml` file under the `settings` key.
-
-  - The underlying curl library has [many options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html)
-    such as `max_recv_speed_large` which can be helpful.
-
-  - There is a special command line option `--interval=T` for `sitediff init`.
-    This option and allows the fetcher to delay for T milliseconds between
-    fetching pages. You can specify this in the `sitediff.yaml` file under the
-    `settings` key.
-
-### Timeouts
-
-By default, no timeout is set but one can be added `--curl_options=timeout:60`
-or in your configuration file.
-
-  ```yaml
-  settings:
-    curl_opts:
-      timeout: 60 # In seconds; or...
-      timeout_ms: 60000 # In milliseconds.
-  ```
-
-### Including and Excluding URLs
-
-By default sitediff crawls pages that are indicated with an HTML anchor using
-the `<A HREF` syntax. Most pages linked will be HTML pages, but some links
-will contain binaries such as PDF documents and images.
-
-You can `init` a sitediff configuration to include or exclude specific URL 
-paths.
-
-Using the option `--exclude='.*\.pdf'` when running `sitediff init` ensures 
-the crawler skips links for document with a `.pdf` extension. Note that the 
-regular expression is applied to the path of the URL, not the base of the URL.
-
-For example `sitediff init --include='.*\.com'` will not match 
-`http://www.google.com/`, because the path of that URL is `/` while the base 
-is `www.google.com`.
 
 ## Configuration
 
@@ -408,35 +332,6 @@ The `after_url` MUST provided either at the command-line or in the
 two sites. Otherwise, it will compare the current version of the `after` site
 with the stored version of that site, as created by `sitediff init` or
 `sitediff store`.
-
-### paths / paths-file
-
-SiteDiff allows you to specify a list of paths that you want it to work with.
-Alternatively, it can crawl the entire site and detect all paths.
-
-  * Running `sitediff init` also runs the `sitediff crawl` by default which
-    crawls your website and puts a list of all detected paths in a `paths.txt`
-    file.
-
-  * Running `sitediff crawl` makes sitediff crawl your site and detect
-    available paths. These paths are written to a `paths.txt` file which you
-    can modify according to your needs.
-
-  * You can also compute diffs only for paths specified in a custom paths file
-    using the `--paths-file` parameter. This file should contain paths starting
-    with a `/`, having one path per line.
-
-    ```
-    sitediff diff --paths-file=/path/to/paths.txt
-    ```
-
-  * You can also compute diffs for a handful of specific paths by specifying
-    them directly on the command line using the `--paths` parameter. Each path
-    should be separated by a space.
-
-    ```
-    sitediff diff --paths=/home /about /contact
-    ```
 
 ### selector
 
@@ -491,41 +386,39 @@ On the command line, use `-w` or `--ignore-whitespace`.
 sitediff diff -w
 ```
 
-### export
-Generate a gzipped tar file containing the HTML report instead of generating
-and serving live web pages, this option overrides `--report-format`, forcing
-HTML.
+### before / after
 
-### regions
-To specify the regions you wish to compare, define regions for both the
-`before` and `after` sections of the configuration. Then define the order
-that the regions should be compared in the `output` section. It doesn't matter
-which order the regions appear in the source pages.
+Applies rules to just one side of the comparison.
 
-Define regions:
+These blocks can contain any of the following sections: `selector`,
+`sanitization`,  `dom_transform`. Such a section placed in `before` will be
+applied just to the `before` side of the comparison and similarly for `after`.
+
+For example, if you wanted to let different date formatting not create diff
+failures, you might use the following:
+
 ```yaml
 before:
-  url: http://example.com
-  regions:
-    - name: title
-      selector: h1.title
-    - name: body
-      selector: .field-name-body
-
+  sanitization:
+    - pattern: '[1-2][0-9]{3}/[0-1][0-9]/[0-9]{2}'
+      substitute: '__date__'
 after:
-  url: http://example.com
-  regions:
-    - name: title
-      selector: h1.title
-    - name: body
-      selector: .field-name-body
+  sanitization:
+    - pattern:  '[A-Z][a-z]{2} [0-9]{1,2}(st|nd|rd|th) [1-2][0-9]{3}'
+      substitute: '__date__'
 ```
 
-Define output order:
+The above rule will replace dates of the form `2004/12/05` in `before` and
+dates of the form `May 12th 2004` in `after` with `__date__`.
+
+### includes
+
+The names of other configuration YAML files to merge with this one.
+
 ```yaml
-output:
-  - title
-  - body
+includes:
+  - config/sanitize_domains.yaml
+  - config/strip_css_js.yaml
 ```
 
 ### dom_transform
@@ -622,41 +515,6 @@ dom_transform:
 
 Replaces the entire root element with its children.
 
-### before / after
-
-Applies rules to just one side of the comparison.
-
-These blocks can contain any of the following sections: `selector`,
-`sanitization`,  `dom_transform`. Such a section placed in `before` will be
-applied just to the `before` side of the comparison and similarly for `after`.
-
-For example, if you wanted to let different date formatting not create diff
-failures, you might use the following:
-
-```yaml
-before:
-  sanitization:
-    - pattern: '[1-2][0-9]{3}/[0-1][0-9]/[0-9]{2}'
-      substitute: '__date__'
-after:
-  sanitization:
-    - pattern:  '[A-Z][a-z]{2} [0-9]{1,2}(st|nd|rd|th) [1-2][0-9]{3}'
-      substitute: '__date__'
-```
-
-The above rule will replace dates of the form `2004/12/05` in `before` and
-dates of the form `May 12th 2004` in `after` with `__date__`.
-
-### includes
-
-The names of other configuration YAML files to merge with this one.
-
-```yaml
-includes:
-  - config/sanitize_domains.yaml
-  - config/strip_css_js.yaml
-```
-
 ### report
 
 The settings under the `report` key allow you to display helpful details on the report.
@@ -709,7 +567,175 @@ report:
   after_url_report: false
 ```
 
-### settings
+### Miscellaneous
+
+#### preset
+
+Presets are stored in the `/lib/sitediff/presets` directory of this gem. You
+can select a preset as follows:
+
+```yaml
+settings:
+  preset: drupal
+```
+
+#### Include/Exclude Paths
+
+##### exclude paths
+
+A RegEx indicating the paths that should not be crawled.
+
+##### include paths
+
+A RegEx indicating the paths that should be crawled.
+
+### Organizing configuration files
+
+If your configuration file starts getting really big, SiteDiff lets you
+separate it out into multiple files. Just have one base file that includes
+other files:
+
+```yaml
+includes:
+  - sanitization.yaml
+  - paths.yaml
+```
+
+This allows you to separate your configuration into logical groups.
+For example, generic rules for your site could live in a `generic.yaml` file,
+while rules pertaining to a particular update you're conducting could
+live in `update-8.2.yaml`.
+
+### Named regions
+
+In major upgrades and migrations where there are significant changes to the markup,
+simple diffs will not be of much value. To assist in these cases, `named
+regions` let you define regions in the page markup and the specify order in which
+they should be compared. Specifying the order helps in cases where the fields are
+not in the same order on the new site.
+
+For example, if you have a CMS displaying `title`, `author`, and `body` fields, you
+could define the named regions and the selectors for the three fields as follows:
+
+```yaml
+  regions:
+    - name: title
+      selector: h1.title
+    - name: author
+      selector: .field-name-attribution
+    - name: body
+      selector: .field-name-body
+```
+
+(You need to define `regions` for both the `before` and `after` sections.)
+
+You must then define the order that the fields should be compared, using the
+`output` key.
+
+```yaml
+output:
+  - title
+  - author
+  - body
+```
+
+Before the two versions are compared, SiteDiff generates markup with
+`<region>` tags and each `region` contains the markup matching the
+corresponding selector.
+
+EG:
+
+```html
+<region id="title">
+  <h1 class="title">My Blog Post</h1>
+</region>
+<region id="author">
+  <div class="field-name-attribution">
+    <span class="label">By:</span> Alfred E. Neuman
+  </div>
+</region>
+<region id="body">
+  <div class=".field-name-attribution">
+    <p>Lorem ipsum...
+  </div>
+</region>
+```
+
+The regions are processed first, so you can reference the `<region>` tags to
+be more specific in your selectors for `dom_transform` and `sanitization`
+sections.
+
+EG:
+
+```yaml
+dom_transform:
+  - name: Remove body div wrapper
+    type: unwrap
+    selector: region#body .field-name-attribution
+```
+
+### Curl Options
+
+[Many options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html) can be
+passed to the underlying curl library. Add `--curl_options=name1:value1 name2:value2`
+to the command line (such as `--curl_options=max_recv_speed_large:100000`
+(remove the `CURLOPT_` prefix and write the name in lowercase) or add them to
+your configuration file.
+
+```yaml
+settings:
+  curl_opts:
+    max_recv_speed_large: 10000
+    ssl_verifypeer: false
+```
+
+These CURL options can be put under the `settings` section of `sitediff.yaml`
+as demonstrated above.
+
+#### Throttling
+
+A few options are also available to control how aggressively SiteDiff crawls.
+
+- There's a command line option `--concurrency=N` for `sitediff init`
+  which controls the maximum number of simultaneous connections made.
+  Lower N mean less aggressive. The default is 3. You can specify this in the
+  `sitediff.yaml` file under the `settings` key.
+
+- The underlying curl library has [many options](https://curl.haxx.se/libcurl/c/curl_easy_setopt.html)
+  such as `max_recv_speed_large` which can be helpful.
+
+- There is a special command line option `--interval=T` for `sitediff init`.
+  This option and allows the fetcher to delay for T milliseconds between
+  fetching pages. You can specify this in the `sitediff.yaml` file under the
+  `settings` key.
+
+#### Timeouts
+
+By default, no timeout is set but one can be added `--curl_options=timeout:60`
+or in your configuration file.
+
+  ```yaml
+  settings:
+    curl_opts:
+      timeout: 60 # In seconds; or...
+      timeout_ms: 60000 # In milliseconds.
+  ```
+
+#### Handling security
+
+Often development or staging sites are protected by [HTTP Authentication](http://en.wikipedia.org/wiki/Basic_access_authentication).
+SiteDiff allows you to specify a username and password, by using a URL like
+`http://user:pass@example.com` or by adding a `userpwd` setting to your file.
+
+SiteDiff ignores untrusted certificates by default. This is equivalent to the following settings:
+
+```yaml
+settings:
+  curl_opts:
+    ssl_verifypeer: false
+    ssl_verifyhost: 0
+    userpwd: "username:password"
+```
 
 This contains various parameters which affect the way SiteDiff works. You can
 have the following keys under `settings`.
@@ -720,16 +746,6 @@ between requests.
 
 #### concurrency
 The maximum number of simultaneous requests that SiteDiff should make.
-
-#### exclude
-
-A RegEx indicating the paths that should not be crawled.
-You must prefix your regex with `!ruby/regexp` like `exclude: !ruby/regexp /^(foo|bar).*?$/`.
-
-#### include
-
-A RegEx indicating the paths that should be crawled.
-You must prefix your regex with `!ruby/regexp` like `include: !ruby/regexp /^(foo|bar).*?$/`.
 
 #### depth
 
@@ -750,14 +766,43 @@ settings:
     max_recv_speed_large: 10000
 ```
 
-#### preset
+## Tips and Tricks
 
-Presets are stored in the `/lib/sitediff/presets` directory of this gem. You
-can select a preset as follows:
+Here are some tips and tricks that we've learned using SiteDiff:
 
+- Use single quotes or double quotes around selectors.  Remember that the `#` is a comment in YAML.
+- Be specific enough with selectors to not affect elements on other pages.
+
+### Removing Empty Elements
+
+If you have an empty `<p/>` tag appearing in the diff, you can write the following in your sanitization lists:
 ```yaml
-settings:
-  preset: drupal
+  - name: remove_empty_p
+    pattern: '<p/>'
+    substitute: ''
+```
+
+### HTML Tag Formatting
+
+There are times when the HTML tags do not have newlines between them on one of the sites you wish to compare.  In this 
+case, these sanitzation rules are useful:
+```yaml
+  - name: remove_space_before
+    pattern: '\s*(\n)<'
+    substitute: '\1<'
+
+  - name: remove_space_after
+    pattern: '>(\n)\s*'
+    substitute: '>\1'
+```
+
+### Empty Attributes
+
+After writing rules, you may end up with empty attributes, like `width=""`.  Here's a sanitization rule:
+```yaml
+  - name: remove_empty_class
+    pattern: ' class=""'
+    substitute: ''
 ```
 
 ## Acknowledgements

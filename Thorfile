@@ -39,26 +39,29 @@ class Docker < Base
   IMAGE = 'evolvingweb/sitediff'
 
   desc 'build', 'Build a docker image for sitediff'
+  # Make a build image for docker.
   def build
     run "docker build -t #{IMAGE} . "
   end
 
-  # NOTE We can't override run() (which is reserved by Thor). Luckily, Thor only
+  desc 'run', 'Run a rake task (or a login shell if none given) inside docker'
+  # NOTE: We can't override run() (which is reserved by Thor). Luckily, Thor only
   # checks for the first N necessary characters to match a command with a
   # method. Cf. Thor::normalize_command_name()
-  desc 'run', 'Run a rake task (or a login shell if none given) inside docker'
   def run_(task = 'bash')
     docker_opts = ['-t', "-v #{File.dirname(__FILE__)}:/sitediff"]
     finish_exec(task, docker_opts)
   end
 
   desc 'compose', 'Run a task inside docker without volume mounting (not supported with compose)'
+  # Run a task inside docker without volume mounting.
   def compose(task = 'bash')
     docker_opts = ['-t']
     finish_exec(task, docker_opts)
   end
 
   no_commands do
+    # Finished exec
     def finish_exec(task, docker_opts)
       if task == 'bash'
         cmd = 'bash'
@@ -76,19 +79,21 @@ end
 # Thor for Spec.
 class Spec < Base
   desc 'unit', 'run RSpec unit tests'
+  # Run RSpec unit tests.
   def unit
     puts "#{executable('rspec')} spec/unit"
     run "#{executable('rspec')} spec/unit"
   end
 
   desc 'fixture', 'run RSpec integration tests'
+  # Run RSpec integration tests.
   def fixture
     puts "#{executable('rspec')} spec/unit"
     run "#{executable('rspec')} spec/fixtures"
   end
 
-  # hidden task to lump together multiple tasks
   desc 'all', 'runs both unit and fixture tests', hide: true
+  # hidden task to lump together multiple tasks
   def all
     unit
     fixture
@@ -99,17 +104,20 @@ end
 # Thor for fixtures.
 class Fixture < Base
   desc 'local', 'Run a sitediff test case'
+  # Run a sitediff test case.
   def local
     run "#{executable('sitediff')} diff --cached=none spec/fixtures/cli/config.yaml"
   end
 
   desc 'http', 'Run a sitediff test case, using web servers'
+  # Run a sitediff test case, using web servers.
   def http
     cmd = "#{executable('sitediff')} diff --cached=none spec/fixtures/cli/config.yaml"
     http_fixtures(cmd).kill
   end
 
   desc 'serve', 'Serve the result of the fixture test'
+  # Serve the result of the fixture test.
   def serve
     cmd = "#{executable('sitediff')} diff --cached=none --paths-file=spec/sites/ruby-doc.org/paths.txt spec/unit/cli/config.yaml"
     http_fixtures(cmd)
@@ -118,6 +126,7 @@ class Fixture < Base
 
   private
 
+  # HTTP Fixtures.
   def http_fixtures(cmd)
     serv = SiteDiff::Webserver::FixtureServer.new
     run "#{cmd} --before #{serv.before} --after #{serv.after}"

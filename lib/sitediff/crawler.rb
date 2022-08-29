@@ -21,7 +21,7 @@ class SiteDiff
                    exclude_regex,
                    depth = DEFAULT_DEPTH,
                    curl_opts = UriWrapper::DEFAULT_CURL_OPTS,
-                   debug = true,
+                   debug: true,
                    &block)
       @hydra = hydra
       @base_uri = Addressable::URI.parse(base)
@@ -43,7 +43,7 @@ class SiteDiff
 
       @found << rel
 
-      wrapper = UriWrapper.new(@base + rel, @curl_opts, @debug)
+      wrapper = UriWrapper.new(@base + rel, @curl_opts, debug: @debug)
       wrapper.queue(@hydra) do |res|
         fetched_uri(rel, depth, res)
       end
@@ -104,6 +104,16 @@ class SiteDiff
 
     # Make a link relative to @base_uri
     def relativize_link(uri)
+      # fullPath = uri.path
+      # if uri.query
+      #   fullPath += "?" + uri.query
+      # end
+      #
+      # if uri.fragment
+      #   fullPath += "#" + uri.fragment
+      # end
+      # fullPath.gsub(@base_uri.path, "")
+      #
       uri.path.slice(@base_uri.path.length, uri.path.length)
     end
 

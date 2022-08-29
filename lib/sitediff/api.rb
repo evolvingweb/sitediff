@@ -111,8 +111,8 @@ class SiteDiff
       sitediff = SiteDiff.new(
         @config,
         cache,
-        options[:verbose],
-        options[:debug]
+        verbose: options[:verbose],
+        debug: options[:debug]
       )
       num_failing = sitediff.run
       exit_code = num_failing.positive? ? 2 : 0
@@ -168,7 +168,7 @@ class SiteDiff
           @config.setting(:exclude),
           @config.setting(:depth),
           @config.curl_opts,
-          @debug
+          debug: @debug
         ) do |info|
           SiteDiff.log "Visited #{info.uri}, cached."
           after_crawl(tag, info)
@@ -254,12 +254,23 @@ class SiteDiff
       result = info.read_result
 
       # Write result to applicable cache.
-      @cache.set(tag, path, result)
-      # If single-site, cache "after" as "before".
-      @cache.set(:before, path, result) unless @config.roots[:before]
+      # @cache.set(tag, path, result)
+      @cache.set(:before, path, result) if tag == 'before'
+      @cache.set(:after, path, result) if tag == 'after'
 
       # TODO: Restore application of rules.
       # @rules.handle_page(tag, res.content, info.document) if @rules && !res.error
+    end
+
+    def get_curl_opts(options)
+      # We do want string keys here
+      bool_hash = { 'true' => true, 'false' => false }
+      curl_opts = UriWrapper::DEFAULT_CURL_OPTS
+                  .clone
+                  .merge(options['curl_options'] || {})
+                  .merge(options['curl_opts'] || {})
+      curl_opts.each { |k, v| curl_opts[k] = bool_hash.fetch(v, v) }
+      curl_opts
     end
   end
 end

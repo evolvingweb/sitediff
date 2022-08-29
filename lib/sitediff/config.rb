@@ -107,7 +107,7 @@ class SiteDiff
           conf[pos][key] += conf[key] if conf[key]
         end
         tools[:scalar].each { |key| conf[pos][key] ||= conf[key] }
-        conf[pos]['url'] ||= conf[pos + '_url']
+        conf[pos]['url'] ||= conf["pos#{_url}"] if defined?(_url)
         conf[pos]['curl_opts'] = conf['curl_opts']
       end
 
@@ -260,8 +260,8 @@ class SiteDiff
     end
 
     # Get "before" site configuration.
-    def before(apply_preset = false)
-      section :before, apply_preset
+    def before(apply_preset: false)
+      section(:before, with_preset: apply_preset)
     end
 
     # Get "before" site URL.
@@ -271,8 +271,8 @@ class SiteDiff
     end
 
     # Get "after" site configuration.
-    def after(apply_preset = false)
-      section :after, apply_preset
+    def after(apply_preset: false)
+      section(:after, with_preset: apply_preset)
     end
 
     # Get "after" site URL.
@@ -431,7 +431,7 @@ class SiteDiff
       end
 
       # Validate preset.
-      Preset.exist? setting(:preset), true if setting(:preset)
+      Preset.exist? setting(:preset), exception: true if setting(:preset)
     end
 
     ##
@@ -459,7 +459,7 @@ class SiteDiff
         @return_value = string_param == '' ? nil : Regexp.new(string_param)
       rescue SiteDiffException => e
         @return_value = nil
-        SiteDiff.log 'Invalid RegExp: ' + string_param, :error
+        SiteDiff.log "Invalid RegExp: #{string_param}", :error
         SiteDiff.log e.message, :error
         # TODO: Use SiteDiff.log type :debug
         # SiteDiff.log e.backtrace, :error if options[:verbose]
@@ -491,7 +491,7 @@ class SiteDiff
     #
     # @return [Hash|Nil]
     #   Section data or Nil.
-    def section(name, with_preset = false)
+    def section(name, with_preset: false)
       name = name.to_s if name.is_a? Symbol
 
       # Validate section.
@@ -531,7 +531,7 @@ class SiteDiff
     def self.load_raw_yaml(file)
       # TODO: Only show this in verbose mode.
       SiteDiff.log "Reading config file: #{Pathname.new(file).expand_path}"
-      conf = YAML.load_file(file) || {}
+      conf = YAML.load_file(file, permitted_classes: [Regexp]) || {}
 
       unless conf.is_a? Hash
         raise InvalidConfig, "Invalid configuration file: '#{file}'"

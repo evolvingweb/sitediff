@@ -47,7 +47,7 @@ class SiteDiff
         bg = :yellow
       end
 
-      label = '[' + label.to_s + ']'
+      label = "[#{label}]"
       label = Rainbow(label)
       label = label.bg(bg) if bg
       label = label.fg(fg) if fg
@@ -76,7 +76,7 @@ class SiteDiff
   end
 
   # Initialize SiteDiff.
-  def initialize(config, cache, verbose = true, debug = false)
+  def initialize(config, cache, verbose: true, debug: false)
     @cache = cache
     @verbose = verbose
     @debug = debug
@@ -97,7 +97,7 @@ class SiteDiff
   end
 
   # Sanitize HTML.
-  def sanitize(path, read_results)
+  def sanitize(path_passed, read_results)
     %i[before after].map do |tag|
       html = read_results[tag].content
       # TODO: See why encoding is empty while running tests.
@@ -107,8 +107,8 @@ class SiteDiff
       # during rspec tests for some reason.
       encoding = read_results[tag].encoding
       if encoding || html.length.positive?
-        section = @config.send(tag, true)
-        opts = { path: path }
+        section = @config.send(tag, apply_preset: true)
+        opts = { path: path_passed }
         opts[:output] = @config.output if @config.output
         Sanitizer.new(html, section, opts).sanitize
       else
@@ -144,7 +144,7 @@ class SiteDiff
 
     # Print results in order!
     while (next_diff = @results[@ordered.first])
-      next_diff.log(@verbose)
+      next_diff.log(verbose: @verbose)
       @ordered.shift
     end
   end
@@ -160,7 +160,7 @@ class SiteDiff
     @ordered = @config.paths.dup
 
     unless @cache.read_tags.empty?
-      SiteDiff.log('Using sites from cache: ' + @cache.read_tags.sort.join(', '))
+      SiteDiff.log("Using sites from cache: #{@cache.read_tags.sort.join(', ')}")
     end
 
     # TODO: Fix this after config merge refactor!
@@ -175,7 +175,7 @@ class SiteDiff
       @config.setting(:interval),
       @config.setting(:concurrency),
       curl_opts,
-      @debug,
+      debug: @debug,
       before: @config.before_url,
       after: @config.after_url
     )
@@ -203,7 +203,7 @@ class SiteDiff
   ##
   # Get SiteDiff gemspec.
   def self.gemspec
-    file = ROOT_DIR + '/sitediff.gemspec'
+    file = "#{ROOT_DIR}/sitediff.gemspec"
     Gem::Specification.load(file)
   end
 

@@ -77,15 +77,18 @@ class SiteDiff
       BASE = 'spec/sites/ruby-doc.org'
       NAMES = %w[core-1.9.3 core-2.0].freeze
 
+      # Initialize web server.
       def initialize(port = PORT, base = BASE, names = NAMES)
         dirs = names.map { |n| File.join(base, n) }
         super(port, dirs, quiet: true)
       end
 
+      # Get the before site uri.
       def before
         uris.first
       end
 
+      # Get the after site uri.
       def after
         uris.last
       end

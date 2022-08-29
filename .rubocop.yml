@@ -2,7 +2,7 @@ inherit_from: .rubocop_todo.yml
 
 # Common configuration.
 AllCops:
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 3.1.2
 
 Naming/MethodName:
   EnforcedStyle: snake_case

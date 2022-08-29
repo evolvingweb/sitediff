@@ -71,7 +71,8 @@ class SiteDiff
         rescue Errno::EEXIST
           curdir = filepath
           curdir = curdir.parent until curdir.exist?
-          tempname = curdir.dirname + (curdir.basename.to_s + '.temporary')
+          tempname = "#{curdir.dirname}/#{curdir.basename}.temporary"
+          # tempname = curdir.dirname + (curdir.basename.to_s + '.temporary')
           # May cause problems if action is not atomic!
           # Move existing file to dir/index.html first
           # Not robust! Should generate an UUID or something.
@@ -82,10 +83,11 @@ class SiteDiff
           filepath.dirname.mkpath
           # Should only happen in strange situations such as when the path
           # is foo/index.html/bar (i.e., index.html is a directory)
-          if (curdir + 'index.html').exist?
+          if File.exist?("#{curdir}/index.html")
             SiteDiff.log "Overwriting file #{tempname}", :warning
           end
-          tempname.rename(curdir + 'index.html')
+          File.rename(tempname, "#{curdir}/index.html")
+          # tempname.rename(curdir + 'index.html')
         end
       end
       File.open(filename, 'w') { |file| file.write(Marshal.dump(result)) }

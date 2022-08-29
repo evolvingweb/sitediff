@@ -45,9 +45,9 @@ class SiteDiff
 
         ##
         # TODO: Document what this method does.
-        def contexts(node)
+        def contexts(node, &block)
           selectors = @rule['selector']
-          node.css(selectors).each { |e| yield(e) }
+          node.css(selectors).each(&block)
         end
 
         ##

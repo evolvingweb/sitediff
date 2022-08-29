@@ -71,7 +71,7 @@ describe SiteDiff::Cli do
     diff = File.join(
       config_dir,
       'diffs',
-      Digest::SHA1.hexdigest('/Hash.html') + '.html'
+      "#{Digest::SHA1.hexdigest('/Hash.html')}.html"
     )
     warn(diff)
 

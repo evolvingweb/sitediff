@@ -96,7 +96,7 @@ class SiteDiff
       if @config.export
         package_report(dir)
       else
-        SiteDiff.log 'Report generated to ' + report_file.expand_path.to_s
+        SiteDiff.log "Report generated to #{report_file.expand_path}"
       end
     end
 
@@ -135,7 +135,7 @@ class SiteDiff
 
       write_settings dir
 
-      SiteDiff.log 'Report generated to ' + report_file.expand_path.to_s
+      SiteDiff.log "Report generated to #{report_file.expand_path}"
     end
 
     ##
@@ -147,7 +147,7 @@ class SiteDiff
       temp_path.mkpath
       report_path = temp_path + REPORT_DIR
       report_path.mkpath
-      files_path = report_path + 'files'
+      files_path = "#{report_path}files"
       files_path.mkpath
       diffs_path = dir + DIFFS_DIR
 
@@ -164,7 +164,7 @@ class SiteDiff
       end
       FileUtils.move(temp_path + REPORT_FILE_TAR, dir)
       temp_path.rmtree
-      SiteDiff.log 'Archived report generated to ' + dir.join(REPORT_FILE_TAR).to_s
+      SiteDiff.log "Archived report generated to #{dir.join(REPORT_FILE_TAR)}"
     end
 
     ##
@@ -182,7 +182,7 @@ class SiteDiff
       diff_dir.rmtree if diff_dir.exist?
 
       # Write diffs to the diff directory.
-      @results.each { |r| r.dump(dir, @config.export) if r.status == Result::STATUS_FAILURE }
+      @results.each { |r| r.dump(dir, relative: @config.export) if r.status == Result::STATUS_FAILURE }
       SiteDiff.log "All diff files written to #{diff_dir.expand_path}" unless @config.export
     end
 
@@ -245,7 +245,7 @@ class SiteDiff
       if File.exist? timestamp_file
         file = File::Stat.new(timestamp_file)
         time = file.mtime
-        time.class == Time ? time.strftime('%Y-%m-%d %H:%M') : ''
+        time.instance_of?(Time) ? time.strftime('%Y-%m-%d %H:%M') : ''
       else
         'unknown'
       end

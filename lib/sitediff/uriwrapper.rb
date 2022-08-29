@@ -48,7 +48,7 @@ class SiteDiff
 
     ##
     # Creates a UriWrapper.
-    def initialize(uri, curl_opts = DEFAULT_CURL_OPTS, debug = true)
+    def initialize(uri, curl_opts = DEFAULT_CURL_OPTS, debug: true)
       @uri = uri.respond_to?(:scheme) ? uri : Addressable::URI.parse(uri)
       # remove trailing '/'s from local URIs
       @uri.path.gsub!(%r{/*$}, '') if local?
@@ -103,10 +103,9 @@ class SiteDiff
     # Returns the encoding of an HTTP response from headers , nil if not
     # specified.
     def charset_encoding(http_headers)
-      if (content_type = http_headers['Content-Type'])
-        if (md = /;\s*charset=([-\w]*)/.match(content_type))
-          md[1]
-        end
+      content_type = http_headers['Content-Type']
+      if (md = /;\s*charset=([-\w]*)/.match(content_type))
+        md[1]
       end
     end
 
@@ -117,7 +116,7 @@ class SiteDiff
     def typhoeus_request
       params = @curl_opts.dup
       # Allow basic auth
-      params[:userpwd] = @uri.user + ':' + @uri.password if @uri.user
+      params[:userpwd] = "#{@uri.user}: #{@uri.password}" if @uri.user
 
       req = Typhoeus::Request.new(to_s, params)
 
@@ -150,19 +149,18 @@ class SiteDiff
 
       req.on_failure do |resp|
         if resp&.status_message
-          msg = resp.status_message
           yield ReadResult.error(
-            "HTTP error when loading #{@uri}: #{msg}",
+            "HTTP error when loading #{@uri} : [#{resp.response_code}] #{resp.status_message}",
             resp.response_code
           )
         elsif (msg = resp.options[:return_code])
           yield ReadResult.error(
-            "Connection error when loading #{@uri}: #{msg}",
+            "Connection error when loading #{@uri} : [#{resp.options[:return_code]}] #{resp.status_message} #{msg}",
             resp.response_code
           )
         else
           yield ReadResult.error(
-            "Unknown error when loading #{@uri}: #{msg}",
+            "Unknown error when loading #{@uri} : [#{resp.response_code}] #{resp.status_message}",
             resp.response_code
           )
         end
