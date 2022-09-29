@@ -2,6 +2,11 @@
 
 Contains noteworthy changes made to SiteDiff.
 
+## Version 1.2.1
+- Fixed a bug with report exporting.
+- Prevents crawling the same site twice if the before and after urls are the same.
+- Adding a referrer to the crawler errors.
+
 ## Version 1.2.0
 - Updated requirement to Ruby 3.1.2.
 - Upgraded modules for security and compatibility.
