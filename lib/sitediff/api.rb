@@ -159,7 +159,13 @@ class SiteDiff
         max_concurrency: @config.setting(:concurrency)
       )
       @paths = {}
-      @config.roots.each do |tag, url|
+
+      ignoreAfter = @config.roots
+      if @config.roots['before'] == @config.roots['after']
+        ignoreAfter.delete('after')    
+      end
+      
+      ignoreAfter.each do |tag, url|
         Crawler.new(
           hydra,
           url,

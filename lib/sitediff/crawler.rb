@@ -34,16 +34,16 @@ class SiteDiff
       @curl_opts = curl_opts
       @debug = debug
 
-      add_uri('', depth)
+      add_uri('', depth, referrer: '/')
     end
 
     # Handle a newly found relative URI
-    def add_uri(rel, depth)
+    def add_uri(rel, depth, referrer = '')
       return if @found.include? rel
 
       @found << rel
 
-      wrapper = UriWrapper.new(@base + rel, @curl_opts, debug: @debug)
+      wrapper = UriWrapper.new(@base + rel, @curl_opts, debug: @debug, referrer: referrer)
       wrapper.queue(@hydra) do |res|
         fetched_uri(rel, depth, res)
       end
@@ -90,7 +90,7 @@ class SiteDiff
       rels.each do |r|
         next if @found.include? r
 
-        add_uri(r, depth - 1)
+        add_uri(r, depth - 1, rel)
       end
     end
 

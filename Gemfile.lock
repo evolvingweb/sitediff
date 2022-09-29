@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sitediff (1.2.0)
+    sitediff (1.2.1)
       addressable (>= 2.5.2, < 2.9.0)
       diffy (~> 3.4.0)
       minitar (~> 0.9)
