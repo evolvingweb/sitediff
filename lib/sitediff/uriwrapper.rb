@@ -16,7 +16,7 @@ class SiteDiff
       # Follow HTTP redirects (code 301 and 302).
       followlocation: true,
       headers: {
-        'User-Agent' => 'Sitediff - https://github.com/evolvingweb/sitediff'
+        'User-Agent' => 'Sitediff - https://github.com/evolvingweb/sitediff',
       },
       # always accept SSL certs
       ssl_verifypeer: false,
