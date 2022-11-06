@@ -43,7 +43,7 @@ class SiteDiff
 
       @found << rel
 
-      wrapper = UriWrapper.new(@base + rel, @curl_opts, debug: @debug, referrer: referrer)
+      wrapper = UriWrapper.new(@base + rel, @curl_opts, debug: @debug, referrer:)
       wrapper.queue(@hydra) do |res|
         fetched_uri(rel, depth, res)
       end

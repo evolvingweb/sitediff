@@ -16,7 +16,7 @@ class SiteDiff
       # Follow HTTP redirects (code 301 and 302).
       followlocation: true,
       headers: {
-        'User-Agent' => 'Sitediff - https://github.com/evolvingweb/sitediff',
+        'User-Agent' => 'Sitediff - https://github.com/evolvingweb/sitediff'
       },
       # always accept SSL certs
       ssl_verifypeer: false,
@@ -148,20 +148,20 @@ class SiteDiff
         end
       end
 
-      req.on_failure do |resp|           
+      req.on_failure do |resp|
         if resp&.status_message
           yield ReadResult.error(
-            "HTTP error when loading #{@uri} : [#{resp.response_code}] #{resp.status_message}  From page: #{@referrer}",
+            "HTTP error when loading #{@uri} : [#{resp.response_code}] #{resp.status_message}  From: #{@referrer}",
             resp.response_code
           )
         elsif (msg = resp.options[:return_code])
           yield ReadResult.error(
-            "Connection error when loading #{@uri} : [#{resp.options[:return_code]}] #{msg}  From page: #{@referrer}",
+            "Connection error when loading #{@uri} : [#{resp.options[:return_code]}] #{msg}  From: #{@referrer}",
             resp.response_code
           )
         else
           yield ReadResult.error(
-            "Unknown error when loading #{@uri} : [#{resp.response_code}] #{resp.status_message}  From page: #{@referrer}",
+            "Unknown error when loading #{@uri} : [#{resp.response_code}] #{resp.status_message} From: #{@referrer}",
             resp.response_code
           )
         end
