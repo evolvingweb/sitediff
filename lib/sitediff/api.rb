@@ -160,12 +160,12 @@ class SiteDiff
       )
       @paths = {}
 
-      ignoreAfter = @config.roots
+      ignore_after = @config.roots
       if @config.roots['before'] == @config.roots['after']
-        ignoreAfter.delete('after')    
+        ignore_after.delete('after')
       end
-      
-      ignoreAfter.each do |tag, url|
+
+      ignore_after.each do |tag, url|
         Crawler.new(
           hydra,
           url,
@@ -184,6 +184,10 @@ class SiteDiff
 
       # Write paths to a file.
       @paths = @paths.values.reduce(&:|).to_a.sort
+      if @paths.none? | @paths.nil?
+        return
+      end
+
       @config.paths_file_write(@paths)
 
       # Log output.

@@ -1,6 +1,9 @@
 # SiteDiff Change Log
 
 Contains noteworthy changes made to SiteDiff.
+## Version 1.2.2
+- Security update for Nokogiri.
+- Minor code updates.
 
 ## Version 1.2.1
 - Fixed a bug with report exporting.

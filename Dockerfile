@@ -10,10 +10,10 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Our build requires rake
 # Install editors: vim, nano.
 RUN apt-get update
-RUN apt-get install -y apt-utils
-RUN apt-get install -y software-properties-common
-RUN apt-get install -y make pkg-config libxml2-dev libxslt-dev
-RUN apt-get install -y vim nano git
+RUN apt-get install -y apt-utils \
+                       software-properties-common \
+                       make pkg-config libxml2-dev libxslt-dev \
+                       vim nano git
 
 # Force nokogiri gem not to compile libxml2, it takes too long
 ENV NOKOGIRI_USE_SYSTEM_LIBRARIES 1

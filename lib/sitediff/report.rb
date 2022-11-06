@@ -147,8 +147,8 @@ class SiteDiff
       temp_path.mkpath
       report_path = temp_path + REPORT_DIR
       report_path.mkpath
-      files_path = report_path + "files"
-      files_path.mkpath
+      files_path = "#{report_path}/files"
+      FileUtils.mkpath(files_path)
       diffs_path = dir + DIFFS_DIR
 
       # Move files to place.
