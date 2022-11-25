@@ -61,3 +61,7 @@ sanitization:
     selector: script
     pattern: 'js_[-\w]{40,43}\\?\.js'
     substitute: 'js__ID__.js'
+dom_transform:
+  # Strip Drupal.settings (>8.0)
+  - type: remove
+    selector: 'script[data-drupal-selector="drupal-settings-json"]'
