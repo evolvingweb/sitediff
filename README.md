@@ -441,7 +441,7 @@ before comparison:
 dom_transform:
 # Remove current time block
   - type: remove
-  - selector: div#block-time
+    selector: div#block-time
 ```
 
 #### strip
@@ -458,7 +458,7 @@ To transform `<h1>  Foo and Bar\n  </h1>` to `<h1>Foo and Bar<\h1>`:
 dom_transform:
 # Strip H1 tags
   - type: strip
-  - selector: h1
+    selector: h1
 ```
 
 #### unwrap
@@ -655,7 +655,7 @@ EG:
   </div>
 </region>
 <region id="body">
-  <div class=".field-name-attribution">
+  <div class="field-name-attribution">
     <p>Lorem ipsum...
   </div>
 </region>
