@@ -29,7 +29,7 @@ sanitization:
     pattern: '(src="[^"]*/misc/\w+\.js)?v=\d+\.\d+"'
     substitute: '\1'
   - title: Strip domain names from absolute URLs
-    pattern: 'http:\/\/[a-zA-Z0-9.:-]+'
+    pattern: 'https?:\/\/[a-zA-Z0-9.:-]+'
     substitute: '__domain__'
   - title: Strip form build ID
     selector: input
