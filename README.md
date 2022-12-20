@@ -294,6 +294,13 @@ Generate a gzipped tar file containing the HTML report instead of generating
 and serving live web pages, this option overrides `--report-format`, forcing
 HTML.
 
+```
+sitediff diff --export
+sitediff diff -e
+```
+
+This will perform the diff and export the results in a gzipped tar file.
+
 ### Running inside containers
 
 If you run SiteDiff inside a container or virtual machine, the URLs in its
