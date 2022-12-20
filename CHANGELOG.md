@@ -1,6 +1,10 @@
 # SiteDiff Change Log
 
 Contains noteworthy changes made to SiteDiff.
+## Version 1.2.3
+- Fix issue with nil object during diff report generation.
+- Update to export documentation.
+
 ## Version 1.2.2
 - Security update for Nokogiri.
 - Minor code updates.
