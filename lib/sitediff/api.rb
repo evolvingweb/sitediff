@@ -235,7 +235,7 @@ class SiteDiff
                                     @config.setting(:concurrency),
                                     get_curl_opts(@config.settings),
                                     debug: options[:debug],
-                                    before: base)                                   
+                                    before: base)
       fetcher.run do |path, _res|
         SiteDiff.log "Visited #{path}, cached"
       end
