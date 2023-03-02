@@ -1,6 +1,9 @@
 # SiteDiff Change Log
 
 Contains noteworthy changes made to SiteDiff.
+## Version 1.2.4
+- Fix issue with 'store' command.
+
 ## Version 1.2.3
 - Fix issue with nil object during diff report generation.
 - Update to export documentation.
