@@ -35,7 +35,7 @@ DESC
 
   s.add_dependency 'minitar', '~> 0.9'
   s.add_dependency 'thor', '~> 1.2.1'
-  s.add_dependency 'typhoeus', '~> 1.4.0'
+  s.add_dependency 'typhoeus', '~> 1.4.1'
 
   # A bug in rubygems can break rainbow 2.2
   # https://github.com/bundler/bundler/issues/5357

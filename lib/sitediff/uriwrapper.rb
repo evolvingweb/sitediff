@@ -119,6 +119,12 @@ class SiteDiff
       # Allow basic auth
       params[:userpwd] = "#{@uri.user}: #{@uri.password}" if @uri.user
 
+      # params['verbose'] = true
+      # params['ssl_verifypeer'] = false
+      # params['ssl_verifyhost'] = 0
+      # params['followlocation'] = true
+      # puts to_s
+
       req = Typhoeus::Request.new(to_s, params)
 
       req.on_success do |resp|
