@@ -117,7 +117,7 @@ class SiteDiff
     def typhoeus_request
       params = @curl_opts.dup
       # Allow basic auth
-      params[:userpwd] = "#{@uri.user}: #{@uri.password}" if @uri.user
+      params[:userpwd] = "#{@uri.user}:#{@uri.password}" if @uri.user
 
       req = Typhoeus::Request.new(to_s, params)
 
