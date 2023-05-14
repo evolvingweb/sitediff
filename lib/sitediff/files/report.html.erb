@@ -4,6 +4,8 @@
 
   # Pages compared.
   compared_pages = results.length
+
+  url_hash = '?' + Time.now.strftime("%s%L")
 %>
 <!DOCTYPE html>
 <html>
@@ -134,17 +136,17 @@
                 <div class="buttons">
                   <% unless relative %>
                     <% unless report['before_url_report'] === false %>
-                      <a href="<%= result.url(:before, before_url_report || before, cache) %>" class="button-before" target="_blank">Before</a>
+                      <a href="<%= result.url(:before, before_url_report || before, cache) + url_hash %>" class="button-before" target="_blank">Before</a>
                     <% end %>
                     <% unless report['after_url_report'] === false %>
-                      <a href="<%= result.url(:after, after_url_report || after, cache) %>" class="button-after" target="_blank">After</a>
+                      <a href="<%= result.url(:after, after_url_report || after, cache) + url_hash %>" class="button-after" target="_blank">After</a>
                     <% end %>
                     <% unless report['before_url_report'] === false || report['after_url_report'] === false %>
-                      <a href="/sidebyside<%= result.path %>" class="button-both">Both</a>
+                      <a href="/sidebyside<%= result.path  + url_hash %>" class="button-both">Both</a>
                     <% end %>
                   <% end %>
                   <% unless result.diff_url.nil? %>
-                    <a href="<%= result.diff_url(relative: relative) %>" class="button button-diff">View diff</a>
+                    <a href="<%= result.diff_url(relative: relative) + url_hash %>" class="button button-diff">View diff</a>
                   <% end %>
                 </div>
               </td>

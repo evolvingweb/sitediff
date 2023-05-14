@@ -96,6 +96,7 @@ class SiteDiff
 
     # Resolve a potentially-relative link. Return nil on error.
     def resolve_link(base, rel)
+      rel = rel.strip
       base + rel
     rescue Addressable::URI::InvalidURIError
       SiteDiff.log "skipped invalid URL: '#{rel}' (at #{base})", :warning
@@ -129,6 +130,7 @@ class SiteDiff
                      u.path.start_with?(@base_uri.path)
         next unless is_sub_uri
 
+        # puts "Trying regex #{u.path}"
         is_included = @include_regex.nil? ? false : @include_regex.match(u.path)
         is_excluded = @exclude_regex.nil? ? false : @exclude_regex.match(u.path)
         if is_excluded && !is_included
