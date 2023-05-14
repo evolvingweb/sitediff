@@ -96,6 +96,7 @@ class SiteDiff
 
     # Resolve a potentially-relative link. Return nil on error.
     def resolve_link(base, rel)
+      rel = rel.strip
       base + rel
     rescue Addressable::URI::InvalidURIError
       SiteDiff.log "skipped invalid URL: '#{rel}' (at #{base})", :warning

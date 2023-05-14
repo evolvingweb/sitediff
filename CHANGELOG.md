@@ -1,6 +1,9 @@
 # SiteDiff Change Log
 
 Contains noteworthy changes made to SiteDiff.
+## Version 1.2.5
+- Fix issue with whitespace in URLs.
+
 ## Version 1.2.4
 - Fix issue with 'store' command.
 
