@@ -3,6 +3,7 @@
 Contains noteworthy changes made to SiteDiff.
 ## Version 1.2.5
 - Fix issue with whitespace in URLs.
+- Updates for Drupal preset for Drupal 8, 9, 10.
 
 ## Version 1.2.4
 - Fix issue with 'store' command.
