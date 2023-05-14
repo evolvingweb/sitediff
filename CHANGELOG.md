@@ -3,6 +3,9 @@
 Contains noteworthy changes made to SiteDiff.
 ## Version 1.2.5
 - Fix issue with whitespace in URLs.
+- Updates for Drupal preset for Drupal 8, 9, 10.
+- Bump nokogiri from 1.14.2 to 1.14.3
+- Fix basic auth derived from URL syntax
 
 ## Version 1.2.4
 - Fix issue with 'store' command.

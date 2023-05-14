@@ -61,6 +61,26 @@ sanitization:
     selector: script
     pattern: 'js_[-\w]{40,43}\\?\.js'
     substitute: 'js__ID__.js'
+  - pattern: ' data-contextual-token="[^\"]*"'
+    selector: 'div'
+    substitute: ''
+  - pattern: ' data-drupal-selector="[^\"]*"'
+    selector: 'div'
+    substitute: ''
+  - pattern: ' title="[^\"]*"'
+    selector: 'input'
+    substitute: ''
+  - pattern: 'js-view-dom-id-[a-zA-Z0-9]+'
+    selector: 'div'
+    substitute: 'js-view-dom-id-__HASH__'
+  - pattern: 'value="[^\"]*"'
+    selector: 'input'
+    substitute: 'value="HASH"'
+  - pattern: 'itok=[A-Za-z0-9\-_]+'
+    substitute: ''
+  - pattern: 'hash=[^"]+"'
+    selector: 'iframe'
+    substitute: 'hash=HASH'
 dom_transform:
   # Strip Drupal.settings (>8.0)
   - type: remove
