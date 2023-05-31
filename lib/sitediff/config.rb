@@ -255,6 +255,7 @@ class SiteDiff
       @file = file
       @directory = directory
 
+      @preset_applied = { 'before' => false, 'after' => false }
       # Validate configurations.
       validate
     end
@@ -512,10 +513,14 @@ class SiteDiff
         # Merge plugins with array values.
         # TODO: This won't be required after plugin declarations are improved.
         # See https://rm.ewdev.ca/issues/18301
-        Sanitizer::TOOLS[:array].each do |key|
-          if preset_config[key]
-            result[key] = (result[key] || []) + preset_config[key]
+        unless @preset_applied[name]
+          Sanitizer::TOOLS[:array].each do |key|
+            if preset_config[key]
+              result[key] = (result[key] || []) + preset_config[key]
+            end
           end
+
+          @preset_applied[name] = true
         end
       end
 
