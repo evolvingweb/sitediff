@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sitediff (1.2.6)
+    sitediff (1.2.7)
       addressable (>= 2.5.2, < 2.9.0)
       diffy (~> 3.4.0)
       minitar (~> 0.9)
@@ -26,7 +26,7 @@ GEM
     fileutils (1.1.0)
     json (2.6.2)
     minitar (0.9)
-    nokogiri (1.14.2-arm64-darwin)
+    nokogiri (1.15.2-x86_64-linux)
       racc (~> 1.4)
     parallel (1.22.1)
     parser (3.1.2.0)
@@ -70,7 +70,6 @@ GEM
     webrick (1.8.1)
 
 PLATFORMS
-  ruby
   x86_64-linux
 
 DEPENDENCIES
