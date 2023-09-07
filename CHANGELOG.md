@@ -1,6 +1,9 @@
 # SiteDiff Change Log
 
 Contains noteworthy changes made to SiteDiff.
+## Version 1.2.8
+- Dependency updates.
+
 ## Version 1.2.7
 - Diff performance improvement.  Preset rules were being repeatedly re-added to the list of rules.
 
