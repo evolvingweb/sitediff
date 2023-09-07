@@ -20,10 +20,10 @@ sanitization:
     selector: script
     pattern: '(src="[^"]*/files/js/js_)[-\w]{40,43}\.js"'
     substitute: '\1DRUPAL_AGGREGATED_JS.js"'
-  - title: Strip CSS/JS cache IDs
-    selector: style, script
-    pattern: '("[^"]*\.(js|css))\?[a-z0-9]{6}"'
-    substitute: '\1'
+  # - title: Strip CSS/JS cache IDs
+  #   selector: style, script
+  #   pattern: '("[^"]*\.(js|css))\?[a-z0-9]{6}"'
+  #   substitute: '\1'
   - title: Strip Drupal JS version tags
     selector: script
     pattern: '(src="[^"]*/misc/\w+\.js)?v=\d+\.\d+"'
