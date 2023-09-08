@@ -1,6 +1,9 @@
 # SiteDiff Change Log
 
 Contains noteworthy changes made to SiteDiff.
+## Version 1.2.9
+- Fixing bug with version command within the Docker image.
+
 ## Version 1.2.8
 - Dependency updates.
 
