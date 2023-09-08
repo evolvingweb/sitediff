@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'bundler'
 require 'thor'
 require 'sitediff'
 require 'sitediff/api'
@@ -40,7 +41,15 @@ class SiteDiff
     ##
     # Show version information.
     def version
-      gemspec = SiteDiff.gemspec
+      filename = '../../sitediff.gemspec'
+      unless File.exist?(File.expand_path(filename, __dir__))
+        if File.exist?(File.expand_path('/sitediff/sitediff.gemspec', __dir__))
+          filename = '/sitediff/sitediff.gemspec'
+        end
+      end
+
+      gemspec = Bundler.load_gemspec(File.expand_path(filename, __dir__))
+
       output = []
       output.push("Sitediff CLI #{gemspec.version}")
       if options[:verbose]
