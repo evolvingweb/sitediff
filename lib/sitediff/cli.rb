@@ -42,11 +42,7 @@ class SiteDiff
     # Show version information.
     def version
       filename = '../../sitediff.gemspec'
-      unless File.exist?(File.expand_path(filename, __dir__))
-        if File.exist?(File.expand_path('/sitediff/sitediff.gemspec', __dir__))
-          filename = '/sitediff/sitediff.gemspec'
-        end
-      end
+      filename = '/sitediff/sitediff.gemspec' if !File.exist?(File.expand_path(filename, __dir__)) && File.exist?(File.expand_path('/sitediff/sitediff.gemspec', __dir__))
 
       gemspec = Bundler.load_gemspec(File.expand_path(filename, __dir__))
 
