@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Test the Docker image
-        run: docker run --rm -it ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+        run: docker run --rm -d ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
   # push_to_registry:
   #   name: Push Docker image to Docker Hub
