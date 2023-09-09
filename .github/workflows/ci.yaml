@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build the Docker image
-        run: docker-compose build --no-cache --force-rm
+        run: docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} .
 
   test:
     runs-on: ubuntu-latest
