@@ -134,7 +134,7 @@ class SiteDiff
         is_included = @include_regex.nil? ? false : @include_regex.match(u.path)
         is_excluded = @exclude_regex.nil? ? false : @exclude_regex.match(u.path)
         if is_excluded && !is_included
-          SiteDiff.log "Ignoring excluded URL #{u.path}", :info
+          SiteDiff.log "Ignoring excluded URL #{u.path}", :debug
         end
         is_included || !is_excluded
       end
