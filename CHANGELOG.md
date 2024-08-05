@@ -1,6 +1,7 @@
 # SiteDiff Change Log
 
 Contains noteworthy changes made to SiteDiff.
+
 ## Version 1.2.10
 - Updated deployment to get Docker build.
 - Removed some debug code.
