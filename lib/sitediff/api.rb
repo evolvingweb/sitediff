@@ -82,6 +82,8 @@ class SiteDiff
     def diff(options)
       @config.ignore_whitespace = options[:ignore_whitespace]
       @config.export = options[:export]
+      @config.remove_html_comments = options[:remove_html_comments]
+
       # Apply "paths" override, if any.
       if options[:paths]
         @config.paths = options[:paths]

@@ -28,8 +28,9 @@
     - [selector](#selector)
     - [sanitization](#sanitization)
     - [ignore_whitespace](#ignore_whitespace)
+    - [remove_html_comments](#remove_html_comments)
     - [before / after](#before--after)
-    - [includes](#incudes) 
+    - [includes](#incudes)
     - [dom_transform](#dom_transform)
         - [remove](#remove)
         - [strip](#strip)
@@ -61,7 +62,7 @@
     - [Empty Attributes](#empty-attributes)
 - [Acknowledgements](#acknowledgements)
 
-## Introduction 
+## Introduction
 SiteDiff makes it easy to see how a website changes. It can compare two similar
 sites or it can show how a single site changed over time. It helps identify
 undesirable changes to the site's HTML and it's a useful tool for conducting QA
@@ -391,6 +392,15 @@ On the command line, use `-w` or `--ignore-whitespace`.
 
 ```bash
 sitediff diff -w
+```
+
+### remove_html_comments
+Remove HTML comments from a page.  Useful for Drupal sites with the theme debugging enabled.
+
+On the command line, use `-c` or `--remove-html-comments`.
+
+```bash
+sitediff diff -c
 ```
 
 ### before / after
@@ -791,7 +801,7 @@ If you have an empty `<p/>` tag appearing in the diff, you can write the followi
 
 ### HTML Tag Formatting
 
-There are times when the HTML tags do not have newlines between them on one of the sites you wish to compare.  In this 
+There are times when the HTML tags do not have newlines between them on one of the sites you wish to compare.  In this
 case, these sanitzation rules are useful:
 ```yaml
   - name: remove_space_before

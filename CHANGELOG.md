@@ -2,6 +2,10 @@
 
 Contains noteworthy changes made to SiteDiff.
 
+## Version 1.2.11
+- Change to the Drupal preset for absolute links.  It no longer changes __domain__ to an empty string.
+- Added an option to the 'diff' command to remove HTML comments from pages.
+
 ## Version 1.2.10
 - Updated deployment to get Docker build.
 - Removed some debug code.

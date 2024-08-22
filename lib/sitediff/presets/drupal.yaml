@@ -30,7 +30,7 @@ sanitization:
     substitute: '\1'
   - title: Strip domain names from absolute URLs
     pattern: 'https?:\/\/[a-zA-Z0-9.:-]+'
-    substitute: '__domain__'
+    substitute: ''
   - title: Strip form build ID
     selector: input
     pattern: 'autocomplete="off" data-drupal-selector="form-[-\w]{40,43}"'
