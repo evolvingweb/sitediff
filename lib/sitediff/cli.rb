@@ -100,6 +100,11 @@ class SiteDiff
            default: false,
            aliases: '-e',
            desc: 'Export report to files. This option forces HTML format.'
+    option 'remove_html_comments',
+           type: :boolean,
+           default: false,
+           aliases: '-c',
+           desc: 'Remove HTML comments from the output.'
     desc 'diff [OPTIONS] [CONFIG-FILE]',
          'Compute diffs on configured URLs.'
     ##
@@ -126,9 +131,11 @@ class SiteDiff
           :debug,
           :report_format,
           :before_report,
-          :after_report
+          :after_report,
+          :remove_html_comments
         )
       api_options[:cli_mode] = true
+      puts api_options
       api.diff(api_options)
     end
 

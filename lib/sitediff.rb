@@ -100,6 +100,8 @@ class SiteDiff
   def sanitize(path_passed, read_results)
     %i[before after].map do |tag|
       html = read_results[tag].content
+      html = remove_html_comments(html) if @config.remove_html_comments
+
       # TODO: See why encoding is empty while running tests.
       #
       # The presence of an "encoding" value used to be used to determine
@@ -115,6 +117,11 @@ class SiteDiff
         html
       end
     end
+  end
+
+  # Remove HTML comments.
+  def remove_html_comments(html_content)
+    html_content.gsub(/<!--.*?-->/m, '')
   end
 
   ##

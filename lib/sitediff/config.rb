@@ -304,6 +304,16 @@ class SiteDiff
       @config['ignore_whitespace'] = ignore_whitespace
     end
 
+    # Get remove_html_comments option
+    def remove_html_comments
+      @config['remove_html_comments']
+    end
+
+    # Set ignore_whitespace option
+    def remove_html_comments=(remove_html_comments)
+      @config['remove_html_comments'] = remove_html_comments
+    end
+
     # Get export option
     def export
       @config['export']
