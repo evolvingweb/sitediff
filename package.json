@@ -20,6 +20,6 @@
   },
   "homepage": "https://github.com/evolvingweb/sitediff#readme",
   "devDependencies": {
-    "eslint": "^7.5.0"
+    "eslint": "^9.39.1"
   }
 }
