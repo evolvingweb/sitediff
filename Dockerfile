@@ -31,3 +31,5 @@ RUN gem build sitediff.gemspec && gem install sitediff --no-document
 
 # Build locally
 RUN bundle install
+
+ENV PATH="/sitediff/bin:${PATH}"
