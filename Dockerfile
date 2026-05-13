@@ -16,7 +16,7 @@ RUN apt-get install -y apt-utils \
                        vim nano git
 
 # Force nokogiri gem not to compile libxml2, it takes too long
-ENV NOKOGIRI_USE_SYSTEM_LIBRARIES 1
+ENV NOKOGIRI_USE_SYSTEM_LIBRARIES=1
 
 # Install thor and rspec globally so we can test the gem without bundle exec
 RUN gem install thor rspec --no-document
