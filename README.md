@@ -463,7 +463,7 @@ dom_transform:
 
 #### strip
 
-Strip leading and trailing whitespace from the contents of a tag.
+Strip (trim) leading and trailing whitespace from the contents of a tag.
 
 Uses the Ruby string `strip()` method. Whitespace is defined as any of the
 following characters: null, horizontal tab, line feed, vertical tab, form
