@@ -247,6 +247,10 @@ table .status-col {
   width: 100%;
 }
 
+body.show-diff-only .diff li.unchanged {
+  display: none;
+}
+
 /*** Overlay */
 .overlay {
   background-color: rgba(0, 0, 0, 0.25);
@@ -308,6 +312,16 @@ table .status-col {
   background-color: eaecf3;
   color: #9b9db8;
   cursor: not-allowed;
+}
+.overlay header .diff-only {
+  padding: 1em;
+  white-space: nowrap;
+}
+.overlay header .diff-only label {
+  cursor: pointer;
+}
+.overlay header .diff-only input {
+  margin-right: 0.25em;
 }
 .overlay header .path {
   flex-grow: 1;
