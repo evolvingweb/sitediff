@@ -46,7 +46,7 @@ selector: 'body'
 
 # General regular expression rules, applied to both versions of the site.
 sanitization:
-  # Normalize input tags containg random tokens.
+  # Normalize input tags containing random tokens.
   - title: Remove form-build-id
     pattern: '<input type="hidden" name="form_build_id" value="form-[a-zA-Z0-9_-]+" *\/?>'
     substitute: '<input type="hidden" name="form_build_id" value="__form_build_id__">'

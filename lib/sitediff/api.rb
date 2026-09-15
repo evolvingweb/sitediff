@@ -20,7 +20,7 @@ class SiteDiff
     end
 
     ##
-    # Intialize a SiteDiff project.
+    # Initialize a SiteDiff project.
     #
     # Calling:
     #     SiteDiff::Api.init(

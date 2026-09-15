@@ -42,7 +42,7 @@ gem install sitediff -v '1.2.1'
 ## Docker
 
 There is a `Dockerfile` in the root of the SiteDiff git repository. It uses
-the Docker offical Ruby image. Note that SiteDiff will use port `13080` for the result server. The following Docker image tags are available to be pulled.
+the Docker official Ruby image. Note that SiteDiff will use port `13080` for the result server. The following Docker image tags are available to be pulled.
 
 * latest (master branch)
 * 1.0.0
