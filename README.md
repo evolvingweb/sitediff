@@ -30,7 +30,7 @@
     - [ignore_whitespace](#ignore_whitespace)
     - [remove_html_comments](#remove_html_comments)
     - [before / after](#before--after)
-    - [includes](#incudes)
+    - [includes](#includes)
     - [dom_transform](#dom_transform)
         - [remove](#remove)
         - [strip](#strip)

@@ -1,0 +1,8 @@
+[codespell]
+# Ref: https://github.com/codespell-project/codespell#using-a-config-file
+skip = .git,.git-meta,.gitignore,.gitattributes,package-lock.json,*.lock,*.css,*.min.*,.codespellrc,*/spec/sites/*
+check-hidden = true
+# ignore-regex =
+ignore-words-list =
+  # nd - ordinal suffix in regex patterns like (st|nd|rd|th)
+  nd
