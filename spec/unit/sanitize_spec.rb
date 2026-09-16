@@ -13,6 +13,53 @@ describe SiteDiff::Sanitizer do
   end
 
   describe '::sanitize' do
+    %w[DOCTYPE doctype DoCtYpE].each do |doctype|
+      context "with a #{doctype} declaration" do
+        it 'preserves html and body attributes' do
+          input = "<!#{doctype} html><html lang=\"en\"><body class=\"before\"><p>Same</p></body></html>"
+          output = SiteDiff::Sanitizer.new(input, {}).sanitize
+          expect(output).to include('<html lang="en">', '<body class="before">')
+
+          changed = input.sub('lang="en"', 'lang="fr"')
+          expect(SiteDiff::Sanitizer.new(changed, {}).sanitize).not_to eq(output)
+          changed = input.sub('class="before"', 'class="after"')
+          expect(SiteDiff::Sanitizer.new(changed, {}).sanitize).not_to eq(output)
+          expect(SiteDiff::Sanitizer.new(input, {}).sanitize).to eq(output)
+        end
+      end
+    end
+
+    [{}, { 'sanitization' => [{ 'pattern' => 'unchanged' }] }].each do |config|
+      context "with configuration #{config.inspect}" do
+        it 'preserves UTF-8 text and distinguishes non-ASCII changes' do
+          input = '<p>Röder — 東京</p>'
+          output = SiteDiff::Sanitizer.new(input, config).sanitize
+          expect(output).to include('Röder — 東京')
+          expect(output.encoding).to eq(Encoding::UTF_8)
+          expect(output.valid_encoding?).to be(true)
+          expect(SiteDiff::Sanitizer.new('<p>Räder — 東京</p>', config).sanitize).not_to eq(output)
+          expect(SiteDiff::Sanitizer.new(input, config).sanitize).to eq(output)
+        end
+
+        it 'converts text with a non-UTF-8 source encoding' do
+          input = '<p>Röder</p>'.encode(Encoding::ISO_8859_1)
+          output = SiteDiff::Sanitizer.new(input, config).sanitize
+          expect(output).to include('Röder')
+          expect(output.encoding).to eq(Encoding::UTF_8)
+          expect(output.valid_encoding?).to be(true)
+        end
+
+        it 'handles invalid UTF-8 bytes without dropping valid non-ASCII text' do
+          input = "<p>Röder\xFF</p>"
+          expect(input.valid_encoding?).to be(false)
+          output = SiteDiff::Sanitizer.new(input, config).sanitize
+          expect(output).to include('Röder')
+          expect(output.encoding).to eq(Encoding::UTF_8)
+          expect(output.valid_encoding?).to be(true)
+        end
+      end
+    end
+
     # it "doesn't strip HTML entities" do
     #   input = '<p>&mdash;</p>'
     #   output = SiteDiff::Sanitizer.new(input, {}).sanitize
