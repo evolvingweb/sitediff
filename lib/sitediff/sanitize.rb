@@ -113,7 +113,6 @@ class SiteDiff
       # string unmodified.
       @html = @html.encode(
         'UTF-8',
-        'binary',
         invalid: :replace,
         undef: :replace,
         replace: ''
@@ -185,7 +184,6 @@ class SiteDiff
       # An alternative is to return the string unmodified.
       str = str.encode(
         'UTF-8',
-        'binary',
         invalid: :replace,
         undef: :replace,
         replace: ''
@@ -211,7 +209,8 @@ class SiteDiff
 
     # Parse HTML into a node
     def self.domify(str, force_doc: false)
-      if force_doc || /<!DOCTYPE/.match(str[0, 512])
+      str = str.scrub('')
+      if force_doc || /<!DOCTYPE/i.match(str[0, 512])
         Nokogiri::HTML(str)
       else
         Nokogiri::HTML.fragment(str)
